@@ -27,6 +27,7 @@ async def login(request: Request):
     # Otherwise, render the login page
     return templates.TemplateResponse("login.html", {"request": request})
 
+
 @router.post("/login")
 async def connect_wallet(request: Request):
     """
