@@ -27,8 +27,8 @@ ADD . /app
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
 
-# Install StarknetKit via npm
-RUN npm install @argent/get-starknet --save
+# Install StarknetKit via npm with legacy-peer-deps flag
+RUN npm install @argent/get-starknet --legacy-peer-deps --save
 
 # Expose port 8000 for FastAPI
 EXPOSE 8000
