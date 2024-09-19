@@ -57,7 +57,9 @@ class StarknetClient:
             res = await self.client.call_contract(call)
         return res
 
-    async def get_balance(self, token_addr: str, holder_addr: str, decimals: int=None) -> int:
+    async def get_balance(
+        self, token_addr: str, holder_addr: str, decimals: int = None
+    ) -> int:
         """
         Fetches the balance of a holder for a specific token.
 
@@ -72,5 +74,5 @@ class StarknetClient:
             token_address_int, "balanceOf", [holder_address_int]
         )
         if decimals:
-            return round(res[0] / 10 ** decimals, 6)
+            return round(res[0] / 10**decimals, 6)
         return round(res[0], 6)
