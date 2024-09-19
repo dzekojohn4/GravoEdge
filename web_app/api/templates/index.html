@@ -6,12 +6,12 @@
 
 {% block content %}
     <div class="form-container">
-        <h2 class="mb-4">Submit your lending details</h2>
+        <h2>Submit your lending details</h2>
 
         <!-- Display the balances -->
         <div class="mb-3">
             {% for token, value in balances.items() %}
-                <div id="balance-{{ token }}">Balance for {{ token }}: {{ value }}</div>
+                <div id="balance-{{ token }}" style="color: #E5E7EB;">Balance for {{ token }}: {{ value }}</div>
             {% endfor %}
         </div>
 
@@ -57,7 +57,7 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-submit">Submit</button>
+            <button type="submit" class="btn-submit">Submit</button>
         </form>
     </div>
 
@@ -68,14 +68,12 @@
             {% endfor %}
         };
 
-        // Function to update max balance for the selected token
         function updateMaxBalance() {
             const selectedToken = document.getElementById('token').value;
             const maxBalance = balances[selectedToken] || 0;
             document.getElementById('amount').setAttribute('max', maxBalance);
         }
 
-        // Function to validate if entered amount is less than or equal to the token balance
         function validateAmount() {
             const selectedToken = document.getElementById('token').value;
             const enteredAmount = parseFloat(document.getElementById('amount').value);
