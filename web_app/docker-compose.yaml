@@ -1,0 +1,36 @@
+version: '3.8'
+
+networks:
+  app_network:
+    driver: bridge
+
+services:
+  backend:
+    build: .
+    restart: always
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    expose:
+      - "8000"
+    networks:
+      - app_network
+
+  nginx:
+    restart: unless-stopped
+    image: nginx
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/user_conf.d:ro
+      - .:/app
+    depends_on:
+      - backend
+    networks:
+      - app_network
