@@ -1,0 +1,122 @@
+/* General styles */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Arial', sans-serif;
+    background-color: #16325B;
+}
+
+main {
+    flex: 1;
+}
+
+/* Wallet button styles */
+.wallet-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.wallet-btn:hover {
+    background-color: #218838;
+    color: white;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Header styles */
+header {
+    background-color: #000;
+    padding: 1rem 0;
+}
+
+header img {
+    max-height: 60px;
+}
+
+/* Footer styles */
+footer {
+    background-color: #1d1f23;
+    color: white;
+}
+
+footer a {
+    color: #4cc9f0;
+}
+
+footer a:hover {
+    color: #f72585;
+}
+
+/* Form styles */
+.form-label {
+    color: #FFDC7F;
+}
+
+.form-select, .form-control {
+    background-color: #2D9CDB;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+}
+
+.form-select:focus, .form-control:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-container .btn-submit {
+    background-color: #27ae60;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    display: block;
+    width: 100%;
+}
+
+.form-container .btn-submit:hover {
+    background-color: #218838;
+}
+
+/* Form label and balance color adjustments */
+.form-label {
+    color: #FFDC7F; /* Existing style */
+}
+
+#balance-ETH, #balance-STRK, /* Add all tokens that might be in use */
+#balance-warning {
+    color: #ffffff; /* Change to white to make the text visible */
+}
+
+/* If you want all balance text to be white, apply a general rule */
+[id^="balance-"] {
+    color: #ffffff;
+}
+
+h2 {
+    color: #FFDC7F; /* Brighter yellow or choose another color for more contrast */
+    font-weight: bold;
+}
+
+.form-container h2 {
+    color: #FFFFFF; /* Or a white color for maximum contrast */
+}
+/* Logo styling */
+header img {
+    max-height: 100px; /* Keeps the height fixed */
+    max-width: 150px; /* Adjust the width to make it wider */
+    width: auto; /* Automatically adjust width based on height */
+    height: auto; /* Ensure the aspect ratio is maintained */
+}
