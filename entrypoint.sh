@@ -5,4 +5,4 @@ echo "Starting the server ..."
 #
 #source /app/venv/bin/activate
 #
-uvicorn web_app.api.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn web_app.api.main:app --host 0.0.0.0 --port 8000
