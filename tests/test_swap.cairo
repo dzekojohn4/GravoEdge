@@ -8,16 +8,17 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
 use snforge_std::{declare, DeclareResultTrait, ContractClassTrait};
-use spotnet::constants::{EKUBO_CORE_MAINNET, EKUBO_CORE_SEPOLIA};
-
-use spotnet::swap::{ISwapperDispatcher, ISwapperDispatcherTrait};
-use spotnet::types::SwapData;
+use spotnet::constants::{EKUBO_CORE_MAINNET, EKUBO_CORE_SEPOLIA, ZKLEND_MARKET};
+use spotnet::core::{ICoreDispatcher, ICoreDispatcherTrait};
+use spotnet::types::{SwapData, DepositData};
 
 use starknet::ContractAddress;
 
-fn deploy_swapper(core: felt252) -> IExtensionDispatcher {
-    let contract = declare("Swapper").unwrap().contract_class();
-    let (contract_address, _) = contract.deploy(@array![core]).expect('Deploy failed');
+fn deploy_core(ekubo_core: felt252) -> IExtensionDispatcher {
+    let contract = declare("Core").unwrap().contract_class();
+    let (contract_address, _) = contract
+        .deploy(@array![ekubo_core, ZKLEND_MARKET])
+        .expect('Deploy failed');
 
     IExtensionDispatcher { contract_address }
 }
@@ -36,7 +37,7 @@ fn test_quote_for_base_mainnet() {
         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
         .try_into()
         .unwrap();
-    let swapper = deploy_swapper(EKUBO_CORE_MAINNET);
+    let swapper = deploy_core(EKUBO_CORE_MAINNET);
     let pool_key = PoolKey {
         token0: strk_addr,
         token1: eth_addr,
@@ -63,7 +64,7 @@ fn test_quote_for_base_mainnet() {
     start_cheat_caller_address(token_disp.contract_address, user);
     token_disp.approve(swapper.contract_address, params.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
-    let disp = ISwapperDispatcher { contract_address: swapper.contract_address };
+    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
     let res = disp.swap(SwapData { params: params, pool_key, caller: user });
     assert(res.delta.amount0.mag == params.amount.mag, 'Amount not swapped');
 }
@@ -82,7 +83,7 @@ fn test_both_directions_mainnet() {
         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
         .try_into()
         .unwrap();
-    let swapper = deploy_swapper(EKUBO_CORE_MAINNET);
+    let swapper = deploy_core(EKUBO_CORE_MAINNET);
     let pool_key = PoolKey {
         token0: eth_addr,
         token1: usdc_addr,
@@ -109,7 +110,7 @@ fn test_both_directions_mainnet() {
     start_cheat_caller_address(token_disp.contract_address, user);
     token_disp.approve(swapper.contract_address, params.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
-    let disp = ISwapperDispatcher { contract_address: swapper.contract_address };
+    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
     let res = disp.swap(SwapData { params: params, pool_key, caller: user });
     println!("Swapped: {}", res.delta.amount0.mag);
 
@@ -131,7 +132,7 @@ fn test_both_directions_mainnet() {
     start_cheat_caller_address(token_disp.contract_address, user);
     token_disp.approve(swapper.contract_address, params2.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
-    let disp = ISwapperDispatcher { contract_address: swapper.contract_address };
+    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
     let res = disp.swap(SwapData { params: params2, pool_key, caller: user });
     println!("My bal USDC: {}", IERC20Dispatcher { contract_address: usdc_addr }.balanceOf(user));
     println!("Swapped: {}", res.delta.amount0.mag);
@@ -152,7 +153,7 @@ fn test_quote_for_base_sepolia() {
         .try_into()
         .unwrap();
 
-    let swapper = deploy_swapper(EKUBO_CORE_SEPOLIA);
+    let swapper = deploy_core(EKUBO_CORE_SEPOLIA);
     let pool_key = PoolKey {
         token0: strk_addr,
         token1: eth_addr,
@@ -174,7 +175,7 @@ fn test_quote_for_base_sepolia() {
     start_cheat_caller_address(token_disp.contract_address, user);
     token_disp.approve(swapper.contract_address, params.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
-    let disp = ISwapperDispatcher { contract_address: swapper.contract_address };
+    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
     let res = disp.swap(SwapData { params: params, pool_key, caller: user });
     println!(
         "My bal SEPOLIA ETH after: {}",
@@ -198,7 +199,7 @@ fn test_base_for_quote_sepolia() {
         .try_into()
         .unwrap();
 
-    let swapper = deploy_swapper(EKUBO_CORE_SEPOLIA);
+    let swapper = deploy_core(EKUBO_CORE_SEPOLIA);
     let pool_key = PoolKey {
         token0: strk_addr,
         token1: eth_addr,
@@ -220,11 +221,79 @@ fn test_base_for_quote_sepolia() {
     start_cheat_caller_address(token_disp.contract_address, user);
     token_disp.approve(swapper.contract_address, params.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
-    let disp = ISwapperDispatcher { contract_address: swapper.contract_address };
+    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
     let res = disp.swap(SwapData { params: params, pool_key, caller: user });
     println!(
         "My bal SEPOLIA ETH after: {}",
         IERC20Dispatcher { contract_address: eth_addr }.balanceOf(user)
     );
     println!("Swapped: {}", res.delta.amount0.mag);
+}
+
+#[test]
+#[fork("MAINNET")]
+fn test_deposit() {
+    let usdc_addr: ContractAddress =
+        0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+        .try_into()
+        .unwrap();
+    let eth_addr: ContractAddress =
+        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+        .try_into()
+        .unwrap();
+    let user = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+        .try_into()
+        .unwrap();
+
+    let swapper = deploy_core(EKUBO_CORE_MAINNET);
+    let pool_key = PoolKey {
+        token0: eth_addr,
+        token1: usdc_addr,
+        fee: 170141183460469235273462165868118016,
+        tick_spacing: 1000,
+        extension: 0.try_into().unwrap()
+    };
+    let pool_price = 2550000000;
+    let token_disp = IERC20Dispatcher { contract_address: eth_addr };
+
+    //// 1
+    ////Dep: 1000000000000000
+    ////Acc: 1344460028370827
+    // start_cheat_caller_address(eth_addr.try_into().unwrap(), user);
+    // token_disp.approve(swapper.contract_address, 1000000000000000);
+    // stop_cheat_caller_address(eth_addr);
+
+    // println!("Balance state pre: {}", token_disp.balanceOf(user));
+    // let disp = ICoreDispatcher {contract_address: swapper.contract_address};
+    // disp.loop_liquidity(eth_addr, 1000000000000000, 10, pool_key, user);
+
+    //// 2
+    ////Dep: 38500000000000000 (100$)
+    ////Acc: 140844817938389045
+    // println!("Balance state after: {}", token_disp.balanceOf(user));
+    // start_cheat_caller_address(eth_addr.try_into().unwrap(), user);
+    // token_disp.approve(swapper.contract_address, 38500000000000000);
+    // stop_cheat_caller_address(eth_addr);
+
+    // println!("Balance state pre: {}", token_disp.balanceOf(user));
+    // let disp = ICoreDispatcher {contract_address: swapper.contract_address};
+    // disp.loop_liquidity(eth_addr, 38500000000000000, 27, pool_key, user);
+
+    //// 3
+    ////Dep: 385000000000000000 (1000$)
+    ////Acc: 1450806999280433352
+    start_cheat_caller_address(eth_addr.try_into().unwrap(), user);
+    token_disp.approve(swapper.contract_address, 385000000000000000);
+    stop_cheat_caller_address(eth_addr);
+
+    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
+    disp
+        .loop_liquidity(
+            DepositData {
+                token: eth_addr, amount: 385000000000000000, multiplier: 20
+            }, // For now multiplier is a number of iterations
+            pool_key,
+            pool_price,
+            user
+        );
 }
