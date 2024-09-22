@@ -63,9 +63,7 @@ pub mod Core {
     ) -> felt252 {
         let borrow_const = 80;
         let amount_base_token = token_price * borrow_capacity;
-        println!("ABT {amount_base_token}");
         let amount_quote_token = amount_base_token / decimals_difference;
-        println!("AQT {amount_quote_token}");
         div(amount_quote_token - total_borrowed, 100) * borrow_const
     }
 
@@ -88,7 +86,6 @@ pub mod Core {
                         swap_data.pool_key.token0
                     }
                 };
-                println!("PASSED0");
                 token_disp
                     .transferFrom(
                         swap_data.caller,
@@ -97,7 +94,6 @@ pub mod Core {
                     );
             }
 
-            println!("PASSED1");
             // Ekubo Callback
             ekubo::components::shared_locker::call_core_with_callback(
                 self.ekubo_core.read(), @swap_data
