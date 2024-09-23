@@ -22,6 +22,12 @@ pub struct DepositData {
     pub multiplier: u32
 }
 
+#[derive(Copy, Drop, Serde)]
+pub struct DepositsHistory {
+    pub deposited: Span<(ContractAddress, u256)>,
+    pub borrowed: Span<(ContractAddress, u256)>
+}
+
 #[derive(Drop, Serde, starknet::Store)]
 pub struct MarketReserveData {
     enabled: bool,

@@ -21,6 +21,9 @@ pub trait IERC20<TContractState> {
 #[starknet::interface]
 pub trait IMarket<TContractState> {
     fn get_reserve_data(self: @TContractState, token: ContractAddress) -> MarketReserveData;
+    fn get_user_debt_for_token(
+        self: @TContractState, user: ContractAddress, token: ContractAddress
+    ) -> felt252;
 
     fn deposit(ref self: TContractState, token: ContractAddress, amount: felt252);
     fn borrow(ref self: TContractState, token: ContractAddress, amount: felt252);
