@@ -290,7 +290,7 @@ fn test_loop_base_token_zklend() {
         .loop_liquidity(
             DepositData {
                 token: eth_addr, amount: 385000000000000000, multiplier: 4
-            }, // For now multiplier is a number of iterations
+            },
             pool_key,
             pool_price,
             user
@@ -332,7 +332,7 @@ fn test_loop_quote_token_zklend() {
         .loop_liquidity(
             DepositData {
                 token: usdc_addr, amount: 10000000, multiplier: 4
-            }, // For now multiplier is a number of iterations
+            },
             pool_key,
             pool_price,
             user
