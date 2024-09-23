@@ -9,7 +9,8 @@ services:
     build: .
     restart: always
     volumes:
-      - .:/app
+      - ./static/:/app/static/
+      - ./entrypoint.sh:/app/entrypoint.sh
     env_file:
       - .env
     expose:
@@ -21,17 +22,14 @@ services:
     restart: unless-stopped
     image: nginx
     container_name: nginx
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx:/etc/nginx/user_conf.d:ro
-      - .:/app
-      - ./certs/spotnet_xyz_bundle.crt:/etc/nginx/spotnet_xyz_bundle.crt:ro
-      - ./certs/spotnet_xyz.pem:/etc/nginx/spotnet_xyz.pem:ro
+      - ./static/:/app/static/
+      - ./certs/spotnet.xyz.chain.crt:/etc/nginx/spotnet.xyz.chain.crt:ro
+      - ./certs/spotnet.xyz.key:/etc/nginx/spotnet.xyz.key:ro
+      - ./spotnet.conf:/etc/nginx/conf.d/spotnet.conf
     depends_on:
       - backend
     networks:
