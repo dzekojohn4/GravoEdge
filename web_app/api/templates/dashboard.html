@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>Dashboard</h2>
+
+        <!-- Display the balances in a styled table -->
+        <div class="mb-3">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Balance</th>
+                        <th>Multiplier</th>
+                        <th>Start Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for token, balance in balances.items() %}
+                        <tr>
+                            <td>{{ token }}</td>
+                            <td>{{ balance }}</td>
+                            <td>{{ multipliers[token] }}</td>
+                            <td>{{ start_dates[token] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Optional interactivity or custom JavaScript for the dashboard
+    </script>
+{% endblock %}
