@@ -37,6 +37,9 @@ pub mod Core {
     use starknet::storage::{Vec, MutableVecTrait, VecTrait};
     use starknet::{ContractAddress};
     use starknet::{get_contract_address};
+
+    use alexandria_math::fast_power::fast_power;
+
     use super::{ICore};
 
     #[storage]
@@ -87,27 +90,6 @@ pub mod Core {
         let amount_base_token = token_price * borrow_capacity;
         let amount_quote_token = amount_base_token / decimals_difference;
         div(amount_quote_token - total_borrowed, 100) * borrow_const
-    }
-
-    fn get_left_integer(number: u256) -> u256 {
-        let mut temp_num = number;
-        while temp_num > 9 {
-            temp_num = temp_num / 10;
-        };
-        temp_num
-    }
-
-    fn pow(number: u256, power: u256) -> u256 {
-        let mut temp = 0;
-        if power == 0 {
-            return 1;
-        }
-        temp = pow(number, power / 2);
-        if (power % 2) == 0 {
-            temp * temp
-        } else {
-            temp * temp * number
-        }
     }
 
     #[abi(embed_v0)]
@@ -163,13 +145,14 @@ pub mod Core {
         ) {
             let DepositData { token, amount, multiplier } = deposit_data;
             assert(multiplier < 5, 'Not supported');
+            let (EKUBO_LOWER_SQRT_LIMIT, EKUBO_UPPER_SQRT_LIMIT) = (18446748437148339061, 6277100250585753475930931601400621808602321654880405518632);
             let token_dispatcher = IERC20Dispatcher { contract_address: token };
             let zk_market = self.zk_market.read();
             let is_token1 = token == pool_key.token0;
             let (borrowing_token, sqrt_limit) = if is_token1 {
-                (pool_key.token1, 6277100250585753475930931601400621808602321654880405518632)
+                (pool_key.token1, EKUBO_UPPER_SQRT_LIMIT)
             } else {
-                (pool_key.token0, 18446748437148339061)
+                (pool_key.token0, EKUBO_LOWER_SQRT_LIMIT)
             };
             let curr_contract_address = get_contract_address();
 
@@ -180,7 +163,7 @@ pub mod Core {
 
             zk_market.enable_collateral(token);
 
-            let deposit_token_decimals = pow(10, token_dispatcher.decimals().try_into().unwrap());
+            let deposit_token_decimals = fast_power(10, token_dispatcher.decimals().try_into().unwrap());
             token_dispatcher.approve(zk_market.contract_address, amount);
             zk_market.deposit(token, amount.try_into().expect('Overflow'));
             let mut deposited = amount;

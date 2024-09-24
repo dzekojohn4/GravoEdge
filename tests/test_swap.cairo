@@ -128,7 +128,6 @@ fn test_both_directions_mainnet() {
             eth_addr
         }
     };
-    let disp = IERC20Dispatcher { contract_address: usdc_addr };
     start_cheat_caller_address(token_disp.contract_address, user);
     token_disp.approve(swapper.contract_address, params2.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
