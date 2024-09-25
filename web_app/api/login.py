@@ -20,7 +20,7 @@ async def login(request: Request):
     """
     # Check if wallet_id exists in session
     wallet_id = request.session.get("wallet_id")
-    print(f"wallet_id: {wallet_id}")
+
     if wallet_id:
         # Redirect to home page if wallet_id exists
         return RedirectResponse(url="/", status_code=302)

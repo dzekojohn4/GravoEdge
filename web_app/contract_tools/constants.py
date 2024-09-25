@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Iterator
 
 EKUBO_MAINNET_ADDRESS: str = (
-    "0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b"
+    "0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b" # mainnet address
 )
 
 SPOTNET_CORE_ADDRESS = os.getenv(
