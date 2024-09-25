@@ -1,12 +1,19 @@
+import logging
 import os
 import time
+from math import floor
 from typing import Any, List
 
 import starknet_py.cairo.felt
 import starknet_py.hash.selector
 import starknet_py.net.client_models
 import starknet_py.net.networks
+from starknet_py.contract import Contract
 from starknet_py.net.full_node_client import FullNodeClient
+
+from .constants import EKUBO_MAINNET_ADDRESS, TokenParams
+
+logger = logging.getLogger(__name__)
 
 
 class StarknetClient:
@@ -15,6 +22,15 @@ class StarknetClient:
     """
 
     SLEEP_TIME = 10
+    POOLS = {
+        (TokenParams.ETH.address, TokenParams.USDC.address): {
+            "token0": TokenParams.ETH.address,
+            "token1": TokenParams.USDC.address,
+            "fee": 0x20C49BA5E353F80000000000000000,
+            "tick_spacing": 1000,
+            "extension": 0,
+        }
+    }
 
     def __init__(self):
         """
@@ -57,6 +73,46 @@ class StarknetClient:
             res = await self.client.call_contract(call)
         return res
 
+    def _build_ekubo_pool_key(
+        self, token0: str, token1: str, fee: int, tick_spacing, extension=0
+    ) -> dict:
+        """
+        Get ekubo pool key.
+        Return:
+            dict: {
+                'token0': <token_address>,
+                'token1': <token_address>,
+                'fee': 170141183460469235273462165868118016,
+                'tick_spacing': 1000,
+                'extension': 0
+            }
+
+        """
+        return self.POOLS.get((token0, token1), {})
+
+    async def _get_pool_price(
+        self, pool_key, is_token1: bool
+    ):  # TODO move to contract side
+        """Calculate Ekubo pool price"""
+
+        ekubo_contract = await Contract.from_address(
+            EKUBO_MAINNET_ADDRESS, provider=self.client
+        )
+        price_data = await ekubo_contract.functions["get_pool_price"].call(pool_key)
+
+        token_0_decimals = await self._func_call(pool_key["token0"], "decimals", [])
+        token_1_decimals = await self._func_call(pool_key["token1"], "decimals", [])
+        token_0_decimals, token_1_decimals = token_0_decimals[0], token_1_decimals[0]
+
+        price = ((price_data[0]["sqrt_ratio"] / 2**128) ** 2) * (
+            10 ** abs(token_0_decimals - token_1_decimals)
+        )
+        return (
+            (1 / price) * 10**token_0_decimals
+            if is_token1
+            else price * 10**token_1_decimals
+        )
+
     async def get_balance(
         self, token_addr: str, holder_addr: str, decimals: int = None
     ) -> int:
@@ -69,10 +125,54 @@ class StarknetClient:
         """
         token_address_int = self._convert_address(token_addr)
         holder_address_int = self._convert_address(holder_addr)
+        try:
+            res = await self._func_call(
+                token_address_int, "balanceOf", [holder_address_int]
+            )
+        except Exception as exc:
+            logger.info(
+                f"Failed to get balance for {token_addr} due to an error: {exc}"
+            )
+            return 0
 
-        res = await self._func_call(
-            token_address_int, "balanceOf", [holder_address_int]
-        )
         if decimals:
             return round(res[0] / 10**decimals, 6)
         return round(res[0], 6)
+
+    async def get_loop_liquidity_data(
+        self,
+        deposit_token: str,
+        amount: int,
+        multiplier: int,
+        wallet_id: str,
+        borrowing_token: str,
+    ) -> dict:
+        """
+        Get data for Spotnet liquidity looping call.
+
+        """
+        # Get pool key
+        pool_key = self._build_ekubo_pool_key(deposit_token, borrowing_token, 0, 0)
+        # Convert addresses
+        deposit_token, borrowing_token = self._convert_address(
+            deposit_token
+        ), self._convert_address(borrowing_token)
+        # Set pool key
+        pool_key["token0"], pool_key["token1"] = deposit_token, borrowing_token
+        # Set wallet id
+        wallet_id = self._convert_address(wallet_id)
+        deposit_data = {
+            "token": deposit_token,
+            "amount": amount,
+            "multiplier": multiplier,
+        }
+
+        pool_price = floor(
+            await self._get_pool_price(pool_key, deposit_token == pool_key["token0"])
+        )
+        return {
+            "caller": wallet_id,
+            "pool_price": pool_price,
+            "pool_key": pool_key,
+            "deposit_data": deposit_data,
+        }

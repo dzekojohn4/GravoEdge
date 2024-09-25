@@ -27,10 +27,8 @@
             <div id="wallet-address" class="mt-3" style="color: #E5E7EB;"></div>
         </div>
     </div>
+{% endblock %}
 
-    <script>
-        document.getElementById("connect-wallet").onclick = async () => {
-            connectWallet();  // Reuse the connectWallet function from base.html
-        };
-    </script>
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}

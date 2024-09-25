@@ -1,7 +1,8 @@
 import os
+
 from fastapi import APIRouter, Request
-from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
 
 # Setting up templates directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
