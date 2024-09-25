@@ -64,41 +64,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@argent/get-starknet@latest/dist/index.umd.js"></script>
 
     <!-- Custom JS for Wallet Connection and Logout -->
-    <script>
-        async function connectWallet() {
-            try {
-                const starknet = window.starknet;
-                const wallet = await starknet.enable();
-
-                if (wallet) {
-                    const walletAddress = starknet.selectedAddress;
-                    alert(`Wallet connected: ${walletAddress}`);
-
-                    // Save wallet address in session
-                    const formData = new FormData();
-                    formData.append("wallet_id", walletAddress);
-
-                    await fetch("/login", {
-                        method: "POST",
-                        body: formData
-                    });
-
-                    // Redirect or reload the page after connection
-                    window.location.reload();
-                } else {
-                    alert("Connection failed. Please try again.");
-                }
-            } catch (error) {
-                console.error("Error connecting wallet:", error);
-                alert("An error occurred. Please check the console.");
-            }
-        }
-
-        async function logout() {
-            // Remove wallet_id from session and redirect to login page
-            await fetch("/logout", { method: "POST" });
-            window.location.href = "/login";
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/wallet.js') }}"></script>
 </body>
 </html>
