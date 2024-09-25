@@ -8,8 +8,8 @@ cairo-version = "2.8.0"
 
 [dependencies]
 starknet = "2.8.0"
-openzeppelin = "0.16.0"
 ekubo = { git = "https://github.com/ekuboprotocol/abis" }
+alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.git", rev = "8208871" }
 
 [dev-dependencies]
 snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry.git", tag = "v0.30.0" }
