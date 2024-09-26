@@ -1,6 +1,3 @@
-console.log("JavaScript is loaded");
-alert("JavaScript is working!");
-
 // Update max balance based on the selected token
 function updateMaxBalance() {
     const selectedToken = document.getElementById('token').value;

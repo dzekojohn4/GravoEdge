@@ -88,6 +88,7 @@ async def get_transaction_data(
     :param transaction_data: Pydantic model for the query parameters
     :return: List of dicts containing the transaction data
     """
+    print("transaction_data", transaction_data)
     wallet_id = request.session.get("wallet_id")
     if not wallet_id:
         return RedirectResponse(url="/login", status_code=302)
@@ -108,5 +109,5 @@ async def get_transaction_data(
     response = TransactionDataResponse(
         approve_data=approve_data, loop_liquidity_data=loop_liquidity_data
     )
-
-    return [response]
+    print("response", response.dict())
+    return [response.dict()]

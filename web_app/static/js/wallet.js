@@ -39,6 +39,8 @@ async function logout() {
 
 async function sendTransaction(transactionData) {
     try {
+        console.log("Transaction Data:", transactionData);
+
         const starknet = window.starknet;
         if (!starknet) {
             alert("Please connect to the Argent X wallet.");
@@ -52,21 +54,42 @@ async function sendTransaction(transactionData) {
         const approveData = transactionData[0].approve_data;
         const loopLiquidityData = transactionData[0].loop_liquidity_data;
 
+        // Log the extracted data for debugging
+        console.log("Approve Data:", approveData.to_address);
+        console.log("Loop Liquidity Data:", loopLiquidityData["pool_key"]);
+
         // Construct transaction details based on approve data
-        const transactionDetails = {
+        const approveTransaction = {
             contractAddress: approveData.to_address,
             entrypoint: "approve",
             calldata: [
-                approveData.spender,
-                approveData.amount,
+                approveData.spender, // spender address
+                approveData.amount    // approval amount
             ],
         };
 
-        // Send the transaction via the Starknet provider
-        const response = await starknet.provider.invokeFunction(transactionDetails);
-        console.log("Transaction response:", response);
+        // Send the "approve" transaction
+        const approveResponse = await starknet.provider.invokeFunction(approveTransaction);
+        console.log("Approve transaction response:", approveResponse);
 
-        alert(`Transaction sent. Hash: ${response.transaction_hash}`);
+        // Construct the second transaction for liquidity deposit
+        const depositTransaction = {
+            contractAddress: loopLiquidityData.pool_key.token0,
+            entrypoint: "deposit",
+            calldata: [
+                loopLiquidityData.pool_key.token0,    // token0 address
+                loopLiquidityData.pool_key.token1,    // token1 address
+                loopLiquidityData.deposit_data.amount, // deposit amount
+                loopLiquidityData.deposit_data.multiplier // multiplier
+            ],
+        };
+
+        // Send the "deposit" transaction
+        const depositResponse = await starknet.provider.invokeFunction(depositTransaction);
+        console.log("Deposit transaction response:", depositResponse);
+
+        // Alert the user with the transaction hash
+        alert(`Transactions sent. Approve Hash: ${approveResponse.transaction_hash}, Deposit Hash: ${depositResponse.transaction_hash}`);
     } catch (error) {
         console.error("Error sending transaction:", error);
         alert("An error occurred while sending the transaction.");
