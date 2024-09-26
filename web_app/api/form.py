@@ -39,7 +39,6 @@ async def get_form(request: Request):
 
     # Fetch the balance for each token in TokenParams
     wallet_balances = await DashboardMixin.get_wallet_balances(holder_address)
-
     # Render the template with the balances
     return templates.TemplateResponse(
         "index.html",
