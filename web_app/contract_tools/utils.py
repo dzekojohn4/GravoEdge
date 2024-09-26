@@ -2,8 +2,12 @@ from typing import Dict
 
 from web_app.contract_tools.blockchain_call import StarknetClient
 from web_app.contract_tools.constants import SPOTNET_CORE_ADDRESS, TokenParams
+from web_app.contract_tools.api_request import APIRequest
+from web_app.api.serializers.dashboard import ZkLendPositionResponse
 
 CLIENT = StarknetClient()
+# ARGENT_X_POSITION_URL = "https://cloud.argent-api.com/v1/tokens/defi/decomposition/{wallet_id}?chain=starknet"
+ARGENT_X_POSITION_URL = "https://cloud.argent-api.com/v1/tokens/defi/"
 
 
 class DashboardMixin:
@@ -32,6 +36,28 @@ class DashboardMixin:
                 print(f"Failed to get balance for {token.address} due to an error: {e}")
 
         return wallet_balances
+
+    @classmethod
+    async def get_zklend_position(cls, wallet_id: str) -> ZkLendPositionResponse:
+        """
+        Get the zkLend position for the given wallet ID.
+        :param wallet_id: Wallet ID
+        :return: zkLend position validated by Pydantic models
+        """
+        # FIXME - This is a dummy wallet ID. Replace it with the actual wallet ID.
+        wallet_id = "0x020281104e6cb5884dabcdf3be376cf4ff7b680741a7bb20e5e07c26cd4870af"
+        response = await APIRequest(base_url=ARGENT_X_POSITION_URL).fetch(
+            f"decomposition/{wallet_id}",
+            params={"chain": "starknet"}
+        )
+
+        if not response:
+            return ZkLendPositionResponse(dapps=[], nonce=0)
+
+        # Validate the response using Pydantic models
+        zk_lend_position_response = ZkLendPositionResponse(**response)
+
+        return zk_lend_position_response
 
 
 class DepositMixin:

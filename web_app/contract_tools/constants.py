@@ -64,6 +64,20 @@ class TokenParams:
                 return token.address
         raise ValueError(f"Token {token_name} not found")
 
+    @classmethod
+    def get_token_decimals(cls, token_address: str) -> int:
+        """
+        Get the token decimals for a given token address.
+        :param token_address: Token address
+        :return: Token decimals
+        """
+        for token in cls.tokens():
+            if token.address == token_address:
+                return token.decimals
+        raise ValueError(f"Token with address {token_address} not found")
+
+
+
 
 class ProtocolAddress(Enum):
 
