@@ -54,6 +54,7 @@ class TransactionDataResponse(BaseModel):
 
 
 class TransactionDataRequest(BaseModel):
+    wallet_id: str = Field(..., description="Wallet ID for the transaction")
     token: str = Field(..., description="Token name for the transaction")
     multiplier: int = Field(..., description="Multiplier for the transaction")
     amount: str = Field(..., description="Amount to deposit as a string")
