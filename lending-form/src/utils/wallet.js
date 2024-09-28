@@ -2,8 +2,8 @@ import {connect} from 'get-starknet';
 
 import {CallData} from 'starknet';
 
-import {abi} from "../lib/abi";
-import {erc20abi} from "../lib/erc20";
+import {abi} from "../abis/abi";
+import {erc20abi} from "../abis/erc20";
 
 export async function connectWallet() {
     try {
