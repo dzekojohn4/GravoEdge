@@ -77,7 +77,7 @@ async def submit_form(
     return RedirectResponse(f"/transaction-data?{query_params}", status_code=303)
 
 
-@router.get("/transaction-data", response_model=List[TransactionDataResponse])
+@router.get("/transaction-data", response_model=TransactionDataResponse)
 async def get_transaction_data(
     request: Request,
     transaction_data: TransactionDataRequest = Depends(),
