@@ -77,11 +77,11 @@ async def submit_form(
     return RedirectResponse(f"/transaction-data?{query_params}", status_code=303)
 
 
-@router.get("/transaction-data", response_model=List[TransactionDataResponse])
+@router.get("/transaction-data", response_model=TransactionDataResponse)
 async def get_transaction_data(
     request: Request,
     transaction_data: TransactionDataRequest = Depends(),
-) -> List[TransactionDataResponse]:
+) -> TransactionDataResponse:
     """
     Get transaction data for the deposit.
     :param request: Request object
@@ -89,16 +89,16 @@ async def get_transaction_data(
     :return: List of dicts containing the transaction data
     """
     print("transaction_data", transaction_data)
-    wallet_id = request.session.get("wallet_id")
-    if not wallet_id:
-        return RedirectResponse(url="/login", status_code=302)
+    # wallet_id = request.session.get("wallet_id")
+    # if not wallet_id:
+    #     return RedirectResponse(url="/login", status_code=302)
 
     # Get the transaction data from the DepositMixin
     transaction_result = await DepositMixin.get_transaction_data(
         transaction_data.token,
         transaction_data.amount,
         transaction_data.multiplier,
-        wallet_id,
+        transaction_data.wallet_id,
         TokenParams.USDC.address,
     )
 
@@ -110,4 +110,4 @@ async def get_transaction_data(
         approve_data=approve_data, loop_liquidity_data=loop_liquidity_data
     )
     print("response", response.dict())
-    return [response.dict()]
+    return response.dict()
