@@ -1,5 +1,7 @@
 from typing import Dict
 
+from decimal import Decimal
+
 from web_app.contract_tools.blockchain_call import StarknetClient
 from web_app.contract_tools.constants import SPOTNET_CORE_ADDRESS, TokenParams
 from web_app.contract_tools.api_request import APIRequest
@@ -81,6 +83,7 @@ class DepositMixin:
         :return: approve_data and loop_liquidity_data
         """
         deposit_token_address = TokenParams.get_token_address(deposit_token)
+        amount = int(Decimal(amount) * Decimal(10 ** 18))
         approve_data = {
             "to_address": int(deposit_token_address, 16),
             "spender": int(SPOTNET_CORE_ADDRESS, 16),
