@@ -4,6 +4,8 @@ use starknet::{ContractAddress};
 
 #[starknet::interface]
 pub trait ICore<TContractState> {
+    fn deploy_user_contract(ref self: TContractState);
+
     fn swap(ref self: TContractState, swap_data: SwapData) -> SwapResult;
 
     fn loop_liquidity(
@@ -19,7 +21,8 @@ pub trait ICore<TContractState> {
 
 #[starknet::contract]
 pub mod Core {
-    use ekubo::components::shared_locker::handle_delta;
+    use core::num::traits::Zero;
+use ekubo::components::shared_locker::handle_delta;
     use ekubo::interfaces::core::SwapParameters;
     use ekubo::interfaces::core::{ICoreDispatcher, ICoreDispatcherTrait, ILocker};
     use ekubo::types::i129::i129;
@@ -30,16 +33,18 @@ pub mod Core {
         IMarketDispatcher, IMarketDispatcherTrait, IERC20Dispatcher, IERC20DispatcherTrait
     };
     use spotnet::types::{SwapData, SwapResult, DepositData, DepositsHistory};
-    use starknet::event::EventEmitter;
+    use spotnet::constants::{EKUBO_CORE_MAINNET, ZKLEND_MARKET, USER_CONTRACT_HASH};
 
+    use starknet::event::EventEmitter;
     use starknet::storage::StoragePointerReadAccess;
     use starknet::storage::StoragePointerWriteAccess;
-    use starknet::storage::{Vec, MutableVecTrait, VecTrait};
-    use starknet::{ContractAddress};
-    use starknet::{get_contract_address};
+    use starknet::storage::{Vec, MutableVecTrait, VecTrait, Map, StorageMapWriteAccess, StorageMapReadAccess};
+    use starknet::{ContractAddress, ClassHash};
+    use starknet::{get_contract_address, get_caller_address};
+    use starknet::syscalls::deploy_syscall;
 
     use alexandria_math::fast_power::fast_power;
-
+    // use core::{ArrayTrait, Array};
     use super::{ICore};
 
     #[storage]
@@ -47,7 +52,8 @@ pub mod Core {
         ekubo_core: ICoreDispatcher,
         zk_market: IMarketDispatcher,
         deposits: Vec<(ContractAddress, u256)>,
-        borrows: Vec<(ContractAddress, u256)>
+        borrows: Vec<(ContractAddress, u256)>,
+        user_contracts: Map<ContractAddress, ContractAddress>
     }
 
     #[constructor]
@@ -94,6 +100,20 @@ pub mod Core {
 
     #[abi(embed_v0)]
     impl CoreImpl of ICore<ContractState> {
+        
+        fn deploy_user_contract(ref self: ContractState) {
+            let caller = get_caller_address();
+            assert(self.user_contracts.read(caller).is_zero(), 'Contract already exists');
+            let res = deploy_syscall(
+                USER_CONTRACT_HASH.try_into().unwrap(),
+                caller.into(),
+                array![EKUBO_CORE_MAINNET, ZKLEND_MARKET].span(),
+                false
+            );
+            let (address, _) = res.expect('Could not deploy your contract');
+            self.user_contracts.write(caller, address);
+        }
+
         fn swap(ref self: ContractState, swap_data: SwapData) -> SwapResult {
             if swap_data.caller != get_contract_address() { // if called externally just for swap
                 let token_disp = IERC20Dispatcher {

@@ -24,6 +24,14 @@ fn deploy_core(ekubo_core: felt252) -> IExtensionDispatcher {
 }
 
 #[test]
+#[fork("SEPOLIA")]
+fn test_deploy_internal() {
+    let swapper = deploy_core(EKUBO_CORE_MAINNET);
+    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
+    disp.deploy_user_contract();
+}
+
+#[test]
 #[fork("MAINNET")]
 fn test_quote_for_base_mainnet() {
     let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
