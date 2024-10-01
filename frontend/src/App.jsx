@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Header from './components/Header';
+import Header from './components/header/Header';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import LendingForm from './components/LendingForm';
+import Home from './pages/spotnet/Home';
+import Login from "./pages/Login";
 import { connectWallet, logout } from './utils/wallet';
 
 function App() {
@@ -44,16 +43,7 @@ function App() {
         <main className="container my-5" style={{ flex: 1 }}>
           {error && <div className="alert alert-danger">{error}</div>}
           <Routes>
-            <Route path="/" element={
-              walletId ? (
-                <>
-                  <Home />
-                  <LendingForm walletId={walletId} />
-                </>
-              ) : (
-                <Navigate to="/login" />
-              )
-            } />
+            <Route index element={<Home />}/>
             <Route
               path="/login"
               element={walletId ? <Navigate to="/" /> : <Login onConnectWallet={handleConnectWallet} />}
