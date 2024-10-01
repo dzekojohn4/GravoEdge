@@ -23,7 +23,7 @@ const Home = () => {
 
     const starData = [
         { top: 0, left: 5, size: 5 },
-        { top: 26, left: 5, size: 7 },
+        { top: 26, left: 0, size: 7 },
         { top: 90, left: 10, size: 8 },
         { top: 0, left: 76, size: 8 },
         { top: 30, left: 88, size: 8 },
@@ -31,7 +31,7 @@ const Home = () => {
     ]
 
     const decorationData = [
-        { top: -10, left: -10, size: 50 },
+        { top: -10, left: -15, size: 50 },
         { top: -10, left: -45, size: 90 },
         { top: -35, left: 55, size: 65 },
         { top: -30, left: 50, size: 95 },
