@@ -71,6 +71,23 @@ nav {
 }
 
 .wallet-section button{
+    background: transparent;
+    border-radius: 8px;
+    height: 52px;
+    width: 190px;
+    font-size: 20px;
+    font-family: var(--text-font);
+    border: 1px solid var(--blue-color);
+    color: white;
+    font-weight: 700;
+}
+
+.wallet-container{
+    display: flex;
+    gap: 10px;
+}
+
+.wallet-id{
     background: var(--gradient);
     border-radius: 8px;
     height: 52px;
@@ -78,4 +95,7 @@ nav {
     font-size: 20px;
     font-family: var(--text-font);
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
