@@ -2,14 +2,11 @@ from datetime import datetime
 
 from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 
-from web_app.api.form import multipliers
+
 from web_app.contract_tools.utils import DashboardMixin
 
-# Initialize the client and templates
-templates = Jinja2Templates(directory="web_app/api/templates")
 router = APIRouter()
 
 
@@ -31,13 +28,10 @@ async def get_dashboard(request: Request):
     # Fetch balances (assuming you have a method for this)
     wallet_balances = await DashboardMixin.get_wallet_balances(wallet_id)
 
-    return templates.TemplateResponse(
-        "dashboard.html",
-        {
+    return {
             "request": request,
             "balances": wallet_balances,
             "multipliers": {"ETH": 5},
             "start_dates": {"ETH": datetime.now()},
             "zklend_position": zklend_position,
-        },
-    )
+        }

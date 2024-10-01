@@ -61,6 +61,9 @@ class DashboardMixin:
 
 
 class DepositMixin:
+    """
+    Mixin class for deposit related methods.
+    """
 
     @classmethod
     async def get_transaction_data(

@@ -1,9 +1,11 @@
 import aiohttp
-import asyncio
 
 
 class APIRequest:
-    default_headers = {
+    """
+    A class to send asynchronous requests to an API.
+    """
+    DEFAULT_HEADER = {
         "User-Agent": "Mozilla/5.0",  # Mimic a browser request
         "Accept": "application/json",  # Ensure we expect a JSON response
     }
@@ -21,7 +23,7 @@ class APIRequest:
         :return: The response from the API as JSON.
         """
         # Merge default headers with any user-provided headers
-        request_headers = self.default_headers.copy()  # Start with default headers
+        request_headers = self.DEFAULT_HEADER.copy()  # Start with default headers
         if headers:
             request_headers.update(headers)
 
@@ -30,8 +32,7 @@ class APIRequest:
             async with session.get(url, params=params, headers=request_headers) as response:
                 if response.ok:
                     return await response.json()
-                else:
-                    return {}
+                return {}
 
     async def post(self, endpoint: str, data: dict = None, headers: dict = None):
         """
@@ -70,5 +71,7 @@ async def main():
     api = APIRequest(base_url="https://portfolio.argent.xyz")
 
     # Example: Fetch data from an endpoint asynchronously
-    response = await api.fetch("/overview/0x020281104e6cb5884dabcdf3be376cf4ff7b680741a7bb20e5e07c26cd4870af")
+    response = await api.fetch(
+        "/overview/0x020281104e6cb5884dabcdf3be376cf4ff7b680741a7bb20e5e07c26cd4870af"
+    )
     print(response)
