@@ -6,6 +6,10 @@
     --blue-color:#74D6FD;
 }
 
+body{
+    overflow-x: hidden;
+}
+
 *{
     margin: 0;
     padding: 0;
@@ -21,9 +25,10 @@ li{
 }
 
 nav {
-    height: 100px;
+    height: 80px;
     display: flex;
     align-items: center;
+    width: 100vw;
     justify-content: center;
     background-color: var(--secondary-color);
 }
