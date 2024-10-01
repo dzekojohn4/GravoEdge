@@ -9,7 +9,7 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
 };
 use snforge_std::{declare, DeclareResultTrait, ContractClassTrait};
 use spotnet::constants::{EKUBO_CORE_MAINNET, EKUBO_CORE_SEPOLIA, ZKLEND_MARKET};
-use spotnet::core::{ICoreDispatcher, ICoreDispatcherTrait};
+use spotnet::interfaces::{ICoreDispatcher, ICoreDispatcherTrait};
 use spotnet::types::{SwapData, DepositData};
 
 use starknet::ContractAddress;
@@ -24,11 +24,59 @@ fn deploy_core(ekubo_core: felt252) -> IExtensionDispatcher {
 }
 
 #[test]
-#[fork("SEPOLIA")]
+#[fork("MAINNET")]
 fn test_deploy_internal() {
     let swapper = deploy_core(EKUBO_CORE_MAINNET);
     let disp = ICoreDispatcher { contract_address: swapper.contract_address };
-    disp.deploy_user_contract();
+    let deposit_contract = disp.deploy_user_contract();
+}
+
+#[test]
+#[fork("MAINNET")]
+fn test_loop_base_users_contract() {
+    let swapper = deploy_core(EKUBO_CORE_MAINNET);
+    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
+    let deposit_contract = disp.deploy_user_contract();
+    let usdc_addr: ContractAddress =
+        0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+        .try_into()
+        .unwrap();
+    let eth_addr: ContractAddress =
+        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+        .try_into()
+        .unwrap();
+    let user: ContractAddress = 0x0582d5Bc3CcfCeF2F7aF1FdA976767B010E453fF487A7FD2ccf9df1524f4D8fC
+        .try_into()
+        .unwrap();
+
+    let pool_key = PoolKey {
+        token0: eth_addr,
+        token1: usdc_addr,
+        fee: 170141183460469235273462165868118016,
+        tick_spacing: 1000,
+        extension: 0.try_into().unwrap()
+    };
+    let pool_price = 2500000000;
+    let token_disp = IERC20Dispatcher { contract_address: eth_addr };
+    let deposit_disp = ICoreDispatcher { contract_address: deposit_contract };
+    start_cheat_caller_address(eth_addr.try_into().unwrap(), user);
+    token_disp.approve(deposit_contract, 685000000000000);
+    stop_cheat_caller_address(eth_addr);
+    deposit_disp
+        .loop_liquidity(
+            DepositData { token: eth_addr, amount: 685000000000000, multiplier: 2 },
+            pool_key,
+            pool_price,
+            user
+        );
+
+    let deposit_data = deposit_disp.get_deposits_data().deposited;
+    for (
+        token, amount
+    ) in deposit_data {
+        let token: felt252 = (*token).into();
+        println!("Token: {token} - {amount}");
+    }
 }
 
 #[test]
@@ -295,9 +343,7 @@ fn test_loop_base_token_zklend() {
     let disp = ICoreDispatcher { contract_address: swapper.contract_address };
     disp
         .loop_liquidity(
-            DepositData {
-                token: eth_addr, amount: 385000000000000000, multiplier: 4
-            },
+            DepositData { token: eth_addr, amount: 385000000000000000, multiplier: 4 },
             pool_key,
             pool_price,
             user
@@ -337,9 +383,7 @@ fn test_loop_quote_token_zklend() {
     let disp = ICoreDispatcher { contract_address: swapper.contract_address };
     disp
         .loop_liquidity(
-            DepositData {
-                token: usdc_addr, amount: 10000000, multiplier: 4
-            },
+            DepositData { token: usdc_addr, amount: 10000000, multiplier: 4 },
             pool_key,
             pool_price,
             user
