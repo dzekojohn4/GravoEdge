@@ -1,5 +1,28 @@
-use spotnet::types::MarketReserveData;
+use ekubo::types::keys::PoolKey;
+use spotnet::types::{MarketReserveData, SwapData, SwapResult, DepositsHistory, DepositData};
 use starknet::ContractAddress;
+
+#[starknet::interface]
+pub trait ICore<TContractState> {
+    fn deploy_user_contract(ref self: TContractState) -> ContractAddress;
+
+    fn get_users_account(self: @TContractState, address: ContractAddress) -> ContractAddress;
+}
+
+#[starknet::interface]
+pub trait IDeposit<TContractState> {
+    fn swap(ref self: TContractState, swap_data: SwapData) -> SwapResult;
+
+    fn loop_liquidity(
+        ref self: TContractState,
+        deposit_data: DepositData,
+        pool_key: PoolKey,
+        pool_price: u256,
+        caller: ContractAddress
+    );
+
+    fn get_deposits_data(self: @TContractState) -> DepositsHistory;
+}
 
 #[starknet::interface]
 pub trait IERC20<TContractState> {
