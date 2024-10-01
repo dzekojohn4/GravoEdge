@@ -5,6 +5,7 @@ class APIRequest:
     """
     A class to send asynchronous requests to an API.
     """
+
     DEFAULT_HEADER = {
         "User-Agent": "Mozilla/5.0",  # Mimic a browser request
         "Accept": "application/json",  # Ensure we expect a JSON response
@@ -29,7 +30,9 @@ class APIRequest:
 
         async with aiohttp.ClientSession() as session:
             url = f"{self.base_url}{endpoint}"
-            async with session.get(url, params=params, headers=request_headers) as response:
+            async with session.get(
+                url, params=params, headers=request_headers
+            ) as response:
                 if response.ok:
                     return await response.json()
                 return {}
@@ -49,7 +52,9 @@ class APIRequest:
                 response.raise_for_status()  # Raise an exception for bad status codes
                 return await response.json()
 
-    async def fetch_text(self, endpoint: str, params: dict = None, headers: dict = None):
+    async def fetch_text(
+        self, endpoint: str, params: dict = None, headers: dict = None
+    ):
         """
         Send a GET request asynchronously and return text response.
 

@@ -5,6 +5,7 @@ class ApproveData(BaseModel):
     """
     Pydantic model for the approve data.
     """
+
     to_address: str = Field(
         ..., description="Address of the recipient in string format"
     )
@@ -25,6 +26,7 @@ class PoolKey(BaseModel):
     """
     Pydantic model for the pool key.
     """
+
     token0: str
     token1: str
     fee: str
@@ -62,6 +64,7 @@ class LoopLiquidityData(BaseModel):
     """
     Pydantic model for the loop liquidity data.
     """
+
     caller: str
     pool_price: int  # Assuming this should remain an integer
     pool_key: PoolKey
@@ -81,6 +84,7 @@ class TransactionDataResponse(BaseModel):
     """
     Pydantic model for the transaction data response.
     """
+
     approve_data: ApproveData
     loop_liquidity_data: LoopLiquidityData
 
@@ -89,6 +93,7 @@ class TransactionDataRequest(BaseModel):
     """
     Pydantic model for the transaction data request.
     """
+
     wallet_id: str = Field(..., description="Wallet ID for the transaction")
     token: str = Field(..., description="Token name for the transaction")
     multiplier: int = Field(..., description="Multiplier for the transaction")

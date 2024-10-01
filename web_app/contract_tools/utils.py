@@ -1,9 +1,9 @@
 from typing import Dict
 
+from web_app.api.serializers.dashboard import ZkLendPositionResponse
+from web_app.contract_tools.api_request import APIRequest
 from web_app.contract_tools.blockchain_call import StarknetClient
 from web_app.contract_tools.constants import SPOTNET_CORE_ADDRESS, TokenParams
-from web_app.contract_tools.api_request import APIRequest
-from web_app.api.serializers.dashboard import ZkLendPositionResponse
 
 CLIENT = StarknetClient()
 # ARGENT_X_POSITION_URL = "https://cloud.argent-api.com/v1/tokens/defi/decomposition/{wallet_id}?chain=starknet"
@@ -47,8 +47,7 @@ class DashboardMixin:
         # FIXME - This is a dummy wallet ID. Replace it with the actual wallet ID.
         wallet_id = "0x020281104e6cb5884dabcdf3be376cf4ff7b680741a7bb20e5e07c26cd4870af"
         response = await APIRequest(base_url=ARGENT_X_POSITION_URL).fetch(
-            f"decomposition/{wallet_id}",
-            params={"chain": "starknet"}
+            f"decomposition/{wallet_id}", params={"chain": "starknet"}
         )
 
         if not response:

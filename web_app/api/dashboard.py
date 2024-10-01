@@ -4,7 +4,6 @@ from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
 from starlette.requests import Request
 
-
 from web_app.contract_tools.utils import DashboardMixin
 
 router = APIRouter()
@@ -29,9 +28,9 @@ async def get_dashboard(request: Request):
     wallet_balances = await DashboardMixin.get_wallet_balances(wallet_id)
 
     return {
-            "request": request,
-            "balances": wallet_balances,
-            "multipliers": {"ETH": 5},
-            "start_dates": {"ETH": datetime.now()},
-            "zklend_position": zklend_position,
-        }
+        "request": request,
+        "balances": wallet_balances,
+        "multipliers": {"ETH": 5},
+        "start_dates": {"ETH": datetime.now()},
+        "zklend_position": zklend_position,
+    }
