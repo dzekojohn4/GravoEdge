@@ -1,10 +1,10 @@
 import React from 'react';
 import './home.css'
-import { ReactComponent as SmallStar } from "../../assets/particles/small_star.svg";
-import { ReactComponent as Star } from "../../assets/particles/star.svg";
-import { ReactComponent as Decoration } from "../../assets/particles/deco.svg";
-import { ReactComponent as Starknet } from "../../assets/particles/starknet.svg";
-import { ReactComponent as Rocket } from "../../assets/icons/rocket.svg";
+import { ReactComponent as SmallStar } from "../../../assets/particles/small_star.svg";
+import { ReactComponent as Star } from "../../../assets/particles/star.svg";
+import { ReactComponent as Decoration } from "../../../assets/particles/deco.svg";
+import { ReactComponent as Starknet } from "../../../assets/particles/starknet.svg";
+import { ReactComponent as Rocket } from "../../../assets/icons/rocket.svg";
 
 const Home = () => {
     const starsData = [

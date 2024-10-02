@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/header/Header';
 import Footer from './components/Footer';
-import Home from './pages/spotnet/Home';
+import SpotnetApp from './pages/spotnet/spotnet_app/SpotnetApp';
 import Login from "./pages/Login";
 import { connectWallet, logout } from './utils/wallet';
 
@@ -38,12 +38,12 @@ function App() {
 
   return (
     <Router>
-      <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div className="App">
         <Header walletId={walletId} onConnectWallet={handleConnectWallet} onLogout={handleLogout} />
-        <main className="container my-5" style={{ flex: 1 }}>
+        <main className="container" style={{ flex: 1 }}>
           {error && <div className="alert alert-danger">{error}</div>}
           <Routes>
-            <Route index element={<Home />}/>
+            <Route index element={<SpotnetApp />}/>
             <Route
               path="/login"
               element={walletId ? <Navigate to="/" /> : <Login onConnectWallet={handleConnectWallet} />}
