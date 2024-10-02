@@ -19,8 +19,6 @@ RUN npm run build
 # Stage 2: Serve the built app using nginx
 FROM nginx:alpine
 
-# Copy custom nginx configuration
-COPY ../spotnet.conf /etc/nginx/conf.d/default.conf
 
 # Copy the built files from the previous stage to the nginx container
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
