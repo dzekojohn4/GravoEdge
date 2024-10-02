@@ -17,7 +17,7 @@ COPY --from=build /app/build /usr/share/nginx/html
 
 RUN rm /etc/nginx/conf.d/default.conf
 
-COPY spotnet.config /etc/nginx/conf.d
+COPY spotnet.conf /etc/nginx/conf.d
 
 EXPOSE 80
 # start nginx
