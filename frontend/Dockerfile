@@ -3,28 +3,22 @@ FROM node:20-alpine AS build
 
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to install dependencies
-COPY package*.json ./
+WORKDIR /app
 
-# Install dependencies
-# Remove --legacy-peer-deps unless absolutely necessary
-RUN npm ci --only=production
+COPY . /app
 
-# Copy the rest of the application source code
-COPY . .
+RUN yarn
+#build the project for production
+RUN yarn build
 
-# Build the app
-RUN npm run build
-
-# Stage 2: Serve the built app using nginx
 FROM nginx:alpine
+# copy the build folder from react to the root of nginx (www)
+COPY --from=build /app/build /usr/share/nginx/html
 
+RUN rm /etc/nginx/conf.d/default.conf
 
-# Copy the built files from the previous stage to the nginx container
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
+COPY nginx/nginx.conf /etc/nginx/conf.d
 
-# Expose the port Nginx will listen to
 EXPOSE 80
-
-# Use CMD instead of ENTRYPOINT for more flexibility
+# start nginx
 CMD ["nginx", "-g", "daemon off;"]
