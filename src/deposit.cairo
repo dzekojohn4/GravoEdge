@@ -21,18 +21,30 @@ mod Deposit {
     use starknet::{ContractAddress};
     use starknet::{get_contract_address};
 
+    use openzeppelin::access::ownable::OwnableComponent;
+    
+    component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
+
+    #[abi(embed_v0)]
+    impl OwnableMixinImpl = OwnableComponent::OwnableMixinImpl<ContractState>;
+    impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
+
     #[storage]
     struct Storage {
         ekubo_core: ICoreDispatcher,
         zk_market: IMarketDispatcher,
         deposits: Vec<(ContractAddress, u256)>,
         borrows: Vec<(ContractAddress, u256)>,
+
+        #[substorage(v0)]
+        ownable: OwnableComponent::Storage
     }
 
     #[constructor]
     fn constructor(
-        ref self: ContractState, ekubo_core: ICoreDispatcher, zk_market: IMarketDispatcher
+        ref self: ContractState, owner: ContractAddress, ekubo_core: ICoreDispatcher, zk_market: IMarketDispatcher
     ) {
+        self.ownable.initializer(owner);
         self.ekubo_core.write(ekubo_core);
         self.zk_market.write(zk_market);
     }
@@ -68,7 +80,9 @@ mod Deposit {
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
-        LiquidityLooped: LiquidityLooped
+        LiquidityLooped: LiquidityLooped,
+        #[flat]
+        OwnableEvent: OwnableComponent::Event
     }
 
     #[abi(embed_v0)]
@@ -122,6 +136,7 @@ mod Deposit {
             pool_price: u256,
             caller: ContractAddress
         ) {
+            self.ownable.assert_only_owner();
             let DepositData { token, amount, multiplier } = deposit_data;
             assert(multiplier < 5, 'Not supported');
             let (EKUBO_LOWER_SQRT_LIMIT, EKUBO_UPPER_SQRT_LIMIT) = (
