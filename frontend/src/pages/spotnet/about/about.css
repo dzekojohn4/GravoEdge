@@ -36,6 +36,7 @@
     height: 400px;
     background: linear-gradient(0deg, rgba(72, 143, 162, 0.03) 0%, rgba(72, 143, 162, 0.03) 100%), linear-gradient(123deg, rgba(116, 214, 253, 0.50) 0.63%, rgba(11, 12, 16, 0.50) 100.03%);
     flex-direction: column;
+    gap: 15px;
     border-radius: 20px;
     border: 0.5px solid #74D6FD;
     box-shadow: 0px 3.75px 3.75px 0px rgba(0, 0, 0, 0.15), 3.75px 3.75px 9.375px 0px rgba(153, 234, 255, 0.25) inset;
@@ -107,6 +108,14 @@
         right: 150px;
     }
 
+    .card-title h4{
+        font-size: 1.6em;
+    }
+
+    .card-description h6{
+        font-size: 1.2em;
+    }
+
     .about-title{
         font-size: 70px;
     }
@@ -117,7 +126,7 @@
     }
     .card-gradient:nth-child(1){
         position: absolute;
-        top: 250px;
+        top: 180px;
         left: -40px;
         width: 232px;
         height: 208px;
@@ -126,7 +135,7 @@
     .card-gradient:nth-child(2){
         position: absolute;
         right: -70px;
-        bottom: 260px;
+        bottom: 170px;
         width: 232px;
         height: 208px;
     }
