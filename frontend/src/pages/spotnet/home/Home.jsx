@@ -6,7 +6,8 @@ import { ReactComponent as Decoration } from "../../../assets/particles/deco.svg
 import { ReactComponent as Starknet } from "../../../assets/particles/starknet.svg";
 import { ReactComponent as Rocket } from "../../../assets/icons/rocket.svg";
 
-const Home = () => {
+
+function Home ({ walletId , onConnectWallet , onLogout }){
     const starsData = [
         { top: 15, left: 20 },
         { top: 20, left: 40 },
@@ -22,7 +23,7 @@ const Home = () => {
     ];
 
     const starData = [
-        { top: 0, left: 5, size: 5 },
+        { top: 10, left: 8, size: 6 },
         { top: 26, left: 0, size: 7 },
         { top: 90, left: 10, size: 8 },
         { top: 0, left: 76, size: 8 },
@@ -31,10 +32,10 @@ const Home = () => {
     ]
 
     const decorationData = [
-        { top: -9, left: -16, size: 50 },
-        { top: -10, left: -45, size: 90 },
-        { top: -35, left: 55, size: 65 },
-        { top: -30, left: 50, size: 95 },
+        { top: -10, left: -8, size: 50 },
+        { top: -10, left: -38, size: 90 },
+        { top: -25, left: 50, size: 65 },
+        { top: -30, left: 47, size: 95 },
     ]
   return (
       <div className='home'>
@@ -46,7 +47,7 @@ const Home = () => {
                       left: `${decoration.left}%`,
                       width: `${decoration.size}%`,
                       height: `${decoration.size}%`,
-                      zIndex:'-1',
+                      zIndex: '-1',
                   }}/>
               ))}
           </div>
@@ -68,7 +69,7 @@ const Home = () => {
                       height: `${star.size}%`
                   }}/>
               ))}
-              <Starknet style={{position: 'absolute', top:'0',right: '-50px'}}/>
+              <Starknet style={{position: 'absolute', top: '50px', right: '20px'}}/>
           </div>
           <h2 className='center-text'>
               <span className='blue-color'>Earn</span> by leveraging your assets
@@ -77,7 +78,24 @@ const Home = () => {
           <h5>Maximize the potential of your resources and start earning today.
               Join Spotnet and unlock new opportunities to grow your wealth!
           </h5>
-          <button className='launch-button'>Launch App <Rocket/></button>
+          {walletId ? (
+              <div className='wallet-container'>
+                  <div className='wallet-id'>
+                      {`${walletId.slice(0, 4)}...${walletId.slice(-4)}`}
+                  </div>
+                  <button className='gradient-button'
+                      onClick={onLogout}
+                  >
+                      Log Out
+                  </button>
+              </div>
+          ) : (
+              <button className='launch-button'
+                      onClick={onConnectWallet}
+              >
+                  Launch App <Rocket/>
+              </button>
+          )}
           <div className="bottom-gradient"></div>
       </div>
   );
