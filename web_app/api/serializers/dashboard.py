@@ -83,4 +83,4 @@ class ZkLendPositionResponse(BaseModel):
     """
 
     dapps: List[Dapp]
-    nonce: int
+
