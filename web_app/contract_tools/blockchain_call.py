@@ -68,7 +68,7 @@ class StarknetClient:
         )
         try:
             res = await self.client.call_contract(call)
-        except:
+        except Exception as e:
             time.sleep(self.SLEEP_TIME)
             res = await self.client.call_contract(call)
         return res
