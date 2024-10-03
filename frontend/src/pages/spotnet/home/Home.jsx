@@ -8,7 +8,6 @@ import { ReactComponent as Rocket } from "../../../assets/icons/rocket.svg";
 
 
 function Home ({ walletId , onConnectWallet , onLogout }){
-    console.log(onConnectWallet)
     const starsData = [
         { top: 15, left: 20 },
         { top: 20, left: 40 },
@@ -24,7 +23,7 @@ function Home ({ walletId , onConnectWallet , onLogout }){
     ];
 
     const starData = [
-        { top: 0, left: 5, size: 5 },
+        { top: 10, left: 8, size: 6 },
         { top: 26, left: 0, size: 7 },
         { top: 90, left: 10, size: 8 },
         { top: 0, left: 76, size: 8 },
@@ -70,7 +69,7 @@ function Home ({ walletId , onConnectWallet , onLogout }){
                       height: `${star.size}%`
                   }}/>
               ))}
-              <Starknet style={{position: 'absolute', top: '0', right: '-50px'}}/>
+              <Starknet style={{position: 'absolute', top: '50px', right: '20px'}}/>
           </div>
           <h2 className='center-text'>
               <span className='blue-color'>Earn</span> by leveraging your assets
