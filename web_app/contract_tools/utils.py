@@ -46,13 +46,12 @@ class DashboardMixin:
         :return: zkLend position validated by Pydantic models
         """
         # FIXME - This is a dummy wallet ID. Replace it with the actual wallet ID.
-        wallet_id = "0x020281104e6cb5884dabcdf3be376cf4ff7b680741a7bb20e5e07c26cd4870af"
         response = await APIRequest(base_url=ARGENT_X_POSITION_URL).fetch(
             f"decomposition/{wallet_id}", params={"chain": "starknet"}
         )
 
         if not response:
-            return ZkLendPositionResponse(dapps=[], nonce=0)
+            return ZkLendPositionResponse(dapps=[])
 
         # Validate the response using Pydantic models
         zk_lend_position_response = ZkLendPositionResponse(**response)
