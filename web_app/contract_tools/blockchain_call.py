@@ -68,7 +68,7 @@ class StarknetClient:
         )
         try:
             res = await self.client.call_contract(call)
-        except:
+        except Exception as e:
             time.sleep(self.SLEEP_TIME)
             res = await self.client.call_contract(call)
         return res
@@ -168,7 +168,7 @@ class StarknetClient:
         }
 
         pool_price = floor(
-            await self._get_pool_price(pool_key, deposit_token == pool_key["token0"])
+            await self._get_pool_price(pool_key, deposit_token == pool_key["token1"])
         )
         return {
             "caller": wallet_id,
