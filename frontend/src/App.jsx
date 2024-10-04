@@ -5,7 +5,6 @@ import Footer from './components/Footer';
 import SpotnetApp from './pages/spotnet/spotnet_app/SpotnetApp';
 import Login from "./pages/Login";
 import { connectWallet, logout } from './utils/wallet';
-import Home from "./pages/spotnet/home/Home";
 
 function App() {
   const [walletId, setWalletId] = useState(localStorage.getItem('wallet_id'));
@@ -41,7 +40,6 @@ function App() {
     <Router>
       <div className="App">
         <Header walletId={walletId} onConnectWallet={handleConnectWallet} onLogout={handleLogout} />
-        <Home walletId={walletId} onConnectWallet={handleConnectWallet} onLogout={handleLogout} />
         <main className="container" style={{ flex: 1 }}>
           {error && <div className="alert alert-danger">{error}</div>}
           <Routes>
