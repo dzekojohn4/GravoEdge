@@ -1,6 +1,7 @@
 import React from 'react';
 import './header.css'
 import { ReactComponent as Logo } from "../../assets/images/logo.svg";
+import { Link } from 'react-router-dom';
 
 function Header({ walletId, onConnectWallet, onLogout }) {
   return (
@@ -11,7 +12,7 @@ function Header({ walletId, onConnectWallet, onLogout }) {
               </div>
               <div className='nav-items'>
                   <a href="#home">Home</a>
-                  <a href="#about">Dashboard</a>
+                  <Link to="/dashboard">Dashboard</Link>
               </div>
               <div className='wallet-section'>
                   {walletId ? (
