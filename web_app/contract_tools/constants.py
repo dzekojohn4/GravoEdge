@@ -4,12 +4,12 @@ from enum import Enum
 from typing import Iterator
 
 EKUBO_MAINNET_ADDRESS: str = (
-    "0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b" # mainnet address
+    "0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b"  # mainnet address
 )
 
 SPOTNET_CORE_ADDRESS = os.getenv(
     "SPOTNET_CORE_ADDRESS",
-    "0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b",
+        "0x0798b587e3da417796a56ffab835ab2a905fa08bab136843ce5749f76c7e45e4", # mainnet current address
 )
 
 
@@ -75,8 +75,6 @@ class TokenParams:
             if token.address == token_address:
                 return token.decimals
         raise ValueError(f"Token with address {token_address} not found")
-
-
 
 
 class ProtocolAddress(Enum):
