@@ -1,5 +1,5 @@
 use ekubo::types::keys::PoolKey;
-use spotnet::types::{MarketReserveData, SwapData, SwapResult, DepositsHistory, DepositData};
+use spotnet::types::{MarketReserveData, SwapData, SwapResult, DepositData};
 use starknet::{ContractAddress, ClassHash};
 
 #[starknet::interface]
@@ -22,9 +22,20 @@ pub trait IDeposit<TContractState> {
         caller: ContractAddress
     );
 
-    fn close_position(ref self: TContractState, supply_token: ContractAddress, debt_token: ContractAddress, pool_key: PoolKey, supply_price: u256, debt_price: u256);
-    
-    fn get_deposits_data(self: @TContractState) -> DepositsHistory;
+    fn close_position(
+        ref self: TContractState,
+        supply_token: ContractAddress,
+        debt_token: ContractAddress,
+        pool_key: PoolKey,
+        supply_price: u256,
+        debt_price: u256
+    );
+
+    fn get_user_deposit(
+        self: @TContractState, user: ContractAddress, token: ContractAddress
+    ) -> u256;
+
+    fn get_user_loan(self: @TContractState, user: ContractAddress, token: ContractAddress) -> u256;
 }
 
 #[starknet::interface]

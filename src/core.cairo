@@ -1,23 +1,23 @@
 #[starknet::contract]
 pub mod Core {
     use OwnableComponent::InternalTrait;
-use core::num::traits::Zero;
-
-    use spotnet::constants::{EKUBO_CORE_MAINNET, ZKLEND_MARKET};
-
-    use spotnet::interfaces::{ICore};
-
-    use starknet::storage::{Map, StorageMapWriteAccess, StorageMapReadAccess};
-    use starknet::storage::StoragePointerReadAccess;
-    use starknet::storage::StoragePointerWriteAccess;
-    use starknet::syscalls::deploy_syscall;
-    use starknet::{ContractAddress, ClassHash};
-    use starknet::{get_caller_address};
+    use core::num::traits::Zero;
 
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::upgrades::UpgradeableComponent;
     use openzeppelin::upgrades::interface::IUpgradeable;
-    
+
+    use spotnet::constants::{EKUBO_CORE_MAINNET, ZKLEND_MARKET};
+
+    use spotnet::interfaces::{ICore};
+    use starknet::storage::StoragePointerReadAccess;
+    use starknet::storage::StoragePointerWriteAccess;
+
+    use starknet::storage::{Map, StorageMapWriteAccess, StorageMapReadAccess};
+    use starknet::syscalls::deploy_syscall;
+    use starknet::{ContractAddress, ClassHash};
+    use starknet::{get_caller_address};
+
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
 
@@ -31,7 +31,6 @@ use core::num::traits::Zero;
     struct Storage {
         user_contracts: Map<ContractAddress, ContractAddress>,
         user_contract_class_hash: ClassHash,
-
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
@@ -39,7 +38,9 @@ use core::num::traits::Zero;
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, owner: ContractAddress, user_contract_class_hash: ClassHash) {
+    fn constructor(
+        ref self: ContractState, owner: ContractAddress, user_contract_class_hash: ClassHash
+    ) {
         self.ownable.initializer(owner);
         self.user_contract_class_hash.write(user_contract_class_hash);
     }
