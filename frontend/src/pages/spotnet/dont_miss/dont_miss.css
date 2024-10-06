@@ -1,0 +1,32 @@
+.dont-miss__container{
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.miss-title{
+    color: white;
+    font-size: 50px;
+}
+
+.miss-description{
+    color: darkgray;
+    font-size: 24px;
+}
+
+.miss-btn{
+    width: 400px;
+}
+
+.miss-button{
+    position: relative;
+}
+
+.hand-icon{
+    position: absolute;
+    right: -50px;
+    top: 0;
+}

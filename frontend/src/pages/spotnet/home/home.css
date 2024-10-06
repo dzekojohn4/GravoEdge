@@ -20,7 +20,7 @@ body{
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: calc(111vh - 160px);
+    height: calc(100vh - 160px);
 }
 
 .center-text{
@@ -91,21 +91,19 @@ body{
 @media (min-width: 1800px) {
     .home{
         background-color: transparent;
-        width: 100%;
+        width: 125%;
         position: relative;
+        right: 150px;
     }
-
     .center-text {
         font-size: 100px;
         width: 1200px;
     }
-
     .launch-button {
         width: 650px;
         font-size: 26px;
         height: 70px;
     }
-
     .home h5 {
         font-size: 1.4em;
         width: 800px;
