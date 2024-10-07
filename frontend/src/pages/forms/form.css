@@ -21,6 +21,10 @@
     margin: 0 auto;
 }
 
+.form-title h1{
+    text-align: center;
+}
+
 .form-card__container{
     display: flex;
     justify-content: space-around;
@@ -156,7 +160,6 @@ input[type="number"] {
 }
 
 .error-message {
-    color: white;
     padding: 10px;
     border-radius: 5px;
     background-color: red;
@@ -165,8 +168,9 @@ input[type="number"] {
 }
 
 input[type="number"].error {
-    border-color: red; /* Red border for error state */
-    background-color: #ffe6e6; /* Light red background */
+    border-color: red;
+    background-color: #ffe6e6;
+    color: black;
 }
 
 .form-gradient:nth-child(1){
@@ -191,4 +195,24 @@ input[type="number"].error {
     border-radius: 2000px;
     background: var(--gradient, linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%));
     filter: blur(80px);
+}
+
+@media (min-width: 1800px) {
+    .form-card{
+        width: 400px;
+    }
+
+    .form-token label, .multiplier-card label{
+        width: 150px;
+        height: 80px;
+    }
+
+    input[type='number']{
+        height: 75px;
+    }
+
+    .recommended p {
+        width: 150px;
+        height: 25px;
+    }
 }

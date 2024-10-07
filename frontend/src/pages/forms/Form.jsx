@@ -61,7 +61,7 @@ const Form = () => {
     const starData = [
         { top: 40, left: 13, size: 15 },
         { top: 100, left: 5, size: 10,},
-        { top: 45, left: 70, size: 13 },
+        { top: 45, left: 76, size: 13 },
         { top: 90, left: 87, size: 12 },
     ]
 
