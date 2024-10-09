@@ -61,7 +61,6 @@ body {
         border-radius: 6px;
         width: 100%;
         border: 0.5px solid #74D6FD;
-        max-width: 1312px;
         height: 146px;
 }
 
@@ -172,7 +171,95 @@ body {
 /* TABLET */
 /* Health factor styles */
 
-@media (min-width: 768px) and (max-width: 1400px) {
+@media (min-width: 767px) and (max-width: 991px) {
+    .dashboard-container {
+        margin-top: 1.5rem !important;
+        margin-bottom: 4rem !important;
+        width: 100% !important;
+    }
+
+    .health-text-size {
+        font-size: 16px;
+        font-weight: 500;
+        margin-right: 6px;
+    }
+
+    .zkLend-text {
+        font-size: 30px; 
+        margin-bottom: 12px;
+    }
+    
+    .bg-custom-color {
+        padding: 12px 24px;
+    }
+
+    .bg-custom-health {
+        padding: 23px 24px;
+    }
+
+    .card-health-factor {
+        padding: 14px;
+        height: 90px;
+    }
+
+    .bg-card-health {
+        height: 45px;
+    }
+    
+/* Cards styles */
+
+    .card-icons {
+        width: 30px;
+        height: 30px;
+    }
+
+    .text-style {
+        font-size: 20px;
+    }
+
+    .cards-custom {
+        margin-top: 12px;
+    }
+
+    .card-body-custom {
+        padding: 12px 8px 18px;
+    }
+
+    .card-custom-styles:first-child {
+        margin-right: 6px;
+    }
+    
+    .card-custom-styles:last-child {
+        margin-left: 6px;
+    }
+
+    .icon-text-gap {
+        margin-left: 3px !important;
+    }
+
+    .balance-text-size {
+        font-size: 16px;
+        font-weight: 400;
+    }
+    
+    .mb-4  {
+        margin-bottom: 1rem !important;
+    }
+
+/* Button "Redeem" styles */
+
+    .redeem-btn {
+        padding: 14px 18px;
+        font-size: 20px;
+        align-self: stretch;
+        border-radius: 6px;
+        font: 700 20px/1 Rethink Sans;
+        width: 100%;
+    }
+
+}
+
+@media (min-width: 992px) and (max-width: 1400px) {
     .dashboard-container {
         margin-top: 2rem !important;
         margin-bottom: 6rem !important;
