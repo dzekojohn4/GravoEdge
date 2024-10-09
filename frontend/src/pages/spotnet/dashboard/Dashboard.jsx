@@ -27,9 +27,9 @@ const cardData = [
 
 const Dashboard = () => {
     const starData = [
-        { top: 1, left: -1, size: 1.5 },
-        { top: 65, left: 35, size: 2.5 },
-        { top: -2, left: 96.5, size: 5.5 },
+        { top: 1, left: 0, size: 1.5 },
+        { top: 75, left: 35, size: 2.5 },
+        { top: -2, left: 94, size: 5.5 },
     ]
     
     return (
