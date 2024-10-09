@@ -51,12 +51,23 @@ class DashboardMixin:
         )
 
         if not response:
-            return ZkLendPositionResponse(dapps=[])
+            return ZkLendPositionResponse(products=[])
 
         # Validate the response using Pydantic models
-        zk_lend_position_response = ZkLendPositionResponse(**response)
+        dapps = response.get("dapps", [])
+        products = cls._get_products(dapps)
+        zk_lend_position_response = ZkLendPositionResponse(products=products)
 
         return zk_lend_position_response
+
+    @classmethod
+    def _get_products(cls, dapps: list) -> list[dict]:
+        """
+        Get the products from the dapps.
+        :param dapps: List of dapps
+        :return: List of positions
+        """
+        return [product for dapp in dapps for product in dapp.get("products", [])]
 
 
 class DepositMixin:
