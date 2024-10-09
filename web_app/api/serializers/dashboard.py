@@ -1,34 +1,28 @@
 from decimal import Decimal
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, RootModel, Field, validator
 
 from web_app.contract_tools.constants import TokenParams
 
 
-class PositionData(BaseModel):
-    """
-    Data related to a position.
-    """
-
-    apy: str
-    group: Optional[int]
-    lending: bool
+class Data(BaseModel):
     collateral: bool
     debt: bool
 
 
+class TotalBalances(RootModel):
+    # Since the keys are dynamic (addresses), we use a generic Dict
+    root: Dict[str, str]
+
+
 class Position(BaseModel):
-    """
-    Data related to a position.
-    """
+    data: Data
+    token_address: Optional[str] = Field(None, alias="tokenAddress")
+    total_balances: TotalBalances = Field(alias="totalBalances")
 
-    token_address: Optional[str] = Field(None, alias="tokenAddress")  # Made optional
-    total_balances: Dict[str, str] = Field(alias="totalBalances")
-    data: PositionData
-
-    @validator("total_balances", pre=True, each_item=False)
-    def convert_total_balances(cls, balances, values):
+    @validator("total_balances", pre=True)
+    def convert_total_balances(cls, balances):
         """
         Convert total_balances to their decimal values based on token decimals.
         """
@@ -45,42 +39,31 @@ class Position(BaseModel):
                 raise ValueError(f"Error in balance conversion: {str(e)}")
         return converted_balances
 
-
-class GroupData(BaseModel):
-    """
-    Data related to a group.
-    """
-
-    health_ratio: str = Field(alias="healthRatio")
+    class Config:
+        allow_population_by_field_name = True
 
 
 class Product(BaseModel):
-    """
-    Data related to a product.
-    """
-
     name: str
-    manage_url: Optional[str] = Field(
-        None, alias="manageUrl"
-    )  # This field might not always be present
-    groups: Dict[str, GroupData]
-    positions: Optional[List[Position]]
-    type: str
-
-
-class Dapp(BaseModel):
-    """
-    Data related to a Dapp.
-    """
-
-    dappId: str
-    products: List[Product]
+    health_ratio: str
+    positions: List[Position]
 
 
 class ZkLendPositionResponse(BaseModel):
-    """
-    Response data for the ZkLend position.
-    """
+    products: List[Product]
 
-    dapps: List[Dapp]
+    @validator("products", pre=True)
+    def convert_products(cls, products):
+        """
+        Convert products to their respective models.
+        """
+        converted_products = []
+        for product in products:
+            groups = product.pop("groups", None)
+            product["health_ratio"] = groups.get("1", {}).get("healthRatio")
+            converted_products.append(Product(**product))
+            # For debugging purposes  # noqa: F841 (unused variable)
+        return converted_products
 
+    class Config:
+        allow_population_by_field_name = True
