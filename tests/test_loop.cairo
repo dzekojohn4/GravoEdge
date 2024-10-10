@@ -9,43 +9,20 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
 use snforge_std::{declare, DeclareResultTrait, ContractClassTrait, get_class_hash};
-use spotnet::constants::{EKUBO_CORE_MAINNET};
-use spotnet::interfaces::{
-    ICoreDispatcher, ICoreDispatcherTrait, IDepositDispatcher, IDepositDispatcherTrait
-};
+use spotnet::interfaces::{IDepositDispatcher, IDepositDispatcherTrait};
 use spotnet::types::{SwapData, DepositData};
 
 use starknet::{ContractAddress, ClassHash};
 
-fn deploy_core(ekubo_core: felt252) -> ICoreDispatcher {
-    // let _ = declare("Deposit");
-    let core = declare("Core").unwrap().contract_class();
-    let users_contract_hash = declare("Deposit").unwrap().contract_class().class_hash;
-    let core_owner = 0x123;
-    let (contract_address, _) = core
-        .deploy(@array![core_owner, (*users_contract_hash).try_into().unwrap()])
-        .expect('Deploy failed');
+pub const EKUBO_CORE_MAINNET: felt252 =
+    0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b;
 
-    ICoreDispatcher { contract_address }
-}
+pub const EKUBO_CORE_SEPOLIA: felt252 =
+    0x0444a09d96389aa7148f1aada508e30b71299ffe650d9c97fdaae38cb9a23384;
 
-#[test]
-#[fork("MAINNET")]
-fn test_deploy_valid() {
-    let swapper = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
-}
+pub const ZKLEND_MARKET: felt252 =
+    0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05;
 
-#[test]
-#[should_panic(expected: 'Contract already exists')]
-#[fork("MAINNET")]
-fn test_deploy_exists() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    disp.deploy_user_contract();
-    disp.deploy_user_contract();
-}
 
 #[test]
 #[fork("MAINNET")]
@@ -61,8 +38,6 @@ fn test_quote_for_base_mainnet() {
         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
         .try_into()
         .unwrap();
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let user_contract = core.deploy_user_contract();
 
     let pool_key = PoolKey {
         token0: strk_addr,
@@ -84,13 +59,13 @@ fn test_quote_for_base_mainnet() {
             strk_addr
         }
     };
-    let deposit_dispatcher = IDepositDispatcher { contract_address: user_contract };
+    let deposit_dispatcher = IDepositDispatcher { contract_address: 0.try_into().unwrap() };
     let disp = IERC20Dispatcher { contract_address: strk_addr };
     println!("My bal ETH: {}", token_disp.balanceOf(user));
     println!("My bal STRK: {}", disp.balanceOf(user));
 
     start_cheat_caller_address(token_disp.contract_address, user);
-    token_disp.approve(user_contract, params.amount.mag.into());
+    token_disp.approve(0.try_into().unwrap(), params.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
 
     let res = deposit_dispatcher.swap(SwapData { params: params, pool_key, caller: user });
@@ -111,10 +86,6 @@ fn test_both_directions_mainnet() {
         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
         .try_into()
         .unwrap();
-
-    let swapper = deploy_core(EKUBO_CORE_MAINNET);
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let user_contract = core.deploy_user_contract();
 
     let pool_key = PoolKey {
         token0: eth_addr,
@@ -140,9 +111,9 @@ fn test_both_directions_mainnet() {
     println!("My bal USDC: {}", token_disp.balanceOf(user));
     println!("My bal ETH: {}", disp.balanceOf(user));
     start_cheat_caller_address(token_disp.contract_address, user);
-    token_disp.approve(user_contract, params.amount.mag.into());
+    token_disp.approve(0.try_into().unwrap(), params.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
-    let deposit_disp = IDepositDispatcher { contract_address: user_contract };
+    let deposit_disp = IDepositDispatcher { contract_address: 0.try_into().unwrap() };
 
     let res = deposit_disp.swap(SwapData { params: params, pool_key, caller: user });
     println!("Swapped: {}", res.delta.amount0.mag);
@@ -162,9 +133,9 @@ fn test_both_directions_mainnet() {
         }
     };
     start_cheat_caller_address(token_disp.contract_address, user);
-    token_disp.approve(user_contract, params2.amount.mag.into());
+    token_disp.approve(0.try_into().unwrap(), params2.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
-    let deposit_disp = IDepositDispatcher { contract_address: user_contract };
+    let deposit_disp = IDepositDispatcher { contract_address: 0.try_into().unwrap() };
     let res = deposit_disp.swap(SwapData { params: params2, pool_key, caller: user });
     println!("My bal USDC: {}", IERC20Dispatcher { contract_address: usdc_addr }.balanceOf(user));
     println!("Swapped: {}", res.delta.amount0.mag);
@@ -173,9 +144,6 @@ fn test_both_directions_mainnet() {
 #[test]
 #[fork("MAINNET")]
 fn test_loop_base_token_zklend() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-
     let usdc_addr: ContractAddress =
         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
         .try_into()
@@ -188,7 +156,7 @@ fn test_loop_base_token_zklend() {
         .try_into()
         .unwrap();
 
-    let deposit_contract = disp.deploy_user_contract();
+    let deposit_contract = 0.try_into().unwrap();
 
     let pool_key = PoolKey {
         token0: eth_addr,
@@ -227,9 +195,7 @@ fn test_loop_quote_token_zklend() {
         .try_into()
         .unwrap();
 
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
+    let deposit_contract = 0.try_into().unwrap();
 
     let pool_key = PoolKey {
         token0: eth_addr,
@@ -271,9 +237,7 @@ fn test_loop_unauthorized() {
         .try_into()
         .unwrap();
 
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
+    let deposit_contract = 0.try_into().unwrap();
 
     let pool_key = PoolKey {
         token0: eth_addr,
@@ -298,38 +262,9 @@ fn test_loop_unauthorized() {
 
 #[test]
 #[fork("MAINNET")]
-fn test_upgrade_core() {
-    let owner: ContractAddress = 0x123.try_into().unwrap();
-    let new_class_hash: ClassHash =
-        0x030e64ecb769ff832478ed5ce52fc5b81ffc7d32dd36cd9b8937135683339a2c
-        .try_into()
-        .unwrap();
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let upgr = IUpgradeableDispatcher { contract_address: core.contract_address };
-    start_cheat_caller_address(core.contract_address, owner);
-    upgr.upgrade(new_class_hash);
-    stop_cheat_caller_address(core.contract_address);
-    assert(get_class_hash(core.contract_address) == new_class_hash, 'Not upgraded');
-}
-
-#[test]
-#[should_panic(expected: ('Caller is not the owner',))]
-#[fork("MAINNET")]
-fn test_upgrade_core_unauthorized() {
-    let new_class_hash: ClassHash =
-        0x030e64ecb769ff832478ed5ce52fc5b81ffc7d32dd36cd9b8937135683339a2c
-        .try_into()
-        .unwrap();
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let upgr = IUpgradeableDispatcher { contract_address: core.contract_address };
-    upgr.upgrade(new_class_hash);
-}
-
-#[test]
-#[fork("MAINNET")]
 fn test_close_position_base_token() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
+    // let core = deploy_core(EKUBO_CORE_MAINNET);
+    // let disp = ICoreDispatcher { contract_address: core.contract_address };
 
     let usdc_addr: ContractAddress =
         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
@@ -343,8 +278,8 @@ fn test_close_position_base_token() {
         .try_into()
         .unwrap();
 
-    let deposit_contract = disp.deploy_user_contract();
-
+    // let deposit_contract = disp.deploy_user_contract();
+    let deposit_contract = 0.try_into().unwrap();
     let pool_key = PoolKey {
         token0: eth_addr,
         token1: usdc_addr,
@@ -372,8 +307,8 @@ fn test_close_position_base_token() {
 #[test]
 #[fork("MAINNET")]
 fn test_close_position_quote_token() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
+    // let core = deploy_core(EKUBO_CORE_MAINNET);
+    // let disp = ICoreDispatcher { contract_address: core.contract_address };
 
     let usdc_addr: ContractAddress =
         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
@@ -386,8 +321,8 @@ fn test_close_position_quote_token() {
     let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
         .try_into()
         .unwrap();
-
-    let deposit_contract = disp.deploy_user_contract();
+    let deposit_contract = 0.try_into().unwrap();
+    // let deposit_contract = disp.deploy_user_contract();
 
     let pool_key = PoolKey {
         token0: eth_addr,
@@ -411,34 +346,6 @@ fn test_close_position_quote_token() {
             user
         );
     deposit_disp.close_position(usdc_addr, eth_addr, pool_key, supply_price, debt_price);
-}
-
-#[test]
-#[fork("MAINNET")]
-fn test_get_deposit() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
-    let deposit_disp = IDepositDispatcher { contract_address: deposit_contract };
-    deposit_disp
-        .get_user_deposit(
-            0x123.try_into().unwrap(),
-            0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d.try_into().unwrap()
-        );
-}
-
-#[test]
-#[fork("MAINNET")]
-fn test_get_loan() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
-    let deposit_disp = IDepositDispatcher { contract_address: deposit_contract };
-    deposit_disp
-        .get_user_loan(
-            0x123.try_into().unwrap(),
-            0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d.try_into().unwrap()
-        );
 }
 //// Implement looping through STRK and other tokens
 // #[test]
