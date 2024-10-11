@@ -4,12 +4,13 @@ from typing import Type, TypeVar
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import  scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from web_app.db.database import SQLALCHEMY_DATABASE_URL
 from web_app.db.models import (
     Base,
     User,
+    Position,
 )
 
 logger = logging.getLogger(__name__)
@@ -71,7 +72,9 @@ class DBConnector:
         finally:
             db.close()
 
-    def get_object_by_field(self, model: Type[ModelType] = None, field: str = None, value: str = None) -> ModelType | None:
+    def get_object_by_field(
+        self, model: Type[ModelType] = None, field: str = None, value: str = None
+    ) -> ModelType | None:
         """
         Retrieves an object by a specified field from the database.
         :param model: type[Base] = None
@@ -134,7 +137,9 @@ class UserDBConnector(DBConnector):
         self.write_to_db(user)
         return user
 
-    def update_user_contract_status(self, user: User, deployed_transaction_hash: str) -> None:
+    def update_user_contract_status(
+        self, user: User, deployed_transaction_hash: str
+    ) -> None:
         """
         Updates the contract status of a user in the database.
         :param user: User
@@ -144,3 +149,76 @@ class UserDBConnector(DBConnector):
         user.is_contract_deployed = not user.is_contract_deployed
         user.deployed_transaction_hash = deployed_transaction_hash
         self.write_to_db(user)
+
+
+class PositionDBConnector(UserDBConnector):
+    """
+    Provides database connection and operations management for the Position model.
+    """
+
+    def _get_user_by_wallet_id(self, wallet_id: str) -> User | None:
+        """
+        Retrieves a user by their wallet ID.
+        :param wallet_id: str
+        :return: User | None
+        """
+        return self.get_user_by_wallet_id(wallet_id)
+
+    def get_positions_by_wallet_id(self, wallet_id: str) -> list:
+        """
+        Retrieves all positions for a user by their ID.
+        :param wallet_id: str
+        :return: list
+        """
+        db = self.Session()
+        user = self._get_user_by_wallet_id(wallet_id)
+        if not user:
+            return []
+        try:
+            return db.query(Position).filter(Position.user_id == user.id).all()
+        finally:
+            db.close()
+
+    def create_position(
+        self, wallet_id: str, token_symbol: str, amount: str, multiplier: int
+    ) -> None:
+        """
+        Creates a new position in the database.
+        :param wallet_id: str
+        :param token_symbol: str
+        :param amount: str
+        :param multiplier: int
+        :return: None
+        """
+        user = self._get_user_by_wallet_id(wallet_id)
+        if not user:
+            logger.error(f"User with wallet ID {wallet_id} not found")
+            return
+
+        position = Position(
+            user_id=user.id,
+            token_symbol=token_symbol,
+            amount=amount,
+            multiplier=multiplier,
+        )
+        self.write_to_db(position)
+
+    def update_position(self, position: Position, amount: str, multiplier: int) -> None:
+        """
+        Updates a position in the database.
+        :param position: Position
+        :param amount: str
+        :param multiplier: int
+        :return: None
+        """
+        position.amount = amount
+        position.multiplier = multiplier
+        self.write_to_db(position)
+
+    def delete_position(self, position: Position) -> None:
+        """
+        Deletes a position from the database.
+        :param position: Position
+        :return: None
+        """
+        self.delete_object(Position, position.id)
