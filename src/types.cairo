@@ -23,9 +23,15 @@ pub struct DepositData {
 }
 
 #[derive(Copy, Drop, Serde)]
-pub struct DepositsHistory {
-    pub deposited: Span<(ContractAddress, u256)>,
-    pub borrowed: Span<(ContractAddress, u256)>
+struct TokenPair {
+    pub supply_token: ContractAddress,
+    pub debt_token: ContractAddress
+}
+
+#[derive(Copy, Drop, Serde)]
+struct PoolData {
+    pool_key: PoolKey,
+    pool_price: u256
 }
 
 #[derive(Drop, Serde, starknet::Store)]
