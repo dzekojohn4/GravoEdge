@@ -9,7 +9,7 @@ EKUBO_MAINNET_ADDRESS: str = (
 
 SPOTNET_CORE_ADDRESS = os.getenv(
     "SPOTNET_CORE_ADDRESS",
-        "0x0798b587e3da417796a56ffab835ab2a905fa08bab136843ce5749f76c7e45e4", # mainnet current address
+    "0x0798b587e3da417796a56ffab835ab2a905fa08bab136843ce5749f76c7e45e4",  # mainnet current address
 )
 
 
@@ -74,6 +74,18 @@ class TokenParams:
         for token in cls.tokens():
             if token.address == token_address:
                 return token.decimals
+        raise ValueError(f"Token with address {token_address} not found")
+
+    @classmethod
+    def get_token_symbol(cls, token_address: str) -> str:
+        """
+        Get the token symbol for a given token address.
+        :param token_address: Token address
+        :return: Token symbol
+        """
+        for token in cls.tokens():
+            if token.address == token_address:
+                return token.name
         raise ValueError(f"Token with address {token_address} not found")
 
 
