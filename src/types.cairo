@@ -22,18 +22,6 @@ pub struct DepositData {
     pub multiplier: u32
 }
 
-#[derive(Copy, Drop, Serde)]
-struct TokenPair {
-    pub supply_token: ContractAddress,
-    pub debt_token: ContractAddress
-}
-
-#[derive(Copy, Drop, Serde)]
-struct PoolData {
-    pool_key: PoolKey,
-    pool_price: u256
-}
-
 #[derive(Drop, Serde, starknet::Store)]
 pub struct MarketReserveData {
     enabled: bool,
@@ -41,7 +29,7 @@ pub struct MarketReserveData {
     pub z_token_address: ContractAddress,
     interest_rate_model: ContractAddress,
     pub collateral_factor: felt252,
-    borrow_factor: felt252,
+    pub borrow_factor: felt252,
     reserve_factor: felt252,
     last_update_timestamp: felt252,
     lending_accumulator: felt252,

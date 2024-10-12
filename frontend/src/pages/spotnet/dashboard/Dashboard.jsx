@@ -57,17 +57,8 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="container dashboard-container">
-            {starData.map((star, index) => (
-                <Star key={index} style={{
-                    position: 'absolute',
-                    top: `${star.top}%`,
-                    left: `${star.left}%`,
-                    width: `${star.size}%`,
-                    height: `${star.size}%`
-                }}/>
-            ))}
-            <div className="backdround-gradients position-relative">
+        <div className="container-fluid position-relative container">
+            <div className="backdround-gradients">
                 <div className="backdround-gradient"></div>
                 <div className="backdround-gradient"></div>
             </div>
