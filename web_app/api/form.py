@@ -14,13 +14,15 @@ from web_app.db.crud import PositionDBConnector
 router = APIRouter()  # Initialize the router
 position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
 
-@router.post("/api/create-position")
-async def create_position(request: Request, form_data: PositionFormData) -> dict:
+@router.post("/api/create-position", response_model=TransactionDataResponse)
+async def create_position_with_transaction_data(
+    request: Request, form_data: PositionFormData
+) -> dict:
     """
-    Create a new position in the database.
+    Create a new position in the database and return transaction data.
     :param request: Request object
-    :param form data: Pydantic model for the query parameters
-    :return: Dict containing the created position
+    :param form_data: Pydantic model for the form data
+    :return: Dict containing the created position and transaction data
     """
     # Create a new position in the database
     position_db_connector.create_position(
@@ -30,25 +32,12 @@ async def create_position(request: Request, form_data: PositionFormData) -> dict
         form_data.multiplier,
     )
 
-    return {"message": "Position created successfully"}
-
-@router.get("/transaction-data", response_model=TransactionDataResponse)
-async def get_transaction_data(
-    request: Request,
-    transaction_data: TransactionDataRequest = Depends(),
-) -> TransactionDataResponse:
-    """
-    Get transaction data for the deposit.
-    :param request: Request object
-    :param transaction_data: Pydantic model for the query parameters
-    :return: List of dicts containing the transaction data
-    """
-    # Get the transaction data from the DepositMixin
+    # Get the transaction data for the deposit
     transaction_result = await DepositMixin.get_transaction_data(
-        transaction_data.token,
-        transaction_data.amount,
-        transaction_data.multiplier,
-        transaction_data.wallet_id,
+        form_data.token_symbol,
+        form_data.amount,
+        form_data.multiplier,
+        form_data.wallet_id,
         TokenParams.USDC.address,
     )
 
@@ -60,4 +49,5 @@ async def get_transaction_data(
         approve_data=approve_data, loop_liquidity_data=loop_liquidity_data
     )
     print("response", response.dict())
-    return response.dict()
+
+    return response
