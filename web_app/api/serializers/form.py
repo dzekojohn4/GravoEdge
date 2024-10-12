@@ -1,5 +1,4 @@
 from pydantic import BaseModel, validator
-from web_app.contract_tools.constants import TokenParams
 
 
 class PositionFormData(BaseModel):
@@ -12,11 +11,14 @@ class PositionFormData(BaseModel):
     amount: str
     multiplier: int
 
-    @validator("token_symbol")
-    def validate_token_symbol(cls, value: str) -> str:
+    @validator("multiplier")
+    def validate_multiplier(cls, value: int) -> int:
         """
-        Get the token symbol based on the input address
-        :param value: str
-        :return: str
+        Validate the multiplier value
+        :param value: int
+        :return: int
         """
-        return TokenParams.get_token_symbol(value)
+        try:
+            return int(value)
+        except ValueError:
+            raise ValueError("Multiplier should be an integer")
