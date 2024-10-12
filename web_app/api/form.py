@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Request
 
 from web_app.api.serializers.transaction import (
     ApproveData,
     LoopLiquidityData,
-    TransactionDataRequest,
     TransactionDataResponse,
 )
 from web_app.api.serializers.form import PositionFormData
@@ -48,6 +47,5 @@ async def create_position_with_transaction_data(
     response = TransactionDataResponse(
         approve_data=approve_data, loop_liquidity_data=loop_liquidity_data
     )
-    print("response", response.dict())
 
     return response
