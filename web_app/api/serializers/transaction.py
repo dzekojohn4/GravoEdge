@@ -89,17 +89,6 @@ class TransactionDataResponse(BaseModel):
     loop_liquidity_data: LoopLiquidityData
 
 
-class TransactionDataRequest(BaseModel):
-    """
-    Pydantic model for the transaction data request.
-    """
-
-    wallet_id: str = Field(..., description="Wallet ID for the transaction")
-    token: str = Field(..., description="Token name for the transaction")
-    multiplier: int = Field(..., description="Multiplier for the transaction")
-    amount: str = Field(..., description="Amount to deposit as a string")
-
-
 class UpdateUserContractRequest(BaseModel):
     wallet_id: str
     transaction_hash: str
