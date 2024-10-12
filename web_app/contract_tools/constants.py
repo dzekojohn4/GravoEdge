@@ -7,9 +7,8 @@ EKUBO_MAINNET_ADDRESS: str = (
     "0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b"  # mainnet address
 )
 
-SPOTNET_CORE_ADDRESS = os.getenv(
-    "SPOTNET_CORE_ADDRESS",
-    "0x0798b587e3da417796a56ffab835ab2a905fa08bab136843ce5749f76c7e45e4",  # mainnet current address
+SPOTNET_CORE_ADDRESS: str = (
+    "0x0798b587e3da417796a56ffab835ab2a905fa08bab136843ce5749f76c7e45e4"  # mainnet current address
 )
 
 
