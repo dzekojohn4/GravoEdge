@@ -136,8 +136,8 @@ class StarknetClient:
             return 0
 
         if decimals:
-            return round(res[0] / 10**decimals, 6)
-        return round(res[0], 6)
+            return str(round(res[0] / 10**decimals, 6))
+        return str(round(res[0], 6))
 
     async def get_loop_liquidity_data(
         self,

@@ -8,7 +8,7 @@ user_db = UserDBConnector()
 
 
 @router.get("/api/check-user")
-async def сheck_user(request: Request, wallet_id: str) -> dict:
+async def check_user(request: Request, wallet_id: str) -> dict:
     """
     Add a user to the database.
     :param request: Request object
