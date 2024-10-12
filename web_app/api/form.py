@@ -22,7 +22,6 @@ async def create_position(request: Request, form_data: PositionFormData) -> dict
     :param form data: Pydantic model for the query parameters
     :return: Dict containing the created position
     """
-    print("form_data", form_data.dict())
     # Create a new position in the database
     position_db_connector.create_position(
         form_data.wallet_id,
