@@ -1,34 +1,48 @@
 import './form.css';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as ETH } from '../../assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from '../../assets/icons/borrow_usdc.svg';
 import { ReactComponent as STRK } from '../../assets/icons/strk.svg';
 import { ReactComponent as DAI } from '../../assets/icons/dai.svg';
 import { ReactComponent as Star } from '../../assets/particles/star.svg';
-import React, { useState } from 'react';
+import { getTokenBalances } from '../../utils/wallet';
+import axios from 'axios';
 
-const Form = () => {
-    const formData = [
-        {
-            icon: <ETH />,
-            title: 'ETH',
-            balance: '0.046731'
-        },
-        {
-            icon: <USDC />,
-            title: 'USDC',
-            balance: '0.046731'
-        },
-        {
-            icon: <STRK />,
-            title: 'STRK',
-            balance: '0.046731'
-        },
-        {
-            icon: <DAI />,
-            title: 'DAI',
-            balance: '0.046731'
+const Form = ({ walletId }) => {
+    const [balances, setBalances] = useState([
+        { icon: <ETH />, title: 'ETH', balance: '0.00' },
+        { icon: <USDC />, title: 'USDC', balance: '0.00' },
+        { icon: <STRK />, title: 'STRK', balance: '0.00' },
+        { icon: <DAI />, title: 'DAI', balance: '0.00' },
+    ]);
+    const [tokenAmount, setTokenAmount] = useState('');
+    const [selectedToken, setSelectedToken] = useState('');
+    const [selectedMultiplier, setSelectedMultiplier] = useState('');
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        // Fetch balances from the backend endpoint
+        const getBalances = async () => {
+            try {
+                const data = await getTokenBalances(walletId);
+
+                const updatedBalances = [
+                    { icon: <ETH />, title: 'ETH', balance: data.ETH !== undefined ? data.ETH.toString() : '0.00' },
+                    { icon: <USDC />, title: 'USDC', balance: data.USDC !== undefined ? data.USDC.toString() : '0.00' },
+                    { icon: <STRK />, title: 'STRK', balance: data.STRK !== undefined ? data.STRK.toString() : '0.00' },
+                    { icon: <DAI />, title: 'DAI', balance: data.DAI !== undefined ? data.DAI.toString() : '0.00' },
+                ];
+
+                setBalances(updatedBalances);
+            } catch (error) {
+                console.error('Error fetching user balances:', error);
+            }
+        };
+
+        if (walletId) {
+            getBalances();
         }
-    ];
+    }, [walletId]);
 
     const Tokens = [
         { id: 'ethOption', component: <ETH />, label: 'ETH' },
@@ -44,42 +58,59 @@ const Form = () => {
         { id: 'option4', value: 'x2', recommended: false },
     ];
 
-    const [tokenAmount, setTokenAmount] = useState('');
-    const [error, setError] = useState('');
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const backendUrl = process.env.BACKEND_URL || 'http://0.0.0.0:8000';
 
-        if (tokenAmount.trim() === '') {
-            setError(`This field is required !`);
+        if (!tokenAmount.trim() || !selectedToken || !selectedMultiplier) {
+            setError('All fields are required!');
         } else {
             setError('');
-            setTokenAmount('');
+
+            // Prepare form data for submission
+            const formData = {
+                wallet_id: walletId,
+                token_symbol: selectedToken,
+                amount: tokenAmount,
+                multiplier: selectedMultiplier,
+            };
+
+            try {
+                // Send form data to the backend
+                const response = await axios.post(`${backendUrl}/api/create-position`, formData);
+                console.log('Position created successfully:', response.data);
+                setTokenAmount('');
+            } catch (err) {
+                console.error('Failed to create position:', err);
+            }
         }
     };
 
     const starData = [
         { top: 40, left: 13, size: 15 },
-        { top: 100, left: 5, size: 10,},
+        { top: 100, left: 5, size: 10 },
         { top: 45, left: 76, size: 13 },
         { top: 90, left: 87, size: 12 },
-    ]
+    ];
 
     return (
         <div className="form-container">
             <div className="form-gradient"></div>
             <div className="form-gradient"></div>
             {starData.map((star, index) => (
-                <Star key={index} style={{
-                    position: 'absolute',
-                    top: `${star.top}%`,
-                    left: `${star.left}%`,
-                    width: `${star.size}%`,
-                    height: `${star.size}%`
-                }}/>
+                <Star
+                    key={index}
+                    style={{
+                        position: 'absolute',
+                        top: `${star.top}%`,
+                        left: `${star.left}%`,
+                        width: `${star.size}%`,
+                        height: `${star.size}%`,
+                    }}
+                />
             ))}
             <div className="form-card__container flex">
-                {formData.map((token, index) => (
+                {balances.map((token, index) => (
                     <div className="form-card flex" key={index}>
                         <p>
                             <span>{token.icon}</span>
@@ -98,7 +129,13 @@ const Form = () => {
                     <div className="form-token">
                         {Tokens.map((token) => (
                             <div className="token-card flex" key={token.id}>
-                                <input type="radio" id={token.id} name="token-options"/>
+                                <input
+                                    type="radio"
+                                    id={token.id}
+                                    name="token-options"
+                                    value={token.label}
+                                    onChange={() => setSelectedToken(token.label)}
+                                />
                                 <label htmlFor={token.id}>
                                     <h5>{token.component} {token.label}</h5>
                                 </label>
@@ -113,7 +150,7 @@ const Form = () => {
                             placeholder='Enter Token Amount'
                             value={tokenAmount}
                             onChange={(e) => setTokenAmount(e.target.value)}
-                            className={error ? 'error' : ''} // Add error class if there's an error
+                            className={error ? 'error' : ''}
                         />
                     </div>
                     <h5>Select Multiplier</h5>
@@ -125,7 +162,13 @@ const Form = () => {
                                         <p>Recommended</p>
                                     </div>
                                 )}
-                                <input type="radio" id={multiplier.id} name="card-options"/>
+                                <input
+                                    type="radio"
+                                    id={multiplier.id}
+                                    name="card-options"
+                                    value={multiplier.value}
+                                    onChange={() => setSelectedMultiplier(multiplier.value.replace('x', ''))}
+                                />
                                 <label htmlFor={multiplier.id}>{multiplier.value}</label>
                             </div>
                         ))}
@@ -140,3 +183,4 @@ const Form = () => {
 };
 
 export default Form;
+
