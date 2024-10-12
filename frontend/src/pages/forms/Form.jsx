@@ -6,6 +6,7 @@ import { ReactComponent as STRK } from '../../assets/icons/strk.svg';
 import { ReactComponent as DAI } from '../../assets/icons/dai.svg';
 import { ReactComponent as Star } from '../../assets/particles/star.svg';
 import { getTokenBalances } from '../../utils/wallet';
+import { sendTransaction } from '../../utils/transaction';
 import axios from 'axios';
 
 const Form = ({ walletId }) => {
@@ -78,8 +79,15 @@ const Form = ({ walletId }) => {
             try {
                 // Send form data to the backend
                 const response = await axios.post(`${backendUrl}/api/create-position`, formData);
-                console.log('Position created successfully:', response.data);
-                setTokenAmount('');
+                    console.log('Position created successfully:', response.data);
+
+                    // Step 2: Use the transaction data returned by the backend to execute the transaction
+                    const transactionData = response.data;
+                    await sendTransaction(transactionData);
+                    console.log('Transaction executed successfully');
+
+                    // Reset the token amount
+                    setTokenAmount('');
             } catch (err) {
                 console.error('Failed to create position:', err);
             }
