@@ -3,7 +3,7 @@ from fastapi import APIRouter, Request
 from web_app.api.serializers.transaction import (
     ApproveData,
     LoopLiquidityData,
-    TransactionDataResponse,
+    DepositTransactionDataResponse, RepayTransactionDataResponse,
 )
 from web_app.api.serializers.form import PositionFormData
 from web_app.contract_tools.constants import TokenParams
@@ -13,7 +13,7 @@ from web_app.db.crud import PositionDBConnector
 router = APIRouter()  # Initialize the router
 position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
 
-@router.post("/api/create-position", response_model=TransactionDataResponse)
+@router.post("/api/create-position", response_model=DepositTransactionDataResponse)
 async def create_position_with_transaction_data(
     request: Request, form_data: PositionFormData
 ) -> dict:
@@ -44,8 +44,18 @@ async def create_position_with_transaction_data(
     approve_data = ApproveData(**transaction_result[0])
     loop_liquidity_data = LoopLiquidityData(**transaction_result[1])
 
-    response = TransactionDataResponse(
+    response = DepositTransactionDataResponse(
         approve_data=approve_data, loop_liquidity_data=loop_liquidity_data
     )
 
     return response
+
+
+@router.get("/api/get-repay-data", response_model=RepayTransactionDataResponse)
+async def get_repay_data(supply_token: str):
+    """
+    Obtain data for position closing.
+    :param supply_token: Supply token address
+    :return: Dict containing the repay transaction data
+    """
+    return await DepositMixin.get_repay_data(supply_token)
