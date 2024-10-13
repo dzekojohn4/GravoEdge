@@ -6,6 +6,7 @@ import { ReactComponent as EthIcon } from "../../../assets/icons/ethereum.svg";
 import { ReactComponent as UsdIcon } from "../../../assets/icons/usd_coin.svg";
 import { ReactComponent as BorrowIcon } from "../../../assets/icons/borrow.svg";
 import './dashboard.css';
+import { closePosition } from "../../../utils/transaction"
 
 
 const fetchCardData = async () => { 
@@ -18,7 +19,18 @@ const fetchCardData = async () => {
     }
 };
 
+
+
 const Dashboard = () => {
+    const closePositionEvent = async () => {
+        try {
+            const response = await axios.get("http://localhost:8000/api/get-repay-data?supply_token=ETH");
+            console.log(response);
+            const transaction_result = await closePosition(response.data, "0x123");
+        } catch (e) {
+            console.log(e);
+        }
+    }
     const [cardData, setCardData] = useState([]);
     const [healthFactor, setHealthFactor] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -106,7 +118,7 @@ const Dashboard = () => {
                 ))}
             </div> 
             <div >
-                <button className="btn redeem-btn border-0">Redeem</button>
+                <button className="btn redeem-btn border-0" onClick={closePositionEvent}>Redeem</button>
             </div>
         </div>
     );
