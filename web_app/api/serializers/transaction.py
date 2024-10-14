@@ -80,13 +80,24 @@ class LoopLiquidityData(BaseModel):
         return str(value)
 
 
-class TransactionDataResponse(BaseModel):
+class DepositTransactionDataResponse(BaseModel):
     """
-    Pydantic model for the transaction data response.
+    Pydantic model for the loop transaction data response.
     """
 
     approve_data: ApproveData
     loop_liquidity_data: LoopLiquidityData
+
+
+class RepayTransactionDataResponse(BaseModel):
+    """
+    Pydantic model for the repay transaction data response.
+    """
+    supply_token: str
+    debt_token: str
+    pool_key: PoolKey
+    supply_price: int
+    debt_price: int
 
 
 class UpdateUserContractRequest(BaseModel):
