@@ -22,12 +22,15 @@ const fetchCardData = async () => {
 
 const Dashboard = () => {
     const closePositionEvent = async () => {
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
         try {
-            const response = await axios.get("http://localhost:8000/api/get-repay-data?supply_token=ETH");
+            const response = await axios.get(
+                `${backendUrl}/api/get-repay-data?supply_token=ETH`
+            );
             console.log(response);
             const starknet = await connect();
             const addressResponse = await axios.get(
-                `http://localhost:8000/api/get-user-contract?wallet_id=${starknet.selectedAddress}`
+                `${backendUrl}/api/get-user-contract?wallet_id=${starknet.selectedAddress}`
             );
             console.log(addressResponse)
             const transaction_result = await closePosition(response.data, addressResponse.data);
