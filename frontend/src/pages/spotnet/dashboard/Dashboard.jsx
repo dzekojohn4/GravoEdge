@@ -24,6 +24,7 @@ const Dashboard = () => {
         try {
             const response = await axios.get("http://localhost:8000/api/get-repay-data?supply_token=ETH");
             console.log(response);
+            // const addressRes...
             const transaction_result = await closePosition(response.data, "0x123");
         } catch (e) {
             console.log(e);

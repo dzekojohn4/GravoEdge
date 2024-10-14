@@ -3,7 +3,7 @@ import {CallData} from "starknet";
 import {erc20abi} from "../abis/erc20";
 import {abi} from "../abis/abi";
 
-export async function sendTransaction(transactionData) {
+export async function sendTransaction(transactionData, contractAddress) {
     try {
         const starknet = await connect();
         if (!starknet.isConnected) {
@@ -34,7 +34,7 @@ export async function sendTransaction(transactionData) {
         const callData = new CallData(abi);
         const compiled = callData.compile("loop_liquidity", loopLiquidityData);
         const depositTransaction = {
-            contractAddress: "0x0798b587e3da417796a56ffab835ab2a905fa08bab136843ce5749f76c7e45e4",
+            contractAddress: contractAddress,
             entrypoint: "loop_liquidity",
             calldata: compiled
         };
