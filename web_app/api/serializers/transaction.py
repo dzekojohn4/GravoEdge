@@ -80,21 +80,26 @@ class LoopLiquidityData(BaseModel):
         return str(value)
 
 
-class TransactionDataResponse(BaseModel):
+class DepositTransactionDataResponse(BaseModel):
     """
-    Pydantic model for the transaction data response.
+    Pydantic model for the loop transaction data response.
     """
 
     approve_data: ApproveData
     loop_liquidity_data: LoopLiquidityData
 
 
-class TransactionDataRequest(BaseModel):
+class RepayTransactionDataResponse(BaseModel):
     """
-    Pydantic model for the transaction data request.
+    Pydantic model for the repay transaction data response.
     """
+    supply_token: str
+    debt_token: str
+    pool_key: PoolKey
+    supply_price: int
+    debt_price: int
 
-    wallet_id: str = Field(..., description="Wallet ID for the transaction")
-    token: str = Field(..., description="Token name for the transaction")
-    multiplier: int = Field(..., description="Multiplier for the transaction")
-    amount: str = Field(..., description="Amount to deposit as a string")
+
+class UpdateUserContractRequest(BaseModel):
+    wallet_id: str
+    transaction_hash: str

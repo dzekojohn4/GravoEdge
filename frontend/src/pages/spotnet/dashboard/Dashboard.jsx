@@ -7,6 +7,7 @@ import { ReactComponent as UsdIcon } from "../../../assets/icons/usd_coin.svg";
 import { ReactComponent as BorrowIcon } from "../../../assets/icons/borrow.svg";
 import { ReactComponent as StrkIcon } from "../../../assets/icons/strk.svg";
 import './dashboard.css';
+import { closePosition } from "../../../utils/transaction"
 
 
 const fetchCardData = async () => { 
@@ -19,7 +20,18 @@ const fetchCardData = async () => {
     }
 };
 
+
+
 const Dashboard = () => {
+    const closePositionEvent = async () => {
+        try {
+            const response = await axios.get("http://localhost:8000/api/get-repay-data?supply_token=ETH");
+            console.log(response);
+            const transaction_result = await closePosition(response.data, "0x123");
+        } catch (e) {
+            console.log(e);
+        }
+    }
     const [cardData, setCardData] = useState([]);
     const [healthFactor, setHealthFactor] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -73,17 +85,8 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="container dashboard-container">
-            {starData.map((star, index) => (
-                <Star key={index} style={{
-                    position: 'absolute',
-                    top: `${star.top}%`,
-                    left: `${star.left}%`,
-                    width: `${star.size}%`,
-                    height: `${star.size}%`
-                }}/>
-            ))}
-            <div className="backdround-gradients position-relative">
+        <div className="container-fluid position-relative container">
+            <div className="backdround-gradients">
                 <div className="backdround-gradient"></div>
                 <div className="backdround-gradient"></div>
             </div>
@@ -131,7 +134,7 @@ const Dashboard = () => {
                 ))}
             </div> 
             <div >
-                <button className="btn redeem-btn border-0">Redeem</button>
+                <button className="btn redeem-btn border-0" onClick={closePositionEvent}>Redeem</button>
             </div>
         </div>
     );
