@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Request
 
 from web_app.api.serializers.transaction import (
-    ApproveData,
     LoopLiquidityData,
-    DepositTransactionDataResponse, RepayTransactionDataResponse,
+    RepayTransactionDataResponse,
 )
 from web_app.api.serializers.form import PositionFormData
 from web_app.contract_tools.constants import TokenParams
