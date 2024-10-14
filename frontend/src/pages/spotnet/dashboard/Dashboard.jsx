@@ -5,6 +5,7 @@ import { ReactComponent as CollateralIcon } from "../../../assets/icons/collater
 import { ReactComponent as EthIcon } from "../../../assets/icons/ethereum.svg";
 import { ReactComponent as UsdIcon } from "../../../assets/icons/usd_coin.svg";
 import { ReactComponent as BorrowIcon } from "../../../assets/icons/borrow.svg";
+import { ReactComponent as StrkIcon } from "../../../assets/icons/strk.svg";
 import './dashboard.css';
 
 
@@ -27,7 +28,7 @@ const Dashboard = () => {
         { top: 1, left: 0, size: 1.5 },
         { top: 75, left: 35, size: 2.5 },
         { top: -2, left: 94, size: 5.5 },
-    ];
+    ];        
     
     useEffect(() => { 
         const getData = async () => {
@@ -35,15 +36,30 @@ const Dashboard = () => {
             const positions = data.zklend_position.products[0].positions;
             const healthRatio = data.zklend_position.products[0].health_ratio;
 
-            const cardData = positions.map(position => ({
-                title: position.data.collateral ? "Collateral & Earnings" : "Borrow",
-                icon: position.data.collateral ? CollateralIcon : BorrowIcon,
+            const cardData = positions.map((position, index) => {
+                const isFirstCard = index === 0;
+                const tokenAddress = position.tokenAddress;
+
+            if (isFirstCard) {
+                const isEthereum = tokenAddress === "0x01b5bd713e72fdc5d63ffd83762f81297f6175a5e0a4771cdadbc1dd5fe72cb1";
+                return {
+                    title: "Collateral & Earnings",
+                    icon: CollateralIcon,
+                    balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+                    currencyName: isEthereum ? "Ethereum" : "STRK",
+                    currencyIcon: isEthereum ? EthIcon : StrkIcon,
+                };
+            }
+
+            return {
+                title: "Borrow",
+                icon: BorrowIcon,
                 balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
-                currency: position.data.collateral ? "Ethereum" : "USD Coin",
-                currencyIcon: position.data.collateral ? EthIcon : UsdIcon,
-                currencyName: position.data.collateral ? "Ethereum" : "USD Coin",
-            }));
-            
+                currencyName: "USD Coin",
+                currencyIcon: UsdIcon,
+            };
+        });
+                    
             setCardData(cardData);
             setHealthFactor(healthRatio);
             setLoading(false);

@@ -20,6 +20,7 @@ body {
     margin-bottom: 12rem !important;
     min-height: 100vh;
     position: relative !important;
+    width: 100%;
 }
 
 .dashboard-text-color {
@@ -168,10 +169,88 @@ body {
     right: -180px;
 }
 
+@media (min-width: 992px) and (max-width: 1400px) {
+    /* .dashboard-container {
+        max-width: 960px !important;
+    } */
+
+    .health-text-size {
+        font-size: 18px;
+        font-weight: 500;
+        margin-right: 8px;
+    }
+
+    .zkLend-text {
+        font-size: 32px; 
+        margin-bottom: 14px;
+    } 
+    
+    .bg-custom-color {
+        padding: 12px 24px;
+    }
+
+    .bg-custom-health {
+        padding: 23px 24px;
+    }
+
+    .card-health-factor {
+        padding: 24px;
+        height: 120px;
+    }
+
+/* Cards styles */
+
+    .card-icons {
+        width: 32px;
+        height: 33px;
+    }
+
+    .text-style {
+        font-size: 22px;
+    }
+
+    .cards-custom {
+        margin-top: 18px;
+    }
+
+    .card-body-custom {
+        padding: 16px 10px 22px;
+    }
+
+    .card-custom-styles:first-child {
+        margin-right: 8px;
+    }
+    
+    .card-custom-styles:last-child {
+        margin-left: 8px;
+    }
+
+    .icon-text-gap {
+        margin-left: 3px !important;
+    }
+
+    .balance-text-size {
+        font-size: 18px;
+        font-weight: 400;
+    }
+
+/* Button "Redeem" styles */
+
+    .redeem-btn {
+        padding: 14px 18px;
+        font-size: 20px;
+        align-self: stretch;
+        border-radius: 6px;
+        font: 700 20px/1 Rethink Sans;
+        width: 100%;
+    }
+}
+
+
 /* TABLET */
 /* Health factor styles */
 
-@media (min-width: 767px) and (max-width: 991px) {
+@media (min-width: 768px) and (max-width: 991px) {
     .dashboard-container {
         margin-top: 1.5rem !important;
         margin-bottom: 4rem !important;
@@ -257,84 +336,6 @@ body {
         width: 100%;
     }
 
-}
-
-@media (min-width: 992px) and (max-width: 1400px) {
-    .dashboard-container {
-        margin-top: 2rem !important;
-        margin-bottom: 6rem !important;
-    }
-
-    .health-text-size {
-        font-size: 18px;
-        font-weight: 500;
-        margin-right: 8px;
-    }
-
-    .zkLend-text {
-        font-size: 32px; 
-        margin-bottom: 14px;
-    } 
-    
-    .bg-custom-color {
-        padding: 12px 24px;
-    }
-
-    .bg-custom-health {
-        padding: 23px 24px;
-    }
-
-    .card-health-factor {
-        padding: 24px;
-        height: 120px;
-    }
-
-/* Cards styles */
-
-    .card-icons {
-        width: 32px;
-        height: 33px;
-    }
-
-    .text-style {
-        font-size: 22px;
-    }
-
-    .cards-custom {
-        margin-top: 18px;
-    }
-
-    .card-body-custom {
-        padding: 16px 10px 22px;
-    }
-
-    .card-custom-styles:first-child {
-        margin-right: 8px;
-    }
-    
-    .card-custom-styles:last-child {
-        margin-left: 8px;
-    }
-
-    .icon-text-gap {
-        margin-left: 3px !important;
-    }
-
-    .balance-text-size {
-        font-size: 18px;
-        font-weight: 400;
-    }
-
-/* Button "Redeem" styles */
-
-    .redeem-btn {
-        padding: 14px 18px;
-        font-size: 20px;
-        align-self: stretch;
-        border-radius: 6px;
-        font: 700 20px/1 Rethink Sans;
-        width: 100%;
-    }
 }
 
 /* MOBILE */
