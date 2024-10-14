@@ -127,6 +127,15 @@ class UserDBConnector(DBConnector):
         """
         return self.get_object_by_field(User, "wallet_id", wallet_id)
 
+    def get_contract_address_by_wallet_id(self, wallet_id: str) -> str:
+        """
+        Retrieves the contract address of a user by their wallet ID.
+        :param wallet_id: str
+        :return: str
+        """
+        user = self.get_user_by_wallet_id(wallet_id)
+        return user.contract_address if user else None
+
     def create_user(self, wallet_id: str) -> User:
         """
         Creates a new user in the database.
@@ -137,17 +146,17 @@ class UserDBConnector(DBConnector):
         self.write_to_db(user)
         return user
 
-    def update_user_contract_status(
-        self, user: User, deployed_transaction_hash: str
+    def update_user_contract(
+        self, user: User, contract_address: str
     ) -> None:
         """
-        Updates the contract status of a user in the database.
+        Updates the contract of a user in the database.
         :param user: User
-        :param deployed_transaction_hash: str
+        :param contract_address: str
         :return: None
         """
         user.is_contract_deployed = not user.is_contract_deployed
-        user.deployed_transaction_hash = deployed_transaction_hash
+        user.contract_address = contract_address
         self.write_to_db(user)
 
 
