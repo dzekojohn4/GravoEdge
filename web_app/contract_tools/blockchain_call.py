@@ -92,7 +92,7 @@ class StarknetClient:
 
     async def _get_pool_price(
         self, pool_key, is_token1: bool
-    ):  # TODO move to contract side
+    ):
         """Calculate Ekubo pool price"""
 
         ekubo_contract = await Contract.from_address(
@@ -136,8 +136,8 @@ class StarknetClient:
             return 0
 
         if decimals:
-            return round(res[0] / 10**decimals, 6)
-        return round(res[0], 6)
+            return str(round(res[0] / 10**decimals, 6))
+        return str(round(res[0], 6))
 
     async def get_loop_liquidity_data(
         self,
@@ -176,3 +176,18 @@ class StarknetClient:
             "pool_key": pool_key,
             "deposit_data": deposit_data,
         }
+
+    async def get_repay_data(self, deposit_token: str, borrowing_token: str) -> dict:
+        """Get data for Spotnet position closing."""
+        pool_key = self._build_ekubo_pool_key(deposit_token, borrowing_token, 0, 0)
+        decimals_sum = TokenParams.get_token_decimals(deposit_token) + TokenParams.get_token_decimals(borrowing_token)
+        deposit_token, borrowing_token = self._convert_address(
+            deposit_token
+        ), self._convert_address(borrowing_token)
+
+        pool_key["token0"], pool_key["token1"] = deposit_token, borrowing_token
+        is_token1 = deposit_token == pool_key["token1"]
+        supply_price = floor(await self._get_pool_price(pool_key, is_token1))
+
+        debt_price = floor((1 / supply_price) * 10 ** decimals_sum)
+        return {"supply_price": supply_price, "debt_price": debt_price, "pool_key": pool_key}

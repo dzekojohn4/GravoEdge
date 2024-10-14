@@ -3,48 +3,25 @@ use ekubo::interfaces::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
 use ekubo::types::i129::{i129};
 use ekubo::types::keys::{PoolKey};
 
-use openzeppelin::upgrades::interface::{IUpgradeableDispatcher, IUpgradeableDispatcherTrait};
-
 use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
-use snforge_std::{declare, DeclareResultTrait, ContractClassTrait, get_class_hash};
-use spotnet::constants::{EKUBO_CORE_MAINNET};
-use spotnet::interfaces::{
-    ICoreDispatcher, ICoreDispatcherTrait, IDepositDispatcher, IDepositDispatcherTrait
-};
+use snforge_std::{declare, DeclareResultTrait, ContractClassTrait};
+use spotnet::interfaces::{IDepositDispatcher, IDepositDispatcherTrait};
 use spotnet::types::{SwapData, DepositData};
 
-use starknet::{ContractAddress, ClassHash};
+use starknet::{ContractAddress};
 
-fn deploy_core(ekubo_core: felt252) -> ICoreDispatcher {
-    // let _ = declare("Deposit");
-    let core = declare("Core").unwrap().contract_class();
-    let users_contract_hash = declare("Deposit").unwrap().contract_class().class_hash;
-    let core_owner = 0x123;
-    let (contract_address, _) = core
-        .deploy(@array![core_owner, (*users_contract_hash).try_into().unwrap()])
-        .expect('Deploy failed');
+pub const EKUBO_CORE_MAINNET: felt252 =
+    0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b;
 
-    ICoreDispatcher { contract_address }
-}
+pub const ZKLEND_MARKET: felt252 =
+    0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05;
 
-#[test]
-#[fork("MAINNET")]
-fn test_deploy_valid() {
-    let swapper = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: swapper.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
-}
-
-#[test]
-#[should_panic(expected: 'Contract already exists')]
-#[fork("MAINNET")]
-fn test_deploy_exists() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    disp.deploy_user_contract();
-    disp.deploy_user_contract();
+fn deploy_user_contract(user: ContractAddress) -> IDepositDispatcher {
+    let deposit_contract = declare("Deposit").unwrap().contract_class();
+    let (deposit_address, _) = deposit_contract.deploy(@array![user.try_into().unwrap(), EKUBO_CORE_MAINNET, ZKLEND_MARKET]).expect('Deploy failed');
+    IDepositDispatcher {contract_address: deposit_address}
 }
 
 #[test]
@@ -61,8 +38,6 @@ fn test_quote_for_base_mainnet() {
         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
         .try_into()
         .unwrap();
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let user_contract = core.deploy_user_contract();
 
     let pool_key = PoolKey {
         token0: strk_addr,
@@ -84,13 +59,13 @@ fn test_quote_for_base_mainnet() {
             strk_addr
         }
     };
-    let deposit_dispatcher = IDepositDispatcher { contract_address: user_contract };
+    let deposit_dispatcher = deploy_user_contract(user);
     let disp = IERC20Dispatcher { contract_address: strk_addr };
     println!("My bal ETH: {}", token_disp.balanceOf(user));
     println!("My bal STRK: {}", disp.balanceOf(user));
 
     start_cheat_caller_address(token_disp.contract_address, user);
-    token_disp.approve(user_contract, params.amount.mag.into());
+    token_disp.transfer(deposit_dispatcher.contract_address.try_into().unwrap(), params.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
 
     let res = deposit_dispatcher.swap(SwapData { params: params, pool_key, caller: user });
@@ -112,10 +87,6 @@ fn test_both_directions_mainnet() {
         .try_into()
         .unwrap();
 
-    let swapper = deploy_core(EKUBO_CORE_MAINNET);
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let user_contract = core.deploy_user_contract();
-
     let pool_key = PoolKey {
         token0: eth_addr,
         token1: usdc_addr,
@@ -136,13 +107,14 @@ fn test_both_directions_mainnet() {
             eth_addr
         }
     };
+    let deposit_disp = deploy_user_contract(user);
     let disp = IERC20Dispatcher { contract_address: eth_addr };
     println!("My bal USDC: {}", token_disp.balanceOf(user));
     println!("My bal ETH: {}", disp.balanceOf(user));
     start_cheat_caller_address(token_disp.contract_address, user);
-    token_disp.approve(user_contract, params.amount.mag.into());
+    token_disp.transfer(deposit_disp.contract_address.try_into().unwrap(), params.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
-    let deposit_disp = IDepositDispatcher { contract_address: user_contract };
+    
 
     let res = deposit_disp.swap(SwapData { params: params, pool_key, caller: user });
     println!("Swapped: {}", res.delta.amount0.mag);
@@ -161,10 +133,11 @@ fn test_both_directions_mainnet() {
             eth_addr
         }
     };
+    let deposit_disp =  deploy_user_contract(user);
     start_cheat_caller_address(token_disp.contract_address, user);
-    token_disp.approve(user_contract, params2.amount.mag.into());
+    token_disp.transfer(deposit_disp.contract_address.try_into().unwrap(), params2.amount.mag.into());
     stop_cheat_caller_address(token_disp.contract_address);
-    let deposit_disp = IDepositDispatcher { contract_address: user_contract };
+    
     let res = deposit_disp.swap(SwapData { params: params2, pool_key, caller: user });
     println!("My bal USDC: {}", IERC20Dispatcher { contract_address: usdc_addr }.balanceOf(user));
     println!("Swapped: {}", res.delta.amount0.mag);
@@ -173,9 +146,6 @@ fn test_both_directions_mainnet() {
 #[test]
 #[fork("MAINNET")]
 fn test_loop_base_token_zklend() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-
     let usdc_addr: ContractAddress =
         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
         .try_into()
@@ -184,11 +154,11 @@ fn test_loop_base_token_zklend() {
         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
         .try_into()
         .unwrap();
-    let user: ContractAddress = 0x0582d5Bc3CcfCeF2F7aF1FdA976767B010E453fF487A7FD2ccf9df1524f4D8fC
+    let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
         .try_into()
         .unwrap();
 
-    let deposit_contract = disp.deploy_user_contract();
+    // let deposit_contract = 0.try_into().unwrap();
 
     let pool_key = PoolKey {
         token0: eth_addr,
@@ -197,18 +167,18 @@ fn test_loop_base_token_zklend() {
         tick_spacing: 1000,
         extension: 0.try_into().unwrap()
     };
-    let pool_price = 2350000000;
+    let pool_price = 2400000000;
     let token_disp = IERC20Dispatcher { contract_address: eth_addr };
-    let deposit_disp = IDepositDispatcher { contract_address: deposit_contract };
+    let deposit_disp = deploy_user_contract(user);
     start_cheat_caller_address(eth_addr.try_into().unwrap(), user);
-    token_disp.approve(deposit_contract, 685000000000000);
+    token_disp.approve(deposit_disp.contract_address, 685000000000000);
     stop_cheat_caller_address(eth_addr);
+    // println!("There 0");
     deposit_disp
         .loop_liquidity(
             DepositData { token: eth_addr, amount: 685000000000000, multiplier: 2 },
             pool_key,
-            pool_price,
-            user
+            pool_price
         );
 }
 
@@ -227,10 +197,6 @@ fn test_loop_quote_token_zklend() {
         .try_into()
         .unwrap();
 
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
-
     let pool_key = PoolKey {
         token0: eth_addr,
         token1: usdc_addr,
@@ -240,18 +206,17 @@ fn test_loop_quote_token_zklend() {
     };
     let pool_price = 410000000000000;
     let token_disp = IERC20Dispatcher { contract_address: usdc_addr };
-
+    let disp = deploy_user_contract(user);
     start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
-    token_disp.approve(deposit_contract, 10000000);
+    token_disp.approve(disp.contract_address, 10000000);
     stop_cheat_caller_address(usdc_addr);
 
-    let disp = IDepositDispatcher { contract_address: deposit_contract };
+    
     disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 10000000, multiplier: 4 },
+            DepositData { token: usdc_addr, amount: 10000000, multiplier: 3 },
             pool_key,
-            pool_price,
-            user
+            pool_price
         );
 }
 
@@ -271,10 +236,6 @@ fn test_loop_unauthorized() {
         .try_into()
         .unwrap();
 
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
-
     let pool_key = PoolKey {
         token0: eth_addr,
         token1: usdc_addr,
@@ -282,98 +243,22 @@ fn test_loop_unauthorized() {
         tick_spacing: 1000,
         extension: 0.try_into().unwrap()
     };
-    let pool_price = 390000000000000;
+    let pool_price = 410000000000000;
 
-    let disp = IDepositDispatcher { contract_address: deposit_contract };
-    start_cheat_caller_address(deposit_contract, user);
+    let disp = deploy_user_contract(0x1223.try_into().unwrap());
+    start_cheat_caller_address(disp.contract_address, user);
     disp
         .loop_liquidity(
             DepositData { token: usdc_addr, amount: 10000000, multiplier: 4 },
             pool_key,
-            pool_price,
-            user
+            pool_price
         );
-    stop_cheat_caller_address(deposit_contract);
-}
-
-#[test]
-#[fork("MAINNET")]
-fn test_upgrade_core() {
-    let owner: ContractAddress = 0x123.try_into().unwrap();
-    let new_class_hash: ClassHash =
-        0x030e64ecb769ff832478ed5ce52fc5b81ffc7d32dd36cd9b8937135683339a2c
-        .try_into()
-        .unwrap();
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let upgr = IUpgradeableDispatcher { contract_address: core.contract_address };
-    start_cheat_caller_address(core.contract_address, owner);
-    upgr.upgrade(new_class_hash);
-    stop_cheat_caller_address(core.contract_address);
-    assert(get_class_hash(core.contract_address) == new_class_hash, 'Not upgraded');
-}
-
-#[test]
-#[should_panic(expected: ('Caller is not the owner',))]
-#[fork("MAINNET")]
-fn test_upgrade_core_unauthorized() {
-    let new_class_hash: ClassHash =
-        0x030e64ecb769ff832478ed5ce52fc5b81ffc7d32dd36cd9b8937135683339a2c
-        .try_into()
-        .unwrap();
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let upgr = IUpgradeableDispatcher { contract_address: core.contract_address };
-    upgr.upgrade(new_class_hash);
+    stop_cheat_caller_address(disp.contract_address);
 }
 
 #[test]
 #[fork("MAINNET")]
 fn test_close_position_base_token() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-
-    let usdc_addr: ContractAddress =
-        0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
-        .try_into()
-        .unwrap();
-    let eth_addr: ContractAddress =
-        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
-        .try_into()
-        .unwrap();
-    let user: ContractAddress = 0x0582d5Bc3CcfCeF2F7aF1FdA976767B010E453fF487A7FD2ccf9df1524f4D8fC
-        .try_into()
-        .unwrap();
-
-    let deposit_contract = disp.deploy_user_contract();
-
-    let pool_key = PoolKey {
-        token0: eth_addr,
-        token1: usdc_addr,
-        fee: 170141183460469235273462165868118016,
-        tick_spacing: 1000,
-        extension: 0.try_into().unwrap()
-    };
-    let pool_price = 2330000000;
-    let quote_token_price = 390182369224320;
-    let token_disp = IERC20Dispatcher { contract_address: eth_addr };
-    let deposit_disp = IDepositDispatcher { contract_address: deposit_contract };
-    start_cheat_caller_address(eth_addr.try_into().unwrap(), user);
-    token_disp.approve(deposit_contract, 685000000000000);
-    stop_cheat_caller_address(eth_addr);
-    deposit_disp
-        .loop_liquidity(
-            DepositData { token: eth_addr, amount: 685000000000000, multiplier: 4 },
-            pool_key,
-            pool_price,
-            user
-        );
-    deposit_disp.close_position(eth_addr, usdc_addr, pool_key, pool_price, quote_token_price);
-}
-
-#[test]
-#[fork("MAINNET")]
-fn test_close_position_quote_token() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
 
     let usdc_addr: ContractAddress =
         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
@@ -387,8 +272,7 @@ fn test_close_position_quote_token() {
         .try_into()
         .unwrap();
 
-    let deposit_contract = disp.deploy_user_contract();
-
+    // let deposit_contract = disp.deploy_user_contract();
     let pool_key = PoolKey {
         token0: eth_addr,
         token1: usdc_addr,
@@ -396,50 +280,108 @@ fn test_close_position_quote_token() {
         tick_spacing: 1000,
         extension: 0.try_into().unwrap()
     };
-    let supply_price = 390182369224320;
-    let debt_price = 2330000000;
-    let token_disp = IERC20Dispatcher { contract_address: usdc_addr };
-    let deposit_disp = IDepositDispatcher { contract_address: deposit_contract };
-    start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
-    token_disp.approve(deposit_contract, 10000000);
-    stop_cheat_caller_address(usdc_addr);
+    let pool_price = 2400000000;
+    let quote_token_price = 410182369224320;
+    let token_disp = IERC20Dispatcher { contract_address: eth_addr };
+    let deposit_disp = deploy_user_contract(user);
+    println!("Balance before: {}", token_disp.balanceOf(user));
+    start_cheat_caller_address(eth_addr.try_into().unwrap(), user);
+    token_disp.approve(deposit_disp.contract_address, 685000000000000);
+    stop_cheat_caller_address(eth_addr);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 10000000, multiplier: 3 },
+            DepositData { token: eth_addr, amount: 685000000000000, multiplier: 3 },
             pool_key,
-            supply_price,
-            user
+            pool_price
         );
-    deposit_disp.close_position(usdc_addr, eth_addr, pool_key, supply_price, debt_price);
+    println!("Balance mid: {}", token_disp.balanceOf(user));
+    deposit_disp.close_position(eth_addr, usdc_addr, pool_key, pool_price, quote_token_price);
+    println!("Balance after: {}", token_disp.balanceOf(user));
 }
 
 #[test]
 #[fork("MAINNET")]
-fn test_get_deposit() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
-    let deposit_disp = IDepositDispatcher { contract_address: deposit_contract };
+fn test_loop_dai() {
+    let usdc_addr: ContractAddress =
+    0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+    .try_into()
+    .unwrap();
+    let dai_addr: ContractAddress =
+        0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3
+        .try_into()
+        .unwrap();
+    let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+        .try_into()
+        .unwrap();
+
+    let pool_key = PoolKey {
+        token0: dai_addr,
+        token1: usdc_addr,
+        fee: 0xa7c6a3aab97597fb9b6713851eb8,
+        tick_spacing: 10,
+        extension: 0.try_into().unwrap()
+    };
+    let pool_price = 960904;
+    let quote_token_price = 1033974330230609190;
+    let token_disp = IERC20Dispatcher { contract_address: dai_addr };
+    let deposit_disp = deploy_user_contract(user);
+    println!("Balance before: {}", token_disp.balanceOf(user));
+    start_cheat_caller_address(dai_addr.try_into().unwrap(), user);
+    token_disp.approve(deposit_disp.contract_address, 6850000000000000000);
+    stop_cheat_caller_address(dai_addr);
     deposit_disp
-        .get_user_deposit(
-            0x123.try_into().unwrap(),
-            0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d.try_into().unwrap()
+        .loop_liquidity(
+            DepositData { token: dai_addr, amount: 6850000000000000000, multiplier: 2 },
+            pool_key,
+            pool_price
         );
+    println!("Balance after: {}", token_disp.balanceOf(user));
 }
 
-#[test]
-#[fork("MAINNET")]
-fn test_get_loan() {
-    let core = deploy_core(EKUBO_CORE_MAINNET);
-    let disp = ICoreDispatcher { contract_address: core.contract_address };
-    let deposit_contract = disp.deploy_user_contract();
-    let deposit_disp = IDepositDispatcher { contract_address: deposit_contract };
-    deposit_disp
-        .get_user_loan(
-            0x123.try_into().unwrap(),
-            0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d.try_into().unwrap()
-        );
-}
+// #[test]
+// #[fork("MAINNET")]
+// fn test_close_position_quote_token() {
+//     // let core = deploy_core(EKUBO_CORE_MAINNET);
+//     // let disp = ICoreDispatcher { contract_address: core.contract_address };
+
+//     let usdc_addr: ContractAddress =
+//         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+//         .try_into()
+//         .unwrap();
+//     let eth_addr: ContractAddress =
+//         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+//         .try_into()
+//         .unwrap();
+//     let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+//         .try_into()
+//         .unwrap();
+//     let deposit_contract = 0.try_into().unwrap();
+//     // let deposit_contract = disp.deploy_user_contract();
+
+//     let pool_key = PoolKey {
+//         token0: eth_addr,
+//         token1: usdc_addr,
+//         fee: 170141183460469235273462165868118016,
+//         tick_spacing: 1000,
+//         extension: 0.try_into().unwrap()
+//     };
+//     let supply_price = 390182369224320;
+//     let debt_price = 2330000000;
+//     let token_disp = IERC20Dispatcher { contract_address: usdc_addr };
+//     let deposit_disp = IDepositDispatcher { contract_address: deposit_contract };
+//     start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
+//     token_disp.approve(deposit_contract, 10000000);
+//     stop_cheat_caller_address(usdc_addr);
+//     deposit_disp
+//         .loop_liquidity(
+//             DepositData { token: usdc_addr, amount: 10000000, multiplier: 3 },
+//             pool_key,
+//             supply_price,
+//             user
+//         );
+//     deposit_disp.close_position(usdc_addr, eth_addr, pool_key, supply_price, debt_price);
+// }
+
 //// Implement looping through STRK and other tokens
 // #[test]
 // #[fork("MAINNET")]

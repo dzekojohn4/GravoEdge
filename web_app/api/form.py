@@ -1,38 +1,42 @@
-from fastapi import APIRouter, Depends, Request
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, Request
 
 from web_app.api.serializers.transaction import (
     ApproveData,
     LoopLiquidityData,
-    TransactionDataRequest,
-    TransactionDataResponse,
+    DepositTransactionDataResponse, RepayTransactionDataResponse,
 )
+from web_app.api.serializers.form import PositionFormData
 from web_app.contract_tools.constants import TokenParams
-from web_app.contract_tools.utils import DepositMixin
+from web_app.contract_tools.mixins.deposit import DepositMixin
+from web_app.db.crud import PositionDBConnector
 
-# Initialize the client and templates
-templates = Jinja2Templates(directory="web_app/api/templates")
 router = APIRouter()  # Initialize the router
+position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
 
-
-@router.get("/transaction-data", response_model=TransactionDataResponse)
-async def get_transaction_data(
-    request: Request,
-    transaction_data: TransactionDataRequest = Depends(),
-) -> TransactionDataResponse:
+@router.post("/api/create-position", response_model=DepositTransactionDataResponse)
+async def create_position_with_transaction_data(
+    request: Request, form_data: PositionFormData
+) -> dict:
     """
-    Get transaction data for the deposit.
+    Create a new position in the database and return transaction data.
     :param request: Request object
-    :param transaction_data: Pydantic model for the query parameters
-    :return: List of dicts containing the transaction data
+    :param form_data: Pydantic model for the form data
+    :return: Dict containing the created position and transaction data
     """
-    print("transaction_data", transaction_data)
-    # Get the transaction data from the DepositMixin
+    # Create a new position in the database
+    position_db_connector.create_position(
+        form_data.wallet_id,
+        form_data.token_symbol,
+        form_data.amount,
+        form_data.multiplier,
+    )
+
+    # Get the transaction data for the deposit
     transaction_result = await DepositMixin.get_transaction_data(
-        transaction_data.token,
-        transaction_data.amount,
-        transaction_data.multiplier,
-        transaction_data.wallet_id,
+        form_data.token_symbol,
+        form_data.amount,
+        form_data.multiplier,
+        form_data.wallet_id,
         TokenParams.USDC.address,
     )
 
@@ -40,8 +44,18 @@ async def get_transaction_data(
     approve_data = ApproveData(**transaction_result[0])
     loop_liquidity_data = LoopLiquidityData(**transaction_result[1])
 
-    response = TransactionDataResponse(
+    response = DepositTransactionDataResponse(
         approve_data=approve_data, loop_liquidity_data=loop_liquidity_data
     )
-    print("response", response.dict())
-    return response.dict()
+
+    return response
+
+
+@router.get("/api/get-repay-data", response_model=RepayTransactionDataResponse)
+async def get_repay_data(supply_token: str):
+    """
+    Obtain data for position closing.
+    :param supply_token: Supply token address
+    :return: Dict containing the repay transaction data
+    """
+    return await DepositMixin.get_repay_data(supply_token)
