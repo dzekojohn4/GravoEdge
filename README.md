@@ -13,3 +13,69 @@ How
 3. Trading on AMMs: Borrowed stablecoins are swapped for more ETH or the initial asset via AMMs (Starknet-based).
 4. Re-Deposit and Re-Borrow: The newly acquired ETH is re-deposited as additional collateral to borrow more stablecoins.
 5. Repeating the Loop: This loop repeats, increasing the user's leverage until they reach the desired level or the borrowing limit.
+
+
+# Development Environment Setup
+
+This guide explains how to start the development environment for the project using Docker Compose. It includes setting up the backend, database, and frontend services.
+
+## Prerequisites
+
+- Docker installed on your machine (v19.03+ recommended).
+- Docker Compose installed (v1.27+ recommended).
+- Ensure port **5433** is available for the PostgreSQL container.
+
+## Starting the Development Environment
+
+1. **Clone the Repository**
+
+   ```sh
+   git clone <repository-url>
+   cd <repository-folder>
+   ```
+
+2**Build and Start Services**
+
+   To build and run the entire development environment, use the following command:
+
+   ```sh
+   docker-compose -f docker-compose.dev.yaml up --build
+   ```
+
+   This command will:
+   - Build the backend and frontend Docker images.
+   - Start the backend, frontend, and PostgreSQL database containers.
+
+3**Access the Application**
+
+   - **Backend API**: Accessible at [http://localhost:8000](http://localhost:8000).
+   - **Frontend**: Accessible at [http://localhost:3000](http://localhost:3000).
+   - **PostgreSQL Database**: Accessible at `localhost:5433` (make sure to use the `DB_USER` and `DB_PASSWORD` from the `.env.dev` file).
+
+## Common Issues
+
+- **Port Conflict**: Ensure port `5433` is free, as PostgreSQL will bind to this port in the development environment.
+- **Docker Build Issues**: If changes in dependencies are not reflected, you may need to clear Docker's cache:
+
+  ```sh
+  docker-compose -f docker-compose.dev.yaml build --no-cache
+  ```
+
+## Stopping the Development Environment
+
+To stop the environment and remove containers, use:
+
+```sh
+docker-compose -f docker-compose.dev.yaml down
+```
+
+This command stops all running containers and removes them, but the data volumes will persist.
+
+## Rebuild or Update
+
+If you have made changes to the code or Docker configuration, rebuild the containers:
+
+```sh
+docker-compose -f docker-compose.dev.yaml up --build
+```
+
