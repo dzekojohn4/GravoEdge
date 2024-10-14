@@ -84,7 +84,9 @@ const Form = ({ walletId }) => {
                 // Step 2: Use the transaction data returned by the backend to execute the transaction
                 const transactionData = response.data;
 
-                const addressResponse = await axios.get(`${backendUrl}/api/get-contract-address`);
+                const addressResponse = await axios.get(
+                    `${backendUrl}/api/get-user-contract?wallet_id=${walletId}`
+                );
 
                 await sendTransaction(transactionData, addressResponse.data);
                 console.log('Transaction executed successfully');
