@@ -84,7 +84,6 @@ class DepositTransactionDataResponse(BaseModel):
     """
     Pydantic model for the loop transaction data response.
     """
-    contract_address: int
     approve_data: ApproveData
     loop_liquidity_data: LoopLiquidityData
 
