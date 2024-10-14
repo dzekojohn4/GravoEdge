@@ -21,16 +21,10 @@ class StarknetClient:
     A client to interact with the Starknet blockchain.
     """
 
+    FEE = 0x20C49BA5E353F80000000000000000
+    TICK_SPACING = 1000
+    EXTENSION = 0
     SLEEP_TIME = 10
-    POOLS = {
-        (TokenParams.ETH.address, TokenParams.USDC.address): {
-            "token0": TokenParams.ETH.address,
-            "token1": TokenParams.USDC.address,
-            "fee": 0x20C49BA5E353F80000000000000000,
-            "tick_spacing": 1000,
-            "extension": 0,
-        }
-    }
 
     def __init__(self):
         """
@@ -73,8 +67,13 @@ class StarknetClient:
             res = await self.client.call_contract(call)
         return res
 
+    @staticmethod
     def _build_ekubo_pool_key(
-        self, token0: str, token1: str, fee: int, tick_spacing, extension=0
+        token0: str,
+        token1: str,
+        fee: int = FEE,
+        tick_spacing: int = TICK_SPACING,
+        extension=0,
     ) -> dict:
         """
         Get ekubo pool key.
@@ -88,11 +87,15 @@ class StarknetClient:
             }
 
         """
-        return self.POOLS.get((token0, token1), {})
+        return {
+            "token0": token0,
+            "token1": token1,
+            "fee": fee,
+            "tick_spacing": tick_spacing,
+            "extension": extension,
+        }
 
-    async def _get_pool_price(
-        self, pool_key, is_token1: bool
-    ):
+    async def _get_pool_price(self, pool_key, is_token1: bool):
         """Calculate Ekubo pool price"""
 
         ekubo_contract = await Contract.from_address(
@@ -180,7 +183,9 @@ class StarknetClient:
     async def get_repay_data(self, deposit_token: str, borrowing_token: str) -> dict:
         """Get data for Spotnet position closing."""
         pool_key = self._build_ekubo_pool_key(deposit_token, borrowing_token, 0, 0)
-        decimals_sum = TokenParams.get_token_decimals(deposit_token) + TokenParams.get_token_decimals(borrowing_token)
+        decimals_sum = TokenParams.get_token_decimals(
+            deposit_token
+        ) + TokenParams.get_token_decimals(borrowing_token)
         deposit_token, borrowing_token = self._convert_address(
             deposit_token
         ), self._convert_address(borrowing_token)
@@ -189,5 +194,9 @@ class StarknetClient:
         is_token1 = deposit_token == pool_key["token1"]
         supply_price = floor(await self._get_pool_price(pool_key, is_token1))
 
-        debt_price = floor((1 / supply_price) * 10 ** decimals_sum)
-        return {"supply_price": supply_price, "debt_price": debt_price, "pool_key": pool_key}
+        debt_price = floor((1 / supply_price) * 10**decimals_sum)
+        return {
+            "supply_price": supply_price,
+            "debt_price": debt_price,
+            "pool_key": pool_key,
+        }
