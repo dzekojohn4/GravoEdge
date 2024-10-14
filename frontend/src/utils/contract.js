@@ -41,12 +41,12 @@ export async function checkAndDeployContract(walletId) {
             const transactionHash = result.transactionHash;
             const contractAddress = result.contractAddress;
 
-            console.log("Contract deployed successfully. Transaction hash:", transactionHash);
+            console.log("Contract address:", contractAddress);
 
             // Update the backend with transaction hash and wallet ID
             await axios.post(`${backendUrl}/api/update-user-contract`, {
                 wallet_id: walletId,
-                transaction_hash: contractAddress,
+                contract_address: contractAddress,
             });
             console.log("Backend updated with deployment information.");
         } else {

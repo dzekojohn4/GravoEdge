@@ -30,6 +30,7 @@ async def create_position_with_transaction_data(
         form_data.amount,
         form_data.multiplier,
     )
+    contract_address = position_db_connector.get_contract_address_by_wallet_id(form_data.wallet_id)
 
     # Get the transaction data for the deposit
     transaction_result = await DepositMixin.get_transaction_data(
@@ -45,7 +46,7 @@ async def create_position_with_transaction_data(
     loop_liquidity_data = LoopLiquidityData(**transaction_result[1])
 
     response = DepositTransactionDataResponse(
-        approve_data=approve_data, loop_liquidity_data=loop_liquidity_data
+        approve_data=approve_data, loop_liquidity_data=loop_liquidity_data, contract_address=contract_address
     )
 
     return response
