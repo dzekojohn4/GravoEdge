@@ -56,13 +56,13 @@ async function waitForTransaction(txHash) {
     console.log("Transaction accepted:", receipt);
 }
 
-export async function closePosition(transactionData, contractAddress) {
+export async function closePosition(transactionData) {
     const callData = new CallData(abi);
     const compiled = callData.compile("close_position", transactionData);
     console.log(compiled);
     const starknet = await connect();
-    console.log(contractAddress);
+    console.log(transactionData.contract_address);
     await starknet.account.execute([
-        {contractAddress: contractAddress, entrypoint: "close_position", calldata: compiled}]
+        {contractAddress: transactionData.contract_address, entrypoint: "close_position", calldata: compiled}]
     );
 }
