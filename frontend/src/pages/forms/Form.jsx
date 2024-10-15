@@ -62,7 +62,7 @@ const Form = ({ walletId }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
-        console.log("BACKENDURL", backendUrl)// Replace with your backend URL
+
         if (!tokenAmount.trim() || !selectedToken || !selectedMultiplier) {
             setError('All fields are required!');
         } else {
@@ -79,17 +79,20 @@ const Form = ({ walletId }) => {
             try {
                 // Send form data to the backend
                 const response = await axios.post(`${backendUrl}/api/create-position`, formData);
-                    console.log('Position created successfully:', response.data);
+                console.log('Position created successfully:', response.data);
 
                 // Step 2: Use the transaction data returned by the backend to execute the transaction
                 const transactionData = response.data;
 
-                const addressResponse = await axios.get(
-                    `${backendUrl}/api/get-user-contract-address`, { params: { wallet_id: walletId } }
-                );
-
-                await sendTransaction(transactionData, addressResponse.data.contract_address);
+                await sendTransaction(transactionData, transactionData.contract_address);
                 console.log('Transaction executed successfully');
+
+                // Step 3: Send request to update position status
+                const openPositionResponse = await axios.get(`${backendUrl}/api/open-position`, {
+                    params: { position_id: transactionData.position_id }
+                });
+
+                console.log('Position status updated successfully:', openPositionResponse.data);
 
                 // Reset the token amount
                 setTokenAmount('');
@@ -98,6 +101,7 @@ const Form = ({ walletId }) => {
             }
         }
     };
+
 
     const starData = [
         { top: 30, left: 13, size: 8 },
