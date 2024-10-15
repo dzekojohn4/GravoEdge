@@ -18,7 +18,7 @@ async def get_user_contract(wallet_id: str) -> int:
     if user is None or not user.is_contract_deployed:
         return 0
     else:
-        return int(user.deployed_transaction_hash, 16)
+        return user.deployed_transaction_hash
 
 
 @router.get("/api/check-user")

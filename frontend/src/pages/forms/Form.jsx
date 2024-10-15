@@ -100,14 +100,14 @@ const Form = ({ walletId }) => {
     };
 
     const starData = [
-        { top: 40, left: 13, size: 15 },
-        { top: 100, left: 5, size: 10 },
-        { top: 45, left: 76, size: 13 },
-        { top: 90, left: 87, size: 12 },
+        { top: 30, left: 13, size: 8 },
+        { top: 70, left: 5, size: 6 },
+        { top: 35, left: 76, size: 5 },
+        { top: 55, left: 87, size: 6 },
     ];
 
     return (
-        <div className="form-container">
+        <div className="form-container container">
             <div className="form-gradient"></div>
             <div className="form-gradient"></div>
             {starData.map((star, index) => (
@@ -125,7 +125,7 @@ const Form = ({ walletId }) => {
             <div className="form-card__container flex">
                 {balances.map((token, index) => (
                     <div className="form-card flex" key={index}>
-                        <p>
+                        <p className="form-card-text">
                             <span>{token.icon}</span>
                             <span>{token.title}</span> Balance:
                         </p>
@@ -187,7 +187,7 @@ const Form = ({ walletId }) => {
                         ))}
                     </div>
                     <div className="submit">
-                        <button type="submit" className='launch-button'>Submit</button>
+                        <button type="submit" className='form-button'>Submit</button>
                     </div>
                 </div>
             </form>
