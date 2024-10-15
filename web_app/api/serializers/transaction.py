@@ -48,6 +48,8 @@ class LoopLiquidityData(BaseModel):
     pool_price: int  # Assuming this should remain an integer
     pool_key: PoolKey
     deposit_data: DepositData
+    contract_address: str
+    position_id: str
 
     @validator("caller", pre=True, always=True)
     def convert_caller_to_str(cls, value: int) -> str:
@@ -68,8 +70,12 @@ class RepayTransactionDataResponse(BaseModel):
     pool_key: PoolKey
     supply_price: int
     debt_price: int
+    contract_address: str
 
 
 class UpdateUserContractRequest(BaseModel):
+    """
+    Pydantic model for the update user contract request.
+    """
     wallet_id: str
-    transaction_hash: str
+    contract_address: str

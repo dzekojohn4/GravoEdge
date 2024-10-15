@@ -8,7 +8,12 @@ user_db = UserDBConnector()
 
 
 @router.get("/api/get-user-contract")
-async def get_user_contract(wallet_id: str):
+async def get_user_contract(wallet_id: str) -> int:
+    """
+    Get the contract status of a user.
+    :param wallet_id: wallet id
+    :return: int
+    """
     user = user_db.get_user_by_wallet_id(wallet_id)
     if user is None or not user.is_contract_deployed:
         return 0
@@ -42,7 +47,21 @@ async def change_user_contract(data: UpdateUserContractRequest) -> dict:
     """
     user = user_db.get_user_by_wallet_id(data.wallet_id)
     if user:
-        user_db.update_user_contract_status(user, data.transaction_hash)
+        user_db.update_user_contract(user, data.contract_address)
         return {"is_contract_deployed": True}
     else:
         return {"is_contract_deployed": False}
+
+
+@router.get("/api/get-user-contract-address")
+async def get_user_contract_address(wallet_id: str) -> dict:
+    """
+    Get the contract address of a user.
+    :param wallet_id: wallet id
+    :return: dict
+    """
+    contract_address = user_db.get_contract_address_by_wallet_id(wallet_id)
+    if contract_address:
+        return {"contract_address": contract_address}
+    else:
+        return {"contract_address": None}

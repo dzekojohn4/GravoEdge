@@ -11,6 +11,7 @@ from web_app.db.models import (
     Base,
     User,
     Position,
+    Status,
 )
 
 logger = logging.getLogger(__name__)
@@ -38,24 +39,24 @@ class DBConnector:
         self.session_factory = sessionmaker(bind=self.engine)
         self.Session = scoped_session(self.session_factory)
 
-    def write_to_db(self, obj: Base = None) -> None:
+    def write_to_db(self, obj: Base = None) -> Base:
         """
-        Writes an object to the database. Rolls back transaction if there's an error.
+        Writes an object to the database. Rolls back the transaction if there's an error.
+        Refreshes the object to keep it attached to the session.
         :param obj: Base = None
         :raise SQLAlchemyError: If the database operation fails.
-        :return: None
+        :return: Base - the updated object
         """
-        db = self.Session()
-        try:
-            db.add(obj)
-            db.commit()
+        with self.Session() as session:
+            try:
+                session.add(obj)
+                session.commit()
+                session.refresh(obj)
+                return obj
 
-        except SQLAlchemyError as e:
-            db.rollback()
-            raise e
-
-        finally:
-            db.close()
+            except SQLAlchemyError as e:
+                session.rollback()
+                raise e
 
     def get_object(
         self, model: Type[ModelType] = None, obj_id: uuid = None
@@ -127,6 +128,15 @@ class UserDBConnector(DBConnector):
         """
         return self.get_object_by_field(User, "wallet_id", wallet_id)
 
+    def get_contract_address_by_wallet_id(self, wallet_id: str) -> str:
+        """
+        Retrieves the contract address of a user by their wallet ID.
+        :param wallet_id: str
+        :return: str
+        """
+        user = self.get_user_by_wallet_id(wallet_id)
+        return user.contract_address if user else None
+
     def create_user(self, wallet_id: str) -> User:
         """
         Creates a new user in the database.
@@ -137,17 +147,15 @@ class UserDBConnector(DBConnector):
         self.write_to_db(user)
         return user
 
-    def update_user_contract_status(
-        self, user: User, deployed_transaction_hash: str
-    ) -> None:
+    def update_user_contract(self, user: User, contract_address: str) -> None:
         """
-        Updates the contract status of a user in the database.
+        Updates the contract of a user in the database.
         :param user: User
-        :param deployed_transaction_hash: str
+        :param contract_address: str
         :return: None
         """
         user.is_contract_deployed = not user.is_contract_deployed
-        user.deployed_transaction_hash = deployed_transaction_hash
+        user.contract_address = contract_address
         self.write_to_db(user)
 
 
@@ -155,6 +163,25 @@ class PositionDBConnector(UserDBConnector):
     """
     Provides database connection and operations management for the Position model.
     """
+
+    @staticmethod
+    def _position_to_dict(position: Position) -> dict:
+        """
+        Converts a Position object to a dictionary.
+        :param position: Position instance
+        :return: dict
+        """
+        return {
+            "id": str(position.id),
+            "user_id": str(position.user_id),
+            "token_symbol": position.token_symbol,
+            "amount": position.amount,
+            "multiplier": position.multiplier,
+            "created_at": (
+                position.created_at.isoformat() if position.created_at else None
+            ),
+            "status": position.status,
+        }
 
     def _get_user_by_wallet_id(self, wallet_id: str) -> User | None:
         """
@@ -166,42 +193,83 @@ class PositionDBConnector(UserDBConnector):
 
     def get_positions_by_wallet_id(self, wallet_id: str) -> list:
         """
-        Retrieves all positions for a user by their ID.
+        Retrieves all positions for a user by their wallet ID and returns them as a list of dictionaries.
         :param wallet_id: str
-        :return: list
+        :return: list of dict
         """
-        db = self.Session()
-        user = self._get_user_by_wallet_id(wallet_id)
-        if not user:
-            return []
-        try:
-            return db.query(Position).filter(Position.user_id == user.id).all()
-        finally:
-            db.close()
+        with self.Session() as db:
+            user = self._get_user_by_wallet_id(wallet_id)
+            if not user:
+                return []
+
+            try:
+                positions = (
+                    db.query(Position)
+                    .filter(
+                        Position.user_id == user.id,
+                        Position.status == Status.OPENED.value,
+                    )
+                    .all()
+                )
+
+                # Convert positions to a list of dictionaries
+                positions_dict = [
+                    self._position_to_dict(position) for position in positions
+                ]
+                return positions_dict
+
+            except SQLAlchemyError as e:
+                logger.error(f"Failed to retrieve positions: {str(e)}")
+                return []
 
     def create_position(
         self, wallet_id: str, token_symbol: str, amount: str, multiplier: int
-    ) -> None:
+    ) -> Position:
         """
-        Creates a new position in the database.
+        Creates a new position in the database if it does not already exist for the wallet.
+        If a position with status 'pending' exists, update its values.
         :param wallet_id: str
         :param token_symbol: str
         :param amount: str
         :param multiplier: int
-        :return: None
+        :return: Position
         """
         user = self._get_user_by_wallet_id(wallet_id)
         if not user:
             logger.error(f"User with wallet ID {wallet_id} not found")
-            return
+            return None
 
-        position = Position(
-            user_id=user.id,
-            token_symbol=token_symbol,
-            amount=amount,
-            multiplier=multiplier,
-        )
-        self.write_to_db(position)
+        # Check if a position with status 'pending' already exists for this user
+        with self.Session() as session:
+            existing_position = (
+                session.query(Position)
+                .filter(
+                    Position.user_id == user.id, Position.status == Status.PENDING.value
+                )
+                .one_or_none()
+            )
+
+            # If a pending position exists, update its values
+            if existing_position:
+                existing_position.token_symbol = token_symbol
+                existing_position.amount = amount
+                existing_position.multiplier = multiplier
+                session.commit()  # Commit the changes to the database
+                session.refresh(existing_position)  # Refresh to get updated values
+                return existing_position
+
+            # Create a new position since none with 'pending' status exists
+            position = Position(
+                user_id=user.id,
+                token_symbol=token_symbol,
+                amount=amount,
+                multiplier=multiplier,
+                status=Status.PENDING.value,  # Set status as 'pending' by default
+            )
+
+            # Write the new position to the database
+            position = self.write_to_db(position)
+            return position
 
     def update_position(self, position: Position, amount: str, multiplier: int) -> None:
         """
@@ -222,3 +290,27 @@ class PositionDBConnector(UserDBConnector):
         :return: None
         """
         self.delete_object(Position, position.id)
+
+    def close_position(self, position_id: uuid) -> Position | None:
+        """
+        Retrieves a position by its contract address.
+        :param position_id: str
+        :return: Position | None
+        """
+        position = self.get_object(Position, position_id)
+        if position:
+            position.status = Status.CLOSED.value
+            self.write_to_db(position)
+        return position.status
+
+    def open_position(self, position_id: uuid) -> Position | None:
+        """
+        Retrieves a position by its contract address.
+        :param position_id: uuid
+        :return: Position | None
+        """
+        position = self.get_object(Position, position_id)
+        if position:
+            position.status = Status.OPENED.value
+            self.write_to_db(position)
+        return position.status

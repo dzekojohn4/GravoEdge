@@ -38,17 +38,16 @@ class DashboardMixin:
         return wallet_balances
 
     @classmethod
-    async def get_zklend_position(cls, wallet_id: str) -> ZkLendPositionResponse:
+    async def get_zklend_position(cls, contract_address: str) -> ZkLendPositionResponse:
         """
         Get the zkLend position for the given wallet ID.
-        :param wallet_id: Wallet ID
+        :param contract_address: contract address
         :return: zkLend position validated by Pydantic models
         """
-        # FIXME - This is a dummy wallet ID. Replace it with the actual wallet ID.
+        modified_contract_address = contract_address[:2] + "0" + contract_address[2:]
         response = await APIRequest(base_url=ARGENT_X_POSITION_URL).fetch(
-            f"decomposition/{wallet_id}", params={"chain": "starknet"}
+            f"decomposition/{modified_contract_address}", params={"chain": "starknet"}
         )
-
         if not response:
             return ZkLendPositionResponse(products=[])
 

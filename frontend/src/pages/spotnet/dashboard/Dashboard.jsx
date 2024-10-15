@@ -10,9 +10,14 @@ import axios from 'axios';
 import './dashboard.css';
 import {connect} from "get-starknet";
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
+
 const fetchCardData = async () => { 
     try {
-        const response = await axios.get('https://spotnet.xyz/api/dashboard');
+        const starknet = await connect();
+        const response = await axios.get(
+            `${backendUrl}/api/dashboard?wallet_id=${starknet.selectedAddress}`
+        );
         return response.data;
     } catch (error) {
         console.error("Error during getting the data from API", error);
@@ -20,24 +25,23 @@ const fetchCardData = async () => {
     }
 };
 
+
 const Dashboard = () => {
-    const closePositionEvent = async () => {
-        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
+    const closePositionEvent = async (position_id) => {
         try {
+            const starknet = await connect();
             const response = await axios.get(
-                `${backendUrl}/api/get-repay-data?supply_token=ETH`
+                `${backendUrl}/api/get-repay-data?supply_token=ETH&wallet_id=${starknet.selectedAddress}`
             );
             console.log(response);
-            const starknet = await connect();
-            const addressResponse = await axios.get(
-                `${backendUrl}/api/get-user-contract?wallet_id=${starknet.selectedAddress}`
-            );
-            console.log(addressResponse)
-            const transaction_result = await closePosition(response.data, addressResponse.data);
+            await closePosition(response.data);
+
+            await axios.get(`${backendUrl}/api/close-position?position_id=${position_id}`);
         } catch (e) {
             console.log(e);
         }
-    }
+    };
+
     const [cardData, setCardData] = useState([]);
     const [healthFactor, setHealthFactor] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -46,9 +50,9 @@ const Dashboard = () => {
         { top: 1, left: 0, size: 1.5 },
         { top: 75, left: 35, size: 2.5 },
         { top: -2, left: 94, size: 5.5 },
-    ];        
-    
-    useEffect(() => { 
+    ];
+
+    useEffect(() => {
         const getData = async () => {
             const data = await fetchCardData();
             const positions = data.zklend_position.products[0].positions;
@@ -58,26 +62,28 @@ const Dashboard = () => {
                 const isFirstCard = index === 0;
                 const tokenAddress = position.tokenAddress;
 
-            if (isFirstCard) {
-                const isEthereum = tokenAddress === "0x01b5bd713e72fdc5d63ffd83762f81297f6175a5e0a4771cdadbc1dd5fe72cb1";
-                return {
-                    title: "Collateral & Earnings",
-                    icon: CollateralIcon,
-                    balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
-                    currencyName: isEthereum ? "Ethereum" : "STRK",
-                    currencyIcon: isEthereum ? EthIcon : StrkIcon,
-                };
-            }
+                if (isFirstCard) {
+                    const isEthereum = tokenAddress === "0x01b5bd713e72fdc5d63ffd83762f81297f6175a5e0a4771cdadbc1dd5fe72cb1";
+                    return {
+                        position_id: position.position_id,
+                        title: "Collateral & Earnings",
+                        icon: CollateralIcon,
+                        balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+                        currencyName: isEthereum ? "Ethereum" : "STRK",
+                        currencyIcon: isEthereum ? EthIcon : StrkIcon,
+                    };
+                }
 
-            return {
-                title: "Borrow",
-                icon: BorrowIcon,
-                balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
-                currencyName: "USD Coin",
-                currencyIcon: UsdIcon,
-            };
-        });
-                    
+                return {
+                    position_id: position.position_id,
+                    title: "Borrow",
+                    icon: BorrowIcon,
+                    balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+                    currencyName: "USD Coin",
+                    currencyIcon: UsdIcon,
+                };
+            });
+
             setCardData(cardData);
             setHealthFactor(healthRatio);
             setLoading(false);
@@ -124,7 +130,7 @@ const Dashboard = () => {
                         <header className="card-header bg-custom-color text-light text-center card-shadow">
                             <div className="d-flex align-items-center justify-content-center">
                                 <card.icon className="card-icons rounded-circle" />
-                                <h1 className="ms-2 icon-text-gap mb-0 text-style" 
+                                <h1 className="ms-2 icon-text-gap mb-0 text-style"
                                     style={{ color: card.title === "Borrow" ? "var(--borrow-color)" : "var(--collateral-color)" }}>
                                     {card.title}
                                 </h1>
@@ -145,14 +151,19 @@ const Dashboard = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className="card-footer text-center">
+                            <button
+                                className="btn redeem-btn border-0"
+                                onClick={() => closePositionEvent(card.position_id)}
+                            >
+                                Redeem
+                            </button>
+                        </div>
                     </div>
                 ))}
-            </div> 
-            <div >
-                <button className="btn redeem-btn border-0" onClick={closePositionEvent}>Redeem</button>
             </div>
         </div>
     );
-}
+};
 
 export default Dashboard;
