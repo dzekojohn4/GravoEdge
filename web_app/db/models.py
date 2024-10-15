@@ -2,7 +2,18 @@ from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, DateTime, Enum
+from enum import Enum as PyEnum
 from web_app.db.database import Base
+
+
+class Status(PyEnum):
+    PENDING = "pending"
+    OPENED = "opened"
+    CLOSED = "closed"
+
+    @classmethod
+    def choices(cls):
+        return [status.value for status in cls]
 
 
 class User(Base):
@@ -34,7 +45,9 @@ class Position(Base):
     multiplier = Column(Integer, nullable=False)
     created_at = Column(DateTime, nullable=False, default=func.now())
     status = Column(
-        Enum('pending', 'opened', 'closed', name='status_enum'),
+        Enum(
+            Status, name="status_enum", values_callable=lambda x: [e.value for e in x]
+        ),
         nullable=True,
-        default='pending'
+        default="pending",
     )
