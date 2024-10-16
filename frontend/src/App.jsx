@@ -54,7 +54,7 @@ function App() {
                 path="/login"
                 element={walletId ? <Navigate to="/" /> : <Login onConnectWallet={handleConnectWallet} />}
             />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard walletId={walletId} />} />
             <Route path="/form" element={<Form walletId={walletId} />} />
           </Routes>
         </main>
