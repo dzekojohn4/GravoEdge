@@ -8,15 +8,18 @@ import { ReactComponent as StrkIcon } from "../../../assets/icons/strk.svg";
 import { closePosition } from "../../../utils/transaction"
 import axios from 'axios';
 import './dashboard.css';
-import {connect} from "get-starknet";
+import {ETH_ADDRESS} from "../../../utils/constants";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
 
-const fetchCardData = async () => { 
+const fetchCardData = async ({ walletId }) => {
+    if (!walletId) {
+        console.error("fetchCardData: walletId is undefined");
+        return null;
+    }
     try {
-        const starknet = await connect();
         const response = await axios.get(
-            `${backendUrl}/api/dashboard?wallet_id=${starknet.selectedAddress}`
+            `${backendUrl}/api/dashboard?wallet_id=${walletId}`
         );
         return response.data;
     } catch (error) {
@@ -25,20 +28,22 @@ const fetchCardData = async () => {
     }
 };
 
+const Dashboard = ({ walletId }) => {
 
-const Dashboard = () => {
-    const closePositionEvent = async (position_id) => {
+    const closePositionEvent = async () => {
+        if (!walletId) {
+            console.error("closePositionEvent: walletId is undefined");
+            return;
+        }
         try {
-            const starknet = await connect();
             const response = await axios.get(
-                `${backendUrl}/api/get-repay-data?supply_token=ETH&wallet_id=${starknet.selectedAddress}`
+                `${backendUrl}/api/get-repay-data?supply_token=ETH&wallet_id=${walletId}`
             );
-            console.log(response);
             await closePosition(response.data);
 
-            await axios.get(`${backendUrl}/api/close-position?position_id=${position_id}`);
+            await axios.get(`${backendUrl}/api/close-position?position_id=${response.data.position_id}`);
         } catch (e) {
-            console.log(e);
+            console.error("Error during closePositionEvent", e);
         }
     };
 
@@ -46,8 +51,6 @@ const Dashboard = () => {
     const [healthFactor, setHealthFactor] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-
-
     const starData = [
         { top: 1, left: 0, size: 1.5 },
         { top: 75, left: 35, size: 2.5 },
@@ -56,37 +59,41 @@ const Dashboard = () => {
 
     useEffect(() => {
         const getData = async () => {
-            const data = await fetchCardData();
-            
+            if (!walletId) {
+                console.error("getData: walletId is undefined");
+                setError(true);
+                setLoading(false);
+                return;
+            }
+
+            const data = await fetchCardData({ walletId });
             if (data && data.zklend_position && data.zklend_position.products) {
                 const positions = data.zklend_position.products[0].positions || [];
                 const healthRatio = data.zklend_position.products[0].health_ratio || 0;
 
-            const cardData = positions.map((position, index) => {
-                const isFirstCard = index === 0;
-                const tokenAddress = position.tokenAddress;
+                const cardData = positions.map((position, index) => {
+                    const isFirstCard = index === 0;
+                    const tokenAddress = position.tokenAddress;
 
-                if (isFirstCard) {
-                    const isEthereum = tokenAddress === "0x01b5bd713e72fdc5d63ffd83762f81297f6175a5e0a4771cdadbc1dd5fe72cb1";
+                    if (isFirstCard) {
+                        const isEthereum = tokenAddress === ETH_ADDRESS;
+                        return {
+                            title: "Collateral & Earnings",
+                            icon: CollateralIcon,
+                            balance: position.totalBalances[Object.keys(position.totalBalances)[0]] || 0,
+                            currencyName: isEthereum ? "Ethereum" : "STRK",
+                            currencyIcon: isEthereum ? EthIcon : StrkIcon,
+                        };
+                    }
+
                     return {
-                        position_id: position.position_id,
-                        title: "Collateral & Earnings",
-                        icon: CollateralIcon,
+                        title: "Borrow",
+                        icon: BorrowIcon,
                         balance: position.totalBalances[Object.keys(position.totalBalances)[0]] || 0,
-                        currencyName: isEthereum ? "Ethereum" : "STRK",
-                        currencyIcon: isEthereum ? EthIcon : StrkIcon,
+                        currencyName: "USD Coin",
+                        currencyIcon: UsdIcon,
                     };
-                }
-
-                return {
-                    position_id: position.position_id,
-                    title: "Borrow",
-                    icon: BorrowIcon,
-                    balance: position.totalBalances[Object.keys(position.totalBalances)[0]] || 0,
-                    currencyName: "USD Coin",
-                    currencyIcon: UsdIcon,
-                };
-            });
+                });
 
                 setCardData(cardData);
                 setHealthFactor(healthRatio);
@@ -98,27 +105,27 @@ const Dashboard = () => {
                 setHealthFactor(0);
             }
             setLoading(false);
-            };
+        };
 
-            const timeoutId = setTimeout(() => {
-                if (loading) {
-                    setError(true);
-                    setLoading(false);
-                    setCardData([]);
-                    setHealthFactor(0); 
-                }
-            }, 100000);
+        const timeoutId = setTimeout(() => {
+            if (loading) {
+                setError(true);
+                setLoading(false);
+                setCardData([]);
+                setHealthFactor(0);
+            }
+        }, 10000);
 
         getData();
 
         return () => clearTimeout(timeoutId);
-    }, []);
+    }, [walletId]);
 
     if (loading) {
         return <div className="d-flex text-white justify-content-center align-items-center min-vh-100">Loading...</div>;
     }
 
-    if (!cardData.length) {
+    if (error || !cardData.length) {
         return <div className="text-white text-center min-vh-100 d-flex align-items-center justify-content-center">Error during getting the data. Please try again later.</div>;
     }
 
@@ -180,7 +187,7 @@ const Dashboard = () => {
                         <div className="card-footer text-center">
                             <button
                                 className="btn redeem-btn border-0"
-                                onClick={() => closePositionEvent(card.position_id)}
+                                onClick={() => closePositionEvent()}
                             >
                                 Redeem
                             </button>
