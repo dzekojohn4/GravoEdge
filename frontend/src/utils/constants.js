@@ -6,7 +6,7 @@ export const CLASS_HASH = "0x07898133aa022d3bc986f9397606990a5f64628e8e6a0aaa23c
 export const UNIQUE = "0x0";
 export const EKUBO_ADDRESS =  "0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b"
 export const ZKLEND_ADDRESS = "0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05"
-
+export const ETH_ADDRESS = "0x01b5bd713e72fdc5d63ffd83762f81297f6175a5e0a4771cdadbc1dd5fe72cb1"
 
 export function getDeployContractData(walletId) {
     return {
