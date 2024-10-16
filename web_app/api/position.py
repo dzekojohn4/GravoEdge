@@ -42,7 +42,6 @@ async def create_position_with_transaction_data(
         position_db_connector.get_contract_address_by_wallet_id(form_data.wallet_id)
     )
     deposit_data["position_id"] = str(position.id)
-    print(f"Deposit data: {deposit_data}")
     return LoopLiquidityData(**deposit_data)
 
 
@@ -62,8 +61,10 @@ async def get_repay_data(
     contract_address = position_db_connector.get_contract_address_by_wallet_id(
         wallet_id
     )
+    position_id = position_db_connector.get_position_id_by_wallet_id(wallet_id)
     repay_data = await DepositMixin.get_repay_data(supply_token)
     repay_data["contract_address"] = contract_address
+    repay_data["position_id"] = str(position_id)
     return repay_data
 
 
@@ -74,8 +75,8 @@ async def close_position(position_id: str) -> str:
     :param position_id: contract address
     :return: str
     """
-    if not position_id:
-        raise ValueError("Position ID is required")
+    if position_id is None or position_id == 'undefined':
+        raise ValueError("Invalid position_id provided")
 
     position_status = position_db_connector.close_position(position_id)
     return position_status
