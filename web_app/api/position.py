@@ -4,7 +4,7 @@ from web_app.api.serializers.transaction import (
     LoopLiquidityData,
     RepayTransactionDataResponse,
 )
-from web_app.api.serializers.form import PositionFormData
+from web_app.api.serializers.position import PositionFormData
 from web_app.contract_tools.constants import TokenParams
 from web_app.contract_tools.mixins.deposit import DepositMixin
 from web_app.db.crud import PositionDBConnector
