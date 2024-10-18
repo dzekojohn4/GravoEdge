@@ -8,7 +8,7 @@ user_db = UserDBConnector()
 
 
 @router.get("/api/get-user-contract")
-async def get_user_contract(wallet_id: str = Query(...)) -> int:
+async def get_user_contract(wallet_id: str) -> int:
     """
     Get the contract status of a user.
     :param wallet_id: wallet id

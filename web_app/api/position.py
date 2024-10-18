@@ -78,7 +78,7 @@ async def close_position(position_id: str) -> str:
     :raises: HTTPException :return: Dict containing status code and detail
     """
     if position_id is None or position_id == "undefined":
-        raise HTTPException(status_code=400, detail="Invalid position_id provided")
+        raise HTTPException(status_code=404, detail="Invalid position_id provided")
 
     position_status = position_db_connector.close_position(position_id)
     return position_status
@@ -93,7 +93,7 @@ async def open_position(position_id: str) -> str:
     :raises: HTTPException :return: Dict containing status code and detail
     """
     if not position_id:
-        raise HTTPException(status_code=400, detail="Position ID is required")
+        raise HTTPException(status_code=404, detail="Position not found")
 
     position_status = position_db_connector.open_position(position_id)
     return position_status
