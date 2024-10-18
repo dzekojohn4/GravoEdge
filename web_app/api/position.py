@@ -57,7 +57,7 @@ async def get_repay_data(
     :raises: HTTPException :return: Dict containing status code and detail
     """
     if not wallet_id:
-        raise HTTPException(status_code=400, detail="Wallet ID is required")
+        raise HTTPException(status_code=404, detail="Wallet not found")
 
     contract_address = position_db_connector.get_contract_address_by_wallet_id(
         wallet_id
@@ -78,7 +78,7 @@ async def close_position(position_id: str) -> str:
     :raises: HTTPException :return: Dict containing status code and detail
     """
     if position_id is None or position_id == "undefined":
-        raise HTTPException(status_code=404, detail="Invalid position_id provided")
+        raise HTTPException(status_code=404, detail="Position not Found")
 
     position_status = position_db_connector.close_position(position_id)
     return position_status

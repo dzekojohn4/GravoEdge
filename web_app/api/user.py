@@ -20,7 +20,6 @@ async def get_user_contract(wallet_id: str) -> int:
 
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-
     elif not user.is_contract_deployed:
         raise HTTPException(status_code=404, detail="Contract not deployed")
     else:
