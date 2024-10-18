@@ -12,13 +12,14 @@ position_db_connector = PositionDBConnector()
 
 
 @router.get("/api/dashboard", tags=["Dashboard Operations"], summary="Get user dashboard data", response_model=DashboardResponse, response_description="Returns user's balances, multipliers, start dates, and ZkLend positions.")
-async def get_dashboard(request: Request, wallet_id: str) -> DashboardResponse:
+async def get_dashboard(request: Request, wallet_id: str) -> dict:
     """
-    Fetch the user's dashboard, including balances, multipliers, start dates, and ZkLend position.
+    This endpoint fetches the user's dashboard data, including balances, multipliers, start dates, and ZkLend position.
     
+    ### Parameters:
     - **wallet_id**: User's wallet ID
     
-    Returns:
+    ### Returns:
     A dictionary containing the user's dashboard data:
     - **balances**: Wallet balances for the user.
     - **multipliers**: Multipliers applied to each asset (e.g., ETH).
