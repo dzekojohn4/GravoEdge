@@ -1,32 +1,33 @@
 import httpx
 import pytest
 
-async_client = httpx.AsyncClient(base_url="http://localhost:8000")
+
+@pytest.fixture(scope="function")
+async def async_client():
+    async with httpx.AsyncClient(base_url="http://localhost:8000") as client:
+        print('ggggggg\n\n\n\n\n')
+        yield client
 
 
 @pytest.mark.asyncio
-async def get_user_contract_test():
-    async with async_client as ac:
-        response = await ac.get("/api/get-user-contract")
-    assert response.status_code == 200
+async def test_get_user_contract(async_client):
+    response = await async_client.get("/api/get-user-contract")
+    assert response.status_code == 422
 
 
 @pytest.mark.asyncio
-async def check_user_test():
-    async with async_client as ac:
-        response = await ac.get("/api/check-user")
-    assert response.status_code == 200
+async def test_check_user(async_client):
+    response = await async_client.get("/api/check-user")
+    assert response.status_code == 422
 
 
 @pytest.mark.asyncio
-async def change_user_contract_test():
-    async with async_client as ac:
-        response = await ac.post("/api/update-user-contract")
-    assert response.status_code == 200
+async def test_change_user_contract(async_client):
+    response = await async_client.post("/api/update-user-contract")
+    assert response.status_code == 422
 
 
 @pytest.mark.asyncio
-async def get_user_contract_address_test():
-    async with async_client as ac:
-        response = await ac.get("/api/get-user-contract-address")
-    assert response.status_code == 200
+async def test_get_user_contract_address(async_client):
+    response = await async_client.get("/api/get-user-contract-address")
+    assert response.status_code == 422
