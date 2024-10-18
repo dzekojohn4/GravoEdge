@@ -12,14 +12,7 @@ from web_app.api.user import router as user_router
 
 app = FastAPI(
     title="SPOTNET API",
-    description="""
-    This API allows users to:
-    
-    1. Deposit collateral (ETH) into a lending protocol (ZkLend or Nostra) on Starknet.
-    2. Borrow stablecoins (USDC) against their collateral.
-    3. Trade on Starknet-based AMMs.
-    4. Re-deposit and re-borrow assets for increased leverage.
-    """,
+    description="An API that supports depositing collateral, borrowing stablecoins, trading on AMMs, and managing user positions on Starknet.",
     version="0.1.0",
     license_info={
         "name": "MIT License",

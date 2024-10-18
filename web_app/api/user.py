@@ -1,19 +1,25 @@
 from fastapi import APIRouter, Request
 from web_app.db.crud import UserDBConnector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
+from web_app.api.serializers.user import CheckUserResponse, UpdateUserContractResponse, GetUserContractAddressResponse 
 
 router = APIRouter()  # Initialize the router
 
 user_db = UserDBConnector()
 
 
-@router.get("/api/get-user-contract")
+@router.get("/api/get-user-contract", tags=["User Operations"], summary="Get user's contract status", response_description="Returns 0 if the user is None or if the contract is not deployed. Returns the transaction hash if the contract is deployed.")
 async def get_user_contract(wallet_id: str) -> int:
     """
-    Get the contract status of a user.
-    :param wallet_id: wallet id
-    :return: int
+    This endpoint retrieves the contract status of a user.
+    
+    ### Parameters:
+    - **wallet_id**: User's wallet ID
+    
+    ### Returns:
+    User's contract status, 0 if not found, else returns the transaction hash
     """
+    
     user = user_db.get_user_by_wallet_id(wallet_id)
     if user is None or not user.is_contract_deployed:
         return 0
@@ -21,13 +27,19 @@ async def get_user_contract(wallet_id: str) -> int:
         return user.deployed_transaction_hash
 
 
-@router.get("/api/check-user")
-async def check_user(request: Request, wallet_id: str) -> dict:
+@router.get("/api/check-user", tags=["User Operations"], summary="Check if user exists and contract status", response_model=CheckUserResponse, response_description="Returns whether the user's contract is deployed.")
+async def check_user(request: Request, wallet_id: str) -> CheckUserResponse:
     """
-    Add a user to the database.
-    :param request: Request object
-    :return: dict
+    This endpoint checks if the user exists, or adds the user to the database if they don't exist, 
+    and checks whether their contract is deployed. 
+    
+    ### Parameters:
+    - **wallet_id**: The wallet ID of the user.
+    
+    ### Returns:
+    The contract deployment status
     """
+    
     user = user_db.get_user_by_wallet_id(wallet_id)
     if user and not user.is_contract_deployed:
         return {"is_contract_deployed": False}
@@ -38,13 +50,19 @@ async def check_user(request: Request, wallet_id: str) -> dict:
         return {"is_contract_deployed": True}
 
 
-@router.post("/api/update-user-contract")
-async def change_user_contract(data: UpdateUserContractRequest) -> dict:
+@router.post("/api/update-user-contract", tags=["User Operations"], summary="Update the user's contract", response_model=UpdateUserContractResponse, response_description="Returns if the contract is updated and deployed.")
+async def update_user_contract(data: UpdateUserContractRequest) ->  UpdateUserContractResponse:
     """
-    Change the contract status of a user.
-    :param data: UpdateUserContractRequest
-    :return: dict
+    This endpoint updates the user's contract.
+    
+    ### Parameters:
+    - **wallet_id**: The wallet ID of the user.
+    - **contract_address**: The contract address being deployed.
+    
+    ### Returns:
+    The contract deployment status
     """
+
     user = user_db.get_user_by_wallet_id(data.wallet_id)
     if user:
         user_db.update_user_contract(user, data.contract_address)
@@ -53,13 +71,18 @@ async def change_user_contract(data: UpdateUserContractRequest) -> dict:
         return {"is_contract_deployed": False}
 
 
-@router.get("/api/get-user-contract-address")
-async def get_user_contract_address(wallet_id: str) -> dict:
+@router.get("/api/get-user-contract-address", tags=["User Operations"], summary="Get user's contract address", response_model=GetUserContractAddressResponse, response_description="Returns the contract address of the user or None if not deployed.")
+async def get_user_contract_address(wallet_id: str) -> GetUserContractAddressResponse:
     """
-    Get the contract address of a user.
-    :param wallet_id: wallet id
-    :return: dict
+    This endpoint retrieves the contract address of a user.
+    
+    ### Parameters:
+    - **wallet_id**: User's wallet ID
+    
+    ### Returns:
+    The contract address or None if it does not exists.
     """
+
     contract_address = user_db.get_contract_address_by_wallet_id(wallet_id)
     if contract_address:
         return {"contract_address": contract_address}
