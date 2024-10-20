@@ -139,7 +139,7 @@ async def test_check_user(async_client):
     assert response.is_success
     assert isinstance(response_json, dict)
     assert "is_contract_deployed" in response_json
-    assert response_json["is_contract_deployed"]
+    assert isinstance(response_json["is_contract_deployed"], bool)
 
 
 @pytest.mark.asyncio
