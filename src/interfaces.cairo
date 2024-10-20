@@ -1,11 +1,9 @@
 use ekubo::types::keys::PoolKey;
-use spotnet::types::{MarketReserveData, SwapData, SwapResult, DepositData};
+use spotnet::types::{MarketReserveData, DepositData};
 use starknet::{ContractAddress};
 
 #[starknet::interface]
 pub trait IDeposit<TContractState> {
-    fn swap(ref self: TContractState, swap_data: SwapData) -> SwapResult;
-
     fn loop_liquidity(
         ref self: TContractState,
         deposit_data: DepositData,
