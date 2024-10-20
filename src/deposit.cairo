@@ -85,14 +85,29 @@ mod Deposit {
         PositionClosed: PositionClosed
     }
 
-    #[abi(embed_v0)]
-    impl Deposit of IDeposit<ContractState> {
+    #[generate_trait]
+    impl InternalImpl of InternalTrait {
         fn swap(ref self: ContractState, swap_data: SwapData) -> SwapResult {
             ekubo::components::shared_locker::call_core_with_callback(
                 self.ekubo_core.read(), @swap_data
             )
         }
+    }
 
+    #[abi(embed_v0)]
+    impl Deposit of IDeposit<ContractState> {
+        /// Loops collateral token on ZKlend.
+        /// 
+        /// # Panics
+        /// 
+        /// `is_position_open` storage variable is set to true('Open position already exists')
+        /// `amount` field of `deposit_data` is `0` or `pool_price` is `0`
+        /// address of the caller is not equal to `owner` storage address
+        /// 
+        /// # Paraemters
+        /// * `deposit_data` - Object of which stores main deposit information.
+        /// * `pool_key` - Ekubo type which represents data about pool.
+        /// * `pool_price` - Price of `deposit` token in terms of `debt` token in Ekubo pool.
         fn loop_liquidity(
             ref self: ContractState,
             deposit_data: DepositData,
@@ -177,6 +192,20 @@ mod Deposit {
                 );
         }
 
+        /// Closes position on ZKlend.
+        /// 
+        /// # Panics
+        /// 
+        /// `is_position_open` storage variable is set to false('Open position not exists')
+        /// `supply_price` or `debt_price` is `0`
+        /// address of the caller is not equal to `owner` storage address
+        /// 
+        /// # Paraemters
+        /// * `supply_token`: ContractAddress - Address of the token used as collateral.
+        /// * `debt_token`: ContractAddress - Address of the token used as borrowing.
+        /// * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping tokens.
+        /// * `supply_price`: felt252 - Price of `supply` token in terms of `debt` token in Ekubo pool.
+        /// * `debt_price`: felt252 - Price of `debt` token in terms of `supply` token in Ekubo pool.
         fn close_position(
             ref self: ContractState,
             supply_token: ContractAddress,
