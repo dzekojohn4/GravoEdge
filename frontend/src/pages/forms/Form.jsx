@@ -8,6 +8,7 @@ import { ReactComponent as Star } from '../../assets/particles/star.svg';
 import { getTokenBalances } from '../../utils/wallet';
 import { sendTransaction } from '../../utils/transaction';
 import axios from 'axios';
+import Spinner from '../../components/spinner/Spinner';
 
 const Form = ({ walletId }) => {
     const [balances, setBalances] = useState([
@@ -20,6 +21,8 @@ const Form = ({ walletId }) => {
     const [selectedToken, setSelectedToken] = useState('');
     const [selectedMultiplier, setSelectedMultiplier] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
         // Fetch balances from the backend endpoint
@@ -61,12 +64,15 @@ const Form = ({ walletId }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
 
         if (!tokenAmount.trim() || !selectedToken || !selectedMultiplier) {
             setError('All fields are required!');
+            return;
         } else {
             setError('');
+            setLoading(true);
 
             // Prepare form data for submission
             const formData = {
@@ -96,12 +102,14 @@ const Form = ({ walletId }) => {
 
                 // Reset the token amount
                 setTokenAmount('');
+                
             } catch (err) {
                 console.error('Failed to create position:', err);
+            } finally {
+                setLoading(false);
             }
         }
     };
-
 
     const starData = [
         { top: 30, left: 13, size: 8 },
@@ -173,7 +181,7 @@ const Form = ({ walletId }) => {
                     <h5>Select Multiplier</h5>
                     <div className="multiplier-card">
                         {Multipliers.map((multiplier) => (
-                            <div className="multiplier-item" key={multiplier.id}>
+                            <div className={"multiplier-item"} key={multiplier.id}>
                                 {multiplier.recommended && (
                                     <div className="recommended">
                                         <p>Recommended</p>
@@ -186,7 +194,7 @@ const Form = ({ walletId }) => {
                                     value={multiplier.value}
                                     onChange={() => setSelectedMultiplier(multiplier.value.replace('x', ''))}
                                 />
-                                <label htmlFor={multiplier.id}>{multiplier.value}</label>
+                                <label htmlFor={multiplier.id} className={multiplier.recommended ? 'recommended-item' : ''}>{multiplier.value}</label>
                             </div>
                         ))}
                     </div>
@@ -195,9 +203,9 @@ const Form = ({ walletId }) => {
                     </div>
                 </div>
             </form>
+            <Spinner loading={loading} />
         </div>
     );
 };
 
 export default Form;
-
