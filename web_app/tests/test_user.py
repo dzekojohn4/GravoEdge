@@ -10,6 +10,7 @@ async def async_client():
         yield client
 
 
+# Test cases for negative scenarios
 @pytest.mark.asyncio
 async def test_get_empty_user_contract(async_client):
     """
@@ -97,6 +98,7 @@ async def test_get_empty_user_contract_address(async_client):
     assert not response_json["contract_address"]
 
 
+# Test cases for positive scenarios
 @pytest.mark.asyncio
 async def test_get_user_contract(async_client):
     """
