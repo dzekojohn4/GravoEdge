@@ -20,7 +20,7 @@ async def test_get_user_contract(async_client):
     )
     response_json = response.json()
 
-    assert response.status_code == 200
+    assert response.is_success
     assert isinstance(response_json, int)
 
 
@@ -34,7 +34,7 @@ async def test_check_user(async_client):
     )
     response_json = response.json()
 
-    assert response.status_code == 200
+    assert response.is_success
     assert isinstance(response_json, dict)
     assert "is_contract_deployed" in response_json
 
@@ -52,7 +52,7 @@ async def test_change_user_contract(async_client):
     )
     response_json = response.json()
 
-    assert response.status_code == 200
+    assert response.is_success
     assert isinstance(response_json, dict)
     assert "is_contract_deployed" in response_json
 
@@ -67,6 +67,6 @@ async def test_get_user_contract_address(async_client):
     )
     response_json = response.json()
 
-    assert response.status_code == 200
+    assert response.is_success
     assert isinstance(response_json, dict)
     assert "contract_address" in response_json
