@@ -70,7 +70,21 @@ class ZkLendPositionResponse(BaseModel):
 
 
 class DashboardResponse(BaseModel):
-    balances: Dict[str, Any] = Field(..., example={"ETH": 5.0, "USDC": 1000.0}, description="The wallet balances for the user.")
-    multipliers: Dict[str, float] = Field(..., example={"ETH": 1.5}, description="The multipliers applied to each asset.")
-    start_dates: Dict[str, str] = Field(..., example={"ETH": "2024-01-01T00:00:00"}, description="The start date for each position.")
-    zklend_position: Dict[str, Any] = Field(..., example={"ETH": {"borrowed": 5000, "collateral": 10}}, description="Details of the ZkLend position for each asset.")
+    balances: Dict[str, Any] = Field(
+        ...,
+        example={"ETH": 5.0, "USDC": 1000.0},
+        description="The wallet balances for the user.",
+    )
+    multipliers: Dict[str, float] = Field(
+        ..., example={"ETH": 1.5}, description="The multipliers applied to each asset."
+    )
+    start_dates: Dict[str, str] = Field(
+        ...,
+        example={"ETH": "2024-01-01T00:00:00"},
+        description="The start date for each position.",
+    )
+    zklend_position: Dict[str, Any] = Field(
+        ...,
+        example={"ETH": {"borrowed": 5000, "collateral": 10}},
+        description="Details of the ZkLend position for each asset.",
+    )

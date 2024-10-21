@@ -88,7 +88,7 @@ function Home({ walletId }) {
                 <span className='blue-color'>Earn</span> by leveraging your assets
                 <span className='gradient'> with Spotnet</span>
             </h2>
-            <h5>Maximize the potential of your resources and start earning today.
+            <h5 className='subtitle-text-styles'>Maximize the potential of your resources and start earning today.
                 Join Spotnet and unlock new opportunities to grow your wealth!
             </h5>
                 <button className='launch-button' onClick={handleLaunchApp}>
