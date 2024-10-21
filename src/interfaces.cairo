@@ -8,7 +8,8 @@ pub trait IDeposit<TContractState> {
         ref self: TContractState,
         deposit_data: DepositData,
         pool_key: PoolKey,
-        pool_price: felt252
+        pool_price: felt252,
+        usdc_price: u256
     );
 
     fn close_position(
