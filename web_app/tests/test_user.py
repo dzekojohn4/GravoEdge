@@ -39,7 +39,10 @@ async def test_get_user_contract(wallet_id: str, expected_contract_address: str)
         assert response_json == expected_contract_address
     else:
         assert isinstance(response_json, dict)
-        assert response_json.get("detail") in ("User not found", "Contract not deployed")
+        assert response_json.get("detail") in (
+            "User not found",
+            "Contract not deployed",
+        )
 
 
 @pytest.mark.asyncio
