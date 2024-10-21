@@ -2,8 +2,10 @@
 :root{
     --text-font:'Rethink Sans',sans-serif;
     --gradient: linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%);
+    --primary: #fff;
     --secondary-color:#1A1C24;
-    --blue-color:#74D6FD;
+    --brand:#74D6FD;
+    --secondary: #E7ECF0;
 }
 
 body{
@@ -61,13 +63,13 @@ nav {
 
 .nav-items a {
     position: relative;
-    color: white;
+    color: var(--secondary);
     font-family:var(--text-font);
     font-size: 20px;
 }
 
 .nav-items a:hover{
-    color: var(--blue-color);
+    color: var(--brand);
 }
 
 .gradient-button{
@@ -77,8 +79,8 @@ nav {
     width: 190px;
     font-size: 20px;
     font-family: var(--text-font);
-    border: 1px solid var(--blue-color);
-    color: white;
+    border: 1px solid var(--brand);
+    color: var(--primary);
     font-weight: 700;
 }
 

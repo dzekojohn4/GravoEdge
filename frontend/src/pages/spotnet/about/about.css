@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
+
 :root{
-    --text-font:'Rethink Sans',sans-serif;
+    --text-font:'Rethink Sans', sans-serif;
     --gradient: linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%);
     --secondary-color:#1A1C24;
-    --blue-color:#74D6FD;
+    --secondary: #E7ECF0;
+    --brand:#74D6FD;
+    --primary: #fff;
     --primary-color:#0B0C10;
 }
 
@@ -24,16 +28,30 @@
     background-color: var(--primary-color);
 }
 
+.card-icon {
+    width: 120px;
+    height: 120px;
+}
+
+.card-title h4{
+    font-family: var(--text-font);
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 108%;
+    text-align: center;
+    color: var(--primary);
+}
+
 .about-title{
     text-align: center;
     font-family: var(--text-font);
-    color: white;
+    color: var(--primary);
     margin-top: 20px;
 }
 
 .card-about{
-    width: 350px;
-    height: 400px;
+    width: 320px;
+    height: 355px;
     background: linear-gradient(0deg, rgba(72, 143, 162, 0.03) 0%, rgba(72, 143, 162, 0.03) 100%), linear-gradient(123deg, rgba(116, 214, 253, 0.50) 0.63%, rgba(11, 12, 16, 0.50) 100.03%);
     flex-direction: column;
     gap: 15px;
@@ -41,9 +59,10 @@
     border: 0.5px solid #74D6FD;
     box-shadow: 0px 3.75px 3.75px 0px rgba(0, 0, 0, 0.15), 3.75px 3.75px 9.375px 0px rgba(153, 234, 255, 0.25) inset;
     backdrop-filter: blur(21.09375px);
+    padding: 12px;
 }
 
-.card-container{
+.card-container {
     flex-grow: 1;
     gap: 20px;
     position: relative;
@@ -51,29 +70,36 @@
 
 .card-description h6{
     text-align: center;
-    color: darkgray;
+    color: var(--secondary);
     font-weight: 400;
+    font-family: var(--text-font);
+    font-size: 20px;
+    line-height: 140%;
 }
 
-.card-about > *{
-    color: white;
+.card-about {
+    color: var(--primary);
 }
 
-.card-number{
+.card-number {
     position: absolute;
     top: -25px;
     left: 0;
     width: 100%;
     text-align: center;
+    color: var(--brand);
 }
 
 .card-number h2{
-    border: 1px solid var(--blue-color);
+    border: 1px solid var(--brand);
     margin: 0 auto;
     padding: 5px;
     width: 70px;
     background-color: var(--primary-color);
     border-radius: 10px;
+    font-weight: 600;
+    font-family: var(--text-font);
+    font-size: 32px;
 }
 
 .card-gradient:nth-child(1){
@@ -103,22 +129,11 @@
 }
 
 @media (min-width: 1800px) {
-    .card-title h4{
-        font-size: 1.6em;
-    }
-
-    .card-description h6{
-        font-size: 1.2em;
-    }
 
     .about-title{
         font-size: 70px;
     }
 
-    .card-about {
-        width: 400px;
-        height: 450px;
-    }
     .card-gradient:nth-child(1){
         position: absolute;
         top: 180px;
@@ -143,11 +158,6 @@
         right: 100px;
     }
 
-    .card-about {
-        width: 370px;
-        height: 420px;
-    }
-
     .card-gradient:nth-child(1){
         position: absolute;
         top: 300px;
@@ -165,11 +175,6 @@
     .about-container {
         width: 100%;
         right: 20px;
-    }
-
-    .card-about {
-        width: 340px;
-        height: 400px;
     }
 
     .card-gradient:nth-child(1){
@@ -191,20 +196,11 @@
         width: 97%;
     }
 
-    .card-about {
-        width: 320px;
-        height: 380px;
-    }
 }
 
 @media (max-width: 1550px) {
     .about-container {
         width: 100%;
-    }
-
-    .card-about {
-        width: 320px;
-        height: 380px;
     }
 }
 
@@ -220,19 +216,6 @@
         width: 95%;
         left: 15px;
     }
-
-    .card-about {
-        width: 280px;
-        height: 360px;
-    }
 }
 
-
-@media (max-width: 1024px) {
-    .card-about {
-        width: 100%;
-        max-width: 280px;
-        margin-bottom: 20px;
-    }
-}
 
