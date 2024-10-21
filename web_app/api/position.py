@@ -13,16 +13,24 @@ router = APIRouter()  # Initialize the router
 position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
 
 
-@router.post("/api/create-position", response_model=LoopLiquidityData)
+@router.post("/api/create-position", tags=["Position Operations"], response_model=LoopLiquidityData, summary="Create a new position", response_description="Returns the new position and transaction data.")
 async def create_position_with_transaction_data(
     request: Request, form_data: PositionFormData
 ) -> LoopLiquidityData:
     """
-    Create a new position in the database and return transaction data.
-    :param request: Request object
-    :param form_data: Pydantic model for the form data
-    :return: Dict containing the created position and transaction data
+    This endpoint creates a new user position.
+    
+    ### Parameters:
+    - **wallet_id**: The wallet ID of the user.
+    - **token_symbol**: The symbol of the token used for the position.
+    - **amount**: The amount of the token being deposited.
+    - **multiplier**: The multiplier applied to the user's position.
+    
+    ### Returns:
+    The created position's details and transaction data.
     """
+
+    
     # Create a new position in the database
     position = position_db_connector.create_position(
         form_data.wallet_id,
@@ -45,16 +53,21 @@ async def create_position_with_transaction_data(
     return LoopLiquidityData(**deposit_data)
 
 
-@router.get("/api/get-repay-data", response_model=RepayTransactionDataResponse)
+@router.get("/api/get-repay-data", tags=["Position Operations"], response_model=RepayTransactionDataResponse, summary="Get repay data", response_description="Returns the repay transaction data.")
 async def get_repay_data(
     supply_token: str, wallet_id: str
 ) -> RepayTransactionDataResponse:
     """
-    Obtain data for position closing.
-    :param supply_token: Supply token address
-    :param wallet_id: Wallet ID
-    :return: Dict containing the repay transaction data
+    Get the necessary data to repay a loan and close a position.
+    
+    ### Parameters:
+    - **supply_token**: Supply token address
+    - **wallet_id**: User's wallet ID
+    
+    Returns:
+    The repay transaction data.
     """
+    
     if not wallet_id:
         raise ValueError("Wallet ID is required")
 
@@ -68,13 +81,18 @@ async def get_repay_data(
     return repay_data
 
 
-@router.get("/api/close-position", response_model=str)
+@router.get("/api/close-position", tags=["Position Operations"], response_model=str, summary="Close a position", response_description="Returns the position status")
 async def close_position(position_id: str) -> str:
     """
-    Close a position.
-    :param position_id: contract address
-    :return: str
+    This endpoint closes a user's position.
+    
+    ### Parameters:
+    - **position_id**: Position ID
+    
+    ### Returns:
+    The position status
     """
+    
     if position_id is None or position_id == 'undefined':
         raise ValueError("Invalid position_id provided")
 
@@ -82,13 +100,18 @@ async def close_position(position_id: str) -> str:
     return position_status
 
 
-@router.get("/api/open-position", response_model=str)
+@router.get("/api/open-position", tags=["Position Operations"], response_model=str, summary="Open a position", response_description="Returns the positions status")
 async def open_position(position_id: str) -> str:
     """
-    Open a position.
-    :param position_id: contract address
-    :return: str
+    This endpoint opens a user's position.
+    
+    ### Parameters:
+    - **position_id**: Position ID
+    
+    ### Returns:
+    The position status
     """
+    
     if not position_id:
         raise ValueError("Position ID is required")
 
