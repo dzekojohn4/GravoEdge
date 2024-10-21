@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from web_app.db.crud import UserDBConnector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
 from web_app.api.serializers.user import CheckUserResponse, UpdateUserContractResponse, GetUserContractAddressResponse
@@ -9,22 +9,20 @@ user_db = UserDBConnector()
 
 
 @router.get("/api/get-user-contract", tags=["User Operations"], summary="Get user's contract status", response_description="Returns 0 if the user is None or if the contract is not deployed. Returns the transaction hash if the contract is deployed.")
-async def get_user_contract(wallet_id: str) -> int:
+async def get_user_contract(wallet_id: str) -> str:
     """
-    This endpoint retrieves the contract status of a user.
-
-    ### Parameters:
-    - **wallet_id**: User's wallet ID
-
-    ### Returns:
-    User's contract status, 0 if not found, else returns the transaction hash
+    Get the contract status of a user.
+    :param wallet_id: wallet id
+    :return: int
+    :raises: HTTPException :return: Dict containing status code and detail
     """
-
     user = user_db.get_user_by_wallet_id(wallet_id)
-    if user is None or not user.is_contract_deployed:
-        return 0
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    elif not user.is_contract_deployed:
+        raise HTTPException(status_code=404, detail="Contract not deployed")
     else:
-        return user.deployed_transaction_hash
+        return user.contract_address
 
 
 @router.get("/api/check-user", tags=["User Operations"], summary="Check if user exists and contract status", response_model=CheckUserResponse, response_description="Returns whether the user's contract is deployed.")
