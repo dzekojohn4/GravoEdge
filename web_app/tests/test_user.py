@@ -39,7 +39,7 @@ async def test_get_user_contract(wallet_id: str, expected_contract_address: str)
         assert response_json == expected_contract_address
     else:
         assert isinstance(response_json, dict)
-        assert response_json["detail"] in ("User not found", "Contract not deployed")
+        assert response_json.get("detail") in ("User not found", "Contract not deployed")
 
 
 @pytest.mark.asyncio
@@ -66,7 +66,7 @@ async def test_check_user(wallet_id: str):
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert isinstance(response_json["is_contract_deployed"], bool)
+    assert isinstance(response_json.get("is_contract_deployed"), bool)
 
 
 @pytest.mark.asyncio
@@ -100,7 +100,7 @@ async def test_change_user_contract(wallet_id: str, contract_address: str):
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert response_json["is_contract_deployed"]
+    assert response_json.get("is_contract_deployed")
 
 
 @pytest.mark.asyncio
@@ -133,4 +133,4 @@ async def test_get_user_contract_address(
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert response_json["contract_address"] == expected_contract_address
+    assert response_json.get("contract_address") == expected_contract_address
