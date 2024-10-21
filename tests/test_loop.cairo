@@ -20,8 +20,10 @@ pub const ZKLEND_MARKET: felt252 =
 
 fn deploy_user_contract(user: ContractAddress) -> IDepositDispatcher {
     let deposit_contract = declare("Deposit").unwrap().contract_class();
-    let (deposit_address, _) = deposit_contract.deploy(@array![user.try_into().unwrap(), EKUBO_CORE_MAINNET, ZKLEND_MARKET]).expect('Deploy failed');
-    IDepositDispatcher {contract_address: deposit_address}
+    let (deposit_address, _) = deposit_contract
+        .deploy(@array![user.try_into().unwrap(), EKUBO_CORE_MAINNET, ZKLEND_MARKET])
+        .expect('Deploy failed');
+    IDepositDispatcher { contract_address: deposit_address }
 }
 
 #[test]
@@ -92,12 +94,9 @@ fn test_loop_quote_token_zklend() {
     token_disp.approve(disp.contract_address, 60000000);
     stop_cheat_caller_address(usdc_addr);
 
-    
     disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 60000000, multiplier: 4 },
-            pool_key,
-            pool_price
+            DepositData { token: usdc_addr, amount: 60000000, multiplier: 4 }, pool_key, pool_price
         );
 }
 
@@ -130,9 +129,7 @@ fn test_loop_unauthorized() {
     start_cheat_caller_address(disp.contract_address, user);
     disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 10000000, multiplier: 4 },
-            pool_key,
-            pool_price
+            DepositData { token: usdc_addr, amount: 10000000, multiplier: 4 }, pool_key, pool_price
         );
     stop_cheat_caller_address(disp.contract_address);
 }
@@ -140,7 +137,6 @@ fn test_loop_unauthorized() {
 #[test]
 #[fork("MAINNET")]
 fn test_close_position_base_token() {
-
     let usdc_addr: ContractAddress =
         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
         .try_into()
@@ -184,9 +180,9 @@ fn test_close_position_base_token() {
 #[fork("MAINNET")]
 fn test_loop_dai() {
     let usdc_addr: ContractAddress =
-    0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
-    .try_into()
-    .unwrap();
+        0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+        .try_into()
+        .unwrap();
     let dai_addr: ContractAddress =
         0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3
         .try_into()
@@ -218,7 +214,6 @@ fn test_loop_dai() {
         );
     println!("Balance after: {}", token_disp.balanceOf(user));
 }
-
 // #[test]
 // #[fork("MAINNET")]
 // fn test_close_position_quote_token() {
@@ -233,7 +228,8 @@ fn test_loop_dai() {
 //         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
 //         .try_into()
 //         .unwrap();
-//     let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+//     let user: ContractAddress =
+//     0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
 //         .try_into()
 //         .unwrap();
 //     let deposit_contract = 0.try_into().unwrap();

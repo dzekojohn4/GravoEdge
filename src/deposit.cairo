@@ -37,7 +37,10 @@ mod Deposit {
     }
 
     fn get_borrow_amount(
-        borrow_capacity: felt252, token_price: felt252, decimals_difference: felt252, total_borrowed: felt252
+        borrow_capacity: felt252,
+        token_price: felt252,
+        decimals_difference: felt252,
+        total_borrowed: felt252
     ) -> felt252 {
         let borrow_const = 80;
         let amount_base_token = token_price * borrow_capacity;
@@ -97,32 +100,48 @@ mod Deposit {
     #[abi(embed_v0)]
     impl Deposit of IDeposit<ContractState> {
         /// Loops collateral token on ZKlend.
-        /// 
+        ///
         /// # Panics
-        /// 
+        ///
         /// `is_position_open` storage variable is set to true('Open position already exists')
         /// `amount` field of `deposit_data` is `0` or `pool_price` is `0`
         /// address of the caller is not equal to `owner` storage address
-        /// 
+        ///
         /// # Paraemters
         /// * `deposit_data` - Object of which stores main deposit information.
         /// * `pool_key` - Ekubo type which represents data about pool.
         /// * `pool_price` - Price of `deposit` token in terms of `debt` token in Ekubo pool.
+        /// * `usdc_price` - Price of `deposit` token in USDC.
         fn loop_liquidity(
             ref self: ContractState,
             deposit_data: DepositData,
             pool_key: PoolKey,
-            pool_price: felt252
+            pool_price: felt252,
+            usdc_price: u256
         ) {
-            assert(get_caller_address() == self.owner.read(), 'Caller is not an owner');
+            let caller = get_caller_address();
+            assert(caller == self.owner.read(), 'Caller is not an owner');
             assert(!self.is_position_open.read(), 'Open position already exists');
             let DepositData { token, amount, multiplier } = deposit_data;
-            assert(amount != 0 && pool_price != 0, 'Parameters cannot be zero');
+            let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
+            let deposit_token_decimals = fast_power(10_u128, token_dispatcher.decimals().into());
+
             assert(multiplier < 5, 'Multiplier not supported');
+            assert(amount != 0 && pool_price != 0, 'Parameters cannot be zero');
+            assert(
+                amount * usdc_price / deposit_token_decimals.into() > 1000000,
+                'Loop amount is too small'
+            );
+            assert(
+                token_dispatcher.allowance(caller, get_contract_address()) >= amount,
+                'Approved amount incuficient'
+            );
+            assert(token_dispatcher.balanceOf(caller) >= amount, 'Insufficient balance');
+
             let (EKUBO_LOWER_SQRT_LIMIT, EKUBO_UPPER_SQRT_LIMIT) = (
                 18446748437148339061, 6277100250585753475930931601400621808602321654880405518632
             );
-            let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
+
             let zk_market = self.zk_market.read();
             let is_token1 = token == pool_key.token0;
             let (borrowing_token, sqrt_limit) = if is_token1 {
@@ -139,19 +158,17 @@ mod Deposit {
 
             zk_market.enable_collateral(token);
 
-            let deposit_token_decimals = fast_power(
-                10_u128, token_dispatcher.decimals().into()
-            );
             token_dispatcher.approve(zk_market.contract_address, amount);
             zk_market.deposit(token, amount.try_into().expect('Overflow'));
-            let mut deposited = amount;
-            let mut total_borrowed = 0;
-            let mut accumulated = 0;
+            let (mut total_borrowed, mut accumulated, mut deposited) = (0, 0, amount);
 
             while (amount + accumulated) / amount < multiplier.into() {
                 let borrow_capacity = (deposited * collateral_factor / ZK_SCALE_DECIMALS);
                 let to_borrow = get_borrow_amount(
-                    borrow_capacity.try_into().unwrap(), pool_price, deposit_token_decimals.into(), total_borrowed
+                    borrow_capacity.try_into().unwrap(),
+                    pool_price,
+                    deposit_token_decimals.into(),
+                    total_borrowed
                 );
                 total_borrowed += to_borrow;
                 zk_market.borrow(borrowing_token, to_borrow);
@@ -193,19 +210,22 @@ mod Deposit {
         }
 
         /// Closes position on ZKlend.
-        /// 
+        ///
         /// # Panics
-        /// 
+        ///
         /// `is_position_open` storage variable is set to false('Open position not exists')
         /// `supply_price` or `debt_price` is `0`
         /// address of the caller is not equal to `owner` storage address
-        /// 
+        ///
         /// # Paraemters
         /// * `supply_token`: ContractAddress - Address of the token used as collateral.
         /// * `debt_token`: ContractAddress - Address of the token used as borrowing.
-        /// * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping tokens.
-        /// * `supply_price`: felt252 - Price of `supply` token in terms of `debt` token in Ekubo pool.
-        /// * `debt_price`: felt252 - Price of `debt` token in terms of `supply` token in Ekubo pool.
+        /// * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping
+        /// tokens.
+        /// * `supply_price`: felt252 - Price of `supply` token in terms of `debt` token in Ekubo
+        /// pool.
+        /// * `debt_price`: felt252 - Price of `debt` token in terms of `supply` token in Ekubo
+        /// pool.
         fn close_position(
             ref self: ContractState,
             supply_token: ContractAddress,
@@ -294,10 +314,7 @@ mod Deposit {
             self
                 .emit(
                     PositionClosed {
-                        deposit_token: supply_token,
-                        debt_token,
-                        repaid_amount,
-                        withdrawn_amount
+                        deposit_token: supply_token, debt_token, repaid_amount, withdrawn_amount
                     }
                 );
         }
