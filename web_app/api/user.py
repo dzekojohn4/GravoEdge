@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, HTTPException
 from web_app.db.crud import UserDBConnector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
-from web_app.api.serializers.user import CheckUserResponse, UpdateUserContractResponse, GetUserContractAddressResponse 
+from web_app.api.serializers.user import CheckUserResponse, UpdateUserContractResponse, GetUserContractAddressResponse
 
 router = APIRouter()  # Initialize the router
 
@@ -28,16 +28,16 @@ async def get_user_contract(wallet_id: str) -> str:
 @router.get("/api/check-user", tags=["User Operations"], summary="Check if user exists and contract status", response_model=CheckUserResponse, response_description="Returns whether the user's contract is deployed.")
 async def check_user(request: Request, wallet_id: str) -> CheckUserResponse:
     """
-    This endpoint checks if the user exists, or adds the user to the database if they don't exist, 
-    and checks whether their contract is deployed. 
-    
+    This endpoint checks if the user exists, or adds the user to the database if they don't exist,
+    and checks whether their contract is deployed.
+
     ### Parameters:
     - **wallet_id**: The wallet ID of the user.
-    
+
     ### Returns:
     The contract deployment status
     """
-    
+
     user = user_db.get_user_by_wallet_id(wallet_id)
     if user and not user.is_contract_deployed:
         return {"is_contract_deployed": False}
@@ -52,11 +52,11 @@ async def check_user(request: Request, wallet_id: str) -> CheckUserResponse:
 async def update_user_contract(data: UpdateUserContractRequest) ->  UpdateUserContractResponse:
     """
     This endpoint updates the user's contract.
-    
+
     ### Parameters:
     - **wallet_id**: The wallet ID of the user.
     - **contract_address**: The contract address being deployed.
-    
+
     ### Returns:
     The contract deployment status
     """
@@ -73,10 +73,10 @@ async def update_user_contract(data: UpdateUserContractRequest) ->  UpdateUserCo
 async def get_user_contract_address(wallet_id: str) -> GetUserContractAddressResponse:
     """
     This endpoint retrieves the contract address of a user.
-    
+
     ### Parameters:
     - **wallet_id**: User's wallet ID
-    
+
     ### Returns:
     The contract address or None if it does not exists.
     """
