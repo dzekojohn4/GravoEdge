@@ -39,7 +39,6 @@ async def test_get_user_contract(wallet_id: str, expected_contract_address: str)
         assert response_json == expected_contract_address
     else:
         assert isinstance(response_json, dict)
-        assert "detail" in response_json
         assert response_json["detail"] in ("User not found", "Contract not deployed")
 
 
@@ -67,7 +66,6 @@ async def test_check_user(wallet_id: str):
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert "is_contract_deployed" in response_json
     assert isinstance(response_json["is_contract_deployed"], bool)
 
 
@@ -102,7 +100,6 @@ async def test_change_user_contract(wallet_id: str, contract_address: str):
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert "is_contract_deployed" in response_json
     assert response_json["is_contract_deployed"]
 
 
@@ -136,5 +133,4 @@ async def test_get_user_contract_address(
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert "contract_address" in response_json
     assert response_json["contract_address"] == expected_contract_address
