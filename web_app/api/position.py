@@ -15,7 +15,7 @@ position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnec
 
 @router.post("/api/create-position", tags=["Position Operations"], response_model=LoopLiquidityData, summary="Create a new position", response_description="Returns the new position and transaction data.")
 async def create_position_with_transaction_data(
-    request: Request, form_data: PositionFormData
+    form_data: PositionFormData
 ) -> LoopLiquidityData:
     """
     This endpoint creates a new user position.
