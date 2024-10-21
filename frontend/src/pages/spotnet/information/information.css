@@ -1,3 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
+:root{
+    --text-font:'Rethink Sans',sans-serif;
+    --gradient: linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%);
+    --secondary-color:#1A1C24;
+    --blue-color:#74D6FD;
+    --primary-color:#0B0C10;
+    --black: #000;
+    --primary: #fff;
+    --secondary: #E7ECF0;
+    --button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
+    --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
+    --button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
+}
+
 .information{
     height: 70vh;
     display: flex;
@@ -24,17 +39,25 @@
     backdrop-filter: blur(21.09375px);
 }
 
-.card-info > * {
-    color: white;
+.card-info {
+    color: var(--primary);
 }
 
 .card-info h3{
     font-size: 60px;
+    font-family: var(--text-font);
+    font-weight: 600;
+    line-height: 95%;
+    text-align: center;
+    color: var(--primary);
 }
 
 .card-info h1{
-    font-size: 30px;
-    color: darkgray;
+    color: var(--secondary);
+    font-family: var(--text-font);
+    font-weight: 600;
+    font-size: 32px;
+    text-align: center;
 }
 
 .infos .card-gradient:nth-child(1){
