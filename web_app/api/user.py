@@ -9,7 +9,7 @@ user_db = UserDBConnector()
 
 
 @router.get("/api/get-user-contract", tags=["User Operations"], summary="Get user's contract status", response_description="Returns 0 if the user is None or if the contract is not deployed. Returns the transaction hash if the contract is deployed.")
-async def get_user_contract(wallet_id: str) -> int:
+async def get_user_contract(wallet_id: str) -> str:
     """
     This endpoint retrieves the contract status of a user.
     
@@ -22,9 +22,9 @@ async def get_user_contract(wallet_id: str) -> int:
     
     user = user_db.get_user_by_wallet_id(wallet_id)
     if user is None or not user.is_contract_deployed:
-        return 0
+        return ""
     else:
-        return user.deployed_transaction_hash
+        return user.contract_address
 
 
 @router.get("/api/check-user", tags=["User Operations"], summary="Check if user exists and contract status", response_model=CheckUserResponse, response_description="Returns whether the user's contract is deployed.")
