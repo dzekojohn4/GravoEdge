@@ -6,6 +6,9 @@
     --blue-color:#74D6FD;
     --black: #000;
     --primary: #fff;
+    --button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
+    --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
+    --button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
 }
 
 body{
@@ -80,20 +83,20 @@ nav {
     font-family: var(--text-font);
     color: var(--black);
     font-weight: 700;
-    background: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
+    background: var(--button-gradient);
     line-height: 100%;
 } 
 
 .gradient-button:hover {
-    background: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
+    background: var(--button-gradient-hover);
 }
 
 .gradient-button:active {
-    background: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
+    background: var(--button-gradient-active);
 }
 
 .gradient-button:disabled {
-    background: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
+    background: var(--button-gradient);
     color: var(--primary);
     opacity: 0.6;
     cursor: not-allowed;
