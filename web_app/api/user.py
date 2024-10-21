@@ -26,7 +26,7 @@ async def get_user_contract(wallet_id: str) -> str:
 
 
 @router.get("/api/check-user", tags=["User Operations"], summary="Check if user exists and contract status", response_model=CheckUserResponse, response_description="Returns whether the user's contract is deployed.")
-async def check_user(request: Request, wallet_id: str) -> CheckUserResponse:
+async def check_user(wallet_id: str) -> CheckUserResponse:
     """
     This endpoint checks if the user exists, or adds the user to the database if they don't exist,
     and checks whether their contract is deployed.
