@@ -35,11 +35,9 @@ async def test_get_user_contract(wallet_id: str, expected_contract_address: str)
     response_json = response.json()
 
     if response.is_success:
-        assert response.is_success
         assert isinstance(response_json, str)
         assert response_json == expected_contract_address
     else:
-        assert not response.is_success
         assert isinstance(response_json, dict)
         assert "detail" in response_json
         assert response_json["detail"] in ("User not found", "Contract not deployed")
