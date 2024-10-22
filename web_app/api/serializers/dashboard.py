@@ -76,7 +76,7 @@ class DashboardResponse(BaseModel):
         example={"ETH": 5.0, "USDC": 1000.0},
         description="The wallet balances for the user.",
     )
-    multipliers: Dict[str, str | None] = Field(
+    multipliers: Dict[str, int | None] = Field(
         ..., example={"ETH": 1.5}, description="The multipliers applied to each asset."
     )
     start_dates: Dict[str, datetime | None] = Field(
