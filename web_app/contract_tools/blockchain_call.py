@@ -62,7 +62,8 @@ class StarknetClient:
         )
         try:
             res = await self.client.call_contract(call)
-        except Exception as e:
+        except Exception as e: # Catch and log any errors
+            logger.error(f"Error making contract call: {e}")
             time.sleep(self.SLEEP_TIME)
             res = await self.client.call_contract(call)
         return res
@@ -103,9 +104,11 @@ class StarknetClient:
         )
         price_data = await ekubo_contract.functions["get_pool_price"].call(pool_key)
 
-        token_0_decimals = await self._func_call(pool_key["token0"], "decimals", [])
-        token_1_decimals = await self._func_call(pool_key["token1"], "decimals", [])
-        token_0_decimals, token_1_decimals = token_0_decimals[0], token_1_decimals[0]
+        underlying_token_0_address = TokenParams.add_underlying_address(str(hex(pool_key["token0"])))
+        underlying_token_1_address = TokenParams.add_underlying_address(str(hex(pool_key["token1"])))
+
+        token_0_decimals = TokenParams.get_token_decimals(underlying_token_0_address)
+        token_1_decimals = TokenParams.get_token_decimals(underlying_token_1_address)
 
         price = ((price_data[0]["sqrt_ratio"] / 2**128) ** 2) * (
             10 ** abs(token_0_decimals - token_1_decimals)
@@ -124,6 +127,7 @@ class StarknetClient:
 
         :param token_addr: The token contract address in hexadecimal string format.
         :param holder_addr: The address of the holder in hexadecimal string format.
+        :param decimals: The number of decimal places to round the balance to. Defaults to None.
         :return: The token balance of the holder as an integer.
         """
         token_address_int = self._convert_address(token_addr)

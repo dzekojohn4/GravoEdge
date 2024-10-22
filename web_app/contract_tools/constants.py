@@ -87,6 +87,24 @@ class TokenParams:
                 return token.name
         raise ValueError(f"Token with address {token_address} not found")
 
+    @staticmethod
+    def convert_int_to_str(token_address: int) -> str:
+        """
+        Converts an integer to a string representation of the token balance.
+        :param token_address: Token address as an integer
+        :return: String representation of the token balance
+        """
+        return str(hex(token_address))
+
+    @staticmethod
+    def add_underlying_address(token_address: str) -> str:
+        """
+        Add underlying address to the token address.
+        :param token_address:
+        :return: underlying address
+        """
+        return token_address[:2] + "0" + token_address[2:]
+
 
 class ProtocolAddress(Enum):
 
