@@ -14,7 +14,7 @@ mod Deposit {
 
     use starknet::event::EventEmitter;
     use starknet::storage::{StoragePointerWriteAccess, StoragePointerReadAccess};
-    use starknet::{ContractAddress, get_contract_address, get_caller_address};
+    use starknet::{ContractAddress, get_contract_address, get_caller_address, get_tx_info};
 
     #[storage]
     struct Storage {
@@ -37,8 +37,8 @@ mod Deposit {
     }
 
     fn get_borrow_amount(
-        borrow_capacity: felt252,
-        token_price: felt252,
+        borrow_capacity: u256,
+        token_price: u256,
         decimals_difference: felt252,
         total_borrowed: felt252
     ) -> felt252 {
@@ -116,11 +116,11 @@ mod Deposit {
             ref self: ContractState,
             deposit_data: DepositData,
             pool_key: PoolKey,
-            pool_price: felt252,
+            pool_price: u256,
             usdc_price: u256
         ) {
-            let caller = get_caller_address();
-            assert(caller == self.owner.read(), 'Caller is not an owner');
+            let user_acount = get_tx_info().unbox().account_contract_address;
+            assert(user_acount == self.owner.read(), 'Caller is not an owner');
             assert(!self.is_position_open.read(), 'Open position already exists');
             let DepositData { token, amount, multiplier } = deposit_data;
             let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
@@ -129,14 +129,16 @@ mod Deposit {
             assert(multiplier < 5, 'Multiplier not supported');
             assert(amount != 0 && pool_price != 0, 'Parameters cannot be zero');
             assert(
-                amount * usdc_price / deposit_token_decimals.into() > 1000000,
+                amount * usdc_price / deposit_token_decimals.into() >= 1000000,
                 'Loop amount is too small'
-            );
+            ); // User needs to have at least 1 USDC, so rounded down amount is OK.
+
+            let curr_contract_address = get_contract_address();
             assert(
-                token_dispatcher.allowance(caller, get_contract_address()) >= amount,
+                token_dispatcher.allowance(user_acount, curr_contract_address) >= amount,
                 'Approved amount incuficient'
             );
-            assert(token_dispatcher.balanceOf(caller) >= amount, 'Insufficient balance');
+            assert(token_dispatcher.balanceOf(user_acount) >= amount, 'Insufficient balance');
 
             let (EKUBO_LOWER_SQRT_LIMIT, EKUBO_UPPER_SQRT_LIMIT) = (
                 18446748437148339061, 6277100250585753475930931601400621808602321654880405518632
@@ -149,7 +151,6 @@ mod Deposit {
             } else {
                 (pool_key.token0, EKUBO_LOWER_SQRT_LIMIT)
             };
-            let curr_contract_address = get_contract_address();
 
             token_dispatcher.transferFrom(self.owner.read(), curr_contract_address, amount);
             let reserve_data = zk_market.get_reserve_data(token);
@@ -191,6 +192,7 @@ mod Deposit {
                 deposited += amount_swapped.into();
                 accumulated += amount_swapped.into();
             };
+
             self.is_position_open.write(true);
             self
                 .emit(
