@@ -27,7 +27,7 @@ function Footer() {
               </div>
             </div>
             <div className="social-card">
-              <a href="https://t.me/yourprofile" target="_blank" rel="noopener noreferrer">
+              <a href="https://discord.com/yourprofile" target="_blank" rel="noopener noreferrer">
               <DiscordIcon />
               </a>
               <div>
@@ -35,7 +35,7 @@ function Footer() {
               </div>
             </div>
             <div className="social-card">
-              <a href="https://discord.com/yourprofile" target="_blank" rel="noopener noreferrer">
+              <a href="https://t.me/yourprofile" target="_blank" rel="noopener noreferrer">
               <TelegramIcon />
               </a>
               <div>
