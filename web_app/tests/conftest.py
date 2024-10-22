@@ -10,7 +10,7 @@ from web_app.db.database import get_database
 
 @pytest.fixture(scope="module")
 def client():
-    app.dependency_overrides[get_database] = DBConnector("sqlite:///:memory:")
+    app.dependency_overrides[get_database] = DBConnector("sqlite:///test.db")
 
     with TestClient(app=app) as client:
         yield client
@@ -20,17 +20,17 @@ def client():
 
 @pytest.fixture(scope="module")
 def mock_db_connector():
-    mock_connector = MagicMock(spec=DBConnector("sqlite:///:memory:"))
+    mock_connector = MagicMock(spec=DBConnector("sqlite:///test.db"))
     yield mock_connector
 
 
 @pytest.fixture(scope="module")
 def mock_user_db_connector():
-    mock_user_connector = MagicMock(spec=UserDBConnector("sqlite:///:memory:"))
+    mock_user_connector = MagicMock(spec=UserDBConnector("sqlite:///test.db"))
     yield mock_user_connector
 
 
 @pytest.fixture(scope="module")
 def mock_position_db_connector():
-    mock_position_connector = MagicMock(spec=PositionDBConnector("sqlite:///:memory:"))
+    mock_position_connector = MagicMock(spec=PositionDBConnector("sqlite:///test.db"))
     yield mock_position_connector
