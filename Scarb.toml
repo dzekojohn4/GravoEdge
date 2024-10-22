@@ -13,6 +13,7 @@ alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.g
 openzeppelin_token = "0.17.0"
 
 [dev-dependencies]
+pragma_lib = { git = "https://github.com/astraly-labs/pragma-lib", tag = "2.8.2" }
 snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry.git", tag = "v0.30.0" }
 
 [lib]
@@ -29,6 +30,5 @@ block_id.tag = "latest"
 
 [[tool.snforge.fork]]
 name = "MAINNET"
-# url = "https://starknet-mainnet.public.blastapi.io/rpc/v0_7"
 url = "http://127.0.0.1:5050"
 block_id.tag = "latest"
