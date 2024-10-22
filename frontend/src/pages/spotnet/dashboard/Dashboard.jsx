@@ -8,7 +8,8 @@ import { ReactComponent as StrkIcon } from "../../../assets/icons/strk.svg";
 import { closePosition } from "../../../utils/transaction"
 import axios from 'axios';
 import './dashboard.css';
-import {ETH_ADDRESS} from "../../../utils/constants";
+
+import {ZETH_ADDRESS} from "../../../utils/constants";
 import Spinner from '../../../components/spinner/Spinner';
 
 
@@ -93,7 +94,7 @@ const Dashboard = ({ walletId }) => {
                     const tokenAddress = position.tokenAddress;
 
                     if (isFirstCard) {
-                        const isEthereum = tokenAddress === ETH_ADDRESS;
+                        const isEthereum = tokenAddress === ZETH_ADDRESS;
                         return {
                             title: "Collateral & Earnings",
                             icon: CollateralIcon,
