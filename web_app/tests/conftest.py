@@ -14,13 +14,14 @@ def mock_db():
     return mock_db
 
 
-app.dependency_overrides[get_database] = mock_db
-
-
 @pytest.fixture(scope="module")
 def client(mock_db):
+    app.dependency_overrides[get_database] = mock_db
+
     with TestClient(app=app) as client:
         yield client
+
+    app.dependency_overrides.clear()
 
 
 @pytest.fixture(scope="module")
