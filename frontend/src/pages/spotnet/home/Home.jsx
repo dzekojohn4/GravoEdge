@@ -7,17 +7,11 @@ import { ReactComponent as Decoration } from "../../../assets/particles/deco.svg
 import { ReactComponent as Starknet } from "../../../assets/particles/starknet.svg";
 import { ReactComponent as Rocket } from "../../../assets/icons/rocket.svg";
 
-function Home({ walletId }) {
+function Home({}) {
     const navigate = useNavigate();
 
     const handleLaunchApp = async () => {
-        console.log('Wallet ID:', walletId);
-
-        if (walletId) {
-            navigate('/form')
-        } else {
-            alert('Please connect to your wallet')
-        }
+        navigate('/form')
     };
 
     const starsData = [
