@@ -2,6 +2,8 @@ import {connect} from "get-starknet";
 import {CallData} from "starknet";
 import {erc20abi} from "../abis/erc20";
 import {abi} from "../abis/abi";
+import axios from 'axios';
+
 
 export async function sendTransaction(loopLiquidityData, contractAddress) {
     try {
@@ -66,3 +68,37 @@ export async function closePosition(transactionData) {
         {contractAddress: transactionData.contract_address, entrypoint: "close_position", calldata: compiled}]
     );
 }
+
+
+
+
+export const handleTransaction = async (connectedWalletId, formData, setError, setTokenAmount, setLoading) => {
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
+
+  setLoading(true);
+  setError('');
+
+  try {
+    const response = await axios.post(`${backendUrl}/api/create-position`, formData);
+    console.log('Position created successfully:', response.data);
+
+    const transactionData = response.data;
+    await sendTransaction(transactionData, transactionData.contract_address);
+    console.log('Transaction executed successfully');
+
+    const openPositionResponse = await axios.get(`${backendUrl}/api/open-position`, {
+      params: { position_id: transactionData.position_id }
+    });
+
+    console.log('Position status updated successfully:', openPositionResponse.data);
+
+    // Reset form data
+    setTokenAmount('');
+
+  } catch (err) {
+    console.error('Failed to create position:', err);
+    setError('Failed to create position. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
