@@ -17,7 +17,7 @@ SQLALCHEMY_DATABASE_URL = (
 )
 
 if SQLALCHEMY_DATABASE_URL == "postgresql://:@:5432/":
-    SQLALCHEMY_DATABASE_URL = "sqlite:///test.db"
+    SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
