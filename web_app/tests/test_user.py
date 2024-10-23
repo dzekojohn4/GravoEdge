@@ -1,8 +1,9 @@
-import pytest
 from unittest.mock import MagicMock
 
-from web_app.tests.conftest import client, mock_user_db_connector
+import pytest
+
 from web_app.api.serializers.transaction import UpdateUserContractRequest
+from web_app.tests.conftest import client, mock_user_db_connector
 
 
 @pytest.mark.asyncio
