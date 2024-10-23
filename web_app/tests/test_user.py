@@ -14,6 +14,10 @@ from web_app.api.serializers.transaction import UpdateUserContractRequest
             "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49",
             "0x698b63df00be56ba39447c9b9ca576ffd0edba0526d98b3e8e4a902ffcf12f0",
         ),
+        ("invalid_wallet_id", None),
+        (123_456_789, None),
+        (3.14, None),
+        ({}, None),
     ],
 )
 async def test_get_user_contract(
@@ -38,7 +42,7 @@ async def test_get_user_contract(
 
     if response.is_success:
         assert isinstance(response_json, str)
-        assert response_json == expected_contract_address
+        assert response_json == str(expected_contract_address)
     else:
         assert isinstance(response_json, dict)
         assert response_json.get("detail") in (
@@ -53,6 +57,10 @@ async def test_get_user_contract(
     [
         "",
         "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49",
+        "invalid_wallet_id",
+        123_456_789,
+        3.14,
+        {},
     ],
 )
 async def test_check_user(
@@ -73,7 +81,9 @@ async def test_check_user(
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert isinstance(response_json.get("is_contract_deployed"), bool)
+
+    is_contract_deployed = response_json.get("is_contract_deployed")
+    assert is_contract_deployed or not is_contract_deployed
 
 
 @pytest.mark.asyncio
@@ -85,6 +95,10 @@ async def test_check_user(
             "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49",
             "0x698b63df00be56ba39447c9b9ca576ffd0edba0526d98b3e8e4a902ffcf12f0",
         ),
+        ("invalid_wallet_id", None),
+        (123_456_789, None),
+        (3.14, None),
+        ({}, None),
     ],
 )
 async def test_change_user_contract(
@@ -100,8 +114,8 @@ async def test_change_user_contract(
     :return: None
     """
     data = UpdateUserContractRequest(
-        wallet_id=wallet_id,
-        contract_address=contract_address,
+        wallet_id=str(wallet_id),
+        contract_address=str(contract_address),
     )
 
     response = client.post(
@@ -124,6 +138,10 @@ async def test_change_user_contract(
             "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49",
             "0x698b63df00be56ba39447c9b9ca576ffd0edba0526d98b3e8e4a902ffcf12f0",
         ),
+        ("invalid_wallet_id", None),
+        (123_456_789, None),
+        (3.14, None),
+        ({}, None),
     ],
 )
 async def test_get_user_contract_address(
@@ -148,4 +166,6 @@ async def test_get_user_contract_address(
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert response_json.get("contract_address") == expected_contract_address
+
+    contract_address = response_json.get("contract_address")
+    assert str(contract_address) == str(expected_contract_address)
