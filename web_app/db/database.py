@@ -16,9 +16,6 @@ SQLALCHEMY_DATABASE_URL = (
     f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_SERVER}:{DB_PORT}/{DB_NAME}"
 )
 
-if SQLALCHEMY_DATABASE_URL == "postgresql://:@:5432/":
-    SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
