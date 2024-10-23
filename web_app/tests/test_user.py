@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import MagicMock
 
 from web_app.tests.conftest import client, mock_user_db_connector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
@@ -17,7 +18,7 @@ from web_app.api.serializers.transaction import UpdateUserContractRequest
 )
 async def test_get_user_contract(
     client: client,
-    mock_user_db_connector: mock_user_db_connector,
+    mock_user_db_connector: MagicMock,
     wallet_id: str,
     expected_contract_address: str,
 ):
@@ -55,7 +56,7 @@ async def test_get_user_contract(
     ],
 )
 async def test_check_user(
-    client: client, mock_user_db_connector: mock_user_db_connector, wallet_id: str
+    client: client, mock_user_db_connector: MagicMock, wallet_id: str
 ):
     """
     Test check_user endpoint
@@ -88,7 +89,7 @@ async def test_check_user(
 )
 async def test_change_user_contract(
     client: client,
-    mock_user_db_connector: mock_user_db_connector,
+    mock_user_db_connector: MagicMock,
     wallet_id: str,
     contract_address: str,
 ):
@@ -127,7 +128,7 @@ async def test_change_user_contract(
 )
 async def test_get_user_contract_address(
     client: client,
-    mock_user_db_connector: mock_user_db_connector,
+    mock_user_db_connector: MagicMock,
     wallet_id: str,
     expected_contract_address: str,
 ):
