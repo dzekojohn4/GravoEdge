@@ -1,45 +1,52 @@
 import {connect} from 'get-starknet';
-import { checkAndDeployContract } from "./contract";
+import {ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from "./constants";
+import { ReactComponent as ETH } from '../assets/icons/ethereum.svg';
+import { ReactComponent as USDC } from '../assets/icons/borrow_usdc.svg';
+import { ReactComponent as STRK } from '../assets/icons/strk.svg';
+import { ReactComponent as DAI } from '../assets/icons/dai.svg';
 
 
-export async function connectWallet() {
+const handleConnectWallet = async (setWalletId, setError) => {
     try {
-        console.log("Attempting to connect to wallet...");
-
-        // Connect to the wallet with modal
-        const starknet = await connect({
-            modalMode: 'alwaysAsk',
-            modalTheme: 'light',
-        });
-
-        if (!starknet) {
-            console.error("No Starknet object found");
-            throw new Error("Failed to connect to wallet");
+        setError(null);
+        const address = await connectWallet();
+        if (address) {
+            setWalletId(address);
         }
-
-        // Enable the wallet connection
-        await starknet.enable();
-
-        if (starknet.isConnected) {
-            const address = starknet.selectedAddress;
-            console.log("Wallet successfully connected. Address:", address);
-
-            // Check and deploy contract after successfully connecting
-            await checkAndDeployContract(address);
-
-            return address;
-        } else {
-            console.error("Wallet connection flag is false after enabling");
-            throw new Error("Wallet connection failed");
-        }
-    } catch (error) {
-        console.error("Error connecting wallet:", error.message);
-        if (error.message.includes("User rejected wallet selection")) {
-            throw new Error("Wallet connection cancelled by user");
-        }
-        throw new Error("Failed to connect to wallet. Please make sure Argent X is installed and try again.");
+    } catch (err) {
+        console.error("Failed to connect wallet:", err);
+        setError(err.message);
     }
-}
+};
+
+export const connectWallet = async () => {
+  try {
+    console.log("Attempting to connect to wallet...");
+
+    const starknet = await connect({
+      modalMode: 'alwaysAsk',
+      modalTheme: 'light',
+    });
+
+    if (!starknet) {
+      console.error("No Starknet object found");
+      throw new Error("Failed to connect to wallet");
+    }
+
+    await starknet.enable();
+
+    if (starknet.isConnected) {
+      const address = starknet.selectedAddress;
+      console.log("Wallet successfully connected. Address:", address);
+      return address;
+    } else {
+      throw new Error("Wallet connection failed");
+    }
+  } catch (error) {
+    console.error("Error connecting wallet:", error.message);
+    throw error;
+  }
+};
 
 
 export function logout() {
@@ -55,9 +62,9 @@ export async function getTokenBalances(walletAddress) {
         }
 
         const tokenBalances = {
-            ETH: await getTokenBalance(starknet, walletAddress, '0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7'),
-            USDC: await getTokenBalance(starknet, walletAddress, '0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8'),
-            STRK: await getTokenBalance(starknet, walletAddress, '0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d')
+            ETH: await getTokenBalance(starknet, walletAddress, ETH_ADDRESS),
+            USDC: await getTokenBalance(starknet, walletAddress, USDC_ADDRESS),
+            STRK: await getTokenBalance(starknet, walletAddress, STRK_ADDRESS)
         };
 
         return tokenBalances;
@@ -90,6 +97,24 @@ async function getTokenBalance(starknet, walletAddress, tokenAddress) {
         return '0'; // Return '0' in case of error
     }
 }
+
+export const getBalances = async (walletId, setBalances) => {
+  if (!walletId) return;
+  try {
+    const data = await getTokenBalances(walletId);
+
+    const updatedBalances = [
+      { icon: <ETH />, title: 'ETH', balance: data.ETH !== undefined ? data.ETH.toString() : '0.00' },
+      { icon: <USDC />, title: 'USDC', balance: data.USDC !== undefined ? data.USDC.toString() : '0.00' },
+      { icon: <STRK />, title: 'STRK', balance: data.STRK !== undefined ? data.STRK.toString() : '0.00' },
+      { icon: <DAI />, title: 'DAI', balance: data.DAI !== undefined ? data.DAI.toString() : '0.00' },
+    ];
+
+    setBalances(updatedBalances);
+  } catch (error) {
+    console.error('Error fetching user balances:', error);
+  }
+};
 
 // Add this line at the top of your file if you're using Create React App or a similar setup
 // that doesn't recognize BigInt as a global

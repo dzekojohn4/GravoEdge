@@ -5,6 +5,12 @@
     --secondary-color:#1A1C24;
     --blue-color:#74D6FD;
     --primary-color:#0B0C10;
+    --black: #000;
+    --primary: #fff;
+    --secondary: #E7ECF0;
+    --button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
+    --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
+    --button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
 }
 
 body{
@@ -29,7 +35,7 @@ body{
     font-family: var(--text-font);
     width: 800px;
     margin: 0 auto;
-    color: white;
+    color: var(--primary);
     background-color: transparent;
     text-align: center;
 }
@@ -45,16 +51,20 @@ body{
     -webkit-text-fill-color: transparent;
 }
 
-.home h5{
-    color: darkgray;
+.home {
+    color: var(--secondary);
     width: 650px;
     text-align: center;
     font-size: 1em;
     margin-top: 10px;
 }
 
+.subtitle-text-styles{
+
+}
+
 .launch-button{
-    background: var(--gradient);
+    background: var(--button-gradient);
     border-radius: 8px;
     height: 52px;
     width: 400px;
@@ -62,6 +72,14 @@ body{
     margin-top: 20px;
     font-family: var(--text-font);
     font-weight: 700;
+}
+
+.launch-button:hover {
+    background: var(--button-gradient-hover);
+}
+
+.launch-button:active {
+    background: var(--button-gradient-active);
 }
 
 .top-gradient, .bottom-gradient{

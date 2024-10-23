@@ -1,5 +1,6 @@
+from datetime import datetime
 from decimal import Decimal
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 from pydantic import BaseModel, Field, RootModel, validator
 from web_app.contract_tools.constants import TokenParams
@@ -49,7 +50,7 @@ class Product(BaseModel):
 
 
 class ZkLendPositionResponse(BaseModel):
-    products: List[Product]
+    products: List[Product] = Field(default_factory=list)
 
     @validator("products", pre=True)
     def convert_products(cls, products):
@@ -68,8 +69,22 @@ class ZkLendPositionResponse(BaseModel):
         populate_by_name = True
 
 
-class Dashboard(BaseModel):
-    balances: dict[str, str]
-    multipliers: dict[str, list]
-    start_dates: dict[str, list]
-    zklend_position: ZkLendPositionResponse
+class DashboardResponse(BaseModel):
+    balances: Dict[str, Any] = Field(
+        ...,
+        example={"ETH": 5.0, "USDC": 1000.0},
+        description="The wallet balances for the user.",
+    )
+    multipliers: Dict[str, int | None] = Field(
+        ..., example={"ETH": 1.5}, description="The multipliers applied to each asset."
+    )
+    start_dates: Dict[str, datetime | None] = Field(
+        ...,
+        example={"ETH": "2024-01-01T00:00:00"},
+        description="The start date for each position.",
+    )
+    zklend_position: ZkLendPositionResponse = Field(
+        ...,
+        example={"ETH": {"borrowed": 5000, "collateral": 10}},
+        description="Details of the ZkLend position for each asset.",
+    )

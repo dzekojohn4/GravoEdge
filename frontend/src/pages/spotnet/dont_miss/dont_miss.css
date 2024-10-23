@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
+
+:root{
+    --text-font:'Rethink Sans',sans-serif;
+    --secondary-color:#1A1C24;
+    --brand:#74D6FD;
+    --primary-color:#0B0C10;
+    --black: #000;
+    --primary: #fff;
+    --secondary: #E7ECF0;
+}
+
 .dont-miss__container{
     height: 70vh;
     display: flex;
@@ -8,13 +20,14 @@
 }
 
 .miss-title{
-    color: white;
+    color: var(--primary);
     font-size: 50px;
 }
 
 .miss-description{
-    color: darkgray;
+    color: var(--secondary);
     font-size: 24px;
+    margin-bottom: 0;
 }
 
 .miss-btn{

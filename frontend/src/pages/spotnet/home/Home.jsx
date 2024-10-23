@@ -7,17 +7,11 @@ import { ReactComponent as Decoration } from "../../../assets/particles/deco.svg
 import { ReactComponent as Starknet } from "../../../assets/particles/starknet.svg";
 import { ReactComponent as Rocket } from "../../../assets/icons/rocket.svg";
 
-function Home({ walletId }) {
+function Home({}) {
     const navigate = useNavigate();
 
     const handleLaunchApp = async () => {
-        console.log('Wallet ID:', walletId);
-
-        if (walletId) {
-            navigate('/form')
-        } else {
-            alert('Please connect to your wallet')
-        }
+        navigate('/form')
     };
 
     const starsData = [
@@ -88,7 +82,7 @@ function Home({ walletId }) {
                 <span className='blue-color'>Earn</span> by leveraging your assets
                 <span className='gradient'> with Spotnet</span>
             </h2>
-            <h5>Maximize the potential of your resources and start earning today.
+            <h5 className='subtitle-text-styles'>Maximize the potential of your resources and start earning today.
                 Join Spotnet and unlock new opportunities to grow your wealth!
             </h5>
                 <button className='launch-button' onClick={handleLaunchApp}>
