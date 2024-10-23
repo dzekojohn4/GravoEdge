@@ -63,8 +63,9 @@ body{
 
 }
 
-.launch-button{
+.launch-button {
     background: var(--button-gradient);
+    border: none;
     border-radius: 8px;
     height: 52px;
     width: 400px;
@@ -72,6 +73,7 @@ body{
     margin-top: 20px;
     font-family: var(--text-font);
     font-weight: 700;
+    transition: background 1.3s ease;
 }
 
 .launch-button:hover {

@@ -16,7 +16,7 @@ function Footer() {
           </Link>
         </div>  
         <div>
-            <p className="follow-us-text">Follow us on</p>     
+          <p className="follow-us-text">Follow us on</p>     
           <div className="footer-social-cards">
             <div className="social-card">
               <a href="https://twitter.com/yourprofile" target="_blank" rel="noopener noreferrer">
@@ -43,10 +43,12 @@ function Footer() {
               </div>
             </div>
           </div>
-          <div className="footer-line" />
-          <div className="footer-text"> 
-            ©2024. Spotnet All Right Reserved.
-          </div>
+        </div>
+      </div>
+      <div className='line-text-container'>
+        <div className="footer-line" />
+        <div className="footer-text"> 
+          ©2024. Spotnet All Right Reserved.
         </div>
       </div>
     </footer>
