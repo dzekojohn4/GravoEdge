@@ -120,13 +120,13 @@ mod Deposit {
             usdc_price: u256
         ) {
             let user_acount = get_tx_info().unbox().account_contract_address;
-            assert(user_acount == self.owner.read(), 'Caller is not an owner');
+            assert(user_acount == self.owner.read(), 'Caller is not the owner');
             assert(!self.is_position_open.read(), 'Open position already exists');
             let DepositData { token, amount, multiplier } = deposit_data;
             let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
             let deposit_token_decimals = fast_power(10_u128, token_dispatcher.decimals().into());
 
-            assert(multiplier < 5, 'Multiplier not supported');
+            assert(multiplier < 5 && multiplier > 1, 'Multiplier not supported');
             assert(amount != 0 && pool_price != 0, 'Parameters cannot be zero');
             assert(
                 amount * usdc_price / deposit_token_decimals.into() >= 1000000,
