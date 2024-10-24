@@ -65,7 +65,7 @@ class TestDepositMixin:
             "caller": wallet_id,
             "pool_price": "mocked_pool_price",
             "pool_key": "mocked_pool_key",
-            "deposit_data": "mockeddeposit_data",
+            "deposit_data": "mocked_deposit_data",
         }
 
         mock_get_token_address.side_effect = lambda token: f"mocked_address_for_{token}"
