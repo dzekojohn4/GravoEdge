@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 
 class PoolKey(BaseModel):
@@ -12,8 +12,8 @@ class PoolKey(BaseModel):
     tick_spacing: str
     extension: str
 
-    @validator(
-        "token0", "token1", "fee", "tick_spacing", "extension", pre=True, always=True
+    @field_validator(
+        "token0", "token1", "fee", "tick_spacing", "extension", mode="before",
     )
     def convert_int_to_str(cls, value) -> str:
         """
@@ -29,7 +29,7 @@ class DepositData(BaseModel):
     amount: str
     multiplier: str
 
-    @validator("token", "amount", "multiplier", pre=True, always=True)
+    @field_validator("token", "amount", "multiplier", mode="before")
     def convert_int_to_str(cls, value: int) -> str:
         """
         Convert the integer values to strings.
@@ -51,7 +51,7 @@ class LoopLiquidityData(BaseModel):
     contract_address: str
     position_id: str
 
-    @validator("caller", pre=True, always=True)
+    @field_validator("caller", mode="before")
     def convert_caller_to_str(cls, value: int) -> str:
         """
         Convert the caller address to a string.

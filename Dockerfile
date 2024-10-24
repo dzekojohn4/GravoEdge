@@ -27,8 +27,6 @@ ADD . /app
 # Install StarknetKit via npm with legacy-peer-deps flag
 RUN npm install @argent/get-starknet --legacy-peer-deps --save
 
-# Expose port 8000 for FastAPI
 EXPOSE 8000
 
-# Entry point script
 ENTRYPOINT ["bash", "/app/entrypoint.sh"]
