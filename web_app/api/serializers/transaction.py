@@ -13,7 +13,7 @@ class PoolKey(BaseModel):
     extension: str
 
     @field_validator(
-        "token0", "token1", "fee", "tick_spacing", "extension", pre=True, always=True
+        "token0", "token1", "fee", "tick_spacing", "extension", mode="before",
     )
     def convert_int_to_str(cls, value) -> str:
         """
@@ -29,7 +29,7 @@ class DepositData(BaseModel):
     amount: str
     multiplier: str
 
-    @field_validator("token", "amount", "multiplier", pre=True, always=True)
+    @field_validator("token", "amount", "multiplier", mode="before")
     def convert_int_to_str(cls, value: int) -> str:
         """
         Convert the integer values to strings.
@@ -51,7 +51,7 @@ class LoopLiquidityData(BaseModel):
     contract_address: str
     position_id: str
 
-    @field_validator("caller", pre=True, always=True)
+    @field_validator("caller", mode="before")
     def convert_caller_to_str(cls, value: int) -> str:
         """
         Convert the caller address to a string.
