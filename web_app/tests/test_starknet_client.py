@@ -1,6 +1,5 @@
 import pytest
 
-from math import floor
 from starknet_py.contract import Contract
 from starknet_py.net.full_node_client import FullNodeClient
 from unittest.mock import AsyncMock, patch
