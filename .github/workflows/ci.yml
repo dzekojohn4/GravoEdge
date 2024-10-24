@@ -17,10 +17,6 @@ jobs:
         image: postgres:16
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
-          DB_USER: postgres
-          DB_PASSWORD: liduhgs4678^@RCGLSAYDuyio
-          DB_SERVER: db
-          DB_NAME: spotnet
         ports:
           - 5433:5432
         options: >-
