@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 from enum import Enum as PyEnum
+=======
+"""
+This module contains the SQLAlchemy models for the database.
+"""
+
+>>>>>>> b82f7221c5be1e47642e3206ae96a015b4176c77
 from uuid import uuid4
 
 from sqlalchemy import (
@@ -17,12 +24,19 @@ from web_app.db.database import Base
 
 
 class Status(PyEnum):
+    """
+    Enum for the position status.
+    """
+
     PENDING = "pending"
     OPENED = "opened"
     CLOSED = "closed"
 
     @classmethod
     def choices(cls):
+        """
+        Returns the list of status choices.
+        """
         return [status.value for status in cls]
 
 
