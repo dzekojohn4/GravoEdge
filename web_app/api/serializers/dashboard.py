@@ -21,7 +21,7 @@ class Position(BaseModel):
     token_address: Optional[str] = Field(None, alias="tokenAddress")
     total_balances: TotalBalances = Field(alias="totalBalances")
 
-    @field_validator("total_balances", pre=True)
+    @field_validator("total_balances", mode="before")
     def convert_total_balances(cls, balances):
         """
         Convert total_balances to their decimal values based on token decimals.
@@ -52,7 +52,7 @@ class Product(BaseModel):
 class ZkLendPositionResponse(BaseModel):
     products: List[Product] = Field(default_factory=list)
 
-    @field_validator("products", pre=True)
+    @field_validator("products", mode="before")
     def convert_products(cls, products):
         """
         Convert products to their respective models.
