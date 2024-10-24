@@ -1,7 +1,15 @@
+"""
+This module handles user-related API endpoints.
+"""
+
 from fastapi import APIRouter, Request, HTTPException
 from web_app.db.crud import PositionDBConnector, UserDBConnector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
-from web_app.api.serializers.user import CheckUserResponse, UpdateUserContractResponse, GetUserContractAddressResponse
+from web_app.api.serializers.user import (
+    CheckUserResponse, 
+    UpdateUserContractResponse, 
+    GetUserContractAddressResponse
+)
 
 router = APIRouter()  # Initialize the router
 
@@ -10,7 +18,15 @@ user_db = UserDBConnector()
 position_db = PositionDBConnector()
 
 
-@router.get("/api/get-user-contract", tags=["User Operations"], summary="Get user's contract status", response_description="Returns 0 if the user is None or if the contract is not deployed. Returns the transaction hash if the contract is deployed.")
+@router.get(
+        "/api/get-user-contract", 
+        tags=["User Operations"], 
+        summary="Get user's contract status", 
+        response_description=(
+            "Returns 0 if the user is None or if the contract is not deployed. "
+            "Returns the transaction hash if the contract is deployed."
+        ),
+)
 async def get_user_contract(wallet_id: str) -> str:
     """
     Get the contract status of a user.
@@ -27,7 +43,13 @@ async def get_user_contract(wallet_id: str) -> str:
         return user.contract_address
 
 
-@router.get("/api/check-user", tags=["User Operations"], summary="Check if user exists and contract status", response_model=CheckUserResponse, response_description="Returns whether the user's contract is deployed.")
+@router.get(
+        "/api/check-user", 
+        tags=["User Operations"], 
+        summary="Check if user exists and contract status", 
+        response_model=CheckUserResponse, 
+        response_description="Returns whether the user's contract is deployed.",
+)
 async def check_user(wallet_id: str) -> CheckUserResponse:
     """
     This endpoint checks if the user exists, or adds the user to the database if they don't exist,
@@ -50,7 +72,13 @@ async def check_user(wallet_id: str) -> CheckUserResponse:
         return {"is_contract_deployed": True}
 
       
-@router.post("/api/update-user-contract", tags=["User Operations"], summary="Update the user's contract", response_model=UpdateUserContractResponse, response_description="Returns if the contract is updated and deployed.")
+@router.post(
+        "/api/update-user-contract", 
+        tags=["User Operations"], 
+        summary="Update the user's contract", 
+        response_model=UpdateUserContractResponse, 
+        response_description="Returns if the contract is updated and deployed.",
+)
 async def update_user_contract(data: UpdateUserContractRequest) ->  UpdateUserContractResponse:
     """
     This endpoint updates the user's contract.
@@ -71,7 +99,13 @@ async def update_user_contract(data: UpdateUserContractRequest) ->  UpdateUserCo
         return {"is_contract_deployed": False}
 
 
-@router.get("/api/get-user-contract-address", tags=["User Operations"], summary="Get user's contract address", response_model=GetUserContractAddressResponse, response_description="Returns the contract address of the user or None if not deployed.")
+@router.get(
+        "/api/get-user-contract-address", 
+        tags=["User Operations"], 
+        summary="Get user's contract address", 
+        response_model=GetUserContractAddressResponse, 
+        response_description="Returns the contract address of the user or None if not deployed.",
+)
 async def get_user_contract_address(wallet_id: str) -> GetUserContractAddressResponse:
     """
     This endpoint retrieves the contract address of a user.
