@@ -1,8 +1,10 @@
+from tracemalloc import Trace
+
 import pytest
 
 from starknet_py.contract import Contract
 from starknet_py.net.full_node_client import FullNodeClient
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from web_app.contract_tools.blockchain_call import StarknetClient
 
@@ -98,3 +100,139 @@ class TestStarknetClient:
 
         mock_call_contract.assert_called_once()
         assert response == expected_response
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "token0, token1, is_token1",
+        [
+            (
+                0x04718F5A0FC34CC1AF16A1CDEE98FFB20C31F5CD61D6AB07201858F4287C938D,
+                0x04718F5A0FC34CC1AF16A1CDEE98FFB20C31F5CD61D6AB07201858F4287C938D,
+                True,
+            ),
+            (
+                0x049D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7,
+                0x049D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7,
+                False,
+            ),
+            (
+                0x053C91253BC9682C04929CA02ED00B3E423F6710D2EE7E0D5EBB06F3ECF368A8,
+                0x053C91253BC9682C04929CA02ED00B3E423F6710D2EE7E0D5EBB06F3ECF368A8,
+                True,
+            ),
+            (
+                0x04718F5A0FC34CC1AF16A1CDEE98FFB20C31F5CD61D6AB07201858F4287C938D,
+                0x049D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7,
+                False,
+            ),
+            (
+                0x049D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7,
+                0x053C91253BC9682C04929CA02ED00B3E423F6710D2EE7E0D5EBB06F3ECF368A8,
+                True,
+            ),
+        ],
+    )
+    @patch.object(Contract, "from_address", new_callable=AsyncMock)
+    async def test__get_pool_price(
+        self,
+        mock_from_contract: AsyncMock,
+        token0: int,
+        token1: int,
+        is_token1: bool,
+    ) -> None:
+        """
+        Test cases for StarknetClient._get_pool_price method
+        :param mock_from_contract: unittests.mock.AsyncMock
+        :param token0: int
+        :param token1: int
+        :param is_token1: bool
+        :return: None
+        """
+        pool_key = {
+            "token0": token0,
+            "token1": token1,
+            "fee": CLIENT.FEE,
+            "tick_spacing": CLIENT.TICK_SPACING,
+            "extension": 0,
+        }
+
+        mock_contract = AsyncMock()
+        mock_contract.functions["get_pool_price"].call = AsyncMock(
+            return_value=[
+                {
+                    "sqrt_ratio": sum(
+                        [ord(char) for char in str(token0) + str(token1)]
+                    ),
+                }
+            ],
+        )
+
+        mock_from_contract.return_value = mock_contract
+
+        pool_price = await CLIENT._get_pool_price(pool_key, is_token1)
+
+        mock_from_contract.assert_called_once()
+        mock_contract.functions["get_pool_price"].call.assert_called_once()
+
+        assert pool_price
+        assert isinstance(pool_price, float) or isinstance(pool_price, int)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "token_addr, holder_addr, decimals",
+        [
+            (
+                "0x04718F5A0FC34CC1AF16A1CDEE98FFB20C31F5CD61D6AB07201858F4287C938D",
+                "0x04718F5A0FC34CC1AF16A1CDEE98FFB20C31F5CD61D6AB07201858F4287C938D",
+                18,
+            ),
+            (
+                "0x049D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+                "0x049D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+                18,
+            ),
+            (
+                "0x053C91253BC9682C04929CA02ED00B3E423F6710D2EE7E0D5EBB06F3ECF368A8",
+                "0x053C91253BC9682C04929CA02ED00B3E423F6710D2EE7E0D5EBB06F3ECF368A8",
+                6,
+            ),
+            (
+                "0x04718F5A0FC34CC1AF16A1CDEE98FFB20C31F5CD61D6AB07201858F4287C938D",
+                "0x049D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+                18,
+            ),
+            (
+                "0x049D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+                "0x053C91253BC9682C04929CA02ED00B3E423F6710D2EE7E0D5EBB06F3ECF368A8",
+                None,
+            ),
+        ],
+    )
+    @patch.object(FullNodeClient, "call_contract", new_callable=AsyncMock)
+    async def test_get_balance(
+        self,
+        mock_call_contract: AsyncMock,
+        token_addr: str,
+        holder_addr: str,
+        decimals: int | None,
+    ) -> None:
+        """
+        Test cases for StarknetClient.get_balance method
+        :param mock_call_contract: unittest.mock.AsyncMock
+        :param token_addr: str
+        :param holder_addr: str
+        :param decimals: int | None
+        :return: None
+        """
+        contract_return_value = [int(str(token_addr)[:10], base=16)]
+        mock_call_contract.return_value = contract_return_value
+
+        balance = await CLIENT.get_balance(token_addr, holder_addr, decimals)
+
+        assert balance
+        assert isinstance(balance, str)
+
+        if decimals:
+            assert balance == str(round(contract_return_value[0] / 10**decimals, 6))
+        else:
+            assert balance == str(round(contract_return_value[0], 6))
