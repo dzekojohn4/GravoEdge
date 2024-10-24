@@ -1,3 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
+
+:root{
+    --text-font:'Rethink Sans',sans-serif;
+    --gradient: linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%);
+    --secondary-color:#1A1C24;
+    --blue-color:#74D6FD;
+    --primary-color:#0B0C10;
+    --black: #000;
+    --primary: #fff;
+    --secondary: #E7ECF0;
+    --button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
+    --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
+    --button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
+}
+
 .form-container {
     margin-top: 4rem !important;
     margin-bottom: 12rem !important;
@@ -66,6 +82,29 @@
     justify-content: center;
     align-items: center;
 }
+
+.token-card label:hover {
+    background: var(--secondary-color);
+}
+
+/* .token-card:active {
+    background: var(--blue-color);
+    border-radius: 8px;
+    color: var(--black);
+} */
+
+/* component:active {
+    color: var(--black);
+} */
+
+.token-card label svg {
+    fill: var(--black); /* Установите цвет иконки в черный */
+}
+
+.token-card label:active svg {
+    fill: var(--blue-color); /* Добавьте эффект при наведении, если нужно */
+}
+
 
 .token-label{
     display: flex;
@@ -150,13 +189,13 @@
 }
 
 .multiplier-item:not(.recommended-item) label {
-    align-items: center; /* Обеспечьте центрирование для остальных карточек */
+    align-items: center;
 }
 
 input[type="radio"]{
     display: none;
     padding: 10px;
-    border: 1px solid #ccc; /* Default border */
+    border: 1px solid #ccc;
     border-radius: 4px;
     width: 100%;
     box-sizing: border-box;
@@ -220,16 +259,25 @@ input[type="number"].error {
     filter: blur(80px);
 }
 
-.form-button{
+.form-button {
     width: 100%;
     border: none;
     height: 55px;
-    background: var(--gradient);
+    background: var(--button-gradient);
     border-radius: 8px;
     font-size: 20px;
     margin-top: 20px;
     font-family: var(--text-font);
     font-weight: 700;
+    transition: background 1.3s ease;
+}
+
+.form-button:hover {
+    background: var(--button-gradient-hover);
+}
+
+.form-button:active {
+    background: var(--button-gradient-active);
 }
 
 @media (min-width: 1800px) {

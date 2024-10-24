@@ -8,6 +8,13 @@
     --borrow-color: #F42222;
     --card-box-shadow: 0px 3.75px 3.75px 0px rgba(0, 0, 0, 0.15), 3.75px 3.75px 9.375px 0px rgba(153, 234, 255, 0.25) inset;
     --background-main: rgba(11, 12, 16, 1);
+    --primary-color:#0B0C10;
+    --black: #000;
+    --primary: #fff;
+    --secondary: #E7ECF0;
+    --button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
+    --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
+    --button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
 }
 
 body {
@@ -24,7 +31,7 @@ body {
 }
 
 .dashboard-text-color {
-    color: #CED2DC;
+    color: var(--secondary);
 }
 
 /* DESKTOP */
@@ -99,7 +106,7 @@ body {
 }
 
 .card-body-custom {
-    color: white; 
+    color: var(--primary); 
     padding-top: 24px;
     padding-bottom: 36px; 
 }
@@ -140,11 +147,20 @@ body {
 .redeem-btn {
     align-self: stretch;
     border-radius: 8px;
-    background: var(--gradient);
+    background: var(--button-gradient);
     padding: 18px 24px;
-    color: black;
+    color: var(--black);
     font: 700 24px/1 Rethink Sans;
     width: 100%;
+    transition: background 1.3s ease;
+}
+
+.redeem-btn:hover {
+    background: var(--button-gradient-hover);
+}
+
+.redeem-btn:active {
+    background: var(--button-gradient-active);
 }
 
 /* background styles */

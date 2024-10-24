@@ -5,6 +5,7 @@
     --footer-bg-color: #1a1c24;
     --footer-text-color: #e7ebf5;
     --card-bg-color: #0b0c10;
+    --footer-line-color: rgba(231, 235, 245, 0.2);
 }
 
 body{
@@ -101,9 +102,18 @@ li{
     height: 100%;
   }
 
+  .line-text-container {
+    padding-left: 64px;
+    padding-right: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
 .footer-line {
+    width: 100%;
     height: 1px;
-    background: rgba(231, 235, 245, 0.2);
+    background: var(--footer-line-color);
     margin-top: 83px;
     margin-bottom: 16px;
 }
