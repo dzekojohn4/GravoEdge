@@ -335,12 +335,6 @@ async def test_create_position_success(
     Returns:
         None
     """
-    form_data = {
-        "wallet_id": wallet_id,
-        "token_symbol": token_symbol,
-        "amount": amount,
-        "multiplier": multiplier,
-    }
     mock_position = Mock()
     mock_position.id = 123
     mock_deposit_data = {
