@@ -98,6 +98,7 @@ mod Deposit {
     }
 
     #[abi(embed_v0)]
+    // TODO: Change types to aliases
     impl Deposit of IDeposit<ContractState> {
         /// Loops collateral token on ZKlend.
         ///
@@ -119,6 +120,7 @@ mod Deposit {
             pool_price: u256,
             usdc_price: u256
         ) {
+            // TODO: Add borrow factor
             let user_acount = get_tx_info().unbox().account_contract_address;
             assert(user_acount == self.owner.read(), 'Caller is not the owner');
             assert(!self.is_position_open.read(), 'Open position already exists');
