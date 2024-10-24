@@ -11,6 +11,16 @@ from aiohttp import MultipartWriter
 def build_response_writer(
     bot: Bot, result: Optional[TelegramMethod[TelegramType]]
 ) -> MultipartWriter:
+    """
+    Build a MultipartWriter for sending a response to a Telegram webhook.
+
+    Args:
+        bot (Bot): The instance of the Bot to use for handled requests.
+        result (Optional[TelegramMethod[TelegramType]]): The result of a Telegram method call.
+
+    Returns:
+        MultipartWriter: A writer for the multipart/form-data request.
+    """
     writer = MultipartWriter(
         "form-data",
         boundary=f"webhookBoundary{secrets.token_urlsafe(16)}",
@@ -18,6 +28,7 @@ def build_response_writer(
     if not result:
         return writer
 
+    # Append the API method to the writer
     payload = writer.append(result.__api_method__)
     payload.set_content_disposition("form-data", name="method")
 
