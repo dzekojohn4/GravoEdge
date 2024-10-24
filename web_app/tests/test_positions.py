@@ -370,7 +370,15 @@ async def test_create_position_success(
         mock_create_position.return_value = mock_position
         mock_get_transaction_data.return_value = mock_deposit_data
         mock_get_contract_address.return_value = "mock_contract_address"
-        response = client.post("/api/create-position", json=form_data)
+        response = await client.post(
+            "/api/create-position-with-transaction-data",
+            data={
+                "wallet_id": wallet_id,
+                "token_symbol": token_symbol,
+                "amount": amount,
+                "multiplier": multiplier,
+            },
+        )
         assert response.ok
         assert response.json() == expected_response
 
