@@ -42,21 +42,10 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Create .env file
-        run: |
-          echo "DB_NAME=spotnet" >> .env
-          echo "DB_USER=postgres" >> .env
-          echo "DB_PASSWORD=liduhgs4678^@RCGLSAYDuyio" >> .env
-          echo "DB_HOST=db" >> .env
+        run: cp .env.dev .env
       
       - name: Start services
         run: docker compose -f docker-compose.dev.yaml up -d --build 
-
-      - name: Wait for PostgreSQL
-        run: |
-          until docker-compose exec db pg_isready -U postgres; do
-            echo "Waiting for postgres..."
-            sleep 5
-          done
 
       - name: Run tests
         run: |
