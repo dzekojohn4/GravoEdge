@@ -1,8 +1,18 @@
+from enum import Enum as PyEnum
 from uuid import uuid4
+
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
-from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, DateTime, Enum
-from enum import Enum as PyEnum
 from web_app.db.database import Base
 
 
@@ -51,3 +61,4 @@ class Position(Base):
         nullable=True,
         default="pending",
     )
+    start_price = Column(Float, nullable=False)
