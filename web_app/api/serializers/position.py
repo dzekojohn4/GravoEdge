@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 
 class PositionFormData(BaseModel):
@@ -11,7 +11,7 @@ class PositionFormData(BaseModel):
     amount: str
     multiplier: int
 
-    @validator("multiplier")
+    @field_validator("multiplier")
     def validate_multiplier(cls, value: int) -> int:
         """
         Validate the multiplier value
