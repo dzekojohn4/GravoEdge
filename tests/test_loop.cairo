@@ -19,11 +19,12 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
 use snforge_std::{declare, DeclareResultTrait, ContractClassTrait};
 use spotnet::interfaces::{
     IDepositDispatcher, IDepositSafeDispatcher, IDepositSafeDispatcherTrait,
-    IDepositDispatcherTrait, IMarketDispatcher, IMarketDispatcherTrait
+    IDepositDispatcherTrait
 };
 use spotnet::types::{DepositData};
 
-use starknet::syscalls::{deploy_syscall, get_execution_info_syscall};
+use super::interfaces::{IMarketTestingDispatcher, IMarketTestingDispatcherTrait};
+
 use starknet::{ContractAddress, get_caller_address, get_block_number, get_block_timestamp};
 
 mod contracts {
@@ -400,6 +401,7 @@ fn test_close_position_usdc_valid_time_passed() {
 
     let token_disp = ERC20ABIDispatcher { contract_address: usdc_addr };
     let initial_balance = token_disp.balanceOf(user);
+    // println!("Initial bal {initial_balance}");
     let decimals_sum_power: u128 = fast_power(
         10,
         (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
@@ -421,26 +423,88 @@ fn test_close_position_usdc_valid_time_passed() {
             pool_price
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
-
-    let zk_market = IMarketDispatcher {
-        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
-    };
-
+    let zk_market = IMarketTestingDispatcher {contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()};
+    let usdc_reserve = zk_market.get_reserve_data(usdc_addr);
+    let eth_reserve = zk_market.get_reserve_data(eth_addr);
+    let (lending_rate, borrowing_rate): (u256, u256) = (usdc_reserve.current_lending_rate.into(), eth_reserve.current_borrowing_rate.into());
+    // println!("{}", lending_rate);
+    // println!("{}", borrowing_rate);
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     start_cheat_block_timestamp(
-        contracts::ZKLEND_MARKET.try_into().unwrap(), get_block_timestamp() + 4000000
+        contracts::ZKLEND_MARKET.try_into().unwrap(), get_block_timestamp() + 40000000
     );
-
+    // println!("Debt {}", zk_market.get_user_debt_for_token(deposit_disp.contract_address, eth_addr));
+    // println!("Z bal {}", ERC20ABIDispatcher {contract_address: usdc_reserve.z_token_address}.balanceOf(deposit_disp.contract_address));
     deposit_disp.close_position(usdc_addr, eth_addr, pool_key, pool_price, quote_token_price);
 
     stop_cheat_block_timestamp(contracts::ZKLEND_MARKET.try_into().unwrap());
     stop_cheat_account_contract_address(deposit_disp.contract_address);
-    assert(token_disp.balanceOf(user) > initial_balance, 'Balance after deposit is lower');
+    // println!("After bal {}", token_disp.balanceOf(user));
+    assert(
+        token_disp.balanceOf(user) > initial_balance, 'Balance is in wrong state'
+    );
 }
+
+#[test]
+#[fork("MAINNET")]
+fn test_close_position_amounts_cleared() {
+    let usdc_addr: ContractAddress =
+        0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+        .try_into()
+        .unwrap();
+    let eth_addr: ContractAddress =
+        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+        .try_into()
+        .unwrap();
+    let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+        .try_into()
+        .unwrap();
+
+    let pool_key = PoolKey {
+        token0: eth_addr,
+        token1: usdc_addr,
+        fee: 170141183460469235273462165868118016,
+        tick_spacing: 1000,
+        extension: 0.try_into().unwrap()
+    };
+    let quote_token_price = get_asset_price_pragma('ETH/USD').into();
+
+    let token_disp = ERC20ABIDispatcher { contract_address: usdc_addr };
+    let decimals_sum_power: u128 = fast_power(
+        10,
+        (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
+            .into()
+    );
+    let pool_price = 1 * decimals_sum_power.into() / quote_token_price;
+    let deposit_disp = get_deposit_dispatcher(user);
+
+    start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
+    token_disp.approve(deposit_disp.contract_address, 1000000000);
+    stop_cheat_caller_address(usdc_addr);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp
+        .loop_liquidity(
+            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4 },
+            pool_key,
+            pool_price,
+            pool_price
+        );
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    let zk_market = IMarketTestingDispatcher {contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()};
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp.close_position(usdc_addr, eth_addr, pool_key, pool_price, quote_token_price);
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    
+    assert(zk_market.get_user_debt_for_token(deposit_disp.contract_address, eth_addr) == 0, 'Debt remains after repay');
+    assert(ERC20ABIDispatcher {contract_address: zk_market.get_reserve_data(usdc_addr).z_token_address}.balanceOf(deposit_disp.contract_address) == 0, 'Not all withdrawn');
+}
+
+// TODO: Calculate interest rates to test behaviour after liquidation.
 
 // #[test]
 // #[fork("MAINNET")]
-// fn test_close_position_base_token() {
+// fn test_full_liquidation() {
 //     let usdc_addr: ContractAddress =
 //         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
 //         .try_into()
@@ -449,12 +513,11 @@ fn test_close_position_usdc_valid_time_passed() {
 //         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
 //         .try_into()
 //         .unwrap();
-//     let user: ContractAddress =
-//     0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+//     let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
 //         .try_into()
 //         .unwrap();
+//     let liquidator: ContractAddress = 0x059a943ca214c10234b9a3b61c558ac20c005127d183b86a99a8f3c60a08b4ff.try_into().unwrap();
 
-//     // let deposit_contract = disp.deploy_user_contract();
 //     let pool_key = PoolKey {
 //         token0: eth_addr,
 //         token1: usdc_addr,
@@ -462,109 +525,52 @@ fn test_close_position_usdc_valid_time_passed() {
 //         tick_spacing: 1000,
 //         extension: 0.try_into().unwrap()
 //     };
-//     let pool_price = 2400000000;
-//     let quote_token_price = 410182369224320;
+//     let pool_price = get_asset_price_pragma('ETH/USD').into();
+
 //     let token_disp = ERC20ABIDispatcher { contract_address: eth_addr };
-//     let deposit_disp = deploy_user_contract(user);
-//     println!("Balance before: {}", token_disp.balanceOf(user));
+//     let initial_balance = token_disp.balanceOf(user);
+//     let decimals_sum_power: u128 = fast_power(
+//         10,
+//         (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
+//             .into()
+//     );
+//     let quote_token_price = 1 * decimals_sum_power.into() / pool_price;
+//     let deposit_disp = get_deposit_dispatcher(user);
+
 //     start_cheat_caller_address(eth_addr.try_into().unwrap(), user);
-//     token_disp.approve(deposit_disp.contract_address, 685000000000000);
+//     token_disp.approve(deposit_disp.contract_address, 10000000000000000);
 //     stop_cheat_caller_address(eth_addr);
+
+//     start_cheat_account_contract_address(deposit_disp.contract_address, user);
 //     deposit_disp
 //         .loop_liquidity(
-//             DepositData { token: eth_addr, amount: 685000000000000, multiplier: 3 },
+//             DepositData { token: eth_addr, amount: 10000000000000000, multiplier: 4 },
 //             pool_key,
 //             pool_price,
 //             pool_price
 //         );
-//     println!("Balance mid: {}", token_disp.balanceOf(user));
-//     deposit_disp.close_position(eth_addr, usdc_addr, pool_key, pool_price, quote_token_price);
-//     println!("Balance after: {}", token_disp.balanceOf(user));
-// }
+//     stop_cheat_account_contract_address(deposit_disp.contract_address);
+//     let zk_market = IMarketTestingDispatcher {contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()};
+//     let usdc_reserve = zk_market.get_reserve_data(usdc_addr);
+//     let eth_reserve = zk_market.get_reserve_data(eth_addr);
+//     let (lending_rate, borrowing_rate): (u256, u256) = (eth_reserve.current_lending_rate.into(), usdc_reserve.current_borrowing_rate.into());
 
-// #[test]
-// #[fork("MAINNET")]
-// fn test_loop_dai() {
-//     let usdc_addr: ContractAddress =
-//         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
-//         .try_into()
-//         .unwrap();
-//     let dai_addr: ContractAddress =
-//         0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3
-//         .try_into()
-//         .unwrap();
-//     let user: ContractAddress =
-//     0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
-//         .try_into()
-//         .unwrap();
+//     start_cheat_account_contract_address(deposit_disp.contract_address, user);
 
-//     let pool_key = PoolKey {
-//         token0: dai_addr,
-//         token1: usdc_addr,
-//         fee: 0xa7c6a3aab97597fb9b6713851eb8,
-//         tick_spacing: 10,
-//         extension: 0.try_into().unwrap()
-//     };
-//     let pool_price = 960904;
-//     let quote_token_price = 1033974330230609190;
-//     let token_disp = ERC20ABIDispatcher { contract_address: dai_addr };
-//     let deposit_disp = deploy_user_contract(user);
-//     println!("Balance before: {}", token_disp.balanceOf(user));
-//     start_cheat_caller_address(dai_addr.try_into().unwrap(), user);
-//     token_disp.approve(deposit_disp.contract_address, 6850000000000000000);
-//     stop_cheat_caller_address(dai_addr);
-//     deposit_disp
-//         .loop_liquidity(
-//             DepositData { token: dai_addr, amount: 6850000000000000000, multiplier: 2 },
-//             pool_key,
-//             pool_price,
-//             980000
-//         );
-//     println!("Balance after: {}", token_disp.balanceOf(user));
-// }
-// #[test]
-// #[fork("MAINNET")]
-// fn test_close_position_quote_token() {
-//     // let core = deploy_core(EKUBO_CORE_MAINNET);
-//     // let disp = ICoreDispatcher { contract_address: core.contract_address };
+//     start_cheat_block_timestamp(contracts::ZKLEND_MARKET.try_into().unwrap(), get_block_timestamp() + 4000000000);
+    
+//     start_cheat_caller_address(zk_market.contract_address, liquidator);
+    
+//     let debt = zk_market.get_user_debt_for_token(deposit_disp.contract_address, usdc_addr).into();
 
-//     let usdc_addr: ContractAddress =
-//         0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
-//         .try_into()
-//         .unwrap();
-//     let eth_addr: ContractAddress =
-//         0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
-//         .try_into()
-//         .unwrap();
-//     let user: ContractAddress =
-//     0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
-//         .try_into()
-//         .unwrap();
-//     let deposit_contract = 0.try_into().unwrap();
-//     // let deposit_contract = disp.deploy_user_contract();
-
-//     let pool_key = PoolKey {
-//         token0: eth_addr,
-//         token1: usdc_addr,
-//         fee: 170141183460469235273462165868118016,
-//         tick_spacing: 1000,
-//         extension: 0.try_into().unwrap()
-//     };
-//     let supply_price = 390182369224320;
-//     let debt_price = 2330000000;
-//     let token_disp = ERC20ABIDispatcher { contract_address: usdc_addr };
-//     let deposit_disp = IDepositDispatcher { contract_address: deposit_contract };
-//     start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
-//     token_disp.approve(deposit_contract, 10000000);
+//     start_cheat_caller_address(usdc_addr, liquidator);
+//     ERC20ABIDispatcher {contract_address: usdc_addr}.approve(zk_market.contract_address, debt);
 //     stop_cheat_caller_address(usdc_addr);
-//     deposit_disp
-//         .loop_liquidity(
-//             DepositData { token: usdc_addr, amount: 10000000, multiplier: 3 },
-//             pool_key,
-//             supply_price,
-//             user
-//         );
-//     deposit_disp.close_position(usdc_addr, eth_addr, pool_key, supply_price, debt_price);
+//     zk_market.liquidate(deposit_disp.contract_address, usdc_addr, (debt / 4).try_into().unwrap(), eth_addr);
+//     stop_cheat_caller_address(zk_market.contract_address);
+//     // deposit_disp.close_position(eth_addr, usdc_addr, pool_key, pool_price, quote_token_price);
+
+//     stop_cheat_block_timestamp(contracts::ZKLEND_MARKET.try_into().unwrap());
+
+//     stop_cheat_account_contract_address(deposit_disp.contract_address);
 // }
-
-
