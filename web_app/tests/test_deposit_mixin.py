@@ -49,6 +49,18 @@ class TestDepositMixin:
         wallet_id: str,
         borrowing_token: str,
     ) -> None:
+        """
+        Tests cases for DepositMixin.get_transaction_data method
+        :param mock_get_token_address: unittest.mock.MagicMock
+        :param mock_get_loop_liquidity_data: unittest.mock.AsyncMock
+        :param deposit_token: Deposit token
+        :param amount: Amount to deposit
+        :param multiplier: Multiplier
+        :param wallet_id: Wallet ID
+        :param borrowing_token: Borrowing token
+        :return: None
+        """
+
         expected_transaction_data = {
             "caller": wallet_id,
             "pool_price": "mocked_pool_price",
@@ -91,6 +103,14 @@ class TestDepositMixin:
         mock_get_repay_data: AsyncMock,
         supply_token: str,
     ) -> None:
+        """
+        Test cases for DepositMixin.get_repay_data method
+        :param mock_get_token_address: unittest.mock.MagicMock
+        :param mock_get_repay_data: unittest.mock.AsyncMock
+        :param supply_token: Deposit token
+        :return: None
+        """
+
         mock_get_token_address.side_effect = lambda token: f"mocked_address_for_{token}"
 
         expected_repay_data = {
