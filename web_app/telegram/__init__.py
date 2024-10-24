@@ -1,6 +1,7 @@
 from aiogram import Bot, Dispatcher
 
 from .config import TELEGRAM_TOKEN
+from .handlers import cmd_router
 
 # Initialize the Telegram bot (None for the ability to run without a bot token)
 bot: Bot = None
@@ -9,3 +10,4 @@ if TELEGRAM_TOKEN:
 
 # Create a Dispatcher for handling updates
 dp = Dispatcher()
+dp.include_routers(cmd_router)
