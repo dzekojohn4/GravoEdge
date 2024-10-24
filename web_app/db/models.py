@@ -2,11 +2,11 @@ from enum import Enum as PyEnum
 from uuid import uuid4
 
 from sqlalchemy import (
+    DECIMAL,
     Boolean,
     Column,
     DateTime,
     Enum,
-    Float,
     ForeignKey,
     Integer,
     String,
@@ -61,4 +61,4 @@ class Position(Base):
         nullable=True,
         default="pending",
     )
-    start_price = Column(Float, nullable=False)
+    start_price = Column(DECIMAL, nullable=False)

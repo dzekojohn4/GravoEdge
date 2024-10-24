@@ -158,6 +158,8 @@ class PositionDBConnector(UserDBConnector):
     Provides database connection and operations management for the Position model.
     """
 
+    start_price = 0.0
+
     @staticmethod
     def _position_to_dict(position: Position) -> dict:
         """
@@ -248,7 +250,7 @@ class PositionDBConnector(UserDBConnector):
                 existing_position.token_symbol = token_symbol
                 existing_position.amount = amount
                 existing_position.multiplier = multiplier
-                existing_position.start_price = 0.0
+                existing_position.start_price = PositionDBConnector.start_price
                 session.commit()  # Commit the changes to the database
                 session.refresh(existing_position)  # Refresh to get updated values
                 return existing_position
@@ -260,7 +262,7 @@ class PositionDBConnector(UserDBConnector):
                 amount=amount,
                 multiplier=multiplier,
                 status=Status.PENDING.value,  # Set status as 'pending' by default
-                start_price=0.0,
+                start_price=PositionDBConnector.start_price,
             )
 
             # Write the new position to the database
