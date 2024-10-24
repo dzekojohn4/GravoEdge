@@ -1,3 +1,4 @@
+import uuid
 from unittest.mock import Mock, patch
 
 import pytest
@@ -11,7 +12,6 @@ client = TestClient(app)
 app.dependency_overrides.clear()
 
 
-# Test cases for /api/open-position
 @pytest.mark.anyio
 async def test_open_position_success(client: AsyncClient) -> None:
     """
@@ -29,7 +29,7 @@ async def test_open_position_success(client: AsyncClient) -> None:
     ) as mock_open_position:
         mock_open_position.return_value = "Position successfully opened"
         response = client.get(f"/api/open-position?position_id={position_id}")
-        assert response.status_code == 200
+        assert response.ok
         assert response.json() == "Position successfully opened"
 
 
@@ -49,7 +49,6 @@ async def test_open_position_missing_position_data(client: AsyncClient) -> None:
     assert response.json() == {"detail": "Position not found"}
 
 
-# Test cases for /api/close-position
 @pytest.mark.anyio
 async def test_close_position_success(client: AsyncClient) -> None:
     """
@@ -61,13 +60,13 @@ async def test_close_position_success(client: AsyncClient) -> None:
     Returns:
         None
     """
-    position_id = "valid_position_id"
+    position_id = str(uuid.uuid4())
     with patch(
         "web_app.db.crud.PositionDBConnector.close_position"
     ) as mock_close_position:
         mock_close_position.return_value = "Position successfully closed"
         response = client.get(f"/api/close-position?position_id={position_id}")
-        assert response.status_code == 200
+        assert response.ok
         assert response.json() == "Position successfully closed"
 
 
@@ -94,33 +93,78 @@ async def test_close_position_invalid_position_id(client: AsyncClient) -> None:
         assert response.json() == {"detail": "Position not Found"}
 
 
-# Test cases for /api/get-repay-data
+@pytest.mark.parametrize(
+    "supply_token, wallet_id, mock_repay_data",
+    [
+        (
+            "valid_supply_token",
+            "valid_wallet_id",
+            {
+                "supply_token": "mock_supply_token",
+                "debt_token": "mock_debt_token",
+                "pool_key": {
+                    "token0": "mock_token0",
+                    "token1": "mock_token1",
+                    "fee": "mock_fee",
+                    "tick_spacing": "mock_tick_spacing",
+                    "extension": "mock_extension",
+                },
+                "supply_price": 100,
+                "debt_price": 200,
+            },
+        ),
+        (
+            "invalid_supply_token",
+            "valid_wallet_id",
+            {
+                "supply_token": "mock_supply_token",
+                "debt_token": "mock_debt_token",
+                "pool_key": {
+                    "token0": "mock_token0",
+                    "token1": "mock_token1",
+                    "fee": "mock_fee",
+                    "tick_spacing": "mock_tick_spacing",
+                    "extension": "mock_extension",
+                },
+                "supply_price": 0,
+                "debt_price": 0,
+            },
+        ),
+        (
+            "valid_supply_token",
+            "invalid_wallet_id",
+            {
+                "supply_token": "mock_supply_token",
+                "debt_token": "mock_debt_token",
+                "pool_key": {
+                    "token0": "mock_token0",
+                    "token1": "mock_token1",
+                    "fee": "mock_fee",
+                    "tick_spacing": "mock_tick_spacing",
+                    "extension": "mock_extension",
+                },
+                "supply_price": 0,
+                "debt_price": 0,
+            },
+        ),
+    ],
+)
 @pytest.mark.anyio
-async def test_get_repay_data_success(client: AsyncClient) -> None:
+async def test_get_repay_data_success(
+    client: AsyncClient, supply_token, wallet_id, mock_repay_data
+) -> None:
     """
-    Test for successfully retrieving repayment data for a valid wallet ID and supply token.
+    Test for successfully retrieving repayment data for different combinations of wallet ID and supply token.
 
     Args:
         client (AsyncClient): The test client for the FastAPI application.
+        supply_token (str): The token used for supply.
+        wallet_id (str): The wallet ID of the user.
+        mock_repay_data (dict): Mocked repayment data.
 
     Returns:
         None
     """
-    supply_token = "valid_supply_token"
-    wallet_id = "valid_wallet_id"
-    mock_repay_data = {
-        "supply_token": "mock_supply_token",
-        "debt_token": "mock_debt_token",
-        "pool_key": {
-            "token0": "mock_token0",
-            "token1": "mock_token1",
-            "fee": "mock_fee",
-            "tick_spacing": "mock_tick_spacing",
-            "extension": "mock_extension",
-        },
-        "supply_price": 100,
-        "debt_price": 200,
-    }
     with (
         patch(
             "web_app.contract_tools.mixins.deposit.DepositMixin.get_repay_data"
@@ -148,23 +192,38 @@ async def test_get_repay_data_success(client: AsyncClient) -> None:
             "contract_address": "mock_contract_address",
             "position_id": "123",
         }
-        assert response.status_code == 200
+        assert response.ok
         assert response.json() == expected_response
 
 
+@pytest.mark.parametrize(
+    "supply_token, wallet_id, expected_status, expected_response",
+    [
+        ("valid_supply_token", "", 404, {"detail": "Wallet not found"}),
+        ("valid_supply_token", None, 404, {"detail": "Wallet not found"}),
+        (
+            "valid_supply_token",
+            "invalid_wallet_id",
+            404,
+            {"detail": "Wallet not found"},
+        ),
+    ],
+)
 @pytest.mark.anyio
-async def test_get_repay_data_missing_wallet_id(client: AsyncClient) -> None:
+async def test_get_repay_data_missing_wallet_id(
+    client: AsyncClient, supply_token, wallet_id, expected_status, expected_response
+) -> None:
     """
-    Test for missing wallet ID when attempting to retrieve repayment data, which should return a 404 error.
+    Test for missing or invalid wallet ID when attempting to retrieve repayment data, which should return a 404 error.
 
     Args:
         client (AsyncClient): The test client for the FastAPI application.
-
+        supply_token (str): The supply token used for repayment.
+        wallet_id (str): The wallet ID of the user.
+        expected_status (int): Expected HTTP status code.
     Returns:
         None
     """
-    supply_token = "valid_supply_token"
-    wallet_id = ""
     with (
         patch(
             "web_app.contract_tools.mixins.deposit.DepositMixin.get_repay_data"
@@ -182,13 +241,91 @@ async def test_get_repay_data_missing_wallet_id(client: AsyncClient) -> None:
         response = client.get(
             f"/api/get-repay-data?supply_token={supply_token}&wallet_id={wallet_id}"
         )
-        assert response.status_code == 404
-        assert response.json() == {"detail": "Wallet not found"}
+        assert response.status_code == expected_status
+        assert response.json() == expected_response
 
 
-# Test cases for /api/create_position_with_transaction_data
+@pytest.mark.parametrize(
+    "wallet_id, token_symbol, amount, multiplier, expected_response",
+    [
+        (
+            "valid_wallet_id",
+            "ETH",
+            "1000",
+            2,
+            {
+                "contract_address": "mock_contract_address",
+                "position_id": "123",
+                "caller": "mock_caller",
+                "pool_price": 100,
+                "pool_key": {
+                    "token0": "mock_token0",
+                    "token1": "mock_token1",
+                    "fee": "mock_fee",
+                    "tick_spacing": "mock_tick_spacing",
+                    "extension": "mock_extension",
+                },
+                "deposit_data": {
+                    "token": "mock_token",
+                    "amount": "mock_amount",
+                    "multiplier": "mock_multiplier",
+                },
+            },
+        ),
+        (
+            "valid_wallet_id_2",
+            "BTC",
+            "500",
+            1,
+            {
+                "contract_address": "mock_contract_address",
+                "position_id": "123",
+                "caller": "mock_caller",
+                "pool_price": 100,
+                "pool_key": {
+                    "token0": "mock_token0",
+                    "token1": "mock_token1",
+                    "fee": "mock_fee",
+                    "tick_spacing": "mock_tick_spacing",
+                    "extension": "mock_extension",
+                },
+                "deposit_data": {
+                    "token": "mock_token",
+                    "amount": "mock_amount",
+                    "multiplier": "mock_multiplier",
+                },
+            },
+        ),
+        (
+            "valid_wallet_id_3",
+            "SOL",
+            "1500",
+            3,
+            {
+                "contract_address": "mock_contract_address",
+                "position_id": "123",
+                "caller": "mock_caller",
+                "pool_price": 100,
+                "pool_key": {
+                    "token0": "mock_token0",
+                    "token1": "mock_token1",
+                    "fee": "mock_fee",
+                    "tick_spacing": "mock_tick_spacing",
+                    "extension": "mock_extension",
+                },
+                "deposit_data": {
+                    "token": "mock_token",
+                    "amount": "mock_amount",
+                    "multiplier": "mock_multiplier",
+                },
+            },
+        ),
+    ],
+)
 @pytest.mark.anyio
-async def test_create_position_success(client: AsyncClient) -> None:
+async def test_create_position_success(
+    client: AsyncClient, wallet_id, token_symbol, amount, multiplier, expected_response
+) -> None:
     """
     Test for successfully creating a position with valid form data.
 
@@ -199,10 +336,10 @@ async def test_create_position_success(client: AsyncClient) -> None:
         None
     """
     form_data = {
-        "wallet_id": "valid_wallet_id",
-        "token_symbol": "ETH",
-        "amount": "1000",
-        "multiplier": 2,
+        "wallet_id": wallet_id,
+        "token_symbol": token_symbol,
+        "amount": amount,
+        "multiplier": multiplier,
     }
     mock_position = Mock()
     mock_position.id = 123
@@ -240,43 +377,55 @@ async def test_create_position_success(client: AsyncClient) -> None:
         mock_get_transaction_data.return_value = mock_deposit_data
         mock_get_contract_address.return_value = "mock_contract_address"
         response = client.post("/api/create-position", json=form_data)
-        assert response.status_code == 200
-        print(response.json())
-        expected_response = {
-            "contract_address": "mock_contract_address",
-            "position_id": "123",
-            "caller": "mock_caller",
-            "pool_price": 100,
-            "pool_key": {
-                "token0": "mock_token0",
-                "token1": "mock_token1",
-                "fee": "mock_fee",
-                "tick_spacing": "mock_tick_spacing",
-                "extension": "mock_extension",
-            },
-            "deposit_data": {
-                "token": "mock_token",
-                "amount": "mock_amount",
-                "multiplier": "mock_multiplier",
-            },
-        }
+        assert response.ok
         assert response.json() == expected_response
 
 
+@pytest.mark.parametrize(
+    "wallet_id, token_symbol, amount, multiplier, expected_status",
+    [
+        ("valid_wallet_id", "ETH", 100, 2, 200),
+        (None, "ETH", 100, 2, 422),
+        ("valid_wallet_id", "", 100, 2, 422),
+        ("valid_wallet_id", None, 100, 2, 422),
+        ("valid_wallet_id", "BTC", "invalid_amount", 2, 422),
+        ("valid_wallet_id", "BTC", -50, 2, 422),
+        ("valid_wallet_id", "BTC", None, 2, 422),
+        ("valid_wallet_id", "BTC", "50", 2, 422),
+        ("valid_wallet_id", "BTC", 100, "invalid_multiplier", 422),
+        ("valid_wallet_id", "BTC", 100, None, 422),
+        ("valid_wallet_id", "BTC", 100, "1.5", 422),
+        ("valid_wallet_id", "BTC", 100, -1, 422),
+    ],
+)
 @pytest.mark.anyio
-async def test_create_position_invalid(client: AsyncClient) -> None:
+async def test_create_position_invalid(
+    client: AsyncClient, wallet_id, token_symbol, amount, multiplier, expected_status
+) -> None:
     """
-    Test for attempting to create a position with invalid input data, which should return a 422 error.
+    Test for attempting to create a position with various valid and invalid input data.
+    Should return 422 for invalid data and 200 for valid data.
 
     Args:
         client (AsyncClient): The test client for the FastAPI application.
+        wallet_id: The wallet ID of the user.
+        token_symbol: The symbol of the token.
+        amount: The amount to be used.
+        multiplier: The multiplier value.
+        expected_status: The expected HTTP status code.
 
     Returns:
         None
     """
     response = client.post(
         "/api/create-position",
-        json={"wallet_id": None, "token_symbol": "ETH", "amount": 100, "multiplier": 2},
+        json={
+            "wallet_id": wallet_id,
+            "token_symbol": token_symbol,
+            "amount": amount,
+            "multiplier": multiplier,
+        },
     )
-    assert response.status_code == 422
-    assert "detail" in response.json()
+    assert response.status_code == expected_status
+    if expected_status == 422:
+        assert "detail" in response.json()
