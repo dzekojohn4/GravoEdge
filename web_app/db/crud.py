@@ -328,3 +328,36 @@ class PositionDBConnector(UserDBConnector):
             position.status = Status.OPENED.value
             self.write_to_db(position)
         return position.status
+
+    def get_unique_users_count(self) -> int:
+        """
+        Retrieves the number of unique users in the database.
+        :return: The count of unique users.
+        """
+        with self.Session() as db:
+            try:
+                # Query to count distinct users based on wallet ID
+                unique_users_count = db.query(User.wallet_id).distinct().count()
+                return unique_users_count
+
+            except SQLAlchemyError as e:
+                logger.error(f"Failed to retrieve unique users count: {str(e)}")
+                return 0
+
+    def get_total_amounts_for_open_positions(self) -> float | None:
+        """
+        Calculates the total amount for all positions where status is 'OPENED'.
+
+        :return: Total amount for all opened positions, or None if no open positions are found
+        """
+        with self.Session() as db:
+            try:
+                total_opened_amount = (
+                    db.query(db.func.sum(Position.amount))
+                    .filter(Position.status == Status.OPENED.value)
+                    .scalar()
+                )
+                return total_opened_amount
+            except SQLAlchemyError as e:
+                logger.error(f"Error calculating total amount for open positions: {e}")
+                return None
