@@ -1,12 +1,14 @@
-import pytest
 import uuid
+
+import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
-from web_app.db.models import Base, User, Position, Status
-from web_app.db.crud import DBConnector, UserDBConnector, PositionDBConnector
+from sqlalchemy.orm import sessionmaker
+from web_app.db.crud import DBConnector, PositionDBConnector, UserDBConnector
+from web_app.db.models import Base, Position, Status, User
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
+
 
 @pytest.fixture(scope="function")
 def db_connector():
@@ -18,6 +20,7 @@ def db_connector():
     yield connector
     Base.metadata.drop_all(connector.engine)
 
+
 @pytest.fixture(scope="function")
 def sample_user(db_connector):
     """
@@ -25,6 +28,7 @@ def sample_user(db_connector):
     """
     user = User(wallet_id="test_wallet_id")
     return db_connector.write_to_db(user)
+
 
 @pytest.fixture(scope="function")
 def sample_position(db_connector, sample_user):
@@ -37,11 +41,13 @@ def sample_position(db_connector, sample_user):
         amount="100",
         multiplier=2,
         status=Status.PENDING.value,
-        start_price=0.0  # Make sure this field is set for your model
+        start_price=0.0,  # Make sure this field is set for your model
     )
     return db_connector.write_to_db(position)
 
+
 ### Positive Test Cases ###
+
 
 def test_write_to_db_positive(db_connector):
     """
@@ -51,12 +57,14 @@ def test_write_to_db_positive(db_connector):
     result = db_connector.write_to_db(user)
     assert result.wallet_id == "positive_wallet"
 
+
 def test_get_object_positive(db_connector, sample_user):
     """
     Test retrieving an existing object from the database by ID.
     """
     result = db_connector.get_object(User, sample_user.id)
     assert result.wallet_id == "test_wallet_id"
+
 
 def test_delete_object_positive(db_connector, sample_position):
     """
@@ -66,7 +74,9 @@ def test_delete_object_positive(db_connector, sample_position):
     result = db_connector.get_object(Position, sample_position.id)
     assert result is None
 
+
 ### Negative Test Cases ###
+
 
 def test_write_to_db_invalid_object(db_connector):
     """
@@ -74,6 +84,7 @@ def test_write_to_db_invalid_object(db_connector):
     """
     with pytest.raises(SQLAlchemyError):
         db_connector.write_to_db(None)
+
 
 def test_get_object_invalid_id(db_connector):
     """
@@ -83,10 +94,10 @@ def test_get_object_invalid_id(db_connector):
     result = db_connector.get_object(User, non_existent_id)
     assert result is None
 
+
 def test_delete_object_invalid_id(db_connector):
     """
     Test deleting an object with a non-existent ID, expecting no errors.
     """
     non_existent_id = uuid.uuid4()
-    db_connector.delete_object(User, non_existent_id)  
-
+    db_connector.delete_object(User, non_existent_id)
