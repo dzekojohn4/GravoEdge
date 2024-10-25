@@ -331,44 +331,35 @@ class PositionDBConnector(UserDBConnector):
             self.write_to_db(position)
         return position.status
 
-    def get_unique_users(self) -> list[str]:
+    def get_unique_users_count(self) -> int:
         """
-        Fetches all unique users from the Position table.
-        :return: list of unique user ids
+        Retrieves the number of unique users in the database.
+        :return: The count of unique users.
         """
         with self.Session() as db:
             try:
-                # Query for distinct user IDs from the Position table
-                unique_users = db.query(Position.user_id).distinct().all()
-                return [user[0] for user in unique_users]  # Extract user_id from tuple
+                # Query to count distinct users based on wallet ID
+                unique_users_count = db.query(User.wallet_id).distinct().count()
+                return unique_users_count
+
             except SQLAlchemyError as e:
-                logger.error(f"Error fetching unique users: {str(e)}")
-                return []
+                logger.error(f"Failed to retrieve unique users count: {str(e)}")
+                return 0
 
-    def get_all_amounts_for_opened_positions(self) -> dict[str, float]:
+    def get_total_amounts_for_open_positions(self) -> float | None:
         """
-        Fetches the total amount for all users where position status is 'OPENED'.
+        Calculates the total amount for all positions where status is 'OPENED'.
 
-        :return: A dictionary with user IDs as keys and amount as values.
+        :return: Total amount for all opened positions, or None if no open positions are found
         """
         with self.Session() as db:
             try:
-                # Query all positions with status OPENED and group by user_id
-                opened_positions = (
-                    db.query(
-                        Position.user_id,
-                        db.func.sum(Position.amount).label("user_amount"),
-                    )
+                total_opened_amount = (
+                    db.query(db.func.sum(Position.amount))
                     .filter(Position.status == Status.OPENED.value)
-                    .group_by(Position.user_id)
-                    .all()
+                    .scalar()
                 )
-
-                # Return a dictionary with user IDs and their respective amount
-                return {
-                    user_id: user_amount for user_id, user_amount in opened_positions
-                }
-
+                return total_opened_amount
             except SQLAlchemyError as e:
-                logger.error(f"Error fetching amounts for opened positions: {str(e)}")
-                return {}
+                logger.error(f"Error calculating total amount for open positions: {e}")
+                return None

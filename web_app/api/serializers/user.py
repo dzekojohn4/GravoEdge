@@ -37,16 +37,17 @@ class GetUserContractAddressResponse(BaseModel):
     )
 
 
-class GetStats(BaseModel):
+class GetStatsResponse(BaseModel):
     """
-    Pydantic model for the get_stats API response.
+    Pydantic model for the get_stats response.
     """
-
-    users_amounts: dict[str, float] = Field(
+    total_opened_amount: float = Field(
         ...,
-        example={"user1": 1000.0, "user2": 1500.5},
-        description="A dictionary where the key is the user ID and the value is the total amount for that user.",
+        example=1000.0,
+        description="Total amount for all open positions across all users.",
     )
     unique_users: int = Field(
-        ..., example=2, description="The number of unique users with open positions."
+        ...,
+        example=5,
+        description="Number of unique users in the database.",
     )

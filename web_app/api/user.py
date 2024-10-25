@@ -9,7 +9,7 @@ from web_app.api.serializers.user import (
     CheckUserResponse,
     UpdateUserContractResponse,
     GetUserContractAddressResponse,
-    GetStats,
+    GetStatsResponse,
 )
 
 router = APIRouter()  # Initialize the router
@@ -128,39 +128,26 @@ async def get_user_contract_address(wallet_id: str) -> GetUserContractAddressRes
 
 
 @router.get(
-    "/api/get_stats",
-    tags=["Statistics"],
-    summary="Get all user amounts and the number of unique users.",
-    response_model=GetStats,
-    response_description="returns a dictionary of all users and their respective total amounts for open position and the number of unique users who have these open positions",
+        "/api/get_stats",
+        tags=["User Operations"],
+        summary="Get total opened amounts and number of unique users",
+        response_model=GetStatsResponse,
+        response_description="Total amount for all open positions across all users & Number of unique users in the database.",
 )
-async def get_stats():
+async def get_stats() -> GetStatsResponse:
     """
-    Returns all user amounts for open positions and the number of unique users.
+    Retrieves the total amount for open positions and the count of unique users.
 
     ### Returns:
-    - Dictionary containing:
-        - total_amounts: dict where keys are user IDs and values are total amounts
-        - unique_users: The count of unique users with open positions
+    - total_opened_amount: Sum of amounts for all open positions.
+    - unique_users: Total count of unique users.
     """
     try:
-        # Fetch amounts for each user where position status is OPENED
-        users_amounts = position_db.get_all_amounts_for_opened_positions()
-
-        # Get the number of unique users
-        unique_users_count = len(users_amounts)
-
-        # Returns all status OPENED users amount and unique users count
-        return {"users_amounts": users_amounts, "unique_users": unique_users_count}
-
-    except KeyError as key_error:
-        # Handle KeyError if any issue with dictionary keys
-        raise HTTPException(
-            status_code=500, detail=f"Data processing error: {str(key_error)}"
-        )
-
-    except Exception as e:
-        # Catch all other exceptions
-        raise HTTPException(
-            status_code=500, detail=f"An unexpected error occurred: {str(e)}"
-        )
+        total_opened_amount = position_db.get_total_amounts_for_open_positions()
+        unique_users = user_db.get_unique_users_count()
+        return GetStatsResponse(total_opened_amount=total_opened_amount, unique_users=unique_users)
+    
+    except AttributeError as e:
+        raise HTTPException(status_code=500, detail=f"AttributeError: {str(e)}")
+    except TypeError as e:
+        raise HTTPException(status_code=500, detail=f"TypeError: {str(e)}")
