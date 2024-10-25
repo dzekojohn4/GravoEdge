@@ -60,7 +60,6 @@ services:
       - .:/app
     depends_on:
       - redis
-      - db
     networks:
       - app_network
 
@@ -71,7 +70,6 @@ services:
       - .:/app
     depends_on:
       - redis
-      - db
     networks:
       - app_network
 
