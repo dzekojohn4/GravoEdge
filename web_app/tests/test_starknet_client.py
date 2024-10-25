@@ -174,7 +174,7 @@ class TestStarknetClient:
         mock_contract.functions["get_pool_price"].call.assert_called_once()
 
         assert pool_price
-        assert isinstance(pool_price, float) or isinstance(pool_price, int)
+        assert isinstance(pool_price, (int, float))
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
