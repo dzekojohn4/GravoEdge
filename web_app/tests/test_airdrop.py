@@ -1,3 +1,18 @@
+"""
+Tests for the AirDropDBConnector class, covering key database operations for airdrops.
+
+Fixtures:
+- db_connector: Provides an AirDropDBConnector instance with test user and airdrop data.
+
+Test Cases:
+- test_create_empty_claim_positive: Verifies airdrop creation for an existing user.
+- test_create_empty_claim_non_existent_user: Checks error handling for invalid user IDs.
+- test_save_claim_data_positive: Ensures claim data updates correctly.
+- test_save_claim_data_non_existent_airdrop: Confirms logging for invalid airdrop IDs.
+- test_get_all_unclaimed_positive: Retrieves unclaimed airdrops.
+- test_get_all_unclaimed_after_claiming: Excludes claimed airdrops from unclaimed results.
+"""
+
 import uuid
 from datetime import datetime
 from decimal import Decimal
