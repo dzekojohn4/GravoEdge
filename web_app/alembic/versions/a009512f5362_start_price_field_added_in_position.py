@@ -1,7 +1,7 @@
 """start_price field added in position
 
 Revision ID: a009512f5362
-Revises: 47354ac07cac
+Revises: b705d1435b64
 Create Date: 2024-10-24 18:56:29.399344
 
 """
@@ -12,7 +12,7 @@ from sqlalchemy import inspect
 
 # revision identifiers, used by Alembic.
 revision = 'a009512f5362'
-down_revision = '47354ac07cac'
+down_revision = 'b705d1435b64'
 branch_labels = None
 depends_on = None
 
