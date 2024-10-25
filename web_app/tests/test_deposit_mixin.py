@@ -1,3 +1,5 @@
+"""Test cases for DepositMixin"""
+
 import pytest
 
 from decimal import Decimal
@@ -7,6 +9,10 @@ from web_app.contract_tools.mixins.deposit import DepositMixin
 
 
 class TestDepositMixin:
+    """
+    Test cases for web_app.contract_tools.mixins.deposit.DepositMixin class
+    """
+
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "deposit_token, amount, multiplier, wallet_id, borrowing_token",

@@ -1,3 +1,5 @@
+"""Test cases for StarknetClient"""
+
 import pytest
 
 from starknet_py.contract import Contract
@@ -11,6 +13,10 @@ CLIENT = StarknetClient()
 
 
 class TestStarknetClient:
+    """
+    Test cases for web_app.contract_tools.blockchain_call.StarknetClient class
+    """
+
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "addr, expected_addr",

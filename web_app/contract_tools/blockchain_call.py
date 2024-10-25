@@ -21,6 +21,10 @@ logger = logging.getLogger(__name__)
 
 
 class RepayDataException(Exception):
+    """
+    Custom RepayDataException for handling errors while repaying data
+    """
+
     pass
 
 
@@ -216,7 +220,10 @@ class StarknetClient:
             logger.error(
                 f"Error while getting repay data: {deposit_token=}, {borrowing_token=}"
             )
-            raise RepayDataException(f"Error while getting repay data(supply_price=0): {deposit_token=}, {borrowing_token=}")
+            raise RepayDataException(
+                f"Error while getting repay data(supply_price=0): "
+                f"{deposit_token=}, {borrowing_token=}"
+            )
 
         return {
             "supply_price": supply_price,
