@@ -162,7 +162,7 @@ class PositionDBConnector(UserDBConnector):
     Provides database connection and operations management for the Position model.
     """
 
-    start_price = 0.0
+    START_PRICE = 0.0
 
     @staticmethod
     def _position_to_dict(position: Position) -> dict:
@@ -193,7 +193,7 @@ class PositionDBConnector(UserDBConnector):
 
     def get_positions_by_wallet_id(self, wallet_id: str) -> list:
         """
-        Retrieves all positions for a user by their wallet ID 
+        Retrieves all positions for a user by their wallet ID
         and returns them as a list of dictionaries.
         :param wallet_id: str
         :return: list of dict
