@@ -1,3 +1,13 @@
+"""
+This module contains Celery tasks for the application.
+
+It imports the logging module to facilitate logging operations and the
+Celery app instance from the `celery_config` module.
+
+Tasks:
+- test_task: A simple test task that logs a confirmation message.
+"""
+
 import logging
 
 from .celery_config import app
