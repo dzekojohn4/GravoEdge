@@ -31,7 +31,7 @@ REDIS_HOST = os.environ.get("REDIS_HOST", "")
 REDIS_PORT = os.environ.get("REDIS_PORT", 6379)
 
 app = Celery(
-    main="derisk",
+    main="spotnet",
     broker=f"redis://{REDIS_HOST}:{REDIS_PORT}/0",
     backend=f"redis://{REDIS_HOST}:{REDIS_PORT}/0",
 )
