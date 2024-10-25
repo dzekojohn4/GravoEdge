@@ -64,7 +64,7 @@ class TokenMultiplierResponse(BaseModel):
         tags=["Position Operations"], 
         response_model=TokenMultiplierResponse, 
         summary="Get token multipliers", 
-        response_description="Returns token multipliers"
+        response_description="Returns token multipliers",
         )
 async def get_multipliers() -> TokenMultiplierResponse:
     """
