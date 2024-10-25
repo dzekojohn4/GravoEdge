@@ -1,3 +1,7 @@
+"""
+This module defines the serializers for the transaction data.
+"""
+
 from pydantic import BaseModel, field_validator
 
 
@@ -13,7 +17,12 @@ class PoolKey(BaseModel):
     extension: str
 
     @field_validator(
-        "token0", "token1", "fee", "tick_spacing", "extension", mode="before",
+        "token0",
+        "token1",
+        "fee",
+        "tick_spacing",
+        "extension",
+        mode="before",
     )
     def convert_int_to_str(cls, value) -> str:
         """
@@ -25,6 +34,10 @@ class PoolKey(BaseModel):
 
 
 class DepositData(BaseModel):
+    """
+    Pydantic model for the deposit data.
+    """
+
     token: str
     amount: str
     multiplier: str
@@ -85,8 +98,16 @@ class UpdateUserContractRequest(BaseModel):
 
 
 class DeploymentStatus(BaseModel):
+    """
+    Pydantic model for the deployment status.
+    """
+
     is_contract_deployed: bool
 
 
 class ContractAddress(BaseModel):
+    """
+    Pydantic model for the contract address.
+    """
+
     contract_address: str | None
