@@ -23,11 +23,13 @@ position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnec
 class TokenMultiplierResponse(BaseModel):
     """
     This class defines the structure of the response for the token multiplier 
-    endpoint, encapsulating a dictionary where each token symbol (e.g., "ETH", "STRK") 
+    endpoint, encapsulating a dictionary where each token symbol:
+    (e.g., "ETH", "STRK") 
     is mapped to its respective multiplier value.
 
     ### Parameters:
-    - **multipliers**: A dictionary containing token symbols as keys (e.g., "ETH", "STRK", "USDC") 
+    - **multipliers**: A dictionary containing token symbols as keys: 
+      (e.g., "ETH", "STRK", "USDC") 
       and their respective multipliers as values.
 
     ### Returns:
