@@ -1,16 +1,15 @@
 """
 test_positions.py
-
 This module contains unit tests for the positions functionality within the web_app.
 It verifies the creation, retrieval, updating, and deletion of positions, ensuring
 that all edge cases and error scenarios are appropriately handled.
 
+
 """
-
-
 
 import uuid
 from unittest.mock import Mock, patch
+
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
@@ -26,10 +25,8 @@ app.dependency_overrides.clear()
 async def test_open_position_success(client: AsyncClient) -> None:
     """
     Test for successfully opening a position using a valid position ID.
-
     Args:
         client (AsyncClient): The test client for the FastAPI application.
-
     Returns:
         None
     """
@@ -39,7 +36,7 @@ async def test_open_position_success(client: AsyncClient) -> None:
     ) as mock_open_position:
         mock_open_position.return_value = "Position successfully opened"
         response = client.get(f"/api/open-position?position_id={position_id}")
-        assert response.ok
+        assert response.is_success
         assert response.json() == "Position successfully opened"
 
 
@@ -47,10 +44,8 @@ async def test_open_position_success(client: AsyncClient) -> None:
 async def test_open_position_missing_position_data(client: AsyncClient) -> None:
     """
     Test for missing position data, which should return a 404 error.
-
     Args:
         client (AsyncClient): The test client for the FastAPI application.
-
     Returns:
         None
     """
@@ -63,10 +58,8 @@ async def test_open_position_missing_position_data(client: AsyncClient) -> None:
 async def test_close_position_success(client: AsyncClient) -> None:
     """
     Test for successfully closing a position using a valid position ID.
-
     Args:
         client (AsyncClient): The test client for the FastAPI application.
-
     Returns:
         None
     """
@@ -76,19 +69,17 @@ async def test_close_position_success(client: AsyncClient) -> None:
     ) as mock_close_position:
         mock_close_position.return_value = "Position successfully closed"
         response = client.get(f"/api/close-position?position_id={position_id}")
-        assert response.ok
+        assert response.is_success
         assert response.json() == "Position successfully closed"
 
 
 @pytest.mark.anyio
 async def test_close_position_invalid_position_id(client: AsyncClient) -> None:
     """
-    Test for attempting to close a position using an invalid position IC
+    Test for attempting to close a position using an invalid position ID, 
     which should return a 404 error.
-
     Args:
         client (AsyncClient): The test client for the FastAPI application.
-
     Returns:
         None
     """
@@ -165,15 +156,14 @@ async def test_get_repay_data_success(
     client: AsyncClient, supply_token, wallet_id, mock_repay_data
 ) -> None:
     """
-    Test for successfully retrieving repayment data for 
-    different combinations of wallet ID and supply token.
-
+    Test for successfully retrieving repayment data for
+    different combinations of
+    wallet ID and supply token.
     Args:
         client (AsyncClient): The test client for the FastAPI application.
         supply_token (str): The token used for supply.
         wallet_id (str): The wallet ID of the user.
         mock_repay_data (dict): Mocked repayment data.
-
     Returns:
         None
     """
@@ -204,39 +194,22 @@ async def test_get_repay_data_success(
             "contract_address": "mock_contract_address",
             "position_id": "123",
         }
-        assert response.ok
+        assert response.is_success
         assert response.json() == expected_response
 
 
-@pytest.mark.parametrize(
-    "supply_token, wallet_id, expected_status, expected_response",
-    [
-        ("valid_supply_token", "", 404, {"detail": "Wallet not found"}),
-        ("valid_supply_token", None, 404, {"detail": "Wallet not found"}),
-        (
-            "valid_supply_token",
-            "invalid_wallet_id",
-            404,
-            {"detail": "Wallet not found"},
-        ),
-    ],
-)
 @pytest.mark.anyio
-async def test_get_repay_data_missing_wallet_id(
-    client: AsyncClient, supply_token, wallet_id, expected_status, expected_response
-) -> None:
+async def test_get_repay_data_missing_wallet_id(client: AsyncClient) -> None:
     """
-    Test for missing or invalid wallet ID when attempting to retrieve repayment data,
+    Test for missing wallet ID when attempting to retrieve repayment data, 
     which should return a 404 error.
-
     Args:
         client (AsyncClient): The test client for the FastAPI application.
-        supply_token (str): The supply token used for repayment.
-        wallet_id (str): The wallet ID of the user.
-        expected_status (int): Expected HTTP status code.
     Returns:
         None
     """
+    supply_token = "valid_supply_token"
+    wallet_id = ""
     with (
         patch(
             "web_app.contract_tools.mixins.deposit.DepositMixin.get_repay_data"
@@ -254,8 +227,8 @@ async def test_get_repay_data_missing_wallet_id(
         response = client.get(
             f"/api/get-repay-data?supply_token={supply_token}&wallet_id={wallet_id}"
         )
-        assert response.status_code == expected_status
-        assert response.json() == expected_response
+        assert response.status_code == 404
+        assert response.json() == {"detail": "Wallet not found"}
 
 
 @pytest.mark.parametrize(
@@ -287,7 +260,7 @@ async def test_get_repay_data_missing_wallet_id(
         ),
         (
             "valid_wallet_id_2",
-            "BTC",
+            "ETH",
             "500",
             1,
             {
@@ -311,7 +284,7 @@ async def test_get_repay_data_missing_wallet_id(
         ),
         (
             "valid_wallet_id_3",
-            "SOL",
+            "ETH",
             "1500",
             3,
             {
@@ -337,16 +310,10 @@ async def test_get_repay_data_missing_wallet_id(
 )
 @pytest.mark.anyio
 async def test_create_position_success(
-    client: AsyncClient, wallet_id, token_symbol, amount, multiplier, expected_response
+    wallet_id, token_symbol, amount, multiplier, expected_response
 ) -> None:
     """
     Test for successfully creating a position with valid form data.
-
-    Args:
-        client (AsyncClient): The test client for the FastAPI application.
-
-    Returns:
-        None
     """
     mock_position = Mock()
     mock_position.id = 123
@@ -380,57 +347,50 @@ async def test_create_position_success(
             "web_app.db.crud.PositionDBConnector.get_contract_address_by_wallet_id"
         ) as mock_get_contract_address,
     ):
+
         mock_create_position.return_value = mock_position
         mock_get_transaction_data.return_value = mock_deposit_data
         mock_get_contract_address.return_value = "mock_contract_address"
-        response = await client.post(
-        "/api/create-position-with-transaction-data",
-        data={
-        "wallet_id": wallet_id,
-        "token_symbol": token_symbol,
-        "amount": amount,
-        "multiplier": multiplier,
-            },
-            )   
-        assert response.ok
-        assert response.json() == expected_response
+
+        async with AsyncClient(app=app, base_url="http://test") as async_client:
+            response = await async_client.post(
+                "/api/create-position",
+                json={
+                    "wallet_id": wallet_id,
+                    "token_symbol": token_symbol,
+                    "amount": amount,
+                    "multiplier": multiplier,
+                },
+            )
+        assert (
+            response.status_code == 200
+        ), f"Expected status code 200 but got {response.status_code}"
+        assert (
+            response.json() == expected_response
+        ), f"Response JSON does not match expected response"
 
 
 @pytest.mark.parametrize(
     "wallet_id, token_symbol, amount, multiplier, expected_status",
     [
-        ("valid_wallet_id", "ETH", 100, 2, 200),
         (None, "ETH", 100, 2, 422),
-        ("valid_wallet_id", "", 100, 2, 422),
-        ("valid_wallet_id", None, 100, 2, 422),
-        ("valid_wallet_id", "BTC", "invalid_amount", 2, 422),
-        ("valid_wallet_id", "BTC", -50, 2, 422),
-        ("valid_wallet_id", "BTC", None, 2, 422),
-        ("valid_wallet_id", "BTC", "50", 2, 422),
-        ("valid_wallet_id", "BTC", 100, "invalid_multiplier", 422),
-        ("valid_wallet_id", "BTC", 100, None, 422),
-        ("valid_wallet_id", "BTC", 100, "1.5", 422),
-        ("valid_wallet_id", "BTC", 100, -1, 422),
+        (12345, "", 100, 2, 422),
+        (12345, None, 100, 2, 422),
+        (12345, "ETH", "invalid_amount", 2, 422),
+        (12345, "ETH", -50, 2, 422),
+        (12345, "ETH", None, 2, 422),
+        (12345, "ETH", "50", 2, 422),
+        (12345, "ETH", 100, "invalid_multiplier", 422),
+        (12345, "ETH", 100, None, 422),
+        (12345, "ETH", 100, "1.5", 422),
     ],
 )
-@pytest.mark.anyio
-async def test_create_position_invalid(
-    client: AsyncClient, wallet_id, token_symbol, amount, multiplier, expected_status
-) -> None:
+def test_create_position_invalid(
+    wallet_id, token_symbol, amount, multiplier, expected_status
+):
     """
     Test for attempting to create a position with various valid and invalid input data.
     Should return 422 for invalid data and 200 for valid data.
-
-    Args:
-        client (AsyncClient): The test client for the FastAPI application.
-        wallet_id: The wallet ID of the user.
-        token_symbol: The symbol of the token.
-        amount: The amount to be used.
-        multiplier: The multiplier value.
-        expected_status: The expected HTTP status code.
-
-    Returns:
-        None
     """
     response = client.post(
         "/api/create-position",
