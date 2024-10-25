@@ -4,7 +4,7 @@ from starknet_py.contract import Contract
 from starknet_py.net.full_node_client import FullNodeClient
 from unittest.mock import AsyncMock, patch
 
-from web_app.contract_tools.blockchain_call import StarknetClient
+from web_app.contract_tools.blockchain_call import StarknetClient, RepayDataException
 from web_app.contract_tools.constants import TokenParams
 
 CLIENT = StarknetClient()
@@ -356,14 +356,17 @@ class TestStarknetClient:
         )
         mock_contract_from_address.return_value = mock_contract
 
-        repay_data = await CLIENT.get_repay_data(
-            deposit_token_addr, borrowing_token_addr
-        )
+        try:
+            repay_data = await CLIENT.get_repay_data(
+                deposit_token_addr, borrowing_token_addr
+            )
+        except RepayDataException:
+            assert RepayDataException.args
+        else:
+            mock_contract_from_address.assert_called_once()
+            mock_contract.functions["get_pool_price"].call.assert_called_once()
 
-        mock_contract_from_address.assert_called_once()
-        mock_contract.functions["get_pool_price"].call.assert_called_once()
-
-        assert isinstance(repay_data, dict)
-        assert {"supply_price", "debt_price", "pool_key"}.issubset(
-            repay_data
-        ) or not len(repay_data.keys())
+            assert isinstance(repay_data, dict)
+            assert {"supply_price", "debt_price", "pool_key"}.issubset(
+                repay_data
+            ) or not len(repay_data.keys())

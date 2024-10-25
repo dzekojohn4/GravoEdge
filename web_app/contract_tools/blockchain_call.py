@@ -20,6 +20,10 @@ from .constants import EKUBO_MAINNET_ADDRESS, TokenParams
 logger = logging.getLogger(__name__)
 
 
+class RepayDataException(Exception):
+    pass
+
+
 class StarknetClient:
     """
     A client to interact with the Starknet blockchain.
@@ -212,7 +216,7 @@ class StarknetClient:
             logger.error(
                 f"Error while getting repay data: {deposit_token=}, {borrowing_token=}"
             )
-            return {}
+            raise RepayDataException(f"Error while getting repay data(supply_price=0): {deposit_token=}, {borrowing_token=}")
 
         return {
             "supply_price": supply_price,
