@@ -1,6 +1,16 @@
+"""
+test_positions.py
+
+This module contains unit tests for the positions functionality within the web_app.
+It verifies the creation, retrieval, updating, and deletion of positions, ensuring
+that all edge cases and error scenarios are appropriately handled.
+
+"""
+
+
+
 import uuid
 from unittest.mock import Mock, patch
-
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
@@ -73,7 +83,8 @@ async def test_close_position_success(client: AsyncClient) -> None:
 @pytest.mark.anyio
 async def test_close_position_invalid_position_id(client: AsyncClient) -> None:
     """
-    Test for attempting to close a position using an invalid position ID, which should return a 404 error.
+    Test for attempting to close a position using an invalid position IC
+    which should return a 404 error.
 
     Args:
         client (AsyncClient): The test client for the FastAPI application.
@@ -154,7 +165,8 @@ async def test_get_repay_data_success(
     client: AsyncClient, supply_token, wallet_id, mock_repay_data
 ) -> None:
     """
-    Test for successfully retrieving repayment data for different combinations of wallet ID and supply token.
+    Test for successfully retrieving repayment data for 
+    different combinations of wallet ID and supply token.
 
     Args:
         client (AsyncClient): The test client for the FastAPI application.
@@ -214,7 +226,8 @@ async def test_get_repay_data_missing_wallet_id(
     client: AsyncClient, supply_token, wallet_id, expected_status, expected_response
 ) -> None:
     """
-    Test for missing or invalid wallet ID when attempting to retrieve repayment data, which should return a 404 error.
+    Test for missing or invalid wallet ID when attempting to retrieve repayment data,
+    which should return a 404 error.
 
     Args:
         client (AsyncClient): The test client for the FastAPI application.
@@ -370,7 +383,15 @@ async def test_create_position_success(
         mock_create_position.return_value = mock_position
         mock_get_transaction_data.return_value = mock_deposit_data
         mock_get_contract_address.return_value = "mock_contract_address"
-        response = await client.post("/api/create-position-with-transaction-data",data={"wallet_id": wallet_id,"token_symbol": token_symbol,"amount": amount,"multiplier": multiplier,},)
+        response = await client.post(
+        "/api/create-position-with-transaction-data",
+        data={
+        "wallet_id": wallet_id,
+        "token_symbol": token_symbol,
+        "amount": amount,
+        "multiplier": multiplier,
+            },
+            )   
         assert response.ok
         assert response.json() == expected_response
 
