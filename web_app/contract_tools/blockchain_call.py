@@ -1,3 +1,7 @@
+"""
+This module handles the blockchain calls.
+"""
+
 import logging
 import os
 import time
