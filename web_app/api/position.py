@@ -1,3 +1,7 @@
+"""
+This module handles position-related API endpoints.
+"""
+
 from fastapi import APIRouter, Request, HTTPException
 
 from pydantic import BaseModel
@@ -43,7 +47,13 @@ async def get_multipliers() -> TokenMultiplierResponse:
     return TokenMultiplierResponse(multipliers=multipliers)
 
 
-@router.post("/api/create-position", tags=["Position Operations"], response_model=LoopLiquidityData, summary="Create a new position", response_description="Returns the new position and transaction data.")
+@router.post(
+    "/api/create-position",
+    tags=["Position Operations"],
+    response_model=LoopLiquidityData,
+    summary="Create a new position",
+    response_description="Returns the new position and transaction data.",
+)
 async def create_position_with_transaction_data(
     form_data: PositionFormData
 ) -> LoopLiquidityData:
@@ -83,7 +93,13 @@ async def create_position_with_transaction_data(
     return LoopLiquidityData(**deposit_data)
 
 
-@router.get("/api/get-repay-data", tags=["Position Operations"], response_model=RepayTransactionDataResponse, summary="Get repay data", response_description="Returns the repay transaction data.")
+@router.get(
+    "/api/get-repay-data",
+    tags=["Position Operations"],
+    response_model=RepayTransactionDataResponse,
+    summary="Get repay data",
+    response_description="Returns the repay transaction data.",
+)
 async def get_repay_data(
     supply_token: str, wallet_id: str
 ) -> RepayTransactionDataResponse:
@@ -108,7 +124,13 @@ async def get_repay_data(
     return repay_data
 
 
-@router.get("/api/close-position", tags=["Position Operations"], response_model=str, summary="Close a position", response_description="Returns the position status")
+@router.get(
+    "/api/close-position",
+    tags=["Position Operations"],
+    response_model=str,
+    summary="Close a position",
+    response_description="Returns the position status",
+)
 async def close_position(position_id: str) -> str:
     """
     Close a position.
@@ -123,7 +145,13 @@ async def close_position(position_id: str) -> str:
     return position_status
 
 
-@router.get("/api/open-position", tags=["Position Operations"], response_model=str, summary="Open a position", response_description="Returns the positions status")
+@router.get(
+    "/api/open-position",
+    tags=["Position Operations"],
+    response_model=str,
+    summary="Open a position",
+    response_description="Returns the positions status",
+)
 async def open_position(position_id: str) -> str:
     """
     Open a position.
