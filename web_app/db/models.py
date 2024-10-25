@@ -88,5 +88,5 @@ class AirDrop(Base):
     )
     created_at = Column(DateTime, nullable=False, default=func.now())
     amount = Column(DECIMAL, nullable=True)
-    is_claimed = Column(Boolean, default=False)
+    is_claimed = Column(Boolean, default=False, index=True)
     claimed_at = Column(DateTime, nullable=True)
