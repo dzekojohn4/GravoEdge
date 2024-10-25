@@ -21,7 +21,7 @@ class TokenConfig:
     """
     Class to hold the token configuration for the pools.
     """
-
+    
     address: str
     decimals: int
     name: str
@@ -32,7 +32,6 @@ class TokenMultipliers:
     """
     Class to hold the predefined multipliers for supported tokens/
     """
-
     ETH: float = 5.0
     STRK: float = 2.5
     USDC: float = 5.0

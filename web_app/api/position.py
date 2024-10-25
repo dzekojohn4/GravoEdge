@@ -18,9 +18,33 @@ router = APIRouter()  # Initialize the router
 position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
 
 class TokenMultiplierResponse(BaseModel):
+    """
+    This class defines the structure of the response for the token multiplier 
+    endpoint, encapsulating a dictionary where each token symbol (e.g., "ETH", "STRK") 
+    is mapped to its respective multiplier value.
+
+    ### Parameters:
+    - **multipliers**: A dictionary containing token symbols as keys (e.g., "ETH", "STRK", "USDC") 
+      and their respective multipliers as values.
+
+    ### Returns:
+    The model returns a structured JSON response with each token and its multiplier, allowing clients 
+    to easily parse and use multiplier values for financial or transaction-based calculations.
+    """
     multipliers: dict[str, float]
 
     class Config:
+        """
+        The `Config` class provides additional metadata to illustrate the expected response structure 
+        for the TokenMultiplierResponse model, aiding in documentation and integration.
+
+        ### Parameters:
+        - **schema_extra**: A dictionary that includes an example response under the "example" key, 
+        demonstrating the JSON format expected for the multipliers dictionary.
+
+        ### Returns:
+        A schema example to provide guidiance by showing a sample JSON response format.
+        """
         schema_extra = {
             "example": {
                 "multipliers": {
@@ -37,8 +61,6 @@ async def get_multipliers() -> TokenMultiplierResponse:
     """
     This Endpoint retrieves the multipliers for tokens like ETH, STRK, and USDC.
     """
-
-    
     multipliers = {
         "ETH": TokenMultipliers.ETH,
         "STRK": TokenMultipliers.STRK,
