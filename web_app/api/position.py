@@ -33,22 +33,14 @@ class TokenMultiplierResponse(BaseModel):
       and their respective multipliers as values.
 
     ### Returns:
-    The model returns a structured JSON response with each token and its multiplier, allowing clients 
-    to easily parse and use multiplier values for financial or transaction-based calculations.
+    A structured JSON response with each token and its multiplier.
     """
     multipliers: dict[str, float]
 
     class Config:
         """
-        The `Config` class provides additional metadata to illustrate the expected response structure 
-        for the TokenMultiplierResponse model, aiding in documentation and integration.
-
-        ### Parameters:
-        - **schema_extra**: A dictionary that includes an example response under the "example" key, 
-        demonstrating the JSON format expected for the multipliers dictionary.
-
-        ### Returns:
-        A schema example to provide guidiance by showing a sample JSON response format.
+        Metadata for TokenMultiplierResponse 
+        with example JSON response format in **schema_extra**.
         """
         schema_extra = {
             "example": {
