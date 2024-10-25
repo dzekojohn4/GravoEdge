@@ -4,16 +4,15 @@ This module contains the CRUD operations for the database.
 
 import logging
 import uuid
-from typing import Type, TypeVar
 from datetime import datetime
 from decimal import Decimal
-from typing import List
+from typing import List, Type, TypeVar
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from web_app.db.database import SQLALCHEMY_DATABASE_URL
-from web_app.db.models import Base, Position, Status, User, AirDrop
+from web_app.db.models import AirDrop, Base, Position, Status, User
 
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)
@@ -114,7 +113,7 @@ class DBConnector:
 
         finally:
             db.close()
-    
+
     def create_empty_claim(self, user_id: uuid.UUID) -> AirDrop:
         """
         Creates a new empty AirDrop instance for the given user_id.
@@ -378,7 +377,8 @@ class PositionDBConnector(UserDBConnector):
             except SQLAlchemyError as e:
                 logger.error(f"Error calculating total amount for open positions: {e}")
                 return None
-            
+
+
 class AirDropDBConnector(DBConnector):
     """
     Provides database connection and operations management for the AirDrop model.
@@ -393,7 +393,7 @@ class AirDropDBConnector(DBConnector):
         airdrop = self.get_object(AirDrop, airdrop_id)
         if airdrop:
             airdrop.amount = amount
-            airdrop.is_claimed =True
+            airdrop.is_claimed = True
             airdrop.claimed_at = datetime.now()
             self.write_to_db(airdrop)
         else:

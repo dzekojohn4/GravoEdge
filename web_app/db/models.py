@@ -74,6 +74,7 @@ class Position(Base):
     )
     start_price = Column(DECIMAL, nullable=False)
 
+
 class AirDrop(Base):
     """
     SQLAlchemy model for the airdrop table.
