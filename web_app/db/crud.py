@@ -401,13 +401,19 @@ class AirDropDBConnector(DBConnector):
 
     def get_all_unclaimed(self) -> List[AirDrop]:
         """
-        Returns all AirDrop instances where is_claimed=False.
-        :return: List[AirDrop]
+        Returns all unclaimed AirDrop instances (where is_claimed is False).
+
+        :return: List of unclaimed AirDrop instances
         """
         with self.Session() as db:
             try:
-                unclaimed = db.query(AirDrop).filter(AirDrop.is_claimed == False).all()
-                return unclaimed
+
+                unclaimed_instances = (
+                    db.query(AirDrop).filter_by(is_claimed=False).all()
+                )
+                return unclaimed_instances
             except SQLAlchemyError as e:
-                logger.error(f"Failed to retrieve unclaimed AirDrops: {str(e)}")
+                logger.error(
+                    f"Failed to retrieve unclaimed AirDrop instances: {str(e)}"
+                )
                 return []
