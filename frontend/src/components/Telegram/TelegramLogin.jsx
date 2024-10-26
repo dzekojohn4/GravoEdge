@@ -22,11 +22,16 @@ const TelegramLogin = ({ user, onLogin }) => {
             request_access: 'write'
         }, onLogin)
     };
-    window.console.log(user.photo_url);
+
+    const handleLogout = () => {
+        localStorage.removeItem('tg_user');
+        onLogin(null);
+      };
+    
     return (
         <div className="telegram-login">
             {user ? (
-                <div className="user-info">
+                <div className="user-info" onClick={handleLogout}>
                     <img src={user.photo_url} alt={user.first_name} className="user-photo" />
                     <span className="user-name">{user.first_name}</span>
                 </div>
