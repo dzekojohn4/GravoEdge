@@ -31,25 +31,22 @@ async def get_current_prices(cls) -> Dict[str, str]:
     """
     prices = {}
 
-    try:
-        response = await APIRequest(base_url=AVNU_PRICE_URL).fetch("")
-        if not response:
-            return prices
+    response = await APIRequest(base_url=AVNU_PRICE_URL).fetch("")
+    if not response:
+        return prices
 
-        for token_data in response:
-            try:
-                address = token_data.get("address")
-                current_price = token_data.get("currentPrice")
-                if address and current_price is not None:
-                    symbol = TokenParams.get_token_symbol(address)
-                    if symbol:
-                        prices[symbol] = str(Decimal(current_price))
-            except AttributeError as e:
-                print(f"AttributeError while parsing price for {address}: {str(e)}")
-            except TypeError as e:
-                print(f"TypeError while parsing price for {address}: {str(e)}")
-    except Exception as e:  # handle if API request fails
-        print(f"Failed to fetch prices from API due to an error: {e}")
+    for token_data in response:
+        try:
+            address = token_data.get("address")
+            current_price = token_data.get("currentPrice")
+            if address and current_price is not None:
+                symbol = TokenParams.get_token_symbol(address)
+                if symbol:
+                    prices[symbol] = str(Decimal(current_price))
+        except AttributeError as e:
+            print(f"AttributeError while parsing price for {address}: {str(e)}")
+        except TypeError as e:
+            print(f"TypeError while parsing price for {address}: {str(e)}")
 
     return prices
 
