@@ -89,7 +89,7 @@ def test_create_position_success(mock_position_db_connector, sample_user):
     
     new_position = Position(
         user_id=sample_user.id,
-        token_symbol="BTC",
+        token_symbol="ETH",
         amount="200",
         multiplier=3,
         status=Status.PENDING.value,
