@@ -14,6 +14,7 @@ CLIENT = StarknetClient()
 # alternative ARGENT_X_POSITION_URL
 # "https://cloud.argent-api.com/v1/tokens/defi/decomposition/{wallet_id}?chain=starknet"
 ARGENT_X_POSITION_URL = "https://cloud.argent-api.com/v1/tokens/defi/"
+
 # New constant for AVNU price endpoint
 AVNU_PRICE_URL = "https://starknet.impulse.avnu.fi/v1/tokens/short"
 
