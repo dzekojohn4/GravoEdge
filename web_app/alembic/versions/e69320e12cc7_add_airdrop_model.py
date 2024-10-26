@@ -6,18 +6,19 @@ Create Date: 2024-10-25 16:47:37.723379
 
 """
 
+import logging
+
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.engine.reflection import Inspector
 
 revision = "e69320e12cc7"
 down_revision = "a009512f5362"
 branch_labels = None
 depends_on = None
 
-
-import sqlalchemy as sa
-from alembic import op
-from sqlalchemy.engine.reflection import Inspector
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def upgrade() -> None:
@@ -38,7 +39,7 @@ def upgrade() -> None:
 
     - Foreign key constraint on `user_id` to reference the `user` table.
     - Primary key constraint on `id`.
-    - Index on `user_id` for optimized querying based on the `user_id` field.
+    - Index on `user_id` and `is_claimed` for optimized querying.
 
     This function is part of the Alembic migration and is auto-generated.
     Adjustments may be made if additional configuration or constraints are needed.
@@ -64,23 +65,28 @@ def upgrade() -> None:
         op.create_index(
             op.f("ix_airdrop_user_id"), "airdrop", ["user_id"], unique=False
         )
-        print("Table 'airdrop' created successfully.")
+        op.create_index(
+            op.f("ix_airdrop_is_claimed"), "airdrop", ["is_claimed"], unique=False
+        )
+        logger.info("Table 'airdrop' created successfully with indexes.")
     else:
-        print("Table 'airdrop' already exists, skipping creation.")
+        logger.info("Table 'airdrop' already exists, skipping creation.")
 
 
 def downgrade() -> None:
     """
     Perform the downgrade migration to remove the 'airdrop' table from the database if it exists.
-    This migration drops the 'airdrop' table and its associated index on `user_id`.
+    This migration drops the 'airdrop' table and its associated indexes on `user_id` 
+    and `is_claimed`.
     It is intended to reverse the changes made in the `upgrade` function, allowing
     for a rollback of the database schema to the state before the 'airdrop' table was added.
     """
     bind = op.get_bind()
     inspector = Inspector.from_engine(bind)
     if "airdrop" in inspector.get_table_names():
+        op.drop_index(op.f("ix_airdrop_is_claimed"), table_name="airdrop")
         op.drop_index(op.f("ix_airdrop_user_id"), table_name="airdrop")
         op.drop_table("airdrop")
-        print("Table 'airdrop' and its index were dropped successfully.")
+        logger.info("Table 'airdrop' and its indexes were dropped successfully.")
     else:
-        print("Table 'airdrop' does not exist, skipping drop.")
+        logger.info("Table 'airdrop' does not exist, skipping drop.")
