@@ -17,6 +17,20 @@ from aiohttp import MultipartWriter
 
 
 def check_telegram_authorization(token: str, auth_data: dict):
+    """
+    Verify the Telegram authorization data.
+
+    Args:
+        token (str): The bot's token used for verification.
+        auth_data (dict): The authorization data received from Telegram, 
+                          including the hash and auth_date.
+
+    Raises:
+        Exception: If the data is not from Telegram or if it is outdated.
+
+    Returns:
+        dict: The verified authorization data.
+    """
     check_hash = auth_data.pop("hash")
     data_check_arr = [f"{key}={value}" for key, value in auth_data.items()]
     data_check_arr.sort()

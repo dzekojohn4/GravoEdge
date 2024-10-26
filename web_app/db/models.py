@@ -1,3 +1,10 @@
+"""
+This module contains SQLAlchemy models for the application, including
+User, Position, AirDrop, and TelegramUser. Each model represents a
+table in the database and defines the structure and relationships
+between the data entities.
+"""
+
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
