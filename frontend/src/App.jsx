@@ -7,7 +7,7 @@ import SpotnetApp from './pages/spotnet/spotnet_app/SpotnetApp';
 import Login from "./pages/Login";
 import Form from "./pages/forms/Form";
 import { connectWallet, logout } from './utils/wallet';
-import { saveTelegramUser } from './utils/telegram';
+import { saveTelegramUser, getTelegramUserWalletId} from './utils/telegram';
 
 function App() {
   const [walletId, setWalletId] = useState(localStorage.getItem('wallet_id'));
