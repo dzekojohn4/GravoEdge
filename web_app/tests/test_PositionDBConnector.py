@@ -1,3 +1,5 @@
+"""Test cases for PositionDBConnector"""
+
 import uuid
 from unittest.mock import MagicMock
 
@@ -36,7 +38,6 @@ def mock_session():
     return session
 
 
-
 ### Positive Test Cases ###
 
 def test_position_to_dict(mock_position_db_connector, sample_position):
@@ -52,7 +53,11 @@ def test_position_to_dict(mock_position_db_connector, sample_position):
     assert result["status"] == sample_position.status
 
 
-def test_get_positions_by_wallet_id_success(mock_position_db_connector, sample_user, sample_position):
+def test_get_positions_by_wallet_id_success(
+        mock_position_db_connector, 
+        sample_user, 
+        sample_position
+):
     """Test successfully retrieving positions by wallet ID."""
     mock_position_db_connector._get_user_by_wallet_id.return_value = sample_user
     
@@ -95,18 +100,22 @@ def test_create_position_success(mock_position_db_connector, sample_user):
     
     result = mock_position_db_connector.create_position(
         wallet_id="test_wallet_id",
-        token_symbol="BTC",
+        token_symbol="ETH",
         amount="200",
         multiplier=3
     )
     
     assert result is not None
-    assert result.token_symbol == "BTC"
+    assert result.token_symbol == "ETH"
     assert result.amount == "200"
     assert result.multiplier == 3
 
 
-def test_update_existing_pending_position(mock_position_db_connector, sample_user, sample_position):
+def test_update_existing_pending_position(
+        mock_position_db_connector, 
+        sample_user, 
+        sample_position
+):
     """Test updating an existing pending position."""
     mock_position_db_connector._get_user_by_wallet_id.return_value = sample_user
     
