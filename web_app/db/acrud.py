@@ -3,6 +3,7 @@ This module provides asynchronous database operations for managing TelegramUser 
 using SQLAlchemy in a FastAPI application context. It includes functionalities for creating, 
 reading, updating, and deleting records in the database.
 """
+
 import logging
 import uuid
 from typing import Type, TypeVar
@@ -39,7 +40,8 @@ class AsyncDBConnector:
 
     async def write_to_db(self, obj: ModelType = None) -> ModelType:
         """
-        Writes an object to the database asynchronously. Rolls back the transaction if there's an error.
+        Writes an object to the database asynchronously. Rolls back the transaction 
+        if there's an error.
         :param obj: ModelType = None
         :raise SQLAlchemyError: If the database operation fails.
         :return: ModelType - the updated object
@@ -59,10 +61,12 @@ class AsyncDBConnector:
         self, model: Type[ModelType] = None, obj_id: uuid = None
     ) -> ModelType | None:
         """
-        Retrieves an object by its ID from the database asynchronously.
-        :param: model: type[Base] = None
-        :param: obj_id: uuid = None
-        :return: Base | None
+        Delete an object by its ID from the database asynchronously. Rolls back 
+        if the operation fails.
+        :param model: type[Base] = None
+        :param obj_id: uuid = None
+        :return: None
+        :raise SQLAlchemyError: If the database operation fails
         """
         async with self.async_session() as session:
             result = await session.execute(select(model).filter(model.id == obj_id))
