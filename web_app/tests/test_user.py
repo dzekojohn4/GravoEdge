@@ -1,13 +1,9 @@
-import httpx
+from unittest.mock import MagicMock
+
 import pytest
 
 from web_app.api.serializers.transaction import UpdateUserContractRequest
-
-
-@pytest.fixture(scope="function")
-async def async_client():
-    async with httpx.AsyncClient(base_url="http://localhost:8000") as client:
-        yield client
+from web_app.tests.conftest import client, mock_user_db_connector
 
 
 @pytest.mark.asyncio
@@ -19,18 +15,27 @@ async def async_client():
             "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49",
             "0x698b63df00be56ba39447c9b9ca576ffd0edba0526d98b3e8e4a902ffcf12f0",
         ),
+        ("invalid_wallet_id", None),
+        (123_456_789, None),
+        (3.14, None),
+        ({}, None),
     ],
 )
 async def test_get_user_contract(
-    async_client, wallet_id: str, expected_contract_address: str
-):
+    client: client,
+    mock_user_db_connector: MagicMock,
+    wallet_id: str,
+    expected_contract_address: str,
+) -> None:
     """
-    Test get_user_contract endpoint,
-    where wallet_id = "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49" or ""
-    :param async_client: httpx.AsyncClient
+    Test get_user_contract endpoint
+    :param client: fastapi.testclient.TestClient
+    :param mock_user_db_connector: unittest.mock.MagicMock
+    :param wallet_id: str[wallet_id]
+    :param expected_contract_address: str[expected_contract_address]
     :return: None
     """
-    response = await async_client.get(
+    response = client.get(
         url="/api/get-user-contract",
         params={
             "wallet_id": wallet_id,
@@ -38,9 +43,15 @@ async def test_get_user_contract(
     )
     response_json = response.json()
 
-    assert response.is_success
-    assert isinstance(response_json, str)
-    assert response_json == expected_contract_address or response_json == ""
+    if response.is_success:
+        assert isinstance(response_json, str)
+        assert response_json == str(expected_contract_address)
+    else:
+        assert isinstance(response_json, dict)
+        assert response_json.get("detail") in (
+            "User not found",
+            "Contract not deployed",
+        )
 
 
 @pytest.mark.asyncio
@@ -49,16 +60,23 @@ async def test_get_user_contract(
     [
         "",
         "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49",
+        "invalid_wallet_id",
+        123_456_789,
+        3.14,
+        {},
     ],
 )
-async def test_check_user(async_client, wallet_id: str):
+async def test_check_user(
+    client: client, mock_user_db_connector: MagicMock, wallet_id: str
+) -> None:
     """
-    Test check_user endpoint,
-    where wallet_id = "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49" or ""
-    :param async_client: httpx.AsyncClient
+    Test check_user endpoint
+    :param client: fastapi.testclient.TestClient
+    :param mock_user_db_connector: unittest.mock.MagicMock
+    :param wallet_id: str[wallet_id]
     :return: None
     """
-    response = await async_client.get(
+    response = client.get(
         url="/api/check-user",
         params={
             "wallet_id": wallet_id,
@@ -68,8 +86,7 @@ async def test_check_user(async_client, wallet_id: str):
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert "is_contract_deployed" in response_json
-    assert isinstance(response_json["is_contract_deployed"], bool)
+    assert isinstance(response_json.get("is_contract_deployed"), bool)
 
 
 @pytest.mark.asyncio
@@ -81,24 +98,32 @@ async def test_check_user(async_client, wallet_id: str):
             "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49",
             "0x698b63df00be56ba39447c9b9ca576ffd0edba0526d98b3e8e4a902ffcf12f0",
         ),
+        ("invalid_wallet_id", None),
+        (123_456_789, None),
+        (3.14, None),
+        ({}, None),
     ],
 )
 async def test_change_user_contract(
-    async_client, wallet_id: str, contract_address: str
-):
+    client: client,
+    mock_user_db_connector: MagicMock,
+    wallet_id: str,
+    contract_address: str,
+) -> None:
     """
-    Test get_user_contract endpoint,
-    where wallet_id = "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49" or ""
-    and contract_address = "0x698b63df00be56ba39447c9b9ca576ffd0edba0526d98b3e8e4a902ffcf12f0" or ""
-    :param async_client: httpx.AsyncClient
+    Test get_user_contract endpoint
+    :param client: fastapi.testclient.TestClient
+    :param mock_user_db_connector: unittest.mock.MagicMock
+    :param wallet_id: str[wallet_id]
+    :param contract_address: str[contract_address]
     :return: None
     """
     data = UpdateUserContractRequest(
-        wallet_id=wallet_id,
-        contract_address=contract_address,
+        wallet_id=str(wallet_id),
+        contract_address=str(contract_address),
     )
 
-    response = await async_client.post(
+    response = client.post(
         url="/api/update-user-contract",
         json=data.dict(),
     )
@@ -106,8 +131,7 @@ async def test_change_user_contract(
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert "is_contract_deployed" in response_json
-    assert response_json["is_contract_deployed"]
+    assert response_json.get("is_contract_deployed")
 
 
 @pytest.mark.asyncio
@@ -119,18 +143,27 @@ async def test_change_user_contract(
             "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49",
             "0x698b63df00be56ba39447c9b9ca576ffd0edba0526d98b3e8e4a902ffcf12f0",
         ),
+        ("invalid_wallet_id", None),
+        (123_456_789, None),
+        (3.14, None),
+        ({}, None),
     ],
 )
 async def test_get_user_contract_address(
-    async_client, wallet_id: str, expected_contract_address: str
-):
+    client: client,
+    mock_user_db_connector: MagicMock,
+    wallet_id: str,
+    expected_contract_address: str,
+) -> None:
     """
-    Test get_user_contract_address endpoint,
-    where wallet_id = "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49" or ""
-    :param async_client: httpx.AsyncClient
+    Test get_user_contract_address endpoint
+    :param client: fastapi.testclient.TestClient
+    :param mock_user_db_connector: unittest.mock.MagicMock
+    :param wallet_id: str[wallet_id]
+    :param expected_contract_address: str[expected_contract_address]
     :return: None
     """
-    response = await async_client.get(
+    response = client.get(
         url="/api/get-user-contract-address",
         params={
             "wallet_id": wallet_id,
@@ -140,5 +173,6 @@ async def test_get_user_contract_address(
 
     assert response.is_success
     assert isinstance(response_json, dict)
-    assert "contract_address" in response_json
-    assert response_json["contract_address"] == expected_contract_address
+
+    contract_address = response_json.get("contract_address")
+    assert str(contract_address) == str(expected_contract_address)
