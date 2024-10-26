@@ -2,8 +2,9 @@ import React from 'react';
 import './header.css'
 import { ReactComponent as Logo } from "../../assets/images/logo.svg";
 import { Link } from 'react-router-dom';
+import TelegramLogin from '../Telegram/TelegramLogin';
 
-function Header({ walletId, onConnectWallet, onLogout }) {
+function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
   return (
       <nav>
           <div className='list-items'>
@@ -17,6 +18,7 @@ function Header({ walletId, onConnectWallet, onLogout }) {
                   <Link to="/dashboard">Dashboard</Link>
               </div>
               <div className='wallet-section'>
+                <TelegramLogin user={tgUser} onLogin={setTgUser} />
                   {walletId ? (
                       <div className='wallet-container'>
                           <div className='wallet-id'>

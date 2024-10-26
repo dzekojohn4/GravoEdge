@@ -10,6 +10,7 @@ import { connectWallet, logout } from './utils/wallet';
 
 function App() {
   const [walletId, setWalletId] = useState(localStorage.getItem('wallet_id'));
+  const [tgUser, setTgUser] = useState(JSON.parse(localStorage.getItem('tg_user')));
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -42,7 +43,7 @@ function App() {
 
   return (
       <div className="App">
-        <Header walletId={walletId} onConnectWallet={handleConnectWallet} onLogout={handleLogout} />
+        <Header tgUser={tgUser} setTgUser={setTgUser} walletId={walletId} onConnectWallet={handleConnectWallet} onLogout={handleLogout} />
         <main>
           {error && <div className="alert alert-danger">{error}</div>}
           <Routes>
