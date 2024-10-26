@@ -36,6 +36,7 @@ def mock_session():
     return session
 
 
+
 ### Positive Test Cases ###
 
 def test_position_to_dict(mock_position_db_connector, sample_position):
@@ -68,7 +69,7 @@ def test_get_positions_by_wallet_id_success(mock_position_db_connector, sample_u
     mock_position_db_connector.get_positions_by_wallet_id.return_value = [position_dict]
 
     positions = mock_position_db_connector.get_positions_by_wallet_id("test_wallet_id")
-    
+
     assert len(positions) == 1
     assert positions[0]["id"] == str(sample_position.id)
     assert positions[0]["token_symbol"] == sample_position.token_symbol
