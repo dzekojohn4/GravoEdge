@@ -76,7 +76,7 @@ def upgrade() -> None:
 def downgrade() -> None:
     """
     Perform the downgrade migration to remove the 'airdrop' table from the database if it exists.
-    This migration drops the 'airdrop' table and its associated indexes on `user_id` 
+    This migration drops the 'airdrop' table and its associated indexes on `user_id`
     and `is_claimed`.
     It is intended to reverse the changes made in the `upgrade` function, allowing
     for a rollback of the database schema to the state before the 'airdrop' table was added.

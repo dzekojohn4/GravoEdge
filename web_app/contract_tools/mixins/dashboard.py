@@ -2,12 +2,16 @@
 This module contains the dashboard mixin class.
 """
 
+import logging
 from typing import Dict
 
 from web_app.contract_tools.blockchain_call import StarknetClient
 from web_app.contract_tools.constants import TokenParams
 from web_app.contract_tools.api_request import APIRequest
 from web_app.api.serializers.dashboard import ZkLendPositionResponse
+
+logger = logging.getLogger(__name__)
+
 
 CLIENT = StarknetClient()
 # alternative ARGENT_X_POSITION_URL
@@ -38,7 +42,9 @@ class DashboardMixin:
                 )
                 wallet_balances[token.name] = balance
             except Exception as e:  # handle if contract not found in wallet
-                print(f"Failed to get balance for {token.address} due to an error: {e}")
+                logger.info(
+                    f"Failed to get balance for {token.address} due to an error: {e}"
+                )
 
         return wallet_balances
 
