@@ -1,3 +1,9 @@
+"""
+Handles Telegram webhook integration for the web application.
+
+Provides FastAPI endpoints for setting up webhooks and processing updates
+using aiogram and a database connector.
+"""
 from typing import Literal
 
 from aiogram.types import Update
