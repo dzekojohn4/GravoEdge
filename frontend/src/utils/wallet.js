@@ -107,7 +107,7 @@ export const getBalances = async (walletId, setBalances) => {
       { icon: <ETH />, title: 'ETH', balance: data.ETH !== undefined ? data.ETH.toString() : '0.00' },
       { icon: <USDC />, title: 'USDC', balance: data.USDC !== undefined ? data.USDC.toString() : '0.00' },
       { icon: <STRK />, title: 'STRK', balance: data.STRK !== undefined ? data.STRK.toString() : '0.00' },
-      { icon: <DAI />, title: 'DAI', balance: data.DAI !== undefined ? data.DAI.toString() : '0.00' },
+      // { icon: <DAI />, title: 'DAI', balance: data.DAI !== undefined ? data.DAI.toString() : '0.00' },  dont have DAI in the constants file
     ];
 
     setBalances(updatedBalances);

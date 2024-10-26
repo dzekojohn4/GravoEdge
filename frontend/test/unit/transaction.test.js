@@ -18,16 +18,13 @@ jest.mock("starknet", () => ({
 }));
 
 describe('Transaction Functions', () => {
-    // Common test variables
     const mockTransactionHash = '0xabc123';
     const mockContractAddress = '0xdef456';
     const mockWalletId = '0x789xyz';
 
     beforeEach(() => {
-        // Reset all mocks before each test
         jest.clearAllMocks();
         
-        // Setup default mock implementations
         const mockStarknet = {
             isConnected: true,
             account: {
@@ -44,12 +41,10 @@ describe('Transaction Functions', () => {
         
         connect.mockResolvedValue(mockStarknet);
 
-        // Setup environment variables
         process.env.REACT_APP_BACKEND_URL = 'http://0.0.0.0:8000';
     });
 
     afterEach(() => {
-        // Clean up environment variables
         delete process.env.REACT_APP_BACKEND_URL;
     });
 
@@ -80,7 +75,7 @@ describe('Transaction Functions', () => {
         });
 
         it('should throw error if loop_liquidity_data is invalid', async () => {
-            const invalidData = { deposit_data: { token: '0x456' } }; // Missing pool_key
+            const invalidData = { deposit_data: { token: '0x456' } }; 
 
             await expect(sendTransaction(invalidData, mockContractAddress))
                 .rejects
@@ -197,7 +192,7 @@ describe('Transaction Functions', () => {
             const mockError = new Error('Create position failed');
             axios.post.mockRejectedValueOnce(mockError);
 
-            console.error = jest.fn(); // Mock console.error
+            console.error = jest.fn();
 
             await handleTransaction(
                 mockWalletId,
