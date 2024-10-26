@@ -35,7 +35,6 @@ class DBConnector:
         :param db_url: str = None
         """
         self.engine = create_engine(db_url)
-        Base.metadata.create_all(self.engine)
         self.session_factory = sessionmaker(bind=self.engine)
         self.Session = scoped_session(self.session_factory)
 
