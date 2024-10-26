@@ -5,6 +5,7 @@ import {
   handleTransaction,
 } from "../../src/utils/transaction";
 import axios from "axios";
+import { mockBackendUrl } from "../constants";
 
 jest.mock("get-starknet");
 jest.mock("axios");
@@ -45,7 +46,7 @@ describe("Transaction Functions", () => {
 
     connect.mockResolvedValue(mockStarknet);
 
-    process.env.REACT_APP_BACKEND_URL = "http://0.0.0.0:8000";
+    process.env.REACT_APP_BACKEND_URL = mockBackendUrl;
   });
 
   afterEach(() => {
