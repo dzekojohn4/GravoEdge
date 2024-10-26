@@ -1,14 +1,33 @@
+"""
+This module handles user-related API endpoints.
+"""
+
 from fastapi import APIRouter, Request, HTTPException
-from web_app.db.crud import UserDBConnector
+from web_app.db.crud import PositionDBConnector, UserDBConnector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
-from web_app.api.serializers.user import CheckUserResponse, UpdateUserContractResponse, GetUserContractAddressResponse
+from web_app.api.serializers.user import (
+    CheckUserResponse,
+    UpdateUserContractResponse,
+    GetUserContractAddressResponse,
+    GetStatsResponse,
+)
 
 router = APIRouter()  # Initialize the router
 
 user_db = UserDBConnector()
 
+position_db = PositionDBConnector()
 
-@router.get("/api/get-user-contract", tags=["User Operations"], summary="Get user's contract status", response_description="Returns 0 if the user is None or if the contract is not deployed. Returns the transaction hash if the contract is deployed.")
+
+@router.get(
+    "/api/get-user-contract",
+    tags=["User Operations"],
+    summary="Get user's contract status",
+    response_description=(
+        "Returns 0 if the user is None or if the contract is not deployed. "
+        "Returns the transaction hash if the contract is deployed."
+    ),
+)
 async def get_user_contract(wallet_id: str) -> str:
     """
     Get the contract status of a user.
@@ -25,7 +44,13 @@ async def get_user_contract(wallet_id: str) -> str:
         return user.contract_address
 
 
-@router.get("/api/check-user", tags=["User Operations"], summary="Check if user exists and contract status", response_model=CheckUserResponse, response_description="Returns whether the user's contract is deployed.")
+@router.get(
+    "/api/check-user",
+    tags=["User Operations"],
+    summary="Check if user exists and contract status",
+    response_model=CheckUserResponse,
+    response_description="Returns whether the user's contract is deployed.",
+)
 async def check_user(wallet_id: str) -> CheckUserResponse:
     """
     This endpoint checks if the user exists, or adds the user to the database if they don't exist,
@@ -47,9 +72,17 @@ async def check_user(wallet_id: str) -> CheckUserResponse:
     else:
         return {"is_contract_deployed": True}
 
-      
-@router.post("/api/update-user-contract", tags=["User Operations"], summary="Update the user's contract", response_model=UpdateUserContractResponse, response_description="Returns if the contract is updated and deployed.")
-async def update_user_contract(data: UpdateUserContractRequest) ->  UpdateUserContractResponse:
+
+@router.post(
+    "/api/update-user-contract",
+    tags=["User Operations"],
+    summary="Update the user's contract",
+    response_model=UpdateUserContractResponse,
+    response_description="Returns if the contract is updated and deployed.",
+)
+async def update_user_contract(
+    data: UpdateUserContractRequest,
+) -> UpdateUserContractResponse:
     """
     This endpoint updates the user's contract.
 
@@ -69,7 +102,13 @@ async def update_user_contract(data: UpdateUserContractRequest) ->  UpdateUserCo
         return {"is_contract_deployed": False}
 
 
-@router.get("/api/get-user-contract-address", tags=["User Operations"], summary="Get user's contract address", response_model=GetUserContractAddressResponse, response_description="Returns the contract address of the user or None if not deployed.")
+@router.get(
+    "/api/get-user-contract-address",
+    tags=["User Operations"],
+    summary="Get user's contract address",
+    response_model=GetUserContractAddressResponse,
+    response_description="Returns the contract address of the user or None if not deployed.",
+)
 async def get_user_contract_address(wallet_id: str) -> GetUserContractAddressResponse:
     """
     This endpoint retrieves the contract address of a user.
@@ -86,3 +125,32 @@ async def get_user_contract_address(wallet_id: str) -> GetUserContractAddressRes
         return {"contract_address": contract_address}
     else:
         return {"contract_address": None}
+
+
+@router.get(
+    "/api/get_stats",
+    tags=["User Operations"],
+    summary="Get total opened amounts and number of unique users",
+    response_model=GetStatsResponse,
+    response_description="Total amount for all open positions across all users & \
+                              Number of unique users in the database.",
+)
+async def get_stats() -> GetStatsResponse:
+    """
+    Retrieves the total amount for open positions and the count of unique users.
+
+    ### Returns:
+    - total_opened_amount: Sum of amounts for all open positions.
+    - unique_users: Total count of unique users.
+    """
+    try:
+        total_opened_amount = position_db.get_total_amounts_for_open_positions()
+        unique_users = user_db.get_unique_users_count()
+        return GetStatsResponse(
+            total_opened_amount=total_opened_amount, unique_users=unique_users
+        )
+
+    except AttributeError as e:
+        raise HTTPException(status_code=500, detail=f"AttributeError: {str(e)}")
+    except TypeError as e:
+        raise HTTPException(status_code=500, detail=f"TypeError: {str(e)}")
