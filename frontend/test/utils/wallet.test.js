@@ -11,7 +11,6 @@ import {
   USDC_ADDRESS,
 } from "../../src/utils/constants";
 
-// Mock SVG imports
 jest.mock("../assets/icons/ethereum.svg", () => ({
   ReactComponent: () => "ETH-icon",
 }));
@@ -122,7 +121,6 @@ describe("Wallet Functions", () => {
         { name: "STRK", balance: "3.0000", icon: "STRK-icon" },
       ];
 
-      // Mock the getTokenBalances function
       jest
         .spyOn(require("../../src/utils/wallet"), "getTokenBalances")
         .mockResolvedValue(mockTokenBalances);
@@ -130,11 +128,7 @@ describe("Wallet Functions", () => {
       await getBalances(mockWalletId, mockSetBalances);
       await mockSetBalances(mockTokenBalances);
 
-      expect(mockSetBalances).toHaveBeenCalledWith([
-        { name: "ETH", balance: "1.0000", icon: "ETH-icon" },
-        { name: "USDC", balance: "2.0000", icon: "USDC-icon" },
-        { name: "STRK", balance: "3.0000", icon: "STRK-icon" },
-      ]);
+      expect(mockSetBalances).toHaveBeenCalledWith(mockTokenBalances);
     });
 
     it("should not fetch balances if wallet ID is not provided", async () => {

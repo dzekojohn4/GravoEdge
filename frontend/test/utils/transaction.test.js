@@ -98,7 +98,7 @@ describe("Transaction Functions", () => {
         },
       });
 
-      console.error = jest.fn(); // Mock console.error
+      console.error = jest.fn();
 
       await expect(
         sendTransaction(validLoopLiquidityData, mockContractAddress)

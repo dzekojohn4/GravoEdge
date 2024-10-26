@@ -5,6 +5,7 @@ import {
   checkAndDeployContract,
 } from "../../src/utils/contract";
 import { getDeployContractData } from "../../src/utils/constants";
+import { mockBackendUrl } from "../constants";
 
 jest.mock("get-starknet");
 jest.mock("axios");
@@ -14,7 +15,6 @@ describe("Contract Deployment Tests", () => {
   const mockWalletId = "0x123...";
   const mockTransactionHash = "0xabc...";
   const mockContractAddress = "0xdef...";
-  const mockBackendUrl = "http://127.0.0.1:8000";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -27,7 +27,7 @@ describe("Contract Deployment Tests", () => {
   });
 
   describe("deployContract", () => {
-    test("should successfully deploy contract", async () => {
+    it("should successfully deploy contract", async () => {
       jest.setTimeout(10000);
       const mockStarknet = {
         isConnected: true,
@@ -57,7 +57,7 @@ describe("Contract Deployment Tests", () => {
       });
     });
 
-    test("should throw error if wallet is not connected", async () => {
+    it("should throw error if wallet is not connected", async () => {
       const mockStarknet = {
         isConnected: false,
       };
@@ -68,7 +68,7 @@ describe("Contract Deployment Tests", () => {
       );
     });
 
-    test("should handle deployment errors correctly", async () => {
+    it("should handle deployment errors correctly", async () => {
       const mockError = new Error("Deployment failed");
       connect.mockRejectedValue(mockError);
 
@@ -79,7 +79,7 @@ describe("Contract Deployment Tests", () => {
   });
 
   describe("checkAndDeployContract", () => {
-    test("should deploy contract if not already deployed", async () => {
+    it("should deploy contract if not already deployed", async () => {
       axios.get.mockResolvedValue({
         data: { is_contract_deployed: false },
       });
@@ -113,7 +113,7 @@ describe("Contract Deployment Tests", () => {
       );
     });
 
-    test("should skip deployment if contract already exists", async () => {
+    it("should skip deployment if contract already exists", async () => {
       axios.get.mockResolvedValue({
         data: { is_contract_deployed: true },
       });
@@ -125,7 +125,7 @@ describe("Contract Deployment Tests", () => {
       expect(axios.post).not.toHaveBeenCalled();
     });
 
-    test("should handle backend check errors correctly", async () => {
+    it("should handle backend check errors correctly", async () => {
       const mockError = new Error("Backend error");
       axios.get.mockRejectedValue(mockError);
 
@@ -139,7 +139,7 @@ describe("Contract Deployment Tests", () => {
       );
     });
 
-    test("should handle contract update error correctly after deployment", async () => {
+    it("should handle contract update error correctly after deployment", async () => {
       axios.get.mockResolvedValue({
         data: { is_contract_deployed: false },
       });
