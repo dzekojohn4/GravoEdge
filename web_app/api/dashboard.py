@@ -1,7 +1,10 @@
+"""
+This module handles dashboard-related API endpoints.
+"""
+
 import collections
 
 from fastapi import APIRouter
-from starlette.requests import Request
 from web_app.api.serializers.dashboard import DashboardResponse
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
 from web_app.db.crud import PositionDBConnector
@@ -19,7 +22,8 @@ position_db_connector = PositionDBConnector()
 )
 async def get_dashboard(wallet_id: str) -> DashboardResponse:
     """
-    This endpoint fetches the user's dashboard data, including balances, multipliers, start dates, and ZkLend position.
+    This endpoint fetches the user's dashboard data,
+    including balances, multipliers, start dates, and ZkLend position.
 
     ### Parameters:
     - **wallet_id**: User's wallet ID
