@@ -1,7 +1,16 @@
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
-from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, DateTime, Enum
+from sqlalchemy import (
+    DECIMAL,
+    Column,
+    String,
+    Boolean,
+    Integer,
+    ForeignKey,
+    DateTime,
+    Enum,
+)
 from enum import Enum as PyEnum
 from web_app.db.database import Base
 
