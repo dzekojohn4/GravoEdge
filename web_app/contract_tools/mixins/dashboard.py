@@ -3,6 +3,7 @@ This module contains the dashboard mixin class.
 """
 
 from typing import Dict
+from decimal import Decimal
 
 from web_app.contract_tools.blockchain_call import StarknetClient
 from web_app.contract_tools.constants import TokenParams
@@ -13,10 +14,8 @@ CLIENT = StarknetClient()
 # alternative ARGENT_X_POSITION_URL
 # "https://cloud.argent-api.com/v1/tokens/defi/decomposition/{wallet_id}?chain=starknet"
 ARGENT_X_POSITION_URL = "https://cloud.argent-api.com/v1/tokens/defi/"
-
 # New constant for AVNU price endpoint
 AVNU_PRICE_URL = "https://starknet.impulse.avnu.fi/v1/tokens/short"
-
 
 class DashboardMixin:
     """
@@ -24,7 +23,7 @@ class DashboardMixin:
     """
 
 @classmethod
-async def get_current_prices(cls) -> Dict[str, float]:
+async def get_current_prices(cls) -> Dict[str, str]:
     """
     Fetch current token prices from AVNU API.
     :return: Returns dictionary mapping token symbols to their current prices.
@@ -43,10 +42,11 @@ async def get_current_prices(cls) -> Dict[str, float]:
                 if address and current_price is not None:
                     symbol = TokenParams.get_token_symbol(address)
                     if symbol:
-                        prices[symbol] = float(current_price)
-            except Exception as e:  # handle if token price parsing fails
-                print(f"Failed to parse price for {address} due to an error: {e}")
-
+                        prices[symbol] = str(Decimal(current_price))
+            except AttributeError as e:
+                print(f"AttributeError while parsing price for {address}: {str(e)}")
+            except TypeError as e:
+                print(f"TypeError while parsing price for {address}: {str(e)}")
     except Exception as e:  # handle if API request fails
         print(f"Failed to fetch prices from API due to an error: {e}")
 
@@ -73,7 +73,7 @@ async def get_current_prices(cls) -> Dict[str, float]:
                 print(f"Failed to get balance for {token.address} due to an error: {e}")
 
         return wallet_balances
-
+    
     @classmethod
     async def get_zklend_position(cls, contract_address: str) -> ZkLendPositionResponse:
         """
