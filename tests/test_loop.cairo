@@ -500,6 +500,12 @@ fn test_close_position_amounts_cleared() {
     assert(ERC20ABIDispatcher {contract_address: zk_market.get_reserve_data(usdc_addr).z_token_address}.balanceOf(deposit_disp.contract_address) == 0, 'Not all withdrawn');
 }
 
+#[test]
+#[fork("MAINNET)]
+fn test_claim_rewards() {
+    
+}
+
 // TODO: Calculate interest rates to test behaviour after liquidation.
 
 // #[test]

@@ -1,7 +1,8 @@
 from decimal import Decimal
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field, RootModel, validator
+from pydantic import BaseModel, RootModel, Field, validator
+
 from web_app.contract_tools.constants import TokenParams
 
 
@@ -66,10 +67,3 @@ class ZkLendPositionResponse(BaseModel):
 
     class Config:
         populate_by_name = True
-
-
-class Dashboard(BaseModel):
-    balances: dict[str, str]
-    multipliers: dict[str, list]
-    start_dates: dict[str, list]
-    zklend_position: ZkLendPositionResponse
