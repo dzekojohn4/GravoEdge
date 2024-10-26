@@ -1,11 +1,19 @@
-from fastapi import APIRouter, Request, HTTPException
+"""
+This module handles position-related API endpoints.
+"""
 
+from fastapi import APIRouter, HTTPException
+
+from pydantic import BaseModel
 from web_app.api.serializers.transaction import (
     LoopLiquidityData,
     RepayTransactionDataResponse,
 )
 from web_app.api.serializers.position import PositionFormData
-from web_app.contract_tools.constants import TokenParams
+from web_app.contract_tools.constants import (
+    TokenParams,
+    TokenMultipliers,
+)
 from web_app.contract_tools.mixins.deposit import DepositMixin
 from web_app.db.crud import PositionDBConnector
 
@@ -13,24 +21,77 @@ router = APIRouter()  # Initialize the router
 position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
 
 
-@router.post("/api/create-position", tags=["Position Operations"], response_model=LoopLiquidityData, summary="Create a new position", response_description="Returns the new position and transaction data.")
+class TokenMultiplierResponse(BaseModel):
+    """
+    This class defines the structure of the response for the token multiplier
+    endpoint, encapsulating a dictionary where each token symbol:
+    (e.g., "ETH", "STRK")
+    is mapped to its respective multiplier value.
+
+    ### Parameters:
+    - **multipliers**: A dictionary containing token symbols as keys:
+      (e.g., "ETH", "STRK", "USDC")
+      and their respective multipliers as values.
+
+    ### Returns:
+    A structured JSON response with each token and its multiplier.
+    """
+
+    multipliers: dict[str, float]
+
+    class Config:
+        """
+        Metadata for TokenMultiplierResponse
+        with example JSON response format in **schema_extra**.
+        """
+
+        schema_extra = {
+            "example": {"multipliers": {"ETH": 5.0, "STRK": 2.5, "USDC": 5.0}}
+        }
+
+
+@router.get(
+    "/api/get-multipliers",
+    tags=["Position Operations"],
+    response_model=TokenMultiplierResponse,
+    summary="Get token multipliers",
+    response_description="Returns token multipliers",
+)
+async def get_multipliers() -> TokenMultiplierResponse:
+    """
+    This Endpoint retrieves the multipliers for tokens like ETH, STRK, and USDC.
+    """
+    multipliers = {
+        "ETH": TokenMultipliers.ETH,
+        "STRK": TokenMultipliers.STRK,
+        "USDC": TokenMultipliers.USDC,
+    }
+    return TokenMultiplierResponse(multipliers=multipliers)
+
+
+@router.post(
+    "/api/create-position",
+    tags=["Position Operations"],
+    response_model=LoopLiquidityData,
+    summary="Create a new position",
+    response_description="Returns the new position and transaction data.",
+)
 async def create_position_with_transaction_data(
-    form_data: PositionFormData
+    form_data: PositionFormData,
 ) -> LoopLiquidityData:
     """
     This endpoint creates a new user position.
-    
+
     ### Parameters:
     - **wallet_id**: The wallet ID of the user.
     - **token_symbol**: The symbol of the token used for the position.
     - **amount**: The amount of the token being deposited.
     - **multiplier**: The multiplier applied to the user's position.
-    
+
     ### Returns:
     The created position's details and transaction data.
     """
 
-    
     # Create a new position in the database
     position = position_db_connector.create_position(
         form_data.wallet_id,
@@ -53,7 +114,13 @@ async def create_position_with_transaction_data(
     return LoopLiquidityData(**deposit_data)
 
 
-@router.get("/api/get-repay-data", tags=["Position Operations"], response_model=RepayTransactionDataResponse, summary="Get repay data", response_description="Returns the repay transaction data.")
+@router.get(
+    "/api/get-repay-data",
+    tags=["Position Operations"],
+    response_model=RepayTransactionDataResponse,
+    summary="Get repay data",
+    response_description="Returns the repay transaction data.",
+)
 async def get_repay_data(
     supply_token: str, wallet_id: str
 ) -> RepayTransactionDataResponse:
@@ -64,7 +131,7 @@ async def get_repay_data(
     :return: Dict containing the repay transaction data
     :raises: HTTPException :return: Dict containing status code and detail
     """
-    
+
     if not wallet_id:
         raise HTTPException(status_code=404, detail="Wallet not found")
 
@@ -78,7 +145,13 @@ async def get_repay_data(
     return repay_data
 
 
-@router.get("/api/close-position", tags=["Position Operations"], response_model=str, summary="Close a position", response_description="Returns the position status")
+@router.get(
+    "/api/close-position",
+    tags=["Position Operations"],
+    response_model=str,
+    summary="Close a position",
+    response_description="Returns the position status",
+)
 async def close_position(position_id: str) -> str:
     """
     Close a position.
@@ -93,7 +166,13 @@ async def close_position(position_id: str) -> str:
     return position_status
 
 
-@router.get("/api/open-position", tags=["Position Operations"], response_model=str, summary="Open a position", response_description="Returns the positions status")
+@router.get(
+    "/api/open-position",
+    tags=["Position Operations"],
+    response_model=str,
+    summary="Open a position",
+    response_description="Returns the positions status",
+)
 async def open_position(position_id: str) -> str:
     """
     Open a position.
@@ -101,7 +180,7 @@ async def open_position(position_id: str) -> str:
     :return: str
     :raises: HTTPException :return: Dict containing status code and detail
     """
-    
+
     if not position_id:
         raise HTTPException(status_code=404, detail="Position not found")
 
