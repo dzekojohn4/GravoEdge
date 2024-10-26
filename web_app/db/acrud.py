@@ -92,7 +92,9 @@ class AsyncDBConnector:
         self, model: Type[ModelType] = None, obj_id: uuid = None
     ) -> None:
         """
-        Delete an object by its ID from the database asynchronously. Rolls back if the operation fails.
+        Delete an object by its ID from the database asynchronously. 
+        Rolls back if the operation fails.
+        
         :param model: type[Base] = None
         :param obj_id: uuid = None
         :return: None
