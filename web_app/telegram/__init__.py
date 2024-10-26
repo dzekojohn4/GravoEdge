@@ -1,3 +1,8 @@
+"""
+This module initializes the Telegram bot and sets up the dispatcher for handling updates.
+
+It imports necessary components from the aiogram library and configures logging.
+"""
 from aiogram import Bot, Dispatcher
 import logging
 

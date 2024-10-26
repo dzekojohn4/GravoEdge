@@ -18,7 +18,7 @@ const TelegramLogin = ({ user, onLogin }) => {
 
     const handleLogin = () => {
         window.Telegram.Login.auth({
-            bot_id: "BOT_ID",
+            bot_id: process.env.REACT_APP_BOT_ID,
             request_access: 'write'
         }, onLogin)
     };

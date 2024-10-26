@@ -1,3 +1,8 @@
+"""
+This module contains utility functions for the Telegram bot.
+
+It includes functions for building response writers for webhook responses.
+"""
 import secrets
 from typing import Dict, Optional
 
