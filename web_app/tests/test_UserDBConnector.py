@@ -1,3 +1,7 @@
+"""
+Unit tests for the UserDBConnector module.
+"""
+
 import pytest
 from unittest.mock import MagicMock
 from web_app.models.user import User
