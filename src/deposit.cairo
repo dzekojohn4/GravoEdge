@@ -9,7 +9,10 @@ mod Deposit {
     use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
     use spotnet::constants::ZK_SCALE_DECIMALS;
 
-    use spotnet::interfaces::{IMarketDispatcher, IMarketDispatcherTrait, IAirdropDispatcher, IAirdropDispatcherTrait, IDeposit};
+    use spotnet::interfaces::{
+        IMarketDispatcher, IMarketDispatcherTrait, IAirdropDispatcher, IAirdropDispatcherTrait,
+        IDeposit
+    };
     use spotnet::types::{SwapData, SwapResult, DepositData, Claim};
 
     use starknet::event::EventEmitter;
@@ -342,20 +345,14 @@ mod Deposit {
             claim_data: Claim,
             proofs: Span<felt252>,
             claim_contract: ContractAddress,
-            reward_token: ContractAddress
         ) {
             assert(self.is_position_open.read(), 'Position is not open');
             assert(proofs.len() != 0, 'Proofs Span cannot be empty');
 
             let airdrop_dispatcher = IAirdropDispatcher { contract_address: claim_contract };
-            let reward_dispatcher = ERC20ABIDispatcher { contract_address: reward_token };
 
             let res = airdrop_dispatcher.claim(claim_data, proofs);
             assert(res, 'Claim failed');
-
-            let send_res = reward_dispatcher.transfer(claim_data.claimee, claim_data.amount.into());
-
-            assert(send_res, 'Transfer failed');
 
             self
                 .emit(
@@ -368,7 +365,7 @@ mod Deposit {
                         claim_contract
                     }
                 );
-	    }
+        }
     }
 
     #[abi(embed_v0)]
