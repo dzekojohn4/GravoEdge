@@ -86,12 +86,7 @@ mod Deposit {
 
     #[derive(starknet::Event, Drop)]
     struct RewardClaimed {
-        claim_id: u64,
-        claimed_amount: u128,
-        claimee: ContractAddress,
-        proofs: Span<felt252>,
-        claim_status: bool,
-        claim_contract: ContractAddress
+        claim_status: bool
     }
 
     #[event]
@@ -340,31 +335,20 @@ mod Deposit {
                 );
         }
 
-        fn claim_rewards(
-            ref self: ContractState,
-            claim_data: Claim,
-            proofs: Span<felt252>,
-            claim_contract: ContractAddress,
-        ) {
+        fn claim_rewards(ref self: ContractState, claim_data: Claim, proofs: Span<felt252>,) {
             assert(self.is_position_open.read(), 'Position is not open');
             assert(proofs.len() != 0, 'Proofs Span cannot be empty');
 
-            let airdrop_dispatcher = IAirdropDispatcher { contract_address: claim_contract };
+            let airdrop_addr: ContractAddress =
+                0x66cabe824da3ff583b967ce571d393e8b667b33415acc750397aa66b64a5a6c
+                .try_into()
+                .unwrap();
+            let airdrop_disp = IAirdropDispatcher { contract_address: airdrop_addr };
 
-            let res = airdrop_dispatcher.claim(claim_data, proofs);
+            let res = airdrop_disp.claim(claim_data, proofs);
             assert(res, 'Claim failed');
 
-            self
-                .emit(
-                    RewardClaimed {
-                        claim_id: claim_data.id,
-                        claimed_amount: claim_data.amount,
-                        claimee: claim_data.claimee,
-                        proofs,
-                        claim_status: res,
-                        claim_contract
-                    }
-                );
+            self.emit(RewardClaimed { claim_status: res, });
         }
     }
 
