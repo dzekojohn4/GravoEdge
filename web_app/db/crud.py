@@ -6,7 +6,7 @@ import logging
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from typing import Dict, List, Type, TypeVar
+from typing import List, Type, TypeVar
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
