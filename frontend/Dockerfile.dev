@@ -6,6 +6,8 @@ FROM node:20-alpine AS build
 WORKDIR /app
 COPY . /app
 
+COPY .env.dev .env
+
 RUN yarn
 RUN yarn test
 RUN yarn build
