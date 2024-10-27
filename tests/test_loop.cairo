@@ -530,11 +530,6 @@ fn test_claim_rewards() {
         .try_into()
         .unwrap();
 
-    let airdrop_addr: ContractAddress =
-        0x66cabe824da3ff583b967ce571d393e8b667b33415acc750397aa66b64a5a6c
-        .try_into()
-        .unwrap();
-
     let user: ContractAddress = 0x20281104e6cb5884dabcdf3be376cf4ff7b680741a7bb20e5e07c26cd4870af
         .try_into()
         .unwrap();
@@ -589,8 +584,7 @@ fn test_claim_rewards() {
     let initial_balance = strk_disp.balanceOf(user);
     // println!("initial bal {}", initial_balance);
 
-    deposit_disp
-        .claim_rewards(claim_data: claim_data, proofs: proofs, claim_contract: airdrop_addr,);
+    deposit_disp.claim_rewards(claim_data: claim_data, proofs: proofs);
 
     let final_balance = strk_disp.balanceOf(user);
     // println!("final bal {}", final_balance);
@@ -678,4 +672,5 @@ fn test_claim_rewards() {
 
 //     stop_cheat_account_contract_address(deposit_disp.contract_address);
 // }
+
 
