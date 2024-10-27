@@ -1,29 +1,20 @@
 import './form.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import TokenSelector from '../../components/TokenSelector';
+import BalanceCards from '../../components/BalanceCards';
 import MultiplierSelector from '../../components/MultiplierSelector';
-import { connectWallet, getBalances } from '../../utils/wallet';
+import { connectWallet } from '../../utils/wallet';
 import { handleTransaction } from '../../utils/transaction';
 import Spinner from '../../components/spinner/Spinner';
 import { ReactComponent as Star } from "../../assets/particles/star.svg";
-import { ReactComponent as ETH } from '../../assets/icons/ethereum.svg';
-import { ReactComponent as USDC } from '../../assets/icons/borrow_usdc.svg';
-import { ReactComponent as STRK } from '../../assets/icons/strk.svg';
-import { ReactComponent as DAI } from '../../assets/icons/dai.svg';
 import { ReactComponent as AlertHexagon } from '../../assets/icons/alert_hexagon.svg';
 
 const Form = ({ walletId, setWalletId }) => {
-    const [balances, setBalances] = useState([
-        { icon: <ETH />, title: 'ETH', balance: '0.00' },
-        { icon: <USDC />, title: 'USDC', balance: '0.00' },
-        { icon: <STRK />, title: 'STRK', balance: '0.00' },
-        { icon: <DAI />, title: 'DAI', balance: '0.00' },
-    ]);
     const starData = [
-        { top: 2, left: 12, size: 12 },
-        { top: 60, left: 7, size: 7,},
-        { top: 9, left: 80, size: 7 },
-        { top: 45, left: 90, size: 9 },
+        { top: 35, left: 12, size: 12 },
+        { top: 90, left: 7, size: 7,},
+        { top: 40, left: 80, size: 7 },
+        { top: 75, left: 90, size: 9 },
     ]
     const [tokenAmount, setTokenAmount] = useState('');
     const [selectedToken, setSelectedToken] = useState('');
@@ -31,10 +22,6 @@ const Form = ({ walletId, setWalletId }) => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
-
-    useEffect(() => {
-        getBalances(walletId, setBalances);
-    }, [walletId]);
 
     const connectWalletHandler = async () => {
         try {
@@ -85,6 +72,7 @@ const Form = ({ walletId, setWalletId }) => {
     return (
         <div className="form-container container">
             {/* The rest of the UI stays largely unchanged */}
+            <BalanceCards walletId={walletId}/>
             <form onSubmit={handleSubmit}>
                 <div className="form-wrapper">
                     <div className="form-title">

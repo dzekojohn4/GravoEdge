@@ -314,7 +314,7 @@ input[type="number"].error {
 
 .forms-gradient .card-gradient:nth-child(1){
     position: absolute;
-    top: 100px;
+    top: 240px;
     left: -156px;
     width: 232px;
     height: 208px;
@@ -327,7 +327,7 @@ input[type="number"].error {
 .forms-gradient .card-gradient:nth-child(2){
     position: absolute;
     right: -70px;
-    bottom: 120px;
+    bottom: -55px;
     width: 232px;
     height: 208px;
     flex-shrink: 0;
@@ -344,4 +344,47 @@ input[type="number"].error {
 
 .form-alert-hex{
     margin-left: auto;
+}
+
+.balance-container{
+    display: flex;
+    margin-bottom: 60px;
+    justify-content: space-between;
+}
+
+.balance-item{
+    display: flex;
+    flex-direction: column;
+    background-color: #74D6FD80;
+    height: 129px;
+    width: 300px;
+    align-items: center;
+    border-radius: 8px;
+    border: 0.5px solid #4e7787;
+    justify-content: center;
+    background: linear-gradient(150deg, #74D6FD80 1.13%, #0B0C1080 103.45%);
+    margin-right: 20px;
+    box-shadow: 3.75px 3.75px 9.38px 0px #99EAFF40 inset;
+}
+
+.balance-item label:nth-child(1){
+    font-size: 20px;
+    color: #E7ECF0;
+    letter-spacing: 0.5px;
+}
+
+.balance-item label:nth-child(2){
+    font-size: 32px;
+    color: #E7ECF0;
+}
+
+.balance-title{
+    display: flex;
+    align-items: center;
+}
+
+.balance-title svg{
+    margin-right: 5px;
+    height: 25px !important;
+    width: 24px !important;
 }
