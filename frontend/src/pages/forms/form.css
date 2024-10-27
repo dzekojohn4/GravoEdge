@@ -87,6 +87,14 @@
     background: var(--secondary-color);
 }
 
+.token-card:has(input[type="radio"]:checked) h5 {
+    color: black;
+}
+
+.token-card:has(input[type="radio"]:checked) h5 svg path {
+    fill: black;
+}
+
 /* .token-card:active {
     background: var(--blue-color);
     border-radius: 8px;
@@ -163,7 +171,8 @@
     width: 120px;
     height: 15px;
     text-align: center;
-    font-size: 15px;    font-size: 15px;
+    font-weight: bold;
+    font-size: 11px;
     border-radius: 5px 5px 0 0;
     display: flex;
     align-items: center;
@@ -175,11 +184,9 @@
 .recommended-item {
     display: flex;
     align-items: flex-end !important;
-    font-size: 28px !important;
+    font-size: 20px;
 
 }
-
-
 
 .multiplier-item label{
     border: 1px solid var(--blue-color);
@@ -193,6 +200,7 @@
 
 .multiplier-item:not(.recommended-item) label {
     align-items: center;
+    font-size: 21px;
 }
 
 input[type="radio"]{
@@ -210,7 +218,7 @@ input[type="radio"]{
 
 .multiplier-item input[type="radio"]:checked + label {
     border-color: var(--blue-color);
-    box-shadow: 0 4px 8px var(--blue-color);
+    box-shadow: 0 4px 20px var(--blue-color);
 }
 
 input[type="number"]::-webkit-outer-spin-button,
