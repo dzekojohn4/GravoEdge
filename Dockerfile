@@ -4,6 +4,9 @@ FROM python:3.12-slim
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
+# Set PATH for Poetry
+ENV PATH="/root/.local/bin:$PATH"
+
 # Add system-level dependencies (including gcc and npm)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -13,14 +16,13 @@ RUN apt-get update \
 
 # Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
-ENV PATH="/root/.local/bin:$PATH"
 
 # Create app directory
 RUN mkdir /app
 WORKDIR /app
 
 # Copy the pyproject.toml file to install dependencies
-COPY ./pyproject.toml /app/
+COPY ./pyproject.toml /app/pyproject.toml
 
 # Install dependencies using Poetry, generating a new poetry.lock file
 RUN poetry install --no-root --no-interaction --no-ansi
