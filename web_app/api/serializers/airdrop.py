@@ -2,7 +2,7 @@
 This module defines the serializers for the airdrop data.
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List
 
 class AirdropItem(BaseModel):

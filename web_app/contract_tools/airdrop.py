@@ -1,3 +1,7 @@
+"""
+This module defines the contract tools for the airdrop data.
+"""
+
 from typing import List
 from api.serializers.airdrop import AirdropItem, AirdropResponseModel
 from contract_tools.api_request import APIRequest
