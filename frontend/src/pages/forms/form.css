@@ -119,6 +119,9 @@
     padding: 10px;
 }
 
+.token-label-component svg {
+    fill: red;
+}
 
 .form-wrapper > *{
     color: white;
@@ -324,4 +327,13 @@ input[type="number"].error {
     background: var(--gradient, linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%));
     /* Blur */
     filter: blur(123px);
+}
+
+.form-alert{
+    display: flex;
+    align-items: center;
+}
+
+.form-alert-hex{
+    margin-left: auto;
 }
