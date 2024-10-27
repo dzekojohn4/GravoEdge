@@ -24,7 +24,7 @@ function Header({ walletId, onConnectWallet, onLogout }) {
           {walletId ? (
             <div className='wallet-container'>
               <button className='logout-button' onClick={onLogout}>
-                Log Out
+                Log out
               </button>
               <div className='wallet-id'>
                 {`${walletId.slice(0, 4)}...${walletId.slice(-4)}`}

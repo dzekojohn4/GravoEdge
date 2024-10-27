@@ -78,8 +78,8 @@ nav {
     color: var(--brand);
 }
 
-.active-link {
-    color: var(--brand) !important;
+.nav-items a.active-link {
+    color: var(--brand);
     font-weight: 700;
 }
 
@@ -103,7 +103,7 @@ nav {
     width: 190px;
     height: 52px;
     border-radius: 8px;
-    border: 1px solid #74D6FD;
+    border: 1px solid var(--brand);
     background-color: transparent;
     color: #fff;
     font-family: var(--text-font, 'Rethink Sans', sans-serif);
