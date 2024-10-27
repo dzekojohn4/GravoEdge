@@ -176,19 +176,6 @@ class PositionDBConnector(UserDBConnector):
     Provides database connection and operations management for the Position model.
     """
 
-    @staticmethod
-    def save_current_price() -> None:
-        """
-        Saves current prices into db.
-        :return: None
-        """
-        db = get_database()
-        price_dict = DashboardMixin.get_current_prices()
-        for token, price in price_dict.items():
-            if position := db.query(Position).filter_by(token_symbol=token).first():
-                position.start_price = price
-                db.commit()
-
     START_PRICE = 0.0
 
     @staticmethod
@@ -355,6 +342,7 @@ class PositionDBConnector(UserDBConnector):
             position.status = Status.OPENED.value
             self.write_to_db(position)
             self.create_empty_claim(position.user_id)
+            self.save_current_price(position)
             return position.status
         else:
             logger.error(f"Position with ID {position_id} not found")
@@ -392,6 +380,19 @@ class PositionDBConnector(UserDBConnector):
             except SQLAlchemyError as e:
                 logger.error(f"Error calculating total amount for open positions: {e}")
                 return None
+
+    def save_current_price(self, position: Position) -> None:
+        """
+        Saves current prices into db.
+        :return: None
+        """
+        price_dict = DashboardMixin.get_current_prices()
+        start_price = price_dict.get(position.token_symbol)
+        try:
+            position.start_price = start_price
+            self.write_to_db(position)
+        except SQLAlchemyError as e:
+            logger.error(f"Error while saving current_price for position: {e}")
 
 
 class AirDropDBConnector(DBConnector):
