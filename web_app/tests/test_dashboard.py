@@ -102,7 +102,10 @@ async def test_get_dashboard_success():
                 "created_at": "2024-01-01T00:00:00",
             }
         ]
-        mock_get_wallet_balances.return_value = {"ETH": 5.0, "USDC": 1000.0}
+        mock_get_wallet_balances.return_value = {
+            "ETH": 5.0,
+            "USDC": 1000.0,
+        }
         mock_get_zklend_position.return_value = {
             "products": [
                 {
