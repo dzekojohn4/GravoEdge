@@ -5,7 +5,7 @@ import { ReactComponent as STRK } from '../assets/icons/strk.svg';
 import { ReactComponent as DAI } from '../assets/icons/dai.svg';
 import { getBalances } from '../utils/wallet';
 
-const BalanceCards = ({ walletId}) => {
+const BalanceCards = ({ walletId }) => {
     const [balances, setBalances] = useState([
         { icon: <ETH />, title: 'ETH', balance: '0.00' },
         { icon: <USDC />, title: 'USDC', balance: '0.00' },

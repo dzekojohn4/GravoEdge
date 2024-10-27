@@ -6,7 +6,8 @@ import MultiplierSelector from '../../components/MultiplierSelector';
 import { connectWallet } from '../../utils/wallet';
 import { handleTransaction } from '../../utils/transaction';
 import Spinner from '../../components/spinner/Spinner';
-import { ReactComponent as Star } from "../../assets/particles/star.svg";
+import StarMaker from '../../components/StarMaker';
+import CardGradients from '../../components/CardGradients';
 import { ReactComponent as AlertHexagon } from '../../assets/icons/alert_hexagon.svg';
 
 const Form = ({ walletId, setWalletId }) => {
@@ -97,19 +98,8 @@ const Form = ({ walletId, setWalletId }) => {
                     <div className="submit">
                         <button type="submit" className='form-button'>Submit</button>
                     </div>
-                    <div className="card-gradients forms-gradient">
-                        <div className="card-gradient"></div>
-                        <div className="card-gradient"></div>
-                    </div>
-                    {starData.map((star, index) => (
-                    <Star key={index} style={{
-                        position: 'absolute',
-                        top: `${star.top}%`,
-                        left: `${star.left}%`,
-                        width: `${star.size}%`,
-                        height: `${star.size}%`
-                        }}/>
-                    ))}
+                    <CardGradients additionalClassName={"forms-gradient"}/>
+                    <StarMaker starData={starData}/>
                 </div>
             </form>
             <Spinner loading={loading} />

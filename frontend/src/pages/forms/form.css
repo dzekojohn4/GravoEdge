@@ -369,13 +369,13 @@ input[type="number"].error {
 
 .balance-item label:nth-child(1){
     font-size: 20px;
-    color: #E7ECF0;
+    color: var(--secondary);
     letter-spacing: 0.5px;
 }
 
 .balance-item label:nth-child(2){
     font-size: 32px;
-    color: #E7ECF0;
+    color: var(--secondary);
 }
 
 .balance-title{
@@ -385,6 +385,6 @@ input[type="number"].error {
 
 .balance-title svg{
     margin-right: 5px;
-    height: 25px !important;
-    width: 24px !important;
+    height: 25px;
+    width: 24px ;
 }
