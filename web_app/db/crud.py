@@ -6,12 +6,14 @@ import logging
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Type, TypeVar
+from typing import Dict, List, Type, TypeVar
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import scoped_session, sessionmaker
-from web_app.db.database import SQLALCHEMY_DATABASE_URL
+
+from web_app.contract_tools.mixins.dashboard import DashboardMixin
+from web_app.db.database import SQLALCHEMY_DATABASE_URL, get_database
 from web_app.db.models import AirDrop, Base, Position, Status, User
 
 logger = logging.getLogger(__name__)
@@ -173,6 +175,19 @@ class PositionDBConnector(UserDBConnector):
     """
     Provides database connection and operations management for the Position model.
     """
+
+    @staticmethod
+    def save_current_price() -> None:
+        """
+        Saves current prices into db.
+        :return: None
+        """
+        db = get_database()
+        price_dict = DashboardMixin.get_current_prices()
+        for token, price in price_dict.items():
+            if position := db.query(Position).filter_by(token_symbol=token).first():
+                position.start_price = price
+                db.commit()
 
     START_PRICE = 0.0
 
@@ -407,7 +422,6 @@ class AirDropDBConnector(DBConnector):
         """
         with self.Session() as db:
             try:
-
                 unclaimed_instances = (
                     db.query(AirDrop).filter_by(is_claimed=False).all()
                 )
