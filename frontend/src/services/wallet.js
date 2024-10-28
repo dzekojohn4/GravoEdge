@@ -1,5 +1,5 @@
 import { connect } from "get-starknet";
-import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from "./constants";
+import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from "../utils/constants";
 import { ReactComponent as ETH } from "../assets/icons/ethereum.svg";
 import { ReactComponent as USDC } from "../assets/icons/borrow_usdc.svg";
 import { ReactComponent as STRK } from "../assets/icons/strk.svg";
