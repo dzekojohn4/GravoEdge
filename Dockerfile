@@ -25,13 +25,17 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock /app/
 
 # Install dependencies from the poetry.lock file
-RUN poetry install --no-dev --no-interaction --no-root
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-dev --no-interaction --no-root
 
 # Copy the rest of the application code
 ADD . /app
 
 # Install StarknetKit via npm with legacy-peer-deps flag
 RUN npm install @argent/get-starknet --legacy-peer-deps --save
+
+# Set the entrypoint script as executable
+RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8000
 
