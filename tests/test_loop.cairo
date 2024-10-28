@@ -531,9 +531,9 @@ fn test_claim_rewards() {
         .unwrap();
 
     let airdrop_addr: ContractAddress =
-                0x66cabe824da3ff583b967ce571d393e8b667b33415acc750397aa66b64a5a6c
-                .try_into()
-                .unwrap();
+        0x66cabe824da3ff583b967ce571d393e8b667b33415acc750397aa66b64a5a6c
+        .try_into()
+        .unwrap();
 
     let user: ContractAddress = 0x20281104e6cb5884dabcdf3be376cf4ff7b680741a7bb20e5e07c26cd4870af
         .try_into()
@@ -595,7 +595,10 @@ fn test_claim_rewards() {
     // println!("final bal {}", final_balance);
 
     assert(final_balance > initial_balance, 'Reward was not transferred');
-    assert(final_balance - initial_balance == claim_data.amount.into(), 'Unexpected amount was rewarded');
+    assert(
+        final_balance - initial_balance == claim_data.amount.into(),
+        'Unexpected amount was rewarded'
+    );
 }
 // TODO: Calculate interest rates to test behaviour after liquidation.
 
