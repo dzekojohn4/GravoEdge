@@ -4,7 +4,7 @@ Unit tests for the UserDBConnector module.
 
 import pytest
 from unittest.mock import MagicMock
-from web_app.models.user import User
+from web_app.db.models import User
 from web_app.db.crud import UserDBConnector
 
 def test_get_user_by_wallet_id_success(mock_db_connector):
