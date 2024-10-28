@@ -53,7 +53,9 @@ class TestDashboardMixin:
         Test wallet balances retrieval with error handling.
         """
         # Mock the get_balance method to throw an exception for the second token
-        mock_starknet_client.get_balance = AsyncMock(side_effect=["10.5", Exception("error"), "1000.0"])
+        mock_starknet_client.get_balance = AsyncMock(
+            side_effect=["10.5", Exception("error"), "1000.0"]
+        )
 
         # Mock token parameters
         mock_tokens = [
@@ -100,9 +102,14 @@ class TestDashboardMixin:
             ),
         ]
     )
-    async def test_get_zklend_position_success(self, contract_address, mock_response, expected_protocols):
+    async def test_get_zklend_position_success(
+        self, contract_address, mock_response, expected_protocols
+    ):
         """Test successful retrieval of zkLend positions."""
-        with patch("web_app.contract_tools.mixins.dashboard.DashboardMixin.get_zklend_position", new_callable=AsyncMock) as mock_get_zklend_position:
+        with patch(
+            "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_zklend_position",
+            new_callable=AsyncMock
+        ) as mock_get_zklend_position:
             # Mock the response to return the expected mock_response
             mock_get_zklend_position.return_value = mock_response
 
