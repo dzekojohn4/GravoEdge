@@ -530,6 +530,11 @@ fn test_claim_rewards() {
         .try_into()
         .unwrap();
 
+    let airdrop_addr: ContractAddress =
+                0x66cabe824da3ff583b967ce571d393e8b667b33415acc750397aa66b64a5a6c
+                .try_into()
+                .unwrap();
+
     let user: ContractAddress = 0x20281104e6cb5884dabcdf3be376cf4ff7b680741a7bb20e5e07c26cd4870af
         .try_into()
         .unwrap();
@@ -544,7 +549,7 @@ fn test_claim_rewards() {
 
     let claim_data = Claim { id: 10611, claimee: user, amount: 0x2d86724a27dc3e2 };
 
-    let proofs = [
+    let proof = [
         0x5e3a0851fc0f58fc98964fa4aeccfae6170f87540fb6c98c6b1a95ff8619235,
         0x2d6dc4884ec2fe892aeb92c661de4bd41a833603f309a2ca4079647f8bfc2d1,
         0x73a528ae05f2995cfecb744ffd6a9dd8e4697fb5fd65a6ee8bcdf3f7dba924d,
@@ -584,7 +589,7 @@ fn test_claim_rewards() {
     let initial_balance = strk_disp.balanceOf(user);
     // println!("initial bal {}", initial_balance);
 
-    deposit_disp.claim_rewards(claim_data: claim_data, proofs: proofs);
+    deposit_disp.claim_rewards(claim_data, proof, airdrop_addr);
 
     let final_balance = strk_disp.balanceOf(user);
     // println!("final bal {}", final_balance);
