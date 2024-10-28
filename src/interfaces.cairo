@@ -21,7 +21,12 @@ pub trait IDeposit<TContractState> {
         debt_price: u256
     );
 
-    fn claim_rewards(ref self: TContractState, claim_data: Claim, proof: Span<felt252>, airdrop_addr: ContractAddress);
+    fn claim_rewards(
+        ref self: TContractState,
+        claim_data: Claim,
+        proof: Span<felt252>,
+        airdrop_addr: ContractAddress
+    );
 }
 
 #[starknet::interface]

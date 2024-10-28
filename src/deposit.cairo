@@ -329,7 +329,12 @@ mod Deposit {
                 );
         }
 
-        fn claim_rewards(ref self: ContractState, claim_data: Claim, proof: Span<felt252>, airdrop_addr: ContractAddress) {
+        fn claim_rewards(
+            ref self: ContractState,
+            claim_data: Claim,
+            proof: Span<felt252>,
+            airdrop_addr: ContractAddress
+        ) {
             assert(self.is_position_open.read(), 'Position is not open');
             assert(proof.len() != 0, 'Proof Span cannot be empty');
 
