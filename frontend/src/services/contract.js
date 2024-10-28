@@ -1,6 +1,6 @@
 import {connect} from 'get-starknet';
 import axios from 'axios';
-import {getDeployContractData} from "./constants";
+import {getDeployContractData} from "../utils/constants";
 
 
 export async function deployContract(walletId) {
