@@ -1,5 +1,5 @@
 use ekubo::types::keys::PoolKey;
-use spotnet::types::{MarketReserveData, DepositData};
+use spotnet::types::{MarketReserveData, DepositData, Claim};
 use starknet::{ContractAddress};
 
 #[starknet::interface]
@@ -20,6 +20,13 @@ pub trait IDeposit<TContractState> {
         supply_price: u256,
         debt_price: u256
     );
+
+    fn claim_rewards(
+        ref self: TContractState,
+        claim_data: Claim,
+        proof: Span<felt252>,
+        airdrop_addr: ContractAddress
+    );
 }
 
 #[starknet::interface]
@@ -37,4 +44,9 @@ pub trait IMarket<TContractState> {
     fn withdraw_all(ref self: TContractState, token: ContractAddress);
     fn repay(ref self: TContractState, token: ContractAddress, amount: felt252);
     fn repay_all(ref self: TContractState, token: ContractAddress);
+}
+
+#[starknet::interface]
+pub trait IAirdrop<TContractState> {
+    fn claim(ref self: TContractState, claim: Claim, proof: Span<felt252>) -> bool;
 }

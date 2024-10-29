@@ -9,8 +9,11 @@ mod Deposit {
     use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
     use spotnet::constants::ZK_SCALE_DECIMALS;
 
-    use spotnet::interfaces::{IMarketDispatcher, IMarketDispatcherTrait, IDeposit};
-    use spotnet::types::{SwapData, SwapResult, DepositData};
+    use spotnet::interfaces::{
+        IMarketDispatcher, IMarketDispatcherTrait, IAirdropDispatcher, IAirdropDispatcherTrait,
+        IDeposit
+    };
+    use spotnet::types::{SwapData, SwapResult, DepositData, Claim};
 
     use starknet::event::EventEmitter;
     use starknet::storage::{StoragePointerWriteAccess, StoragePointerReadAccess};
@@ -85,7 +88,7 @@ mod Deposit {
     #[derive(Drop, starknet::Event)]
     enum Event {
         LiquidityLooped: LiquidityLooped,
-        PositionClosed: PositionClosed
+        PositionClosed: PositionClosed,
     }
 
     #[generate_trait]
@@ -324,6 +327,20 @@ mod Deposit {
                         deposit_token: supply_token, debt_token, repaid_amount, withdrawn_amount
                     }
                 );
+        }
+
+        fn claim_rewards(
+            ref self: ContractState,
+            claim_data: Claim,
+            proof: Span<felt252>,
+            airdrop_addr: ContractAddress
+        ) {
+            assert(self.is_position_open.read(), 'Position is not open');
+            assert(proof.len() != 0, 'Proof Span cannot be empty');
+
+            let airdrop_disp = IAirdropDispatcher { contract_address: airdrop_addr };
+
+            assert(airdrop_disp.claim(claim_data, proof), 'Claim failed');
         }
     }
 
