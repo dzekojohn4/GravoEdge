@@ -1,7 +1,7 @@
 import './information.css';
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import StarMaker from "../../../components/StarMaker";
+import StarMaker from "../../../components/StarMaker"; 
 
 const Information = () => {
     const [data, setData] = useState({ total_opened_amount: 0, unique_users: 0 });
@@ -22,6 +22,7 @@ const Information = () => {
                 setLoading(false);
             }
         };
+
         fetchData();
     }, []);
 
@@ -32,12 +33,31 @@ const Information = () => {
         { top: 74, left: 43, size: 22 },
     ];
 
+    const formatCurrency = (value) => {
+        if (value < 1000) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 1
+            }).format(value);
+        }
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            notation: 'compact',
+            maximumFractionDigits: 1
+        }).format(value);
+    };
+
+
     return (
         <div className="information">
             <div className="card-info__container">
                 <div className="card-info flex">
                     <h1>TVL</h1>
-                    <h3>{loading ? "Loading..." : error ? `Error: ${error}` : data.total_opened_amount}</h3>
+                    <h3>
+                        {loading ? "Loading..." : error ? `Error: ${error}` : formatCurrency(data.total_opened_amount)}
+                    </h3>
                 </div>
                 <div className="card-gradients infos">
                     <div className="card-gradient"></div>
