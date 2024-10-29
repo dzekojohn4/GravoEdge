@@ -1,10 +1,10 @@
 """Test cases for PositionDBConnector"""
 
 import uuid
+from decimal import Decimal
 from unittest.mock import MagicMock
 
 import pytest
-from sqlalchemy.exc import SQLAlchemyError
 
 from web_app.db.models import Position, Status, User
 from web_app.db.crud import PositionDBConnector
@@ -161,22 +161,14 @@ def test_open_position_success(mock_position_db_connector, sample_position):
     assert result == Status.OPENED.value
 
 
-def test_get_unique_users_count(mock_position_db_connector):
-    """Test getting count of unique users."""
-    mock_position_db_connector.get_unique_users_count.return_value = 5
-    
-    result = mock_position_db_connector.get_unique_users_count()
-    
-    assert result == 5
-
 
 def test_get_total_amounts_for_open_positions(mock_position_db_connector):
     """Test getting total amounts for open positions."""
-    mock_position_db_connector.get_total_amounts_for_open_positions.return_value = 1000.0
+    mock_position_db_connector.get_total_amounts_for_open_positions.return_value = Decimal(1000.0)
     
     result = mock_position_db_connector.get_total_amounts_for_open_positions()
     
-    assert result == 1000.0
+    assert result == Decimal(1000.0)
 
 
 ### Negative Test Cases ###
