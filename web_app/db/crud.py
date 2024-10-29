@@ -502,4 +502,4 @@ class TelegramUserDBConnector(DBConnector):
         """
         user = self.get_user_by_telegram_id(telegram_id)
         if user:
-            self.delete_from_db(user)
+            self.delete_object(user, user.id)
