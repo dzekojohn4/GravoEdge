@@ -15,6 +15,7 @@ from web_app.contract_tools.constants import (
     TokenMultipliers,
 )
 from web_app.contract_tools.mixins.deposit import DepositMixin
+from web_app.contract_tools.mixins.dashboard import DashboardMixin
 from web_app.db.crud import PositionDBConnector
 
 router = APIRouter()  # Initialize the router
@@ -184,5 +185,6 @@ async def open_position(position_id: str) -> str:
     if not position_id:
         raise HTTPException(status_code=404, detail="Position not found")
 
-    position_status = position_db_connector.open_position(position_id)
+    current_prices =  await DashboardMixin.get_current_prices()
+    position_status = position_db_connector.open_position(position_id, current_prices)
     return position_status
