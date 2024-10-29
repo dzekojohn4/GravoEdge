@@ -26,6 +26,19 @@ pub struct DepositData {
     pub multiplier: u32
 }
 
+#[derive(Copy, Drop, Serde)]
+pub struct EkuboSlippageLimits {
+    pub lower: u256,
+    pub upper: u256
+}
+
+#[derive(Copy, Drop, Serde)]
+pub struct Claim {
+    pub id: u64,
+    pub claimee: ContractAddress,
+    pub amount: u128
+}
+
 #[derive(Drop, Serde, starknet::Store)]
 pub struct MarketReserveData {
     enabled: bool,
@@ -46,9 +59,4 @@ pub struct MarketReserveData {
     debt_limit: felt252
 }
 
-#[derive(Copy, Drop, Serde)]
-pub struct Claim {
-    pub id: u64,
-    pub claimee: ContractAddress,
-    pub amount: u128
-}
+

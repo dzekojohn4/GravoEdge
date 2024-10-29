@@ -20,7 +20,7 @@ use snforge_std::{declare, DeclareResultTrait, ContractClassTrait};
 use spotnet::interfaces::{
     IDepositDispatcher, IDepositSafeDispatcher, IDepositSafeDispatcherTrait, IDepositDispatcherTrait
 };
-use spotnet::types::{DepositData, Claim};
+use spotnet::types::{DepositData, Claim, EkuboSlippageLimits};
 
 use starknet::{ContractAddress, get_caller_address, get_block_number, get_block_timestamp};
 
@@ -71,12 +71,12 @@ fn get_asset_price_pragma(pair: felt252) -> u128 {
     output.price / 100 // Make 6 decimals wide instead of 8.
 }
 
-// fn get_token_addresses(pair: felt252) -> (ContractAddress, ContractAddress) {
-//     match pair {
-//         'ETH/USDC' => (tokens::ETH.try_into().unwrap(), tokens::USDC.try_into().unwrap()),
-//         _ => (0.try_into().unwrap(), 1.try_into().unwrap()),
-//     }
-// }
+fn get_slippage_limits(pool_key: PoolKey) -> EkuboSlippageLimits {
+    let ekubo_core = ICoreDispatcher {contract_address: contracts::EKUBO_CORE_MAINNET.try_into().unwrap()};
+    let sqrt_ratio = ekubo_core.get_pool_price(pool_key).sqrt_ratio;
+    let tolerance = sqrt_ratio * 5 / 100;
+    EkuboSlippageLimits {lower: sqrt_ratio - tolerance, upper: sqrt_ratio + tolerance}
+}
 
 // TODO: Add tests for asserts.
 
@@ -114,7 +114,7 @@ fn test_loop_eth_valid() {
         .loop_liquidity(
             DepositData { token: eth_addr, amount: 685000000000000, multiplier: 4 },
             pool_key,
-            pool_price,
+            get_slippage_limits(pool_key),
             pool_price
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
@@ -157,7 +157,7 @@ fn test_loop_eth_fuzz(amount: u64) {
         .loop_liquidity(
             DepositData { token: eth_addr, amount: amount.into(), multiplier: 4 },
             pool_key,
-            pool_price,
+            get_slippage_limits(pool_key),
             pool_price
         ) {
         let message = *panic_data.at(0);
@@ -212,8 +212,8 @@ fn test_loop_usdc_valid() {
         .loop_liquidity(
             DepositData { token: usdc_addr, amount: 60000000, multiplier: 4 },
             pool_key,
-            pool_price.into(),
-            1000000
+            get_slippage_limits(pool_key),
+            pool_price.into()
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
 }
@@ -256,8 +256,8 @@ fn test_loop_unauthorized() {
         .loop_liquidity(
             DepositData { token: usdc_addr, amount: 10000000, multiplier: 4 },
             pool_key,
-            pool_price.into(),
-            1000000
+            get_slippage_limits(pool_key),
+            pool_price.into()
         );
 }
 
@@ -302,15 +302,15 @@ fn test_loop_position_exists() {
         .loop_liquidity(
             DepositData { token: usdc_addr, amount: 60000000, multiplier: 4 },
             pool_key,
-            pool_price.into(),
-            1000000
+            get_slippage_limits(pool_key),
+            pool_price.into()
         );
     deposit_disp
         .loop_liquidity(
             DepositData { token: usdc_addr, amount: 60000000, multiplier: 4 },
             pool_key,
-            pool_price.into(),
-            1000000
+            get_slippage_limits(pool_key),
+            pool_price.into()
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
 }
@@ -353,7 +353,7 @@ fn test_loop_position_exists_fuzz(amount: u64) {
         .loop_liquidity(
             DepositData { token: eth_addr, amount: amount.into(), multiplier: 2 },
             pool_key,
-            pool_price,
+            get_slippage_limits(pool_key),
             pool_price
         ) {
         return;
@@ -362,7 +362,7 @@ fn test_loop_position_exists_fuzz(amount: u64) {
         .loop_liquidity(
             DepositData { token: eth_addr, amount: amount.into(), multiplier: 2 },
             pool_key,
-            pool_price,
+            get_slippage_limits(pool_key),
             pool_price
         ) {
         Result::Ok(_) => panic_with_felt252('Not panicked with position open'),
@@ -417,7 +417,7 @@ fn test_close_position_usdc_valid_time_passed() {
         .loop_liquidity(
             DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4 },
             pool_key,
-            pool_price,
+            get_slippage_limits(pool_key),
             pool_price
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
@@ -439,7 +439,7 @@ fn test_close_position_usdc_valid_time_passed() {
     // eth_addr));
     // println!("Z bal {}", ERC20ABIDispatcher {contract_address:
     // usdc_reserve.z_token_address}.balanceOf(deposit_disp.contract_address));
-    deposit_disp.close_position(usdc_addr, eth_addr, pool_key, pool_price, quote_token_price);
+    deposit_disp.close_position(usdc_addr, eth_addr, pool_key, get_slippage_limits(pool_key), pool_price, quote_token_price);
 
     stop_cheat_block_timestamp(contracts::ZKLEND_MARKET.try_into().unwrap());
     stop_cheat_account_contract_address(deposit_disp.contract_address);
@@ -489,7 +489,7 @@ fn test_close_position_amounts_cleared() {
         .loop_liquidity(
             DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4 },
             pool_key,
-            pool_price,
+            get_slippage_limits(pool_key),
             pool_price
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
@@ -497,7 +497,7 @@ fn test_close_position_amounts_cleared() {
         contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
     };
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
-    deposit_disp.close_position(usdc_addr, eth_addr, pool_key, pool_price, quote_token_price);
+    deposit_disp.close_position(usdc_addr, eth_addr, pool_key, get_slippage_limits(pool_key), pool_price, quote_token_price);
     stop_cheat_account_contract_address(deposit_disp.contract_address);
 
     assert(
@@ -514,7 +514,7 @@ fn test_close_position_amounts_cleared() {
 }
 
 #[test]
-#[fork("MAINNET", block_number: 834899)]
+#[fork(url: "http://127.0.0.1:5050", block_number: 834899)]
 fn test_claim_rewards() {
     let strk_addr: ContractAddress =
         0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d
@@ -581,11 +581,11 @@ fn test_claim_rewards() {
         .loop_liquidity(
             DepositData { token: eth_addr, amount: 685000000000000, multiplier: 4 },
             pool_key,
-            pool_price,
+            get_slippage_limits(pool_key),
             pool_price
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
-
+    
     let initial_balance = strk_disp.balanceOf(user);
     // println!("initial bal {}", initial_balance);
 
@@ -649,7 +649,6 @@ fn test_claim_rewards() {
 //             DepositData { token: eth_addr, amount: 10000000000000000, multiplier: 4 },
 //             pool_key,
 //             pool_price,
-//             pool_price
 //         );
 //     stop_cheat_account_contract_address(deposit_disp.contract_address);
 //     let zk_market = IMarketTestingDispatcher {contract_address:

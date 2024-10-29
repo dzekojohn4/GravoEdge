@@ -13,7 +13,7 @@ mod Deposit {
         IMarketDispatcher, IMarketDispatcherTrait, IAirdropDispatcher, IAirdropDispatcherTrait,
         IDeposit
     };
-    use spotnet::types::{SwapData, SwapResult, DepositData, Claim};
+    use spotnet::types::{SwapData, SwapResult, DepositData, Claim, EkuboSlippageLimits};
 
     use starknet::event::EventEmitter;
     use starknet::storage::{StoragePointerWriteAccess, StoragePointerReadAccess};
@@ -111,17 +111,16 @@ mod Deposit {
         /// `amount` field of `deposit_data` is `0` or `pool_price` is `0`
         /// address of the caller is not equal to `owner` storage address
         ///
-        /// # Paraemters
-        /// * `deposit_data` - Object of which stores main deposit information.
+        /// # Parameters
+        /// * `deposit_data` - Object which stores main deposit information.
         /// * `pool_key` - Ekubo type which represents data about pool.
         /// * `pool_price` - Price of `deposit` token in terms of `debt` token in Ekubo pool.
-        /// * `usdc_price` - Price of `deposit` token in USDC.
         fn loop_liquidity(
             ref self: ContractState,
             deposit_data: DepositData,
             pool_key: PoolKey,
-            pool_price: u256,
-            usdc_price: u256
+            ekubo_limits: EkuboSlippageLimits,
+            pool_price: u256
         ) {
             // TODO: Add borrow factor
             let user_acount = get_tx_info().unbox().account_contract_address;
@@ -133,10 +132,6 @@ mod Deposit {
 
             assert(multiplier < 5 && multiplier > 1, 'Multiplier not supported');
             assert(amount != 0 && pool_price != 0, 'Parameters cannot be zero');
-            assert(
-                amount * usdc_price / deposit_token_decimals.into() >= 1000000,
-                'Loop amount is too small'
-            ); // User needs to have at least 1 USDC, so rounded down amount is OK.
 
             let curr_contract_address = get_contract_address();
             assert(
@@ -145,22 +140,18 @@ mod Deposit {
             );
             assert(token_dispatcher.balanceOf(user_acount) >= amount, 'Insufficient balance');
 
-            let (EKUBO_LOWER_SQRT_LIMIT, EKUBO_UPPER_SQRT_LIMIT) = (
-                18446748437148339061, 6277100250585753475930931601400621808602321654880405518632
-            );
-
             let zk_market = self.zk_market.read();
             let is_token1 = token == pool_key.token0;
             let (borrowing_token, sqrt_limit) = if is_token1 {
-                (pool_key.token1, EKUBO_UPPER_SQRT_LIMIT)
+                (pool_key.token1, ekubo_limits.upper)
             } else {
-                (pool_key.token0, EKUBO_LOWER_SQRT_LIMIT)
+                (pool_key.token0, ekubo_limits.lower)
             };
 
             token_dispatcher.transferFrom(self.owner.read(), curr_contract_address, amount);
-            let reserve_data = zk_market.get_reserve_data(token);
+            let (deposit_reserve_data, debt_reserve_data) = (zk_market.get_reserve_data(token), zk_market.get_reserve_data(borrowing_token));
 
-            let collateral_factor = reserve_data.collateral_factor.into();
+            let (collateral_factor, borrow_factor) = (deposit_reserve_data.collateral_factor.into(), debt_reserve_data.borrow_factor.into());
 
             zk_market.enable_collateral(token);
 
@@ -169,7 +160,7 @@ mod Deposit {
             let (mut total_borrowed, mut accumulated, mut deposited) = (0, 0, amount);
 
             while (amount + accumulated) / amount < multiplier.into() {
-                let borrow_capacity = (deposited * collateral_factor / ZK_SCALE_DECIMALS);
+                let borrow_capacity = ((deposited * collateral_factor / ZK_SCALE_DECIMALS) * borrow_factor / ZK_SCALE_DECIMALS);
                 let to_borrow = get_borrow_amount(
                     borrow_capacity.try_into().unwrap(),
                     pool_price,
@@ -204,7 +195,7 @@ mod Deposit {
                     LiquidityLooped {
                         initial_amount: amount,
                         deposited: ERC20ABIDispatcher {
-                            contract_address: reserve_data.z_token_address
+                            contract_address: deposit_reserve_data.z_token_address
                         }
                             .balanceOf(get_contract_address()),
                         token_deposit: token,
@@ -238,9 +229,11 @@ mod Deposit {
             supply_token: ContractAddress,
             debt_token: ContractAddress,
             pool_key: PoolKey,
+            ekubo_limits: EkuboSlippageLimits,
             supply_price: u256,
             debt_price: u256
         ) {
+            // TODO: Add ekubo limits to the docs
             assert(
                 get_tx_info().unbox().account_contract_address == self.owner.read(),
                 'Caller is not the owner'
@@ -261,11 +254,7 @@ mod Deposit {
                 fast_power(10, token_disp.decimals().into()),
                 fast_power(10, debt_dispatcher.decimals().into())
             );
-            let SQRT_LIMIT_REPAY = if supply_token == pool_key.token0 {
-                18446748437148339061
-            } else {
-                6277100250585753475930931601400621808602321654880405518632
-            };
+            let SQRT_LIMIT_REPAY = if supply_token == pool_key.token0 { ekubo_limits.lower } else { ekubo_limits.upper };
             let is_token1_repay_swap = supply_token == pool_key.token1;
             let mut repaid_amount: u256 = 0;
             while debt != 0 {
