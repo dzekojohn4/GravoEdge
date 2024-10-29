@@ -1,9 +1,10 @@
-use ekubo::interfaces::core::SwapParameters;
-use ekubo::types::delta::Delta;
-use ekubo::types::keys::PoolKey;
+// use ekubo::interfaces::core::SwapParameters;
+// use ekubo::types::delta::Delta;
+// use ekubo::types::keys::PoolKey;
+use ekubo::{interfaces::core::SwapParameters, types::{delta::Delta, keys::PoolKey}};
 use starknet::ContractAddress;
 
-pub type TokenPrice = u256;
+pub type TokenPrice = u128;
 pub type TokenAmount = u256;
 pub type Decimals = u64;
 
@@ -58,5 +59,4 @@ pub struct MarketReserveData {
     liquidation_bonus: felt252,
     debt_limit: felt252
 }
-
 

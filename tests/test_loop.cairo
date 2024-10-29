@@ -1,7 +1,6 @@
 use alexandria_math::fast_power::fast_power;
 use core::panic_with_felt252;
-use ekubo::interfaces::core::{SwapParameters, ICoreDispatcher, ICoreDispatcherTrait};
-use ekubo::types::i129::{i129};
+use ekubo::interfaces::core::{ICoreDispatcher, ICoreDispatcherTrait};
 use ekubo::types::keys::{PoolKey};
 use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
 
@@ -22,7 +21,7 @@ use spotnet::interfaces::{
 };
 use spotnet::types::{DepositData, Claim, EkuboSlippageLimits};
 
-use starknet::{ContractAddress, get_caller_address, get_block_number, get_block_timestamp};
+use starknet::{ContractAddress, get_block_timestamp};
 
 use super::interfaces::{IMarketTestingDispatcher, IMarketTestingDispatcherTrait};
 
@@ -72,10 +71,12 @@ fn get_asset_price_pragma(pair: felt252) -> u128 {
 }
 
 fn get_slippage_limits(pool_key: PoolKey) -> EkuboSlippageLimits {
-    let ekubo_core = ICoreDispatcher {contract_address: contracts::EKUBO_CORE_MAINNET.try_into().unwrap()};
+    let ekubo_core = ICoreDispatcher {
+        contract_address: contracts::EKUBO_CORE_MAINNET.try_into().unwrap()
+    };
     let sqrt_ratio = ekubo_core.get_pool_price(pool_key).sqrt_ratio;
     let tolerance = sqrt_ratio * 5 / 100;
-    EkuboSlippageLimits {lower: sqrt_ratio - tolerance, upper: sqrt_ratio + tolerance}
+    EkuboSlippageLimits { lower: sqrt_ratio - tolerance, upper: sqrt_ratio + tolerance }
 }
 
 // TODO: Add tests for asserts.
@@ -399,7 +400,7 @@ fn test_close_position_usdc_valid_time_passed() {
 
     let token_disp = ERC20ABIDispatcher { contract_address: usdc_addr };
     let initial_balance = token_disp.balanceOf(user);
-    // println!("Initial bal {initial_balance}");
+
     let decimals_sum_power: u128 = fast_power(
         10,
         (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
@@ -426,11 +427,7 @@ fn test_close_position_usdc_valid_time_passed() {
     };
     let usdc_reserve = zk_market.get_reserve_data(usdc_addr);
     let eth_reserve = zk_market.get_reserve_data(eth_addr);
-    let (lending_rate, borrowing_rate): (u256, u256) = (
-        usdc_reserve.current_lending_rate.into(), eth_reserve.current_borrowing_rate.into()
-    );
-    // println!("{}", lending_rate);
-    // println!("{}", borrowing_rate);
+
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     start_cheat_block_timestamp(
         contracts::ZKLEND_MARKET.try_into().unwrap(), get_block_timestamp() + 40000000
@@ -439,7 +436,15 @@ fn test_close_position_usdc_valid_time_passed() {
     // eth_addr));
     // println!("Z bal {}", ERC20ABIDispatcher {contract_address:
     // usdc_reserve.z_token_address}.balanceOf(deposit_disp.contract_address));
-    deposit_disp.close_position(usdc_addr, eth_addr, pool_key, get_slippage_limits(pool_key), pool_price, quote_token_price);
+    deposit_disp
+        .close_position(
+            usdc_addr,
+            eth_addr,
+            pool_key,
+            get_slippage_limits(pool_key),
+            pool_price,
+            quote_token_price
+        );
 
     stop_cheat_block_timestamp(contracts::ZKLEND_MARKET.try_into().unwrap());
     stop_cheat_account_contract_address(deposit_disp.contract_address);
@@ -497,7 +502,15 @@ fn test_close_position_amounts_cleared() {
         contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
     };
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
-    deposit_disp.close_position(usdc_addr, eth_addr, pool_key, get_slippage_limits(pool_key), pool_price, quote_token_price);
+    deposit_disp
+        .close_position(
+            usdc_addr,
+            eth_addr,
+            pool_key,
+            get_slippage_limits(pool_key),
+            pool_price,
+            quote_token_price
+        );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
 
     assert(
@@ -566,7 +579,7 @@ fn test_claim_rewards() {
         0x44692783f2e911b439cd018f3ba8c067ba5ab88bec4b35e2496b2a3b0f817ef
     ].span();
 
-    let pool_price: u256 = get_asset_price_pragma('ETH/USD').into();
+    let pool_price = get_asset_price_pragma('ETH/USD');
 
     let strk_disp = ERC20ABIDispatcher { contract_address: strk_addr };
     let eth_disp = ERC20ABIDispatcher { contract_address: eth_addr };
@@ -585,11 +598,11 @@ fn test_claim_rewards() {
             pool_price
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
-    
+
     let initial_balance = strk_disp.balanceOf(user);
     // println!("initial bal {}", initial_balance);
 
-    deposit_disp.claim_rewards(claim_data, proof, airdrop_addr);
+    deposit_disp.claim_reward(claim_data, proof, airdrop_addr);
 
     let final_balance = strk_disp.balanceOf(user);
     // println!("final bal {}", final_balance);

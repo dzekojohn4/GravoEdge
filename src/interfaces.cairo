@@ -1,6 +1,6 @@
 use ekubo::types::keys::PoolKey;
-use spotnet::types::{MarketReserveData, DepositData, Claim, EkuboSlippageLimits};
-use starknet::{ContractAddress};
+use spotnet::types::{MarketReserveData, DepositData, Claim, EkuboSlippageLimits, TokenPrice};
+use starknet::ContractAddress;
 
 #[starknet::interface]
 pub trait IDeposit<TContractState> {
@@ -9,7 +9,7 @@ pub trait IDeposit<TContractState> {
         deposit_data: DepositData,
         pool_key: PoolKey,
         ekubo_limits: EkuboSlippageLimits,
-        pool_price: u256
+        pool_price: TokenPrice
     );
 
     fn close_position(
@@ -18,11 +18,11 @@ pub trait IDeposit<TContractState> {
         debt_token: ContractAddress,
         pool_key: PoolKey,
         ekubo_limits: EkuboSlippageLimits,
-        supply_price: u256,
-        debt_price: u256
+        supply_price: TokenPrice,
+        debt_price: TokenPrice
     );
 
-    fn claim_rewards(
+    fn claim_reward(
         ref self: TContractState,
         claim_data: Claim,
         proof: Span<felt252>,

@@ -2,22 +2,28 @@
 mod Deposit {
     use alexandria_math::fast_power::fast_power;
 
-    use ekubo::interfaces::core::{ICoreDispatcher, ICoreDispatcherTrait, ILocker, SwapParameters};
-    use ekubo::types::i129::i129;
-    use ekubo::types::keys::PoolKey;
+    use ekubo::{
+        interfaces::core::{ICoreDispatcher, ICoreDispatcherTrait, ILocker, SwapParameters},
+        types::{i129::i129, keys::PoolKey}
+    };
 
     use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
-    use spotnet::constants::ZK_SCALE_DECIMALS;
-
-    use spotnet::interfaces::{
-        IMarketDispatcher, IMarketDispatcherTrait, IAirdropDispatcher, IAirdropDispatcherTrait,
-        IDeposit
+    use spotnet::{
+        constants::ZK_SCALE_DECIMALS,
+        interfaces::{
+            IMarketDispatcher, IMarketDispatcherTrait, IAirdropDispatcher, IAirdropDispatcherTrait,
+            IDeposit
+        },
+        types::{
+            SwapData, SwapResult, DepositData, Claim, EkuboSlippageLimits, TokenAmount, TokenPrice,
+            Decimals
+        }
     };
-    use spotnet::types::{SwapData, SwapResult, DepositData, Claim, EkuboSlippageLimits};
 
-    use starknet::event::EventEmitter;
-    use starknet::storage::{StoragePointerWriteAccess, StoragePointerReadAccess};
-    use starknet::{ContractAddress, get_contract_address, get_tx_info};
+    use starknet::{
+        ContractAddress, get_contract_address, get_tx_info, event::EventEmitter,
+        storage::{StoragePointerWriteAccess, StoragePointerReadAccess}
+    };
 
     #[storage]
     struct Storage {
@@ -40,39 +46,43 @@ mod Deposit {
     }
 
     fn get_borrow_amount(
-        borrow_capacity: u256,
-        token_price: u256,
-        decimals_difference: felt252,
-        total_borrowed: felt252
+        borrow_capacity: TokenAmount,
+        token_price: TokenPrice,
+        decimals_difference: Decimals,
+        total_borrowed: TokenAmount
     ) -> felt252 {
         let borrow_const = 60;
-        let amount_base_token = token_price * borrow_capacity;
-        let amount_quote_token = amount_base_token.into() / decimals_difference.into();
-        ((amount_quote_token - total_borrowed.into()) / 100_u256 * borrow_const).try_into().unwrap()
+        let amount_base_token = token_price.into() * borrow_capacity;
+        let amount_quote_token = amount_base_token / decimals_difference.into();
+        ((amount_quote_token - total_borrowed) / 100_u256 * borrow_const).try_into().unwrap()
     }
 
     fn get_withdraw_amount(
-        total_deposited: u256,
-        total_debt: u256,
+        total_deposited: TokenAmount,
+        total_debt: TokenAmount,
         collateral_factor: felt252,
-        supply_token_price: u256,
-        debt_token_price: u256,
-        supply_decimals: u256,
-        debt_decimals: u256
+        borrow_factor: felt252,
+        supply_token_price: TokenPrice,
+        debt_token_price: TokenPrice,
+        supply_decimals: Decimals,
+        debt_decimals: Decimals
     ) -> u256 {
-        let deposited = (total_deposited * supply_token_price).into() / supply_decimals;
-        let free_amount = (deposited * collateral_factor.into() / ZK_SCALE_DECIMALS)
+        let deposited = (total_deposited * supply_token_price.into()).into()
+            / supply_decimals.into();
+        let free_amount = ((deposited * collateral_factor.into() / ZK_SCALE_DECIMALS)
+            * borrow_factor.into()
+            / ZK_SCALE_DECIMALS)
             - total_debt.into();
-        let withdraw_amount = free_amount * debt_token_price.into() / debt_decimals;
+        let withdraw_amount = free_amount * debt_token_price.into() / debt_decimals.into();
         withdraw_amount
     }
 
     #[derive(starknet::Event, Drop)]
     struct LiquidityLooped {
-        initial_amount: u256,
-        deposited: u256,
+        initial_amount: TokenAmount,
+        deposited: TokenAmount,
         token_deposit: ContractAddress,
-        borrowed: u256,
+        borrowed: TokenAmount,
         token_borrowed: ContractAddress
     }
 
@@ -80,8 +90,8 @@ mod Deposit {
     struct PositionClosed {
         deposit_token: ContractAddress,
         debt_token: ContractAddress,
-        withdrawn_amount: u256,
-        repaid_amount: u256
+        withdrawn_amount: TokenAmount,
+        repaid_amount: TokenAmount
     }
 
     #[event]
@@ -112,23 +122,25 @@ mod Deposit {
         /// address of the caller is not equal to `owner` storage address
         ///
         /// # Parameters
-        /// * `deposit_data` - Object which stores main deposit information.
-        /// * `pool_key` - Ekubo type which represents data about pool.
-        /// * `pool_price` - Price of `deposit` token in terms of `debt` token in Ekubo pool.
+        /// * `deposit_data`: DepositData - Object which stores main deposit information.
+        /// * `pool_key`: PoolKey - Ekubo type which represents data about pool.
+        /// * `ekubo_limits`: EkuboSlippageLimits - Represents upper and lower sqrt_ratio values on
+        /// Ekubo. Used to control slippage while swapping.
+        /// * `pool_price`: TokenPrice - Price of `deposit` token in terms of `debt` token in Ekubo
+        /// pool.
         fn loop_liquidity(
             ref self: ContractState,
             deposit_data: DepositData,
             pool_key: PoolKey,
             ekubo_limits: EkuboSlippageLimits,
-            pool_price: u256
+            pool_price: TokenPrice
         ) {
-            // TODO: Add borrow factor
             let user_acount = get_tx_info().unbox().account_contract_address;
             assert(user_acount == self.owner.read(), 'Caller is not the owner');
             assert(!self.is_position_open.read(), 'Open position already exists');
             let DepositData { token, amount, multiplier } = deposit_data;
             let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
-            let deposit_token_decimals = fast_power(10_u128, token_dispatcher.decimals().into());
+            let deposit_token_decimals = fast_power(10_u64, token_dispatcher.decimals().into());
 
             assert(multiplier < 5 && multiplier > 1, 'Multiplier not supported');
             assert(amount != 0 && pool_price != 0, 'Parameters cannot be zero');
@@ -141,17 +153,22 @@ mod Deposit {
             assert(token_dispatcher.balanceOf(user_acount) >= amount, 'Insufficient balance');
 
             let zk_market = self.zk_market.read();
-            let is_token1 = token == pool_key.token0;
-            let (borrowing_token, sqrt_limit) = if is_token1 {
-                (pool_key.token1, ekubo_limits.upper)
+            // let is_token1 = token == pool_key.token0;
+            let (is_token1, borrowing_token, sqrt_limit) = if token == pool_key.token0 {
+                (true, pool_key.token1, ekubo_limits.upper)
             } else {
-                (pool_key.token0, ekubo_limits.lower)
+                (false, pool_key.token0, ekubo_limits.lower)
             };
 
             token_dispatcher.transferFrom(self.owner.read(), curr_contract_address, amount);
-            let (deposit_reserve_data, debt_reserve_data) = (zk_market.get_reserve_data(token), zk_market.get_reserve_data(borrowing_token));
+            let (deposit_reserve_data, debt_reserve_data) = (
+                zk_market.get_reserve_data(token), zk_market.get_reserve_data(borrowing_token)
+            );
 
-            let (collateral_factor, borrow_factor) = (deposit_reserve_data.collateral_factor.into(), debt_reserve_data.borrow_factor.into());
+            let (collateral_factor, borrow_factor) = (
+                deposit_reserve_data.collateral_factor.into(),
+                debt_reserve_data.borrow_factor.into()
+            );
 
             zk_market.enable_collateral(token);
 
@@ -160,14 +177,16 @@ mod Deposit {
             let (mut total_borrowed, mut accumulated, mut deposited) = (0, 0, amount);
 
             while (amount + accumulated) / amount < multiplier.into() {
-                let borrow_capacity = ((deposited * collateral_factor / ZK_SCALE_DECIMALS) * borrow_factor / ZK_SCALE_DECIMALS);
+                let borrow_capacity = ((deposited * collateral_factor / ZK_SCALE_DECIMALS)
+                    * borrow_factor
+                    / ZK_SCALE_DECIMALS);
                 let to_borrow = get_borrow_amount(
                     borrow_capacity.try_into().unwrap(),
                     pool_price,
                     deposit_token_decimals.into(),
                     total_borrowed
                 );
-                total_borrowed += to_borrow;
+                total_borrowed += to_borrow.into();
                 zk_market.borrow(borrowing_token, to_borrow);
                 let params = SwapParameters {
                     amount: i129 { mag: to_borrow.try_into().unwrap(), sign: false },
@@ -220,9 +239,11 @@ mod Deposit {
         /// * `debt_token`: ContractAddress - Address of the token used as borrowing.
         /// * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping
         /// tokens.
-        /// * `supply_price`: felt252 - Price of `supply` token in terms of `debt` token in Ekubo
+        /// * `ekubo_limits`: EkuboSlippageLimits - Represents upper and lower sqrt_ratio values on
+        /// Ekubo. Used to control slippage while swapping.
+        /// * `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token in Ekubo
         /// pool.
-        /// * `debt_price`: felt252 - Price of `debt` token in terms of `supply` token in Ekubo
+        /// * `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token in Ekubo
         /// pool.
         fn close_position(
             ref self: ContractState,
@@ -230,10 +251,9 @@ mod Deposit {
             debt_token: ContractAddress,
             pool_key: PoolKey,
             ekubo_limits: EkuboSlippageLimits,
-            supply_price: u256,
-            debt_price: u256
+            supply_price: TokenPrice,
+            debt_price: TokenPrice
         ) {
-            // TODO: Add ekubo limits to the docs
             assert(
                 get_tx_info().unbox().account_contract_address == self.owner.read(),
                 'Caller is not the owner'
@@ -242,9 +262,17 @@ mod Deposit {
             assert(supply_price != 0 && debt_price != 0, 'Parameters cannot be zero');
             let token_disp = ERC20ABIDispatcher { contract_address: supply_token };
             let zk_market = self.zk_market.read();
-            let reserve_data = zk_market.get_reserve_data(supply_token);
+            let (deposit_reserve_data, debt_reserve_data) = (
+                zk_market.get_reserve_data(supply_token), zk_market.get_reserve_data(debt_token)
+            );
+
+            let (collateral_factor, borrow_factor) = (
+                deposit_reserve_data.collateral_factor.into(),
+                debt_reserve_data.borrow_factor.into()
+            );
+
             let z_token_disp = ERC20ABIDispatcher {
-                contract_address: reserve_data.z_token_address
+                contract_address: deposit_reserve_data.z_token_address
             };
             let contract_address = get_contract_address();
             let mut debt = zk_market.get_user_debt_for_token(contract_address, debt_token).into();
@@ -254,14 +282,19 @@ mod Deposit {
                 fast_power(10, token_disp.decimals().into()),
                 fast_power(10, debt_dispatcher.decimals().into())
             );
-            let SQRT_LIMIT_REPAY = if supply_token == pool_key.token0 { ekubo_limits.lower } else { ekubo_limits.upper };
+            let SQRT_LIMIT_REPAY = if supply_token == pool_key.token0 {
+                ekubo_limits.lower
+            } else {
+                ekubo_limits.upper
+            };
             let is_token1_repay_swap = supply_token == pool_key.token1;
             let mut repaid_amount: u256 = 0;
             while debt != 0 {
                 let withdraw_amount = get_withdraw_amount(
                     z_token_disp.balanceOf(contract_address).try_into().unwrap(),
                     debt,
-                    reserve_data.collateral_factor.into(),
+                    collateral_factor,
+                    borrow_factor,
                     supply_price,
                     debt_price,
                     supply_decimals,
@@ -269,7 +302,9 @@ mod Deposit {
                 );
                 zk_market.withdraw(supply_token, withdraw_amount.try_into().unwrap());
 
-                let params = if (debt > withdraw_amount * supply_price / supply_decimals) {
+                let params = if (debt > withdraw_amount
+                    * supply_price.into()
+                    / supply_decimals.into()) {
                     SwapParameters {
                         amount: i129 { mag: withdraw_amount.try_into().unwrap(), sign: false },
                         is_token1: is_token1_repay_swap,
@@ -319,18 +354,30 @@ mod Deposit {
                 );
         }
 
-        fn claim_rewards(
+        /// Claims STRK airdrop on ZKlend
+        ///
+        /// # Panics
+        /// `is_position_open` storage variable is set to false('Open position not exists')
+        /// `proof` span is empty
+        /// Claim call failed
+        ///
+        /// # Parameters
+        /// `claim_data`: Claim - contains data about claim operation
+        /// `proof`: Span<felt252> - proof used to validate the claim
+        /// `airdrop_addr`: ContractAddress - address of a contract responsible for claim
+        fn claim_reward(
             ref self: ContractState,
             claim_data: Claim,
             proof: Span<felt252>,
             airdrop_addr: ContractAddress
         ) {
-            assert(self.is_position_open.read(), 'Position is not open');
+            assert(self.is_position_open.read(), 'Open position not exists');
             assert(proof.len() != 0, 'Proof Span cannot be empty');
-
-            let airdrop_disp = IAirdropDispatcher { contract_address: airdrop_addr };
-
-            assert(airdrop_disp.claim(claim_data, proof), 'Claim failed');
+            assert(
+                IAirdropDispatcher { contract_address: airdrop_addr }.claim(claim_data, proof),
+                'Claim failed'
+            );
+            // TODO: Add transfer to the Treasury
         }
     }
 
