@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './home.css';
 import { ReactComponent as SmallStar } from 'assets/particles/small_star.svg';
 import { ReactComponent as Star } from 'assets/particles/star.svg';
 import { ReactComponent as Decoration } from 'assets/particles/deco.svg';
 import { ReactComponent as Starknet } from 'assets/particles/starknet.svg';
 import { ReactComponent as Rocket } from 'assets/icons/rocket.svg';
-import { Notifier, notify } from 'components/Notifier/Notifier';
+import { Notifier } from 'components/Notifier/Notifier';
+import { notifyWarning } from 'utils/notification';
+import './home.css';
 
 function Home({ walletId }) {
   const navigate = useNavigate();
@@ -15,9 +16,7 @@ function Home({ walletId }) {
     if (walletId) {
       navigate('/form');
     } else {
-      notify('Please connect to your wallet', {
-        style: { backgroundColor: 'orange', color: 'white' },
-      });
+      notifyWarning('Please connect to your wallet');
     }
   };
 
@@ -52,8 +51,8 @@ function Home({ walletId }) {
   ];
 
   return (
-    <div className='home'>
-      <div className='decorations'>
+    <div className="home">
+      <div className="decorations">
         {decorationData.map((decoration, index) => (
           <Decoration
             key={index}
@@ -68,8 +67,8 @@ function Home({ walletId }) {
           />
         ))}
       </div>
-      <div className='top-gradient'></div>
-      <div className='stars'>
+      <div className="top-gradient"></div>
+      <div className="stars">
         {starsData.map((star, index) => (
           <SmallStar
             key={index}
@@ -94,19 +93,19 @@ function Home({ walletId }) {
         ))}
         <Starknet style={{ position: 'absolute', top: '0', right: '20px' }} />
       </div>
-      <h2 className='center-text'>
-        <span className='blue-color'>Earn</span> by leveraging your assets
-        <span className='gradient'> with Spotnet</span>
+      <h2 className="center-text">
+        <span className="blue-color">Earn</span> by leveraging your assets
+        <span className="gradient"> with Spotnet</span>
       </h2>
-      <h5 className='subtitle-text-styles'>
-        Maximize the potential of your resources and start earning today. Join
-        Spotnet and unlock new opportunities to grow your wealth!
+      <h5 className="subtitle-text-styles">
+        Maximize the potential of your resources and start earning today. Join Spotnet and unlock new opportunities to
+        grow your wealth!
       </h5>
-      <button className='launch-button' onClick={handleLaunchApp}>
+      <button className="launch-button" onClick={handleLaunchApp}>
         Launch App <Rocket />
       </button>
       <Notifier />
-      <div className='bottom-gradient'></div>
+      <div className="bottom-gradient"></div>
     </div>
   );
 }
