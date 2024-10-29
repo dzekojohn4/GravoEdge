@@ -8,12 +8,11 @@ from datetime import datetime
 from decimal import Decimal
 from typing import List, Type, TypeVar
 
-from sqlalchemy import create_engine, update
+from sqlalchemy import create_engine, update, func, cast, Numeric
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from web_app.contract_tools.mixins.dashboard import DashboardMixin
-from web_app.db.database import SQLALCHEMY_DATABASE_URL, get_database
+from web_app.db.database import SQLALCHEMY_DATABASE_URL
 from web_app.db.models import AirDrop, Base, Position, Status, User, TelegramUser
 
 logger = logging.getLogger(__name__)
@@ -168,6 +167,21 @@ class UserDBConnector(DBConnector):
         user.is_contract_deployed = not user.is_contract_deployed
         user.contract_address = contract_address
         self.write_to_db(user)
+
+    def get_unique_users_count(self) -> int:
+        """
+        Retrieves the number of unique users in the database.
+        :return: The count of unique users.
+        """
+        with self.Session() as db:
+            try:
+                # Query to count distinct users based on wallet ID
+                unique_users_count = db.query(User.wallet_id).distinct().count()
+                return unique_users_count
+
+            except SQLAlchemyError as e:
+                logger.error(f"Failed to retrieve unique users count: {str(e)}")
+                return 0
 
 
 class PositionDBConnector(UserDBConnector):
@@ -330,10 +344,11 @@ class PositionDBConnector(UserDBConnector):
             self.write_to_db(position)
         return position.status
 
-    def open_position(self, position_id: uuid.UUID) -> str | None:
+    def open_position(self, position_id: uuid.UUID, current_prices: dict) -> str | None:
         """
         Opens a position by updating its status and creating an AirDrop claim.
         :param position_id: uuid.UUID
+        :param current_prices: dict
         :return: str | None
         """
         position = self.get_object(Position, position_id)
@@ -341,51 +356,35 @@ class PositionDBConnector(UserDBConnector):
             position.status = Status.OPENED.value
             self.write_to_db(position)
             self.create_empty_claim(position.user_id)
-            self.save_current_price(position)
+            self.save_current_price(position, current_prices)
             return position.status
         else:
             logger.error(f"Position with ID {position_id} not found")
             return None
 
-    def get_unique_users_count(self) -> int:
-        """
-        Retrieves the number of unique users in the database.
-        :return: The count of unique users.
-        """
-        with self.Session() as db:
-            try:
-                # Query to count distinct users based on wallet ID
-                unique_users_count = db.query(User.wallet_id).distinct().count()
-                return unique_users_count
-
-            except SQLAlchemyError as e:
-                logger.error(f"Failed to retrieve unique users count: {str(e)}")
-                return 0
-
-    def get_total_amounts_for_open_positions(self) -> float | None:
+    def get_total_amounts_for_open_positions(self) -> Decimal:
         """
         Calculates the total amount for all positions where status is 'OPENED'.
 
-        :return: Total amount for all opened positions, or None if no open positions are found
+        :return: Total amount for all opened positions
         """
         with self.Session() as db:
             try:
                 total_opened_amount = (
-                    db.query(db.func.sum(Position.amount))
+                    db.query(func.sum(cast(Position.amount, Numeric)))
                     .filter(Position.status == Status.OPENED.value)
                     .scalar()
                 )
                 return total_opened_amount
             except SQLAlchemyError as e:
                 logger.error(f"Error calculating total amount for open positions: {e}")
-                return None
+                return Decimal(0.0)
 
-    def save_current_price(self, position: Position) -> None:
+    def save_current_price(self, position: Position, price_dict: dict) -> None:
         """
         Saves current prices into db.
         :return: None
         """
-        price_dict = DashboardMixin.get_current_prices()
         start_price = price_dict.get(position.token_symbol)
         try:
             position.start_price = start_price
