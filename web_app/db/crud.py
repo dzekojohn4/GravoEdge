@@ -470,7 +470,7 @@ class TelegramUserDBConnector(DBConnector):
         :param user_data: dict
         :return: None
         """
-        with self.get_session() as session:
+        with self.Session() as session:
             stmt = (
                 update(TelegramUser)
                 .where(TelegramUser.telegram_id == telegram_id)
