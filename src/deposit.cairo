@@ -301,6 +301,7 @@ mod Deposit {
                     repaid_amount += debt;
                     debt_dispatcher.approve(zk_market.contract_address, debt);
                     zk_market.repay_all(debt_token);
+                    break;
                 }
 
                 debt = zk_market.get_user_debt_for_token(contract_address, debt_token).into();
