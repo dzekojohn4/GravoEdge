@@ -1,34 +1,30 @@
 import './information.css';
-import { ReactComponent as Star } from "../../../assets/particles/star.svg";
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
+import StarMaker from "../../../components/StarMaker";
 
 const Information = () => {
     const [data, setData] = useState({ total_opened_amount: 0, unique_users: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/get_stats`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data');
-                }
-                const result = await response.json();
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/get_stats`);
                 setData({
-                    total_opened_amount: result.total_opened_amount,
-                    unique_users: result.unique_users,
+                    total_opened_amount: response.data.total_opened_amount,
+                    unique_users: response.data.unique_users,
                 });
             } catch (error) {
-                setError(error.message);
+                setError(error.response ? error.response.data.message : error.message);
             } finally {
                 setLoading(false);
             }
         };
-    
         fetchData();
     }, []);
-    
+
     const starData = [
         { top: 9, left: -6.2, size: 20 },
         { top: 9, left: 39, size: 15 },
@@ -51,18 +47,7 @@ const Information = () => {
                     <h1>Users</h1>
                     <h3>{loading ? "Loading..." : error ? `Error: ${error}` : data.unique_users}</h3>
                 </div>
-                {starData.map((star, index) => (
-                    <Star
-                        key={index}
-                        style={{
-                            position: 'absolute',
-                            top: `${star.top}%`,
-                            left: `${star.left}%`,
-                            width: `${star.size}%`,
-                            height: `${star.size}%`
-                        }}
-                    />
-                ))}
+                <StarMaker starData={starData} />
             </div>
         </div>
     );
