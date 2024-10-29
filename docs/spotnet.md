@@ -16,6 +16,7 @@ Onwer address is an account address of the user who deploys it, only owner can d
 
 ### loop_liquidity
 The `loop_liquidity` method is responsible for deposit of collateral token. For now only one position can be opened, to create the new you need to close old one.
+For validating the identity of the caller is used an address of account initiated a transaction instead of a caller for testing purposes.
 This method has next parameters:
 * `deposit_data`: DepositData - Object of internal type which stores main deposit information.
 * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping tokens.
@@ -49,7 +50,8 @@ emit event
 ```
 
 ### close_position
-The `close_position` method is responsible for repaying debts and withdrawing all tokens from zklend. Can be called only if there is active position. 
+The `close_position` method is responsible for repaying debts and withdrawing all tokens from zklend. Can be called only if there is active position. For validating the 
+identity of the caller is used an address of account initiated a transaction instead of a caller for testing purposes.
 The method has next parameters:
 * `supply_token`: ContractAddress - Address of the token used as collateral.
 * `debt_token`: ContractAddress - Address of the token used as borrowing.
