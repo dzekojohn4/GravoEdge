@@ -123,3 +123,4 @@ class TestZkLendAirdrop:
         await zklend_airdrop.get_contract_airdrop(contract_id)
 
         zklend_airdrop.api.fetch.assert_called_once_with(expected_underlying_id)
+        
