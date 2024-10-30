@@ -60,3 +60,4 @@ class ZkLendAirdrop:
             )
             validated_items.append(validated_item)
         return AirdropResponseModel(airdrops=validated_items)
+        
