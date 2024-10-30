@@ -3,20 +3,23 @@ Module for claiming unclaimed airdrops from the AirDropDBConnector
 and updating the database when a claim is successful.
 """
 
-import logging
 import asyncio
+import logging
 from typing import List
 
-from web_app.db.crud import AirDropDBConnector
-from web_app.contract_tools.blockchain_call import StarknetClient
 from web_app.contract_tools.airdrop import ZkLendAirdrop
+from web_app.contract_tools.blockchain_call import StarknetClient
+from web_app.db.crud import AirDropDBConnector
 
 logger = logging.getLogger(__name__)
+
+
 ##1. fetch all airdops from AirDropDBConnector.get_all_unclaimed()
 class AirdropClaimer:
     """
     Handles the process of claiming unclaimed airdrops and updating the database.
     """
+
     def __init__(self):
         """
         Initializes the AirdropClaimer with database and Starknet client instances.
@@ -39,7 +42,9 @@ class AirdropClaimer:
                 proof = self.zk_lend_airdrop.get_contract_airdrop(user_contract_address)
 
                 # accept claim
-                claim_succesful = await self._claim_airdrop(user_contract_address, proof)
+                claim_succesful = await self._claim_airdrop(
+                    user_contract_address, proof
+                )
 
                 if claim_succesful:
                     self.db_connector.save_claim_data(airdrop.id, airdrop.amount)
@@ -57,13 +62,14 @@ class AirdropClaimer:
             await self.starknet_client._func_call(
                 addr=self.starknet_client._convert_address(contract_address),
                 selector="claim",
-                calldata=calldata
+                calldata=calldata,
             )
             return True
         except Exception as e:
             logger.error("Claim failed for address %s: %s", contract_address, e)
             return False
-        
+
+
 # Execute claim
 if __name__ == "__main__":
     airdrop_claimer = AirdropClaimer()
