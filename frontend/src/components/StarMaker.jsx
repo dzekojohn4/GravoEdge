@@ -8,8 +8,8 @@ const StarMaker = ({ starData }) => (
             left: `${star.left}%`,
             width: `${star.size}%`,
             height: `${star.size}%`
-        }}/>
+        }} />
     ))
-  );
-  
-  export default StarMaker;
+);
+
+export default StarMaker;
