@@ -14,7 +14,6 @@ from web_app.db.crud import AirDropDBConnector
 logger = logging.getLogger(__name__)
 
 
-##1. fetch all airdops from AirDropDBConnector.get_all_unclaimed()
 class AirdropClaimer:
     """
     Handles the process of claiming unclaimed airdrops and updating the database.
@@ -28,7 +27,6 @@ class AirdropClaimer:
         self.starknet_clinet = StarknetClient()
         self.zk_lend_airdrop = ZkLendAirdrop()
 
-    ##2. create a function to claim airdrops using Starknetclient
     async def claim_airdrops(self) -> None:
         """
         Retrieves unclaimed airdrops, attempts to claim them on the Starknet blockchain,
@@ -37,11 +35,9 @@ class AirdropClaimer:
         unclaimed_airdrops = self.db_connector.get_all_unclaimed()
         for airdrop in unclaimed_airdrops:
             try:
-                # get user address and proof for claim
                 user_contract_address = airdrop.user.contract_address
                 proof = self.zk_lend_airdrop.get_contract_airdrop(user_contract_address)
 
-                # accept claim
                 claim_succesful = await self._claim_airdrop(
                     user_contract_address, proof
                 )
@@ -58,7 +54,6 @@ class AirdropClaimer:
         """
         calldata = [100] + proof
         try:
-            # Starknet contract call
             await self.starknet_client._func_call(
                 addr=self.starknet_client._convert_address(contract_address),
                 selector="claim",
@@ -70,7 +65,6 @@ class AirdropClaimer:
             return False
 
 
-# Execute claim
 if __name__ == "__main__":
     airdrop_claimer = AirdropClaimer()
     asyncio.run(airdrop_claimer.claim_airdrops())
