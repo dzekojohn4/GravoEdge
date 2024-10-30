@@ -3,7 +3,7 @@ import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from './constants';
 import { ReactComponent as ETH } from 'assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from 'assets/icons/borrow_usdc.svg';
 import { ReactComponent as STRK } from 'assets/icons/strk.svg';
-// import { ReactComponent as DAI } from "assets/icons/dai.svg";
+// import { ReactComponent as DAI } from 'assets/icons/dai.svg';
 
 const handleConnectWallet = async (setWalletId, setError) => {
   try {
