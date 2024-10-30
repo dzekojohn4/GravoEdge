@@ -153,7 +153,7 @@ mod Deposit {
             assert(token_dispatcher.balanceOf(user_acount) >= amount, 'Insufficient balance');
 
             let zk_market = self.zk_market.read();
-            // let is_token1 = token == pool_key.token0;
+
             let (is_token1, borrowing_token, sqrt_limit) = if token == pool_key.token0 {
                 (true, pool_key.token1, ekubo_limits.upper)
             } else {
@@ -378,6 +378,57 @@ mod Deposit {
                 'Claim failed'
             );
             // TODO: Add transfer to the Treasury
+        }
+
+        /// Makes a deposit into open zkLend position to control stability
+        ///
+        /// # Panics
+        /// `is_position_open` variable is set to false
+        /// `amount` is equal to zero
+        ///
+        /// # Parameters
+        /// `token`: ContractAddress - token address to withdraw from zkLend
+        /// `amount`: TokenAmount - amount to withdraw
+        fn extra_deposit(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {
+            assert(self.is_position_open.read(), 'Open position not exists');
+            assert(amount != 0, 'Deposit amount is zero');
+            ERC20ABIDispatcher { contract_address: token }
+                .transferFrom(
+                    get_tx_info().unbox().account_contract_address, get_contract_address(), amount
+                );
+            self.zk_market.read().deposit(token, amount.try_into().unwrap());
+        }
+
+        /// Withdraws tokens from zkLend if looped tokens are repaid
+        ///
+        /// # Panics
+        /// address of account that started the transaction is not equal to `owner` storage variable
+        /// if trying to withdraw from open position, so `is_position_open` is set to true
+        ///
+        /// # Parameters
+        /// `token`: TokenAddress - token address to withdraw from zkLend
+        /// `amount`: TokenAmount - amount to withdraw. Pass `0` to withdraw all
+        fn withdraw(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {
+            assert(
+                get_tx_info().unbox().account_contract_address == self.owner.read(),
+                'Caller is not the owner'
+            );
+            assert(!self.is_position_open.read(), 'Tokens are locked');
+            let zk_market = self.zk_market.read();
+            if amount == 0 {
+                zk_market.withdraw_all(token);
+                ERC20ABIDispatcher { contract_address: token }
+                    .transfer(
+                        self.owner.read(),
+                        ERC20ABIDispatcher {
+                            contract_address: zk_market.get_reserve_data(token).z_token_address
+                        }
+                            .balanceOf(get_contract_address())
+                    );
+            } else {
+                self.zk_market.read().withdraw(token, amount.try_into().unwrap());
+                ERC20ABIDispatcher { contract_address: token }.transfer(self.owner.read(), amount);
+            };
         }
     }
 
