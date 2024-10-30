@@ -432,10 +432,7 @@ fn test_close_position_usdc_valid_time_passed() {
     start_cheat_block_timestamp(
         contracts::ZKLEND_MARKET.try_into().unwrap(), get_block_timestamp() + 40000000
     );
-    // println!("Debt {}", zk_market.get_user_debt_for_token(deposit_disp.contract_address,
-    // eth_addr));
-    // println!("Z bal {}", ERC20ABIDispatcher {contract_address:
-    // usdc_reserve.z_token_address}.balanceOf(deposit_disp.contract_address));
+
     deposit_disp
         .close_position(
             usdc_addr,
@@ -448,7 +445,7 @@ fn test_close_position_usdc_valid_time_passed() {
 
     stop_cheat_block_timestamp(contracts::ZKLEND_MARKET.try_into().unwrap());
     stop_cheat_account_contract_address(deposit_disp.contract_address);
-    // println!("After bal {}", token_disp.balanceOf(user));
+
     assert(token_disp.balanceOf(user) > initial_balance, 'Balance is in wrong state');
 }
 

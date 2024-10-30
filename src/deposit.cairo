@@ -16,7 +16,7 @@ mod Deposit {
         },
         types::{
             SwapData, SwapResult, DepositData, Claim, EkuboSlippageLimits, TokenAmount, TokenPrice,
-            Decimals
+            DecimalScale
         }
     };
 
@@ -48,7 +48,7 @@ mod Deposit {
     fn get_borrow_amount(
         borrow_capacity: TokenAmount,
         token_price: TokenPrice,
-        decimals_difference: Decimals,
+        decimals_difference: DecimalScale,
         total_borrowed: TokenAmount
     ) -> felt252 {
         let borrow_const = 60;
@@ -64,8 +64,8 @@ mod Deposit {
         borrow_factor: felt252,
         supply_token_price: TokenPrice,
         debt_token_price: TokenPrice,
-        supply_decimals: Decimals,
-        debt_decimals: Decimals
+        supply_decimals: DecimalScale,
+        debt_decimals: DecimalScale
     ) -> u256 {
         let deposited = (total_deposited * supply_token_price.into()).into()
             / supply_decimals.into();
@@ -126,8 +126,7 @@ mod Deposit {
         /// * `pool_key`: PoolKey - Ekubo type which represents data about pool.
         /// * `ekubo_limits`: EkuboSlippageLimits - Represents upper and lower sqrt_ratio values on
         /// Ekubo. Used to control slippage while swapping.
-        /// * `pool_price`: TokenPrice - Price of `deposit` token in terms of `debt` token in Ekubo
-        /// pool.
+        /// * `pool_price`: TokenPrice - Price of `deposit` token in terms of `debt` token.
         fn loop_liquidity(
             ref self: ContractState,
             deposit_data: DepositData,
@@ -148,7 +147,7 @@ mod Deposit {
             let curr_contract_address = get_contract_address();
             assert(
                 token_dispatcher.allowance(user_acount, curr_contract_address) >= amount,
-                'Approved amount incuficient'
+                'Approved amount insufficient'
             );
             assert(token_dispatcher.balanceOf(user_acount) >= amount, 'Insufficient balance');
 
@@ -174,7 +173,9 @@ mod Deposit {
 
             token_dispatcher.approve(zk_market.contract_address, amount);
             zk_market.deposit(token, amount.try_into().expect('Overflow'));
-            let (mut total_borrowed, mut accumulated, mut deposited) = (0, 0, amount);
+            let mut total_borrowed = 0;
+            let mut accumulated = 0;
+            let mut deposited = amount;
 
             while (amount + accumulated) / amount < multiplier.into() {
                 let borrow_capacity = ((deposited * collateral_factor / ZK_SCALE_DECIMALS)
@@ -241,10 +242,8 @@ mod Deposit {
         /// tokens.
         /// * `ekubo_limits`: EkuboSlippageLimits - Represents upper and lower sqrt_ratio values on
         /// Ekubo. Used to control slippage while swapping.
-        /// * `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token in Ekubo
-        /// pool.
-        /// * `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token in Ekubo
-        /// pool.
+        /// * `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token.
+        /// * `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token.
         fn close_position(
             ref self: ContractState,
             supply_token: ContractAddress,
@@ -371,8 +370,6 @@ mod Deposit {
             proof: Span<felt252>,
             airdrop_addr: ContractAddress
         ) {
-            assert(self.is_position_open.read(), 'Open position not exists');
-            assert(proof.len() != 0, 'Proof Span cannot be empty');
             assert(
                 IAirdropDispatcher { contract_address: airdrop_addr }.claim(claim_data, proof),
                 'Claim failed'
