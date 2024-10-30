@@ -527,6 +527,265 @@ fn test_close_position_amounts_cleared() {
 }
 
 #[test]
+#[fork("MAINNET")]
+fn test_extra_deposit_valid() {
+    let usdc_addr: ContractAddress =
+        0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+        .try_into()
+        .unwrap();
+    let eth_addr: ContractAddress =
+        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+        .try_into()
+        .unwrap();
+    let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+        .try_into()
+        .unwrap();
+
+    let pool_key = PoolKey {
+        token0: eth_addr,
+        token1: usdc_addr,
+        fee: 170141183460469235273462165868118016,
+        tick_spacing: 1000,
+        extension: 0.try_into().unwrap()
+    };
+    let quote_token_price = get_asset_price_pragma('ETH/USD').into();
+
+    let token_disp = ERC20ABIDispatcher { contract_address: usdc_addr };
+    let decimals_sum_power: u128 = fast_power(
+        10,
+        (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
+            .into()
+    );
+    let pool_price = 1 * decimals_sum_power.into() / quote_token_price;
+    let deposit_disp = get_deposit_dispatcher(user);
+
+    start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
+    token_disp.approve(deposit_disp.contract_address, 1000000000);
+    stop_cheat_caller_address(usdc_addr);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp
+        .loop_liquidity(
+            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4 },
+            pool_key,
+            get_slippage_limits(pool_key),
+            pool_price
+        );
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    let zk_market = IMarketTestingDispatcher {
+        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
+    };
+
+    start_cheat_caller_address(eth_addr, user);
+    ERC20ABIDispatcher { contract_address: eth_addr }
+        .approve(deposit_disp.contract_address, 10000000000000);
+    stop_cheat_caller_address(eth_addr);
+
+    start_cheat_caller_address(deposit_disp.contract_address, user);
+    deposit_disp.extra_deposit(eth_addr, 10000000000000);
+    stop_cheat_caller_address(deposit_disp.contract_address);
+
+    assert(
+        ERC20ABIDispatcher {
+            contract_address: zk_market.get_reserve_data(eth_addr).z_token_address
+        }
+            .balanceOf(deposit_disp.contract_address) != 0,
+        'Tokens not deposited'
+    );
+}
+
+#[test]
+#[fuzzer(runs: 10)] // TODO: Move to global config
+#[fork("MAINNET")]
+fn test_extra_deposit_supply_token_close_position_fuzz(extra_amount: u32) {
+    let usdc_addr: ContractAddress =
+        0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+        .try_into()
+        .unwrap();
+    let eth_addr: ContractAddress =
+        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+        .try_into()
+        .unwrap();
+    let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+        .try_into()
+        .unwrap();
+
+    let pool_key = PoolKey {
+        token0: eth_addr,
+        token1: usdc_addr,
+        fee: 170141183460469235273462165868118016,
+        tick_spacing: 1000,
+        extension: 0.try_into().unwrap()
+    };
+    let quote_token_price = get_asset_price_pragma('ETH/USD').into();
+
+    let token_disp = ERC20ABIDispatcher { contract_address: usdc_addr };
+    let decimals_sum_power: u128 = fast_power(
+        10,
+        (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
+            .into()
+    );
+    let pool_price = 1 * decimals_sum_power.into() / quote_token_price;
+    let deposit_disp = get_deposit_dispatcher(user);
+
+    start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
+    token_disp.approve(deposit_disp.contract_address, 1000000000);
+    stop_cheat_caller_address(usdc_addr);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp
+        .loop_liquidity(
+            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4 },
+            pool_key,
+            get_slippage_limits(pool_key),
+            pool_price
+        );
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    let zk_market = IMarketTestingDispatcher {
+        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
+    };
+
+    start_cheat_caller_address(usdc_addr, user);
+    ERC20ABIDispatcher { contract_address: usdc_addr }
+        .approve(deposit_disp.contract_address, extra_amount.into());
+    stop_cheat_caller_address(usdc_addr);
+    let safe_deposit_disp = IDepositSafeDispatcher {
+        contract_address: deposit_disp.contract_address
+    };
+    start_cheat_caller_address(deposit_disp.contract_address, user);
+    if let Result::Err(panic_data) = safe_deposit_disp
+        .extra_deposit(usdc_addr, extra_amount.into()) {
+        assert(*panic_data.at(0) == 'Deposit amount is zero', *panic_data.at(0));
+        return;
+    }
+    stop_cheat_caller_address(deposit_disp.contract_address);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp
+        .close_position(
+            usdc_addr,
+            eth_addr,
+            pool_key,
+            get_slippage_limits(pool_key),
+            pool_price,
+            quote_token_price
+        );
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+
+    assert(
+        ERC20ABIDispatcher {
+            contract_address: zk_market.get_reserve_data(usdc_addr).z_token_address
+        }
+            .balanceOf(deposit_disp.contract_address) == 0,
+        'Not all withdrawn'
+    );
+}
+
+#[test]
+#[fuzzer(runs: 10)]
+#[fork("MAINNET")]
+fn test_withdraw_valid_fuzz(amount: u32) {
+    let usdc_addr: ContractAddress =
+        0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+        .try_into()
+        .unwrap();
+    let eth_addr: ContractAddress =
+        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+        .try_into()
+        .unwrap();
+    let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+        .try_into()
+        .unwrap();
+
+    let pool_key = PoolKey {
+        token0: eth_addr,
+        token1: usdc_addr,
+        fee: 170141183460469235273462165868118016,
+        tick_spacing: 1000,
+        extension: 0.try_into().unwrap()
+    };
+    let quote_token_price = get_asset_price_pragma('ETH/USD').into();
+
+    let token_disp = ERC20ABIDispatcher { contract_address: usdc_addr };
+    let decimals_sum_power: u128 = fast_power(
+        10,
+        (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
+            .into()
+    );
+    let pool_price = 1 * decimals_sum_power.into() / quote_token_price;
+    let deposit_disp = get_deposit_dispatcher(user);
+
+    start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
+    token_disp.approve(deposit_disp.contract_address, 1000000000);
+    stop_cheat_caller_address(usdc_addr);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp
+        .loop_liquidity(
+            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4 },
+            pool_key,
+            get_slippage_limits(pool_key),
+            pool_price
+        );
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    let zk_market = IMarketTestingDispatcher {
+        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
+    };
+    let eth_disp = ERC20ABIDispatcher { contract_address: eth_addr };
+    start_cheat_caller_address(eth_addr, user);
+    eth_disp.approve(deposit_disp.contract_address, 10000000000000);
+    stop_cheat_caller_address(eth_addr);
+
+    start_cheat_caller_address(deposit_disp.contract_address, user);
+    deposit_disp.extra_deposit(eth_addr, 10000000000000);
+    stop_cheat_caller_address(deposit_disp.contract_address);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp
+        .close_position(
+            usdc_addr,
+            eth_addr,
+            pool_key,
+            get_slippage_limits(pool_key),
+            pool_price,
+            quote_token_price
+        );
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+
+    let z_eth_disp = ERC20ABIDispatcher {
+        contract_address: zk_market.get_reserve_data(eth_addr).z_token_address
+    };
+
+    let contract_pre_balance = z_eth_disp.balanceOf(deposit_disp.contract_address);
+    let to_withdraw_expected = if amount == 0 {
+        contract_pre_balance
+    } else {
+        amount.into()
+    };
+
+    let user_pre_balance = eth_disp.balanceOf(user);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp.withdraw(eth_addr, amount.into());
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+
+    if amount == 0 {
+        assert(z_eth_disp.balanceOf(deposit_disp.contract_address) == 0, 'Wrong contract balance');
+    } else {
+        // Z Token balance may increase, making equation not strict
+        assert(
+            contract_pre_balance
+                - z_eth_disp.balanceOf(deposit_disp.contract_address) <= amount.into(),
+            'Wrong contract balance'
+        );
+    };
+    assert(
+        user_pre_balance + to_withdraw_expected == eth_disp.balanceOf(user),
+        'Wrong amount withdrawn'
+    );
+}
+
+#[test]
 #[fork(url: "http://127.0.0.1:5050", block_number: 834899)]
 fn test_claim_rewards() {
     let strk_addr: ContractAddress =
@@ -613,8 +872,6 @@ fn test_claim_rewards() {
         'Unexpected amount was rewarded'
     );
 }
-// TODO: Calculate interest rates to test behaviour after liquidation.
-
 // #[test]
 // #[fork("MAINNET")]
 // fn test_full_liquidation() {

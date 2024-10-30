@@ -21,7 +21,7 @@ mod Deposit {
     };
 
     use starknet::{
-        ContractAddress, get_contract_address, get_tx_info, event::EventEmitter,
+        ContractAddress, get_contract_address, get_caller_address, get_tx_info, event::EventEmitter,
         storage::{StoragePointerWriteAccess, StoragePointerReadAccess}
     };
 
@@ -392,11 +392,12 @@ mod Deposit {
         fn extra_deposit(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {
             assert(self.is_position_open.read(), 'Open position not exists');
             assert(amount != 0, 'Deposit amount is zero');
-            ERC20ABIDispatcher { contract_address: token }
-                .transferFrom(
-                    get_tx_info().unbox().account_contract_address, get_contract_address(), amount
-                );
-            self.zk_market.read().deposit(token, amount.try_into().unwrap());
+            let (zk_market, token_dispatcher) = (
+                self.zk_market.read(), ERC20ABIDispatcher { contract_address: token }
+            );
+            token_dispatcher.transferFrom(get_caller_address(), get_contract_address(), amount);
+            token_dispatcher.approve(zk_market.contract_address, amount);
+            zk_market.deposit(token, amount.try_into().unwrap());
         }
 
         /// Withdraws tokens from zkLend if looped tokens are repaid
@@ -420,9 +421,7 @@ mod Deposit {
                 ERC20ABIDispatcher { contract_address: token }
                     .transfer(
                         self.owner.read(),
-                        ERC20ABIDispatcher {
-                            contract_address: zk_market.get_reserve_data(token).z_token_address
-                        }
+                        ERC20ABIDispatcher { contract_address: token }
                             .balanceOf(get_contract_address())
                     );
             } else {
