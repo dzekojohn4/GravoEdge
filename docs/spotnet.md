@@ -21,7 +21,7 @@ This method has next parameters:
 * `deposit_data`: DepositData - Object of internal type which stores main deposit information.
 * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping tokens.
 * `ekubo_limits`: EkuboSlippageLimits - Object of internal type which represents upper and lower sqrt_ratio values on Ekubo. Used to control slippage while swapping.
-* `pool_price`: felt252 - Price of `deposit` token in terms of `debt` token in Ekubo pool(so for ex. 2400000000 USDC for ETH when depositing ETH).
+* `pool_price`: felt252 - Price of `deposit` token in terms of `debt` token(so for ex. 2400000000 USDC for ETH when depositing ETH).
 
 It's flow can be described as follows:
 
@@ -57,8 +57,8 @@ The method has next parameters:
 * `debt_token`: ContractAddress - Address of the token used as borrowing.
 * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping tokens.
 * `ekubo_limits`: EkuboSlippageLimits - Object of internal type which represents upper and lower sqrt_ratio values on Ekubo. Used to control slippage while swapping.
-* `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token in Ekubo pool(so for ex. 2400000000 USDC for ETH).
-* `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token in Ekubo pool(for ex. 410000000000000 ETH for USDC).
+* `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token(so for ex. 2400000000 USDC for ETH).
+* `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token(for ex. 410000000000000 ETH for USDC).
 
 It's flow can be described as follows:
 ```

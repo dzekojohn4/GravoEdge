@@ -6,7 +6,7 @@ use starknet::ContractAddress;
 
 pub type TokenPrice = u128;
 pub type TokenAmount = u256;
-pub type Decimals = u64;
+pub type DecimalScale = u64;
 
 #[derive(Copy, Drop, Serde)]
 pub struct SwapResult {
