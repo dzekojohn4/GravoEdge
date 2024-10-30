@@ -1,15 +1,6 @@
 import { connect } from 'get-starknet';
-import {
-  connectWallet,
-  getTokenBalances,
-  getBalances,
-  logout,
-} from '../../src/utils/wallet';
-import {
-  ETH_ADDRESS,
-  STRK_ADDRESS,
-  USDC_ADDRESS,
-} from '../../src/utils/constants';
+import { connectWallet, getTokenBalances, getBalances, logout } from '../../src/utils/wallet';
+import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../../src/utils/constants';
 
 jest.mock('../assets/icons/ethereum.svg', () => ({
   ReactComponent: () => 'ETH-icon',
@@ -56,9 +47,7 @@ describe('Wallet Functions', () => {
     it('should throw error when Starknet object is not found', async () => {
       connect.mockResolvedValue(null);
 
-      await expect(connectWallet()).rejects.toThrow(
-        'Failed to connect to wallet'
-      );
+      await expect(connectWallet()).rejects.toThrow('Failed to connect to wallet');
     });
 
     it('should throw error when wallet connection fails', async () => {
@@ -105,9 +94,7 @@ describe('Wallet Functions', () => {
 
       connect.mockResolvedValue(mockStarknet);
 
-      await expect(getTokenBalances('0x123')).rejects.toThrow(
-        'Wallet not connected'
-      );
+      await expect(getTokenBalances('0x123')).rejects.toThrow('Wallet not connected');
     });
   });
 
@@ -121,9 +108,7 @@ describe('Wallet Functions', () => {
         { name: 'STRK', balance: '3.0000', icon: 'STRK-icon' },
       ];
 
-      jest
-        .spyOn(require('../../src/utils/wallet'), 'getTokenBalances')
-        .mockResolvedValue(mockTokenBalances);
+      jest.spyOn(require('../../src/utils/wallet'), 'getTokenBalances').mockResolvedValue(mockTokenBalances);
 
       await getBalances(mockWalletId, mockSetBalances);
       await mockSetBalances(mockTokenBalances);
@@ -133,10 +118,7 @@ describe('Wallet Functions', () => {
 
     it('should not fetch balances if wallet ID is not provided', async () => {
       const mockSetBalances = jest.fn();
-      const mockGetTokenBalances = jest.spyOn(
-        require('../../src/utils/wallet'),
-        'getTokenBalances'
-      );
+      const mockGetTokenBalances = jest.spyOn(require('../../src/utils/wallet'), 'getTokenBalances');
 
       await getBalances(null, mockSetBalances);
 

@@ -1,6 +1,6 @@
 import { connect } from 'get-starknet';
 import axios from 'axios';
-import { getDeployContractData } from 'constants';
+import { getDeployContractData } from 'src/utils/constants';
 
 export async function deployContract(walletId) {
   try {
@@ -15,9 +15,7 @@ export async function deployContract(walletId) {
 
     // Execute the deployment transaction
     // const result = await starknet.account.execute([deployContractTransaction]);
-    const result = await starknet.account.deployContract(
-      deployContractTransaction
-    );
+    const result = await starknet.account.deployContract(deployContractTransaction);
     console.log('Deployment transaction response:', result);
     await starknet.account.waitForTransaction(result.transaction_hash);
     return {
@@ -31,19 +29,15 @@ export async function deployContract(walletId) {
 }
 
 export async function checkAndDeployContract(walletId) {
-  const backendUrl =
-    process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:8000';
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:8000';
   try {
     console.log('Checking if contract is deployed for wallet ID:', walletId);
-    const response = await axios.get(
-      `${backendUrl}/api/check-user?wallet_id=${walletId}`
-    );
+    const response = await axios.get(`${backendUrl}/api/check-user?wallet_id=${walletId}`);
     console.log('Backend response:', response.data);
 
     if (!response.data.is_contract_deployed) {
       console.log('Contract not deployed. Deploying...');
       const result = await deployContract(walletId);
-      const transactionHash = result.transactionHash;
       const contractAddress = result.contractAddress;
 
       console.log('Contract address:', contractAddress);

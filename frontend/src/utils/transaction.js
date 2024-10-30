@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { connect } from 'get-starknet';
 import { CallData } from 'starknet';
-import { erc20abi } from 'abis/erc20';
-import { abi } from 'abis/abi';
+import { erc20abi } from 'src/abis/erc20';
+import { abi } from 'src/abis/abi';
 
 export async function sendTransaction(loopLiquidityData, contractAddress) {
   try {
@@ -19,10 +19,7 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
     const approveTransaction = {
       contractAddress: loopLiquidityData.deposit_data.token,
       entrypoint: 'approve',
-      calldata: approveCalldata.compile('approve', [
-        contractAddress,
-        loopLiquidityData.deposit_data.amount,
-      ]),
+      calldata: approveCalldata.compile('approve', [contractAddress, loopLiquidityData.deposit_data.amount]),
     };
 
     const callData = new CallData(abi);
@@ -32,10 +29,7 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
       entrypoint: 'loop_liquidity',
       calldata: compiled,
     };
-    let result = await starknet.account.execute([
-      approveTransaction,
-      depositTransaction,
-    ]);
+    let result = await starknet.account.execute([approveTransaction, depositTransaction]);
     console.log('Resp: ');
     console.log(result);
     return {
@@ -46,7 +40,7 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
     throw error;
   }
 }
-
+/* eslint-disable-next-line no-unused-vars */
 async function waitForTransaction(txHash) {
   const starknet = await connect();
   let receipt = null;
@@ -68,48 +62,29 @@ export async function closePosition(transactionData) {
   const starknet = await connect();
   console.log(transactionData.contract_address);
   await starknet.account.execute([
-    {
-      contractAddress: transactionData.contract_address,
-      entrypoint: 'close_position',
-      calldata: compiled,
-    },
+    { contractAddress: transactionData.contract_address, entrypoint: 'close_position', calldata: compiled },
   ]);
 }
 
-export const handleTransaction = async (
-  connectedWalletId,
-  formData,
-  setError,
-  setTokenAmount,
-  setLoading
-) => {
+export const handleTransaction = async (connectedWalletId, formData, setError, setTokenAmount, setLoading) => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
 
   setLoading(true);
   setError('');
 
   try {
-    const response = await axios.post(
-      `${backendUrl}/api/create-position`,
-      formData
-    );
+    const response = await axios.post(`${backendUrl}/api/create-position`, formData);
     console.log('Position created successfully:', response.data);
 
     const transactionData = response.data;
     await sendTransaction(transactionData, transactionData.contract_address);
     console.log('Transaction executed successfully');
 
-    const openPositionResponse = await axios.get(
-      `${backendUrl}/api/open-position`,
-      {
-        params: { position_id: transactionData.position_id },
-      }
-    );
+    const openPositionResponse = await axios.get(`${backendUrl}/api/open-position`, {
+      params: { position_id: transactionData.position_id },
+    });
 
-    console.log(
-      'Position status updated successfully:',
-      openPositionResponse.data
-    );
+    console.log('Position status updated successfully:', openPositionResponse.data);
 
     // Reset form data
     setTokenAmount('');

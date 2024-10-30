@@ -1,10 +1,7 @@
 import { connect } from 'get-starknet';
 import axios from 'axios';
-import {
-  deployContract,
-  checkAndDeployContract,
-} from '../../src/utils/contract';
-import { getDeployContractData } from '../../src/utils/constants';
+import { deployContract, checkAndDeployContract } from '../../src/utils/contract';
+import { getDeployContractData } from 'src/utils/constants';
 import { mockBackendUrl } from '../constants';
 
 jest.mock('get-starknet');
@@ -47,9 +44,7 @@ describe('Contract Deployment Tests', () => {
       expect(mockStarknet.account.deployContract).toHaveBeenCalledWith({
         contractData: 'mockContractData',
       });
-      expect(mockStarknet.account.waitForTransaction).toHaveBeenCalledWith(
-        mockTransactionHash
-      );
+      expect(mockStarknet.account.waitForTransaction).toHaveBeenCalledWith(mockTransactionHash);
 
       expect(result).toEqual({
         transactionHash: mockTransactionHash,
@@ -63,18 +58,14 @@ describe('Contract Deployment Tests', () => {
       };
       connect.mockResolvedValue(mockStarknet);
 
-      await expect(deployContract(mockWalletId)).rejects.toThrow(
-        'Wallet not connected'
-      );
+      await expect(deployContract(mockWalletId)).rejects.toThrow('Wallet not connected');
     });
 
     it('should handle deployment errors correctly', async () => {
       const mockError = new Error('Deployment failed');
       connect.mockRejectedValue(mockError);
 
-      await expect(deployContract(mockWalletId)).rejects.toThrow(
-        'Deployment failed'
-      );
+      await expect(deployContract(mockWalletId)).rejects.toThrow('Deployment failed');
     });
   });
 
@@ -100,17 +91,15 @@ describe('Contract Deployment Tests', () => {
 
       await checkAndDeployContract(mockWalletId);
 
-      expect(axios.get).toHaveBeenCalledWith(
-        `${mockBackendUrl}/api/check-user?wallet_id=${mockWalletId}`
-      );
+      expect(axios.get).toHaveBeenCalledWith(`${mockBackendUrl}/api/check-user?wallet_id=${mockWalletId}`);
       expect(connect).toHaveBeenCalled();
       expect(mockStarknet.account.deployContract).toHaveBeenCalledWith({
         contractData: 'mockContractData',
       });
-      expect(axios.post).toHaveBeenCalledWith(
-        `${mockBackendUrl}/api/update-user-contract`,
-        { wallet_id: mockWalletId, contract_address: mockContractAddress }
-      );
+      expect(axios.post).toHaveBeenCalledWith(`${mockBackendUrl}/api/update-user-contract`, {
+        wallet_id: mockWalletId,
+        contract_address: mockContractAddress,
+      });
     });
 
     it('should skip deployment if contract already exists', async () => {
@@ -133,10 +122,7 @@ describe('Contract Deployment Tests', () => {
 
       await checkAndDeployContract(mockWalletId);
 
-      expect(console.error).toHaveBeenCalledWith(
-        'Error checking contract status:',
-        mockError
-      );
+      expect(console.error).toHaveBeenCalledWith('Error checking contract status:', mockError);
     });
 
     it('should handle contract update error correctly after deployment', async () => {
@@ -163,10 +149,7 @@ describe('Contract Deployment Tests', () => {
 
       await checkAndDeployContract(mockWalletId);
 
-      expect(console.error).toHaveBeenCalledWith(
-        'Error checking contract status:',
-        mockUpdateError
-      );
+      expect(console.error).toHaveBeenCalledWith('Error checking contract status:', mockUpdateError);
     });
   });
 });
