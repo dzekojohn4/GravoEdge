@@ -1,9 +1,10 @@
 """
 Seed data for initializing the database with predefined values.
 """
-from faker import Faker
-from sqlalchemy.orm import Session
-from .models import User, Position, AirDrop, TelegramUser
+import logging
+from faker import Faker # type: ignore
+from sqlalchemy.orm import Session # type: ignore
+from .models import Status, User, Position, AirDrop, TelegramUser
 from .database import Base, engine, SessionLocal
 from decimal import Decimal
 from typing import List
@@ -27,7 +28,7 @@ def create_users(session: Session) -> List[User]:
             is_contract_deployed=fake.boolean()
         )
         users.append(user)
-    session.bulk_save_objects(users)
+    session.add_all(users)
     session.commit()
     return users
 
@@ -40,6 +41,9 @@ def create_positions(session: Session, users: List[User]) -> None:
     """
     positions = []
     for user in users:
+        if user.id is None:
+            logging.warning(f"User with ID None found. Skipping position creation for this user.")
+            continue
         for _ in range(10):
             position = Position(
                 user_id=user.id,
@@ -50,8 +54,12 @@ def create_positions(session: Session, users: List[User]) -> None:
                 status=fake.random_element(elements=[status.value for status in Status]),
             )
             positions.append(position)
-    session.bulk_save_objects(positions)
-    session.commit()
+    if positions:
+        session.bulk_save_objects(positions)
+        session.commit()
+        logging.info(f"Created {len(positions)} positions for {len(users)} users.")
+    else:
+        logging.info("No positions created.")
 
 def create_airdrops(session: Session, users: List[User]) -> None:
     """
@@ -70,28 +78,31 @@ def create_airdrops(session: Session, users: List[User]) -> None:
                 claimed_at=fake.date_time_this_decade() if fake.boolean() else None,
             )
             airdrops.append(airdrop)
-    session.bulk_save_objects(airdrops)
-    session.commit()
+    if airdrops:
+        session.bulk_save_objects(airdrops)
+        session.commit()
 
-def create_telegram_users(session: Session) -> None:
+def create_telegram_users(session: Session, users: List[User]) -> None:
     """
     Create and save fake Telegram user records to the database.
     Args:
         session (Session): SQLAlchemy session object.
     """
     telegram_users = []
-    for _ in range(10):
-        telegram_user = TelegramUser(
-            telegram_id=fake.unique.uuid4(),
-            username=fake.user_name(),
-            first_name=fake.first_name(),
-            last_name=fake.last_name(),
-            wallet_id=fake.unique.uuid4(),
-            photo_url=fake.image_url(),
-        )
-        telegram_users.append(telegram_user)
+    for user in users:
+        for _ in range(10):
+            telegram_user = TelegramUser(
+                telegram_id=fake.unique.uuid4(),
+                username=fake.user_name(),
+                first_name=fake.first_name(),
+                last_name=fake.last_name(),
+                wallet_id=user.wallet_id,
+                photo_url=fake.image_url(),
+            )
+            telegram_users.append(telegram_user)
     session.bulk_save_objects(telegram_users)
     session.commit()
+    logging.info(f"Created {len(telegram_users)} Telegram users.")
 
 if __name__ == '__main__':
     # Create tables
@@ -103,6 +114,6 @@ if __name__ == '__main__':
         users = create_users(session)
         create_positions(session, users)
         create_airdrops(session, users)
-        create_telegram_users(session)
+        create_telegram_users(session, users)
 
     print("Database populated with fake data.")
