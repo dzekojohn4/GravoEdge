@@ -124,3 +124,12 @@ If you want to purge all tasks from the Celery queue, you can do this by executi
 docker-compose run --rm celery celery -A spotnet_tracker.celery_config purge
 ```
 
+## How to add test data
+1. Run dev container
+```
+docker-compose -f docker-compose.dev.yaml up --build
+```
+2. In new terminal window run command to populate db
+```
+docker exec -ti backend_dev python -m web_app.db.seed_data
+```
