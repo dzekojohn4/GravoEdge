@@ -37,8 +37,9 @@ describe('Wallet Functions', () => {
       const address = await connectWallet();
 
       expect(connect).toHaveBeenCalledWith({
-        modalMode: 'alwaysAsk',
-        modalTheme: 'light',
+        include: ['argentX', 'braavos'],
+        modalMode: "alwaysAsk",
+        modalTheme: "light",
       });
       expect(mockStarknet.enable).toHaveBeenCalled();
       expect(address).toBe('0x123');
