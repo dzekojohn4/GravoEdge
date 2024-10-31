@@ -100,13 +100,22 @@ transfer half of reward to the treasury
 
 ## Important types, events and constants
 ### Types
+#### DepositData
+The main data about the loop to perform. The `amount` * `multiplier` value is minimal amount that will be deposited after the loop.
+The `borrow_const` sets how much tokens will be borrowed from available amount(borrowing power). So if there is available 1 ETH to borrow and we passed 60%, it will borrow 0.6 ETH.
+This will work up to 99% of available amount, howewer, for stability against slippage and prices difference on zkLend and our source it's better to not go higher than 98%.
+
 ```
 struct DepositData {
     token: ContractAddress,
     amount: TokenAmount,
-    multiplier: u32
+    multiplier: u32,
+    borrow_const: u8
 }
 ```
+
+#### EkuboSlippageLimits
+This structure sets slippage limits for swapping on Ekubo. Maximal are `6277100250585753475930931601400621808602321654880405518632` for `upper` and `18446748437148339061` for `lower` as stated by [Ekubo docs](https://docs.ekubo.org/integration-guides/reference/error-codes#limit_mag).
 
 ### Events
 ```
