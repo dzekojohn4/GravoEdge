@@ -1,7 +1,7 @@
 import { connect } from 'get-starknet';
 import axios from 'axios';
 import { deployContract, checkAndDeployContract } from '../../src/utils/contract';
-import { getDeployContractData } from 'src/utils/constants';
+import { getDeployContractData } from '../../src/utils/constants';
 import { mockBackendUrl } from '../constants';
 
 jest.mock('get-starknet');
@@ -16,7 +16,6 @@ describe('Contract Deployment Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    /* eslint-disable-next-line no-undef */
     process.env.REACT_APP_BACKEND_URL = mockBackendUrl;
 
     getDeployContractData.mockReturnValue({

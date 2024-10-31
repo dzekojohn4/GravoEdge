@@ -38,8 +38,8 @@ describe('Wallet Functions', () => {
 
       expect(connect).toHaveBeenCalledWith({
         include: ['argentX', 'braavos'],
-        modalMode: "alwaysAsk",
-        modalTheme: "light",
+        modalMode: 'alwaysAsk',
+        modalTheme: 'light',
       });
       expect(mockStarknet.enable).toHaveBeenCalled();
       expect(address).toBe('0x123');
