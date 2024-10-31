@@ -5,10 +5,10 @@ and updating the database when a claim is successful.
 
 import asyncio
 import logging
-from requests.exceptions import ConnectionError, Timeout
-from sqlalchemy.exc import SQLAlchemyError
 from typing import List
 
+from requests.exceptions import ConnectionError, Timeout
+from sqlalchemy.exc import SQLAlchemyError
 from web_app.contract_tools.airdrop import ZkLendAirdrop
 from web_app.contract_tools.blockchain_call import StarknetClient
 from web_app.db.crud import AirDropDBConnector
@@ -50,14 +50,21 @@ class AirdropClaimer:
             except ValueError as ve:
                 logger.error("Invalid data for airdrop %s: %s", airdrop.id, ve)
             except SQLAlchemyError as db_err:
-                logger.error("Database error while updating claim data for airdrop %s: %s", airdrop.id, db_err)
+                logger.error(
+                    "Database error while updating claim data for airdrop %s: %s",
+                    airdrop.id,
+                    db_err,
+                )
             except ConnectionError as ce:
-                logger.error("Network connection error during claim for airdrop %s: %s", airdrop.id, ce)
+                logger.error(
+                    "Network connection error during claim for airdrop %s: %s",
+                    airdrop.id,
+                    ce,
+                )
             except Timeout as te:
                 logger.error("Timeout during claim for airdrop %s: %s", airdrop.id, te)
             except Exception as e:
                 logger.error("Unexpected error claiming airdrop %s: %s", airdrop.id, e)
-        
 
     async def _claim_airdrop(self, contract_address: str, proof: List[str]) -> bool:
         """
@@ -72,16 +79,26 @@ class AirdropClaimer:
             )
             return True
         except ConnectionError as ce:
-            logger.error("Network connection failed for address %s: %s", contract_address, ce)
+            logger.error(
+                "Network connection failed for address %s: %s", contract_address, ce
+            )
             return False
         except Timeout as te:
-            logger.error("Timeout during claim for address %s: %s", contract_address, te)
+            logger.error(
+                "Timeout during claim for address %s: %s", contract_address, te
+            )
             return False
         except ValueError as ve:
-            logger.error("Invalid data format for calldata during claim for address %s: %s", contract_address, ve)
+            logger.error(
+                "Invalid data format for calldata during claim for address %s: %s",
+                contract_address,
+                ve,
+            )
             return False
         except Exception as e:
-            logger.error("Unexpected error claiming address %s: %s", contract_address, e)
+            logger.error(
+                "Unexpected error claiming address %s: %s", contract_address, e
+            )
             return False
 
 
