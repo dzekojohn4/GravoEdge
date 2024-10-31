@@ -410,23 +410,19 @@ mod Deposit {
         /// `token`: TokenAddress - token address to withdraw from zkLend
         /// `amount`: TokenAmount - amount to withdraw. Pass `0` to withdraw all
         fn withdraw(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {
-            assert(
-                get_tx_info().unbox().account_contract_address == self.owner.read(),
-                'Caller is not the owner'
-            );
+            assert(get_caller_address() == self.owner.read(), 'Caller is not the owner');
             assert(!self.is_position_open.read(), 'Tokens are locked');
             let zk_market = self.zk_market.read();
+            let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
             if amount == 0 {
                 zk_market.withdraw_all(token);
-                ERC20ABIDispatcher { contract_address: token }
+                token_dispatcher
                     .transfer(
-                        self.owner.read(),
-                        ERC20ABIDispatcher { contract_address: token }
-                            .balanceOf(get_contract_address())
+                        self.owner.read(), token_dispatcher.balanceOf(get_contract_address())
                     );
             } else {
-                self.zk_market.read().withdraw(token, amount.try_into().unwrap());
-                ERC20ABIDispatcher { contract_address: token }.transfer(self.owner.read(), amount);
+                zk_market.withdraw(token, amount.try_into().unwrap());
+                token_dispatcher.transfer(self.owner.read(), amount);
             };
         }
     }
