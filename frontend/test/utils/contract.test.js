@@ -16,6 +16,7 @@ describe('Contract Deployment Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    /* eslint-disable-next-line no-undef */
     process.env.REACT_APP_BACKEND_URL = mockBackendUrl;
 
     getDeployContractData.mockReturnValue({
