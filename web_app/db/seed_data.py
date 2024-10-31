@@ -1,17 +1,20 @@
 """
 Seed data for initializing the database with predefined values.
 """
-from faker import Faker
-from sqlalchemy.orm import Session
-from .models import Status, User, Position, AirDrop, TelegramUser
-from .database import Base, engine, SessionLocal
+import logging
 from decimal import Decimal
-from typing import List
+from faker import Faker
+from web_app.db.models import Status, User, Position, AirDrop, TelegramUser
+from web_app.db.database import SessionLocal
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize Faker
 fake = Faker()
 
-def create_users(session: Session) -> List[User]:
+
+def create_users(session: SessionLocal) -> list[User]:
     """
     Create and save a list of fake users to the database.
     Args:
@@ -24,14 +27,15 @@ def create_users(session: Session) -> List[User]:
         user = User(
             wallet_id=fake.unique.uuid4(),
             contract_address=fake.address(),
-            is_contract_deployed=fake.boolean()
+            is_contract_deployed=fake.boolean(),
         )
         users.append(user)
     session.add_all(users)
     session.commit()
     return users
 
-def create_positions(session: Session, users: List[User]) -> None:
+
+def create_positions(session: SessionLocal, users: list[User]) -> None:
     """
     Create and save fake position records associated with given users.
     Args:
@@ -40,24 +44,29 @@ def create_positions(session: Session, users: List[User]) -> None:
     """
     positions = []
     for user in users:
-        for _ in range(10):
+        for _ in range(2):
             position = Position(
                 user_id=user.id,
                 token_symbol=fake.word(),
                 amount=fake.random_number(digits=5),
                 multiplier=fake.random_int(min=1, max=10),
-                start_price=Decimal(fake.pydecimal(left_digits=5, right_digits=2, positive=True)),                
-                status=fake.random_element(elements=[status.value for status in Status]),
+                start_price=Decimal(
+                    fake.pydecimal(left_digits=5, right_digits=2, positive=True)
+                ),
+                status=fake.random_element(
+                    elements=[status.value for status in Status]
+                ),
             )
             positions.append(position)
     if positions:
         session.bulk_save_objects(positions)
         session.commit()
-        print(f"Created {len(positions)} positions for {len(users)} users.")
+        logger.info(f"Created {len(positions)} positions for {len(users)} users.")
     else:
-        print("No positions created.")
+        logger.info("No positions created.")
 
-def create_airdrops(session: Session, users: List[User]) -> None:
+
+def create_airdrops(session: SessionLocal, users: list[User]) -> None:
     """
     Create and save fake airdrop records for each user.
     Args:
@@ -66,10 +75,12 @@ def create_airdrops(session: Session, users: List[User]) -> None:
     """
     airdrops = []
     for user in users:
-        for _ in range(10):
+        for _ in range(2):
             airdrop = AirDrop(
                 user_id=user.id,
-                amount=Decimal(fake.pydecimal(left_digits=5, right_digits=2, positive=True)),
+                amount=Decimal(
+                    fake.pydecimal(left_digits=5, right_digits=2, positive=True)
+                ),
                 is_claimed=fake.boolean(),
                 claimed_at=fake.date_time_this_decade() if fake.boolean() else None,
             )
@@ -78,7 +89,8 @@ def create_airdrops(session: Session, users: List[User]) -> None:
         session.bulk_save_objects(airdrops)
         session.commit()
 
-def create_telegram_users(session: Session, users: List[User]) -> None:
+
+def create_telegram_users(session: SessionLocal, users: list[User]) -> None:
     """
     Create and save fake Telegram user records to the database.
     Args:
@@ -86,7 +98,7 @@ def create_telegram_users(session: Session, users: List[User]) -> None:
     """
     telegram_users = []
     for user in users:
-        for _ in range(10):
+        for _ in range(2):
             telegram_user = TelegramUser(
                 telegram_id=fake.unique.uuid4(),
                 username=fake.user_name(),
@@ -98,9 +110,10 @@ def create_telegram_users(session: Session, users: List[User]) -> None:
             telegram_users.append(telegram_user)
     session.bulk_save_objects(telegram_users)
     session.commit()
-    print(f"Created {len(telegram_users)} Telegram users.")
+    logger.info(f"Created {len(telegram_users)} Telegram users.")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Start a new session for seeding data
     with SessionLocal() as session:
         # Populate the database
@@ -109,4 +122,4 @@ if __name__ == '__main__':
         create_airdrops(session, users)
         create_telegram_users(session, users)
 
-print("Database populated with fake data.")
+    logger.info("Database populated with fake data.")
