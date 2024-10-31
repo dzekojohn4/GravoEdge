@@ -46,6 +46,7 @@ describe("Wallet Functions", () => {
       const address = await connectWallet();
 
       expect(connect).toHaveBeenCalledWith({
+        include: ['argentX', 'braavos'],
         modalMode: "alwaysAsk",
         modalTheme: "light",
       });

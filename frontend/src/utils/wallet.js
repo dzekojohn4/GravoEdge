@@ -23,6 +23,7 @@ export const connectWallet = async () => {
     console.log("Attempting to connect to wallet...");
 
     const starknet = await connect({
+      include: ['argentX', 'braavos'],
       modalMode: "alwaysAsk",
       modalTheme: "light",
     });
