@@ -4,7 +4,7 @@ import BalanceCards from 'components/BalanceCards';
 import MultiplierSelector from 'components/MultiplierSelector';
 import { connectWallet } from 'utils/wallet';
 import { handleTransaction } from 'utils/transaction';
-import Spinner from 'components/Spinner/Spinner';
+import Spinner from 'components/spinner/Spinner';
 import StarMaker from 'components/StarMaker';
 import CardGradients from 'components/CardGradients';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
