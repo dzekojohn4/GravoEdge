@@ -230,3 +230,16 @@ class StarknetClient:
             "debt_price": debt_price,
             "pool_key": pool_key,
         }
+
+    async def claim_airdrop(self, contract_address: str, proofs: list[str]) -> None:
+        """
+        Claims an airdrop on the Starknet blockchain.
+        :param contract_address: airdrop contract address
+        :param proofs: list of proof strings
+        :return: True if the claim was successful, False otherwise
+        """
+        return await self._func_call(
+            addr=self._convert_address(contract_address),
+            selector="claim",
+            calldata=proofs,
+        )
