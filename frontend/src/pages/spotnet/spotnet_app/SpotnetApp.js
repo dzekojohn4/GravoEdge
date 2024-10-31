@@ -7,20 +7,12 @@ import Home from '../home/Home';
 
 const SpotnetApp = ({ walletId, onConnectWallet, onLogout }) => {
   return (
-    <div className='spotnet-app'>
-      <Home
-        walletId={walletId}
-        onConnectWallet={onConnectWallet}
-        onLogout={onLogout}
-      />
+    <div className="spotnet-app">
+      <Home walletId={walletId} onConnectWallet={onConnectWallet} onLogout={onLogout} />
       <About />
       <Partnership />
       <Information />
-      <DontMiss
-        walletId={walletId}
-        onConnectWallet={onConnectWallet}
-        onLogout={onLogout}
-      />
+      <DontMiss walletId={walletId} onConnectWallet={onConnectWallet} onLogout={onLogout} />
     </div>
   );
 };

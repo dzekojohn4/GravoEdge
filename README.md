@@ -60,6 +60,20 @@ This guide explains how to start the development environment for the project usi
   ```sh
   docker-compose -f docker-compose.dev.yaml build --no-cache
   ```
+  
+## How to run test cases
+In root folder run next commands:
+```bash
+poetry install
+```
+Activate env 
+```bash
+poetry shell
+```
+Run test cases
+```bash
+poetry run pytest
+```
 
 ## Stopping the Development Environment
 
