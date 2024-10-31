@@ -26,7 +26,7 @@ class AirdropClaimer:
         Initializes the AirdropClaimer with database and Starknet client instances.
         """
         self.db_connector = AirDropDBConnector()
-        self.starknet_clinet = StarknetClient()
+        self.starknet_client = StarknetClient()
         self.zk_lend_airdrop = ZkLendAirdrop()
 
     async def claim_airdrops(self) -> None:
@@ -38,13 +38,13 @@ class AirdropClaimer:
         for airdrop in unclaimed_airdrops:
             try:
                 user_contract_address = airdrop.user.contract_address
-                proof = self.zk_lend_airdrop.get_contract_airdrop(user_contract_address)
+                proofs = self.zk_lend_airdrop.get_contract_airdrop(user_contract_address)
 
-                claim_succesful = await self._claim_airdrop(
-                    user_contract_address, proof
+                claim_successful = await self._claim_airdrop(
+                    user_contract_address, proofs
                 )
 
-                if claim_succesful:
+                if claim_successful:
                     self.db_connector.save_claim_data(airdrop.id, airdrop.amount)
                     logger.info("Airdrop %s claimed succesfully.", airdrop.id)
             except ValueError as ve:
@@ -66,16 +66,13 @@ class AirdropClaimer:
             except Exception as e:
                 logger.error("Unexpected error claiming airdrop %s: %s", airdrop.id, e)
 
-    async def _claim_airdrop(self, contract_address: str, proof: List[str]) -> bool:
+    async def _claim_airdrop(self, contract_address: str, proofs: List[str]) -> bool:
         """
         Claims a single airdrop by making a contract call on the Starknet blockchain.
         """
-        calldata = [] + proof
         try:
-            await self.starknet_client._func_call(
-                addr=self.starknet_client._convert_address(contract_address),
-                selector="claim",
-                calldata=calldata,
+            await self.starknet_client.claim_airdrop(
+                contract_address, proofs
             )
             return True
         except ConnectionError as ce:
