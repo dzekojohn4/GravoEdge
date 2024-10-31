@@ -49,12 +49,12 @@ mod Deposit {
         borrow_capacity: TokenAmount,
         token_price: TokenPrice,
         decimals_difference: DecimalScale,
-        total_borrowed: TokenAmount
+        total_borrowed: TokenAmount,
+        borrow_const: u8
     ) -> felt252 {
-        let borrow_const = 60;
         let amount_base_token = token_price.into() * borrow_capacity;
         let amount_quote_token = amount_base_token / decimals_difference.into();
-        ((amount_quote_token - total_borrowed) / 100_u256 * borrow_const).try_into().unwrap()
+        ((amount_quote_token - total_borrowed) / 100_u256 * borrow_const.into()).try_into().unwrap()
     }
 
     fn get_withdraw_amount(
@@ -111,7 +111,6 @@ mod Deposit {
     }
 
     #[abi(embed_v0)]
-    // TODO: Change types to aliases
     impl Deposit of IDeposit<ContractState> {
         /// Loops collateral token on ZKlend.
         ///
@@ -137,13 +136,14 @@ mod Deposit {
             let user_acount = get_tx_info().unbox().account_contract_address;
             assert(user_acount == self.owner.read(), 'Caller is not the owner');
             assert(!self.is_position_open.read(), 'Open position already exists');
-            let DepositData { token, amount, multiplier } = deposit_data;
-            let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
-            let deposit_token_decimals = fast_power(10_u64, token_dispatcher.decimals().into());
-
-            assert(multiplier < 5 && multiplier > 1, 'Multiplier not supported');
+            let DepositData { token, amount, multiplier, borrow_const } = deposit_data;
+            assert(borrow_const > 0 && borrow_const < 100, 'Cannot calculate borrow amount');
+            assert(multiplier < 6 && multiplier > 1, 'Multiplier not supported');
             assert(amount != 0 && pool_price != 0, 'Parameters cannot be zero');
 
+            let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
+            let deposit_token_decimals = fast_power(10_u64, token_dispatcher.decimals().into());
+            
             let curr_contract_address = get_contract_address();
             assert(
                 token_dispatcher.allowance(user_acount, curr_contract_address) >= amount,
@@ -152,7 +152,7 @@ mod Deposit {
             assert(token_dispatcher.balanceOf(user_acount) >= amount, 'Insufficient balance');
 
             let zk_market = self.zk_market.read();
-            // let is_token1 = token == pool_key.token0;
+
             let (is_token1, borrowing_token, sqrt_limit) = if token == pool_key.token0 {
                 (true, pool_key.token1, ekubo_limits.upper)
             } else {
@@ -185,7 +185,8 @@ mod Deposit {
                     borrow_capacity.try_into().unwrap(),
                     pool_price,
                     deposit_token_decimals.into(),
-                    total_borrowed
+                    total_borrowed,
+                    borrow_const
                 );
                 total_borrowed += to_borrow.into();
                 zk_market.borrow(borrowing_token, to_borrow);
@@ -208,7 +209,6 @@ mod Deposit {
                 deposited += amount_swapped.into();
                 accumulated += amount_swapped.into();
             };
-
             self.is_position_open.write(true);
             self
                 .emit(
