@@ -25,17 +25,17 @@ function Footer() {
     {
       name: 'Twitter',
       icon: TwitterIcon,
-      href: 'https://twitter.com/yourprofile'
+      href: 'https://x.com'
     },
     {
       name: 'Discord',
       icon: DiscordIcon,
-      href: 'https://discord.com/yourprofile'
+      href: 'https://discord.com'
     },
     {
       name: 'Telegram',
       icon: TelegramIcon,
-      href: 'https://t.me/yourprofile'
+      href: 'https://t.me/djeck_vorobey1'
     }
   ];
 
