@@ -39,13 +39,13 @@ jobs:
 
       - name: Create .env file
         run: cp .env.dev .env
-      
+
       - name: Start services
-        run: docker compose -f docker-compose.dev.yaml up -d --build 
+        run: docker compose -f docker-compose.dev.yaml up -d --build
 
       - name: Run tests
         run: |
-          docker-compose exec backend pytest web_app/tests
+          docker-compose exec backend poetry run pytest web_app/tests
 
       - name: Tear down
         run: |

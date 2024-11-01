@@ -12,7 +12,6 @@
   --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
   --button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
 }
-
 body {
   background-color: var(--primary-color);
   width: 100vw;
@@ -20,14 +19,11 @@ body {
 
 .home {
   position: relative;
-  /* width: 100%; */
   display: flex;
-  /* right: 10px; */
   justify-content: center;
   align-items: center;
   flex-direction: column;
   height: calc(100vh - 160px);
-
   text-align: center;
 }
 
@@ -214,7 +210,9 @@ body {
     width: 95%;
     left: 15px;
   }
+}
 
+@media (max-width: 1280px) {
   .center-text {
     font-size: 50px;
     max-width: 600px;
