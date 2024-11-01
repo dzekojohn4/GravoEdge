@@ -326,3 +326,48 @@ input[type='number'].error {
   height: 25px;
   width: 24px;
 }
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .balance-container {
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+  }
+  .balance-item {
+    height: fit-content;
+    padding: 1rem 0rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+.balance-item .balance-title {
+  font-size: 1.2rem!important;
+  display: flex;
+  align-items: center;
+}
+.balance-item label {
+  font-size: 1rem!important;
+}
+.title-container {
+  display: flex;
+  flex-direction: column;
+}
+
+  .form-container {
+    width: 100%;
+  }
+  .form-wrapper {
+    width: 100%;
+  }
+  .form-token {
+    gap: 3px;
+  }
+  .multiplier-card {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    display: grid;
+  }
+
+}

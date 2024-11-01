@@ -24,7 +24,7 @@ function Footer() {
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                <TwitterIcon />
+                <TwitterIcon className='social-icon'/>
               </a>
               <div>
                 <p>Twitter</p>
@@ -36,7 +36,7 @@ function Footer() {
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                <DiscordIcon />
+                <DiscordIcon className='social-icon' />
               </a>
               <div>
                 <p>Discord</p>
@@ -48,7 +48,7 @@ function Footer() {
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                <TelegramIcon />
+                <TelegramIcon className='social-icon'/>
               </a>
               <div>
                 <p>Telegram</p>
