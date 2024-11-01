@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap");
+
 :root {
   --text-font: "Rethink Sans", sans-serif;
   --gradient: linear-gradient(73deg, #74d6fd 1.13%, #e01dee 103.45%);
   --primary: #fff;
   --secondary-color: #1a1c24;
   --black: #000;
-  --primary: #fff;
   --button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
   --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
   --button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
@@ -43,7 +43,7 @@ nav {
 .list-items {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   background-color: transparent;
   width: 97%;
   height: 100px;
@@ -51,29 +51,27 @@ nav {
 }
 
 .logo {
-  position: absolute;
-  left: 10px;
+  z-index: 10;
 }
 
 .nav-items {
   display: flex;
   gap: 2.5em;
   justify-content: center;
+  align-items: center;
 }
 
 .wallet-section {
-    position: absolute;
-    right: 10px;
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .nav-items a {
-    position: relative;
-    color: var(--secondary);
-    font-family:var(--text-font);
-    font-size: 20px;
-    transition: color 0.3s;
+  position: relative;
+  color: var(--secondary);
+  font-family: var(--text-font);
+  font-size: 20px;
+  transition: color 0.3s;
 }
 
 .nav-items a:hover {
@@ -81,54 +79,43 @@ nav {
 }
 
 .nav-items a.active-link {
-    color: var(--brand);
-    font-weight: 700;
+  color: var(--brand);
+  font-weight: 700;
 }
 
-.gradient-button{
-    border-radius: 8px;
-    border: none;
-    height: 52px;
-    width: 190px;
-    font-size: 20px;
-    font-family: var(--text-font);
-    color: var(--black);
-    font-weight: 700;
-    background: var(--button-gradient);
-    line-height: 100%;
-} 
+.gradient-button,
+.logout-button {
+  border-radius: 8px;
+  border: none;
+  height: 52px;
+  width: 190px;
+  font-size: 20px;
+  font-family: var(--text-font);
+  color: var(--black);
+  font-weight: 700;
+  background: var(--button-gradient);
+  line-height: 100%;
+}
 
 .logout-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 190px;
-    height: 52px;
-    border-radius: 8px;
-    border: 1px solid var(--brand);
-    background-color: transparent;
-    color: #fff;
-    font-family: var(--text-font, 'Rethink Sans', sans-serif);
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 100%;
-    transition: all 0.3s ease;
-  }
+  border: 1px solid var(--brand);
+  background-color: transparent;
+  color: #fff;
+}
 
-  .logout-button:hover {
-    background: var(--button-gradient, linear-gradient(55deg, #74d6fd 0%, #e01dee 100%));
-    border: none;
-  }
+.logout-button:hover {
+  background: var(--button-gradient);
+  border: none;
+}
 
-  .logout-button:active {
-    background: var(--button-gradient-active, linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%));
-  }
+.logout-button:active {
+  background: var(--button-gradient-active);
+}
 
-  .logout-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
+.logout-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 .gradient-button:hover {
   background: var(--button-gradient-hover);
@@ -161,4 +148,56 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.menu-icon {
+  height: 30px;
+  width: 30px;
+}
+
+.hamburger-button {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  z-index: 10;
+}
+
+@media (max-width: 900px) {
+  .hamburger-button {
+    display: block;
+  }
+nav {
+  width: 100vw;
+}
+  .nav-items {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    gap: 1rem;
+    height: 100vh;
+    width: 300px;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    background-color: var(--secondary-color);
+    padding: 80px 20px 20px;
+    transition: right 0.3s ease-in-out;
+    z-index: 5;
+  }
+
+  .nav-items.open {
+    right: 0;
+  }
+
+  .wallet-section {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .wallet-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }
