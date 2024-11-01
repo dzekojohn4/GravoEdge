@@ -38,22 +38,23 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
       <div className="list-items">
         <div className="logo">
           <NavLink to="/">
-            <Logo />
+            <Logo className='logo-icon'/>
           </NavLink>
         </div>
         <div className={`nav-items ${isMenuOpen ? 'open' : ''}`} ref={menuRef}>
           <NavLink
             to="/"
             end
-            className={({ isActive }) => (isActive ? 'active-link' : '')}
+            className={`link ${({ isActive }) => (isActive ? 'active-link' : '')}`}
             onClick={() => setIsMenuOpen(false)}
           >
             Home
           </NavLink>
           <NavLink
             to="/dashboard"
-            className={({ isActive }) => (isActive ? 'active-link' : '')}
+            className={`link ${({ isActive }) => (isActive ? 'active-link' : '')}`}
             onClick={() => setIsMenuOpen(false)}
+            style={{fontSize:"1rem"}}
           >
             Dashboard
           </NavLink>
@@ -61,7 +62,7 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
             <TelegramLogin user={tgUser} onLogin={setTgUser} />
             {walletId ? (
               <div className="wallet-container">
-                <button className="logout-button" onClick={onLogout}>
+                <button className="logout-button"  onClick={onLogout}>
                   Log out
                 </button>
                 <div className="wallet-id">{`${walletId.slice(0, 4)}...${walletId.slice(-4)}`}</div>

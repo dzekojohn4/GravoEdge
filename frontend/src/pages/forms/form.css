@@ -1,5 +1,5 @@
 .form-container {
-  margin-top: 4rem !important;
+  margin-top: 10rem !important;
   margin-bottom: 12rem !important;
   min-height: 100vh;
   position: relative !important;
@@ -355,13 +355,6 @@ input[type='number'].error {
   display: flex;
   flex-direction: column;
 }
-
-  .form-container {
-    width: 100%;
-  }
-  .form-wrapper {
-    width: 100%;
-  }
   .form-token {
     gap: 3px;
   }
