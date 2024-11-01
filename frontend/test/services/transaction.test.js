@@ -1,5 +1,5 @@
 import { connect } from 'get-starknet';
-import { sendTransaction, closePosition, handleTransaction } from '../../src/utils/transaction';
+import { sendTransaction, closePosition, handleTransaction } from '../../src/services/transaction';
 import axios from 'axios';
 import { mockBackendUrl } from '../constants';
 

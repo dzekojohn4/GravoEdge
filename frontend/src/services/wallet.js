@@ -1,9 +1,10 @@
-import { connect } from "get-starknet";
-import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from "../utils/constants";
-import { ReactComponent as ETH } from "../assets/icons/ethereum.svg";
-import { ReactComponent as USDC } from "../assets/icons/borrow_usdc.svg";
-import { ReactComponent as STRK } from "../assets/icons/strk.svg";
-import { ReactComponent as DAI } from "../assets/icons/dai.svg";
+import React from 'react';
+import { connect } from 'get-starknet';
+import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../utils/constants';
+import { ReactComponent as ETH } from 'assets/icons/ethereum.svg';
+import { ReactComponent as USDC } from 'assets/icons/borrow_usdc.svg';
+import { ReactComponent as STRK } from 'assets/icons/strk.svg';
+// import { ReactComponent as DAI } from 'assets/icons/dai.svg';
 
 // eslint-disable-next-line no-unused-vars
 const handleConnectWallet = async (setWalletId, setError) => {

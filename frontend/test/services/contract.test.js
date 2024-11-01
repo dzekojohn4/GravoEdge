@@ -1,6 +1,6 @@
 import { connect } from 'get-starknet';
 import axios from 'axios';
-import { deployContract, checkAndDeployContract } from '../../src/utils/contract';
+import { deployContract, checkAndDeployContract } from '../../src/services/contract';
 import { getDeployContractData } from '../../src/utils/constants';
 import { mockBackendUrl } from '../constants';
 

@@ -1,13 +1,20 @@
 import './information.css';
+<<<<<<< Updated upstream
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import StarMaker from '../../../components/StarMaker';
+=======
+import React, { useEffect, useState } from "react";
+import StarMaker from "../../../components/StarMaker"; 
+import { axiosInstance } from 'utils/axios';
+>>>>>>> Stashed changes
 
 const Information = () => {
   const [data, setData] = useState({ total_opened_amount: 0, unique_users: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+<<<<<<< Updated upstream
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,6 +29,25 @@ const Information = () => {
         setLoading(false);
       }
     };
+=======
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axiosInstance.get(`/api/get_stats`);
+                setData({
+                    total_opened_amount: response.data.total_opened_amount,
+                    unique_users: response.data.unique_users,
+                });
+            } catch (error) {
+                setError(error.response ? error.response.data.message : error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+>>>>>>> Stashed changes
 
     fetchData();
   }, []);
