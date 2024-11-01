@@ -73,6 +73,12 @@ li {
   cursor: pointer;
   background-color: var(--card-bg-color);
   transition: background-color 0.3s ease;
+  margin: 0;
+  font-family: var(--text-font);
+  font-weight: 500;
+  font-size: 28px;
+  text-align: center;
+  color: var(--primary);
 }
 
 .social-card:hover {
@@ -90,6 +96,7 @@ li {
   font-size: 28px;
   text-align: center;
   color: var(--primary);
+  background-color: var(--primary-color);
 }
 
 .social-card a {
