@@ -32,3 +32,8 @@ block_id.tag = "latest"
 name = "MAINNET"
 url = "http://127.0.0.1:5050"
 block_id.tag = "latest"
+
+[[tool.snforge.fork]]
+name = "MAINNET_FIXED_BLOCK"
+url = "http://127.0.0.1:5050"
+block_id.number = "863242"
