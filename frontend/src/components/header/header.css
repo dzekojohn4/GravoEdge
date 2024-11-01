@@ -1,124 +1,204 @@
 @import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
-:root{
-    --text-font:'Rethink Sans',sans-serif;
-    --gradient: linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%);
-    --primary: #fff;
-    --secondary-color:#1A1C24;
-    --black: #000;
-    --primary: #fff;
-    --button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
-    --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
-    --button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
-    --brand:#74D6FD;
-    --secondary: #E7ECF0;
+:root {
+  --text-font: 'Rethink Sans', sans-serif;
+  --gradient: linear-gradient(73deg, #74d6fd 1.13%, #e01dee 103.45%);
+  --primary: #fff;
+  --secondary-color: #1a1c24;
+  --black: #000;
+  --primary: #fff;
+  --button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
+  --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
+  --button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
+  --brand: #74d6fd;
+  --secondary: #e7ecf0;
 }
 
-body{
-    overflow-x: hidden;
+body {
+  overflow-x: hidden;
 }
 
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-a{
-    text-decoration: none;
+a {
+  text-decoration: none;
 }
 
-li{
-    list-style-type: none;
+li {
+  list-style-type: none;
 }
 
 nav {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    width: 100vw;
-    justify-content: center;
-    background-color: var(--secondary-color);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  position: relative;
 }
 
 .list-items {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    width: 97%;
-    height: 100px;
-    position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent;
+  width: 97%;
+  padding: 0 10px;
+  max-width: 1200px;
 }
 
 .logo {
-    position: absolute;
-    left: 10px;
+  flex: 1;
 }
 
 .nav-items {
-    display: flex;
-    gap: 2.5em;
-    justify-content: center;
+  display: flex;
+  gap: 2.5em;
+  flex: 2;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
 }
 
 .wallet-section {
-    position: absolute;
-    right: 10px;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .nav-items a {
-    position: relative;
-    color: var(--secondary);
-    font-family:var(--text-font);
-    font-size: 20px;
+  color: var(--secondary);
+  /* font-family: var(--text-font); */
+  font-size: 20px;
 }
 
-.nav-items a:hover{
-    color: var(--brand);
+.nav-items a:hover {
+  color: var(--brand);
 }
 
-.gradient-button{
-    border-radius: 8px;
-    border: none;
-    height: 52px;
-    width: 190px;
-    font-size: 20px;
-    font-family: var(--text-font);
-    color: var(--black);
-    font-weight: 700;
-    background: var(--button-gradient);
-    line-height: 100%;
-} 
+.gradient-button {
+  border-radius: 8px;
+  border: none;
+  height: 52px;
+  width: 190px;
+  font-size: 20px;
+  /* font-family: var(--text-font); */
+  color: var(--black);
+  font-weight: 700;
+  background: var(--button-gradient);
+}
 
 .gradient-button:hover {
-    background: var(--button-gradient-hover);
+  background: var(--button-gradient-hover);
 }
 
 .gradient-button:active {
-    background: var(--button-gradient-active);
+  background: var(--button-gradient-active);
 }
 
 .gradient-button:disabled {
-    background: var(--button-gradient);
-    color: var(--primary);
-    opacity: 0.6;
-    cursor: not-allowed;
+  background: var(--button-gradient);
+  color: var(--primary);
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.wallet-container{
-    display: flex;
-    gap: 10px;
+.wallet-container {
+  display: flex;
+  gap: 10px;
 }
 
-.wallet-id{
-    background: var(--gradient);
-    border-radius: 8px;
-    height: 52px;
-    width: 190px;
-    font-size: 20px;
-    font-family: var(--text-font);
-    font-weight: 700;
+.wallet-id {
+  background: var(--gradient);
+  border-radius: 8px;
+  height: 52px;
+  width: 190px;
+  font-size: 20px;
+  /* font-family: var(--text-font); */
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.hamburger .bar {
+  width: 25px;
+  height: 3px;
+  background-color: var(--secondary);
+  margin: 4px 0;
+  transition: 0.4s;
+}
+
+@media (max-width: 768px) {
+  .nav-items {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 1.5em;
+    background-color: var(--secondary-color);
+    padding: 20px 0;
+    display: none;
+  }
+
+  /* Show nav items when 'open' class is added */
+  .nav-items.open {
     display: flex;
+  }
+
+  .wallet-section {
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .gradient-button,
+  .wallet-id {
+    width: auto;
+    height: 45px;
+    font-size: 18px;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-items a:hover {
+    color: var(--brand);
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-svg {
+    width: 150px;
+    height: auto;
+  }
+
+  .gradient-button {
+    font-size: 14px;
+    padding: 0px 10px;
+    height: 35px;
+    margin-bottom: 8px;
+  }
+  .wallet-id {
+    font-size: 16px;
+    height: 40px;
+  }
+
+  .wallet-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
 }

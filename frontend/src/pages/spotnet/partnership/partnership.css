@@ -1,6 +1,7 @@
 .partnership-container{
-    height: 50vh;
+    /* height: 50vh; */
     position: relative;
+    margin-bottom: 80px;
 }
 
 .partnership-content {
@@ -20,7 +21,8 @@
     align-items: center;
     justify-content: flex-start;
     animation: scroll 20s linear infinite; /* Infinite scroll */
-    width: calc(150px * 8 * 2); /* Adjust width for duplicated logos */
+    width: auto;
+    gap: 40px;
 }
 
 .partnership-logo > * {
@@ -52,6 +54,30 @@
         width: 140vw;
         height: 150px;
         background:var(--gradient);
-        right: 460px;
+        right: 430px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-title {
+        font-size: 1.25rem;
+    }
+
+    .partnership-logo > * {
+        width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .partnership-logo > * {
+        width: 80px;
+    }
+
+    .partnership-content {
+        width: 140vw;
+        height: 150px;
+        background:var(--gradient);
+        right: 165px;
     }
 }
