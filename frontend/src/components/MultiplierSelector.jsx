@@ -1,39 +1,58 @@
-import React from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
+import { useMaxMultiplier } from 'hooks/useMaxMultiplier';
+import './multiplier.css';
 
-const Multipliers = [
-  { id: 'option1', value: 'x5', recommended: true },
-  { id: 'option2', value: 'x4', recommended: false },
-  { id: 'option3', value: 'x3', recommended: false },
-  { id: 'option4', value: 'x2', recommended: false },
-];
 
-const MultiplierSelector = ({ setSelectedMultiplier }) => (
-  <div className='multiplier-card'>
-    {Multipliers.map((multiplier) => (
-      <div className={'multiplier-item'} key={multiplier.id}>
-        {multiplier.recommended && (
-          <div className='recommended'>
-            <p>Recommended</p>
+const MultiplierSelector = ({ setSelectedMultiplier, selectedToken, sliderValue }) => {
+  const { data } = useMaxMultiplier();
+  const [actualValue, setActualValue] = useState(1.0);
+
+  const maxMultiplier = useMemo(() => {
+    return data?.[selectedToken] || 5.0;
+  }, [data, selectedToken]);
+
+  const mapSliderToValue = (sliderValue) => {
+    return maxMultiplier - sliderValue + 1;
+  };
+
+  const handleMultiplierChange = useCallback((e) => {
+    const sliderValue = parseFloat(e.target.value);
+    const value = mapSliderToValue(sliderValue).toFixed(1);
+    setActualValue(value);
+    setSelectedMultiplier(value);
+  }, [setSelectedMultiplier]);
+
+  const getSliderPercentage = useCallback(() => {
+    return (((maxMultiplier - actualValue + 1) - 1) / (maxMultiplier - 1)) * 100;
+  }, [sliderValue, maxMultiplier]);
+
+  return (
+    <div className='multiplier-card'>
+      <div className='slider-container'>
+        <div className='slider-labels'>
+          <span>Max</span>
+          <span>Low</span>
+        </div>
+        <div className='slider-with-tooltip'>
+          <div 
+            className='slider-tooltip' 
+            style={{ left: `${getSliderPercentage()}%` }}
+          >
+            {sliderValue}x
           </div>
-        )}
-        <input
-          type='radio'
-          id={multiplier.id}
-          name='card-options'
-          value={multiplier.value}
-          onChange={() =>
-            setSelectedMultiplier(multiplier.value.replace('x', ''))
-          }
-        />
-        <label
-          htmlFor={multiplier.id}
-          className={multiplier.recommended ? 'recommended-item' : ''}
-        >
-          {multiplier.value}
-        </label>
+          <input
+            type='range'
+            min='1'
+            max={maxMultiplier}
+            step='0.1'
+            value={maxMultiplier - actualValue + 1}
+            onChange={handleMultiplierChange}
+            className='multiplier-slider'
+          />
+        </div>
       </div>
-    ))}
-  </div>
-);
+    </div>
+  );
+};
 
 export default MultiplierSelector;
