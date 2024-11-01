@@ -158,8 +158,9 @@
 }
 
 .form-token {
-  display: flex;
+  display: grid;
   align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   justify-content: space-between;
 }
 
@@ -403,4 +404,28 @@ input[type="number"].error {
     margin-right: 5px;
     height: 25px;
     width: 24px ;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .balance-container {
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+  }
+  .form-container {
+    width: 100%;
+  }
+  .form-wrapper {
+    width: 100%;
+  }
+  .form-token {
+    gap: 3px;
+  }
+  .multiplier-card {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    display: grid;
+  }
+
 }
