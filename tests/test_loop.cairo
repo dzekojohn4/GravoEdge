@@ -559,7 +559,7 @@ fn test_extra_deposit_valid() {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4 },
+            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_const: 98 },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -628,7 +628,7 @@ fn test_extra_deposit_supply_token_close_position_fuzz(extra_amount: u32) {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4 },
+            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_const: 98 },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -715,7 +715,7 @@ fn test_withdraw_valid_fuzz(amount: u32) {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4 },
+            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_const: 98 },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -833,7 +833,7 @@ fn test_extra_deposit_position_zero_amount() {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: eth_addr, amount: 685000000000000, multiplier: 2 },
+            DepositData { token: eth_addr, amount: 685000000000000, multiplier: 2, borrow_const: 98 },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -879,7 +879,7 @@ fn test_withdraw_position_open() {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: eth_addr, amount: 685000000000000, multiplier: 2 },
+            DepositData { token: eth_addr, amount: 685000000000000, multiplier: 2, borrow_const: 98 },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
