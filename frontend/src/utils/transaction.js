@@ -84,7 +84,7 @@ export const handleTransaction = async (connectedWalletId, formData, setError, s
       params: { position_id: transactionData.position_id },
     });
 
-    setSuccessful(false)
+    setSuccessful(true)
 
     console.log('Position status updated successfully:', openPositionResponse.data);
 

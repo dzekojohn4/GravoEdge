@@ -136,12 +136,14 @@ describe('Transaction Functions', () => {
     const mockSetError = jest.fn();
     const mockSetTokenAmount = jest.fn();
     const mockSetLoading = jest.fn();
+    const mockSetSuccessful = jest.fn();
     const mockFormData = { position_id: 1 };
 
     beforeEach(() => {
       mockSetError.mockClear();
       mockSetTokenAmount.mockClear();
       mockSetLoading.mockClear();
+      mockSetSuccessful.mockClear();
     });
 
     it('should handle successful transaction flow', async () => {
@@ -160,9 +162,10 @@ describe('Transaction Functions', () => {
         data: { status: 'open' },
       });
 
-      await handleTransaction(mockWalletId, mockFormData, mockSetError, mockSetTokenAmount, mockSetLoading);
+      await handleTransaction(mockWalletId, mockFormData, mockSetError, mockSetTokenAmount, mockSetLoading, mockSetSuccessful);
 
       expect(mockSetLoading).toHaveBeenCalledWith(true);
+      expect(mockSetSuccessful).toHaveBeenCalledWith(true);
       expect(axios.post).toHaveBeenCalledWith('http://0.0.0.0:8000/api/create-position', mockFormData);
       expect(axios.get).toHaveBeenCalledWith('http://0.0.0.0:8000/api/open-position', {
         params: { position_id: mockTransactionData.position_id },
@@ -178,11 +181,12 @@ describe('Transaction Functions', () => {
 
       console.error = jest.fn();
 
-      await handleTransaction(mockWalletId, mockFormData, mockSetError, mockSetTokenAmount, mockSetLoading);
+      await handleTransaction(mockWalletId, mockFormData, mockSetError, mockSetTokenAmount, mockSetLoading, mockSetSuccessful);
 
       expect(mockSetError).toHaveBeenCalledWith('Failed to create position. Please try again.');
       expect(console.error).toHaveBeenCalledWith('Failed to create position:', mockError);
       expect(mockSetLoading).toHaveBeenCalledWith(false);
+      expect(mockSetSuccessful).toHaveBeenCalledWith(false);
     });
   });
 });
