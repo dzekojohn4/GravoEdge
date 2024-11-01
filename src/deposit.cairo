@@ -9,7 +9,7 @@ mod Deposit {
 
     use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
     use spotnet::{
-        constants::ZK_SCALE_DECIMALS,
+        constants::{ZK_SCALE_DECIMALS, STRK_ADDRESS},
         interfaces::{
             IMarketDispatcher, IMarketDispatcherTrait, IAirdropDispatcher, IAirdropDispatcherTrait,
             IDeposit
@@ -30,6 +30,7 @@ mod Deposit {
         owner: ContractAddress,
         ekubo_core: ICoreDispatcher,
         zk_market: IMarketDispatcher,
+        treasury: ContractAddress,
         is_position_open: bool
     }
 
@@ -38,11 +39,13 @@ mod Deposit {
         ref self: ContractState,
         owner: ContractAddress,
         ekubo_core: ICoreDispatcher,
-        zk_market: IMarketDispatcher
+        zk_market: IMarketDispatcher,
+        treasury: ContractAddress
     ) {
         self.owner.write(owner);
         self.ekubo_core.write(ekubo_core);
         self.zk_market.write(zk_market);
+        self.treasury.write(treasury);
     }
 
     fn get_borrow_amount(
@@ -355,6 +358,8 @@ mod Deposit {
 
         /// Claims STRK airdrop on ZKlend
         ///
+        /// Can be called by anyone, e.g. a keeper
+        /// 
         /// # Panics
         /// `is_position_open` storage variable is set to false('Open position not exists')
         /// `proof` span is empty
@@ -374,10 +379,22 @@ mod Deposit {
                 IAirdropDispatcher { contract_address: airdrop_addr }.claim(claim_data, proof),
                 'Claim failed'
             );
-            // TODO: Add transfer to the Treasury
+
+            let strk = ERC20ABIDispatcher { contract_address: STRK_ADDRESS.try_into().unwrap() };
+            let zk_market = self.zk_market.read();
+            let half_of_claim = claim_data.amount / 2; // u128 integer division, rounds down
+            
+            strk.transfer(self.treasury.read(), half_of_claim.into());
+
+            let remainder = claim_data.amount - half_of_claim;
+            strk.approve(zk_market.contract_address, remainder.into());
+            zk_market.deposit(STRK_ADDRESS.try_into().unwrap(), remainder.into());
+            zk_market.enable_collateral(STRK_ADDRESS.try_into().unwrap());
         }
 
         /// Makes a deposit into open zkLend position to control stability
+        /// 
+        /// Anyone can deposit theoretically
         ///
         /// # Panics
         /// `is_position_open` variable is set to false
@@ -401,14 +418,12 @@ mod Deposit {
         ///
         /// # Panics
         /// address of account that started the transaction is not equal to `owner` storage variable
-        /// if trying to withdraw from open position, so `is_position_open` is set to true
         ///
         /// # Parameters
         /// `token`: TokenAddress - token address to withdraw from zkLend
         /// `amount`: TokenAmount - amount to withdraw. Pass `0` to withdraw all
         fn withdraw(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {
             assert(get_caller_address() == self.owner.read(), 'Caller is not the owner');
-            assert(!self.is_position_open.read(), 'Tokens are locked');
             let zk_market = self.zk_market.read();
             let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
             if amount == 0 {
