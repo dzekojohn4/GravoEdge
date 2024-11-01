@@ -51,10 +51,8 @@ const About = () => {
             ))}
             <h1 className="about-title">How it works</h1>
             <div className="card-container flex">
-                <div className="card-gradients">
                     <div className="card-gradient"></div>
                     <div className="card-gradient"></div>
-                </div>
                 {CardData.map((card, index) => (
                     <div key={index} className="card-about flex">
                         <div className="card-number flex">

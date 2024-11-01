@@ -10,11 +10,11 @@ function Footer() {
   return (
     <footer className="footer-container p-3 mt-auto">
       <div className="container">
-        <div className="footer-logo">
+        {/* <div className="footer-logo"> */}
           <Link to="/">
             <Logo/>
           </Link>
-        </div>  
+        {/* </div>   */}
         <div>
           <p className="follow-us-text">Follow us on</p>     
           <div className="footer-social-cards">
