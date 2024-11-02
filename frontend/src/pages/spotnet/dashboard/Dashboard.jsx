@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery } from 'react-query';
 import axios from 'axios';
 import { ReactComponent as Star } from 'assets/particles/star.svg';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral.svg';
@@ -13,7 +14,8 @@ import './dashboard.css';
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
 
-const fetchCardData = async ({ walletId }) => {
+const fetchCardData = async ({ queryKey }) => {
+  const walletId = queryKey[1];
   if (!walletId) {
     console.error('fetchCardData: walletId is undefined');
     return null;
@@ -28,6 +30,10 @@ const fetchCardData = async ({ walletId }) => {
 };
 
 const Dashboard = ({ walletId }) => {
+  const { data, isLoading, isError } = useQuery(['dashboardData', walletId], fetchCardData, {
+    enabled: !!walletId,
+  });
+
   const closePositionEvent = async () => {
     if (!walletId) {
       console.error('closePositionEvent: walletId is undefined');
@@ -36,14 +42,13 @@ const Dashboard = ({ walletId }) => {
     try {
       const response = await axios.get(`${backendUrl}/api/get-repay-data?supply_token=ETH&wallet_id=${walletId}`);
       await closePosition(response.data);
-
       await axios.get(`${backendUrl}/api/close-position?position_id=${response.data.position_id}`);
     } catch (e) {
       console.error('Error during closePositionEvent', e);
     }
   };
 
-  const [cardData, setCardData] = useState([
+  const initialCardData = [
     {
       title: 'Collateral & Earnings',
       icon: CollateralIcon,
@@ -58,35 +63,13 @@ const Dashboard = ({ walletId }) => {
       currencyName: 'USD Coin',
       currencyIcon: UsdIcon,
     },
-  ]);
-
-  const [healthFactor, setHealthFactor] = useState('0.00');
-  const [loading, setLoading] = useState(true);
-  const starData = [
-    { top: 1, left: 0, size: 1.5 },
-    { top: 75, left: 35, size: 2.5 },
-    { top: -2, left: 94, size: 5.5 },
   ];
 
-  useEffect(() => {
-    const getData = async () => {
-      if (!walletId) {
-        console.error('getData: walletId is undefined');
-        setLoading(false);
-        return;
-      }
-
-      const data = await fetchCardData({ walletId });
-      if (data && data.zklend_position && data.zklend_position.products) {
-        const positions = data.zklend_position.products[0].positions || [];
-        const healthRatio = data.zklend_position.products[0].health_ratio;
-        console.log('Positions:', positions);
-
-        const cardData = positions.map((position, index) => {
-          const isFirstCard = index === 0;
+  const cardData =
+    data && data.zklend_position && data.zklend_position.products
+      ? data.zklend_position.products[0].positions.map((position, index) => {
           const tokenAddress = position.tokenAddress;
-
-          if (isFirstCard) {
+          if (index === 0) {
             const isEthereum = tokenAddress === ZETH_ADDRESS;
             return {
               title: 'Collateral & Earnings',
@@ -96,7 +79,6 @@ const Dashboard = ({ walletId }) => {
               currencyIcon: isEthereum ? EthIcon : StrkIcon,
             };
           }
-
           return {
             title: 'Borrow',
             icon: BorrowIcon,
@@ -104,23 +86,25 @@ const Dashboard = ({ walletId }) => {
             currencyName: 'USD Coin',
             currencyIcon: UsdIcon,
           };
-        });
+        })
+      : initialCardData;
 
-        setCardData(cardData);
-        setHealthFactor(healthRatio);
-      } else {
-        console.error('Data is missing or incorrectly formatted');
-      }
-      setLoading(false);
-    };
+  const healthFactor =
+    data && data.zklend_position && data.zklend_position.products
+      ? data.zklend_position.products[0].health_ratio
+      : '0.00';
 
-    getData();
-  }, [walletId]);
+  const starData = [
+    { top: 1, left: 0, size: 1.5 },
+    { top: 75, left: 35, size: 2.5 },
+    { top: -2, left: 94, size: 5.5 },
+  ];
+
+  if (isLoading) return <Spinner loading={true} />;
+  if (isError) return <p>Error loading data...</p>;
 
   return (
     <div className="dashboard-container position-relative container">
-      {loading && <Spinner loading={loading} />}
-
       {starData.map((star, index) => (
         <Star
           key={index}
