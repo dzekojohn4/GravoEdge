@@ -31,7 +31,7 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
       <div className="list-items">
         <div className="logo">
           <NavLink to="/">
-            <Logo />
+            <Logo className='logo-icon'/>
           </NavLink>
         </div>
         
