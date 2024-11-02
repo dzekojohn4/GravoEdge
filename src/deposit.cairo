@@ -136,8 +136,8 @@ mod Deposit {
             ekubo_limits: EkuboSlippageLimits,
             pool_price: TokenPrice
         ) {
-            let user_acount = get_tx_info().unbox().account_contract_address;
-            assert(user_acount == self.owner.read(), 'Caller is not the owner');
+            let user_account = get_tx_info().unbox().account_contract_address;
+            assert(user_account == self.owner.read(), 'Caller is not the owner');
             assert(!self.is_position_open.read(), 'Open position already exists');
             let DepositData { token, amount, multiplier, borrow_const } = deposit_data;
             assert(borrow_const > 0 && borrow_const < 100, 'Cannot calculate borrow amount');
@@ -149,10 +149,10 @@ mod Deposit {
             
             let curr_contract_address = get_contract_address();
             assert(
-                token_dispatcher.allowance(user_acount, curr_contract_address) >= amount,
+                token_dispatcher.allowance(user_account, curr_contract_address) >= amount,
                 'Approved amount insufficient'
             );
-            assert(token_dispatcher.balanceOf(user_acount) >= amount, 'Insufficient balance');
+            assert(token_dispatcher.balanceOf(user_account) >= amount, 'Insufficient balance');
 
             let zk_market = self.zk_market.read();
 
