@@ -60,8 +60,8 @@ const Dashboard = ({ walletId }) => {
     },
   ]);
 
-  const [startSum] = useState(400);
-  const [currentSum, setCurrentSum] = useState(200);
+  const [startSum] = useState(0);
+  const [currentSum, setCurrentSum] = useState(0);
   const [healthFactor, setHealthFactor] = useState('0.00');
   const [loading, setLoading] = useState(true);
   const starData = [
@@ -156,7 +156,7 @@ const Dashboard = ({ walletId }) => {
                 <h1
                   className="ms-2 icon-text-gap mb-0 text-style"
                   style={{
-                    color: card.title === 'Borrow' ? 'var(--borrow-color)' : 'var(--collateral-color)',
+                    color: card.title === 'Borrow' ? '#FF5A5F' : '#4CAF50', // Direct color values
                   }}
                 >
                   {card.title}
@@ -174,7 +174,7 @@ const Dashboard = ({ walletId }) => {
                   <span
                     className="ms-2 borr-text icon-text-gap text-style"
                     style={{
-                      color: card.title === 'Borrow' ? 'var(--borrow-color)' : 'var(--collateral-color)',
+                      color: card.title === 'Borrow' ? '#FF5A5F' : '#4CAF50', // Direct color values
                     }}
                   >
                     {card.balance}
@@ -184,10 +184,9 @@ const Dashboard = ({ walletId }) => {
                   <div className="sum-info">
                     <span className="start-sum">Start sum: {startSum} $</span>
                     <span className="current-sum">
-                      Current sum: <span className={currentSum < startSum ? 'red' : 'green'}>{currentSum} $</span> 
+                      Current sum: <span style={{ color: currentSum < startSum ? '#FF5A5F' : '#4CAF50' }}>{currentSum} $</span>
                     </span>
                   </div>
-
                 )}
               </div>
             </div>

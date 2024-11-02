@@ -190,14 +190,15 @@ body {
 .current-sum {
   font-size: 21px;
   font-weight: 500;
+  color: white; /* "Current sum" text in white */
 }
 
-.current-sum .green {
-  color: green;
+.current-sum .current-sum-green {
+  color: #4CAF50; /* Green for positive values */
 }
 
-.current-sum .red {
-  color: red;
+.current-sum .current-sum-red {
+  color: #FF5A5F; /* Red for negative values */
 }
 
 /* Responsive adjustments */
@@ -230,7 +231,6 @@ body {
     height: 120px;
   }
 
-  /* Cards styles */
   .card-icons {
     width: 32px;
     height: 33px;
@@ -265,7 +265,6 @@ body {
     font-weight: 400;
   }
 
-  /* Button "Redeem" styles */
   .redeem-btn {
     padding: 14px 18px;
     font-size: 20px;
@@ -311,7 +310,6 @@ body {
     height: 45px;
   }
 
-  /* Cards styles */
   .card-icons {
     width: 30px;
     height: 30px;
@@ -350,7 +348,6 @@ body {
     margin-bottom: 1rem !important;
   }
 
-  /* Button "Redeem" styles */
   .redeem-btn {
     padding: 14px 18px;
     font-size: 20px;
@@ -392,7 +389,6 @@ body {
     height: 45px;
   }
 
-  /* Cards styles */
   .bg-custom-color {
     padding: 12px 10px;
   }
@@ -440,7 +436,6 @@ body {
     margin-bottom: 1rem !important;
   }
 
-  /* Button "Redeem" styles */
   .redeem-btn {
     padding: 12px 16px;
     font-size: 18px;
