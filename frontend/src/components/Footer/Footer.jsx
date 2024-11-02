@@ -6,58 +6,67 @@ import { ReactComponent as TelegramIcon } from 'assets/icons/telegram.svg';
 import { ReactComponent as DiscordIcon } from 'assets/icons/discord.svg';
 import './footer.css';
 
+const SocialCard = ({ href, Icon, name }) => (
+  <div className="social-card">
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Visit our ${name} page`}
+    >
+      <Icon />
+      <p>{name}</p>
+    </a>
+  </div>
+);
+
 function Footer() {
+  const socialLinks = [
+    {
+      name: 'Twitter',
+      icon: TwitterIcon,
+      href: 'https://x.com'
+    },
+    {
+      name: 'Discord',
+      icon: DiscordIcon,
+      href: 'https://discord.com'
+    },
+    {
+      name: 'Telegram',
+      icon: TelegramIcon,
+      href: 'https://t.me/djeck_vorobey1'
+    }
+  ];
+
   return (
     <footer className="footer-container p-3 mt-auto">
       <div className="container">
           <Link to="/">
             <Logo/>
+    <footer className='footer-container'>
+      <div className='footer-content'>
+        <div className='footer-logo'>
+          <Link to='/' aria-label='Go to homepage'>
+            <Logo />
           </Link>
         <div>
-          <p className='follow-us-text'>Follow us on</p>
+          <h2 className='follow-us-text'>Follow us on</h2>
           <div className='footer-social-cards'>
-            <div className='social-card'>
-              <a
-                href='https://twitter.com/yourprofile'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <TwitterIcon />
-              </a>
-              <div>
-                <p>Twitter</p>
-              </div>
-            </div>
-            <div className='social-card'>
-              <a
-                href='https://discord.com/yourprofile'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <DiscordIcon />
-              </a>
-              <div>
-                <p>Discord</p>
-              </div>
-            </div>
-            <div className='social-card'>
-              <a
-                href='https://t.me/yourprofile'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <TelegramIcon />
-              </a>
-              <div>
-                <p>Telegram</p>
-              </div>
-            </div>
+            {socialLinks.map((social) => (
+              <SocialCard
+                key={social.name}
+                href={social.href}
+                Icon={social.icon}
+                name={social.name}
+              />
+            ))}
           </div>
         </div>
       </div>
-      <div className='line-text-container'>
-        <div className='footer-line' />
-        <div className='footer-text'>©2024. Spotnet All Right Reserved.</div>
+      <div className="line-text-container">
+        <div className="footer-line" aria-hidden="true" />
+        <div className="footer-text">©{new Date().getFullYear()}. Spotnet All Rights Reserved.</div>
       </div>
     </footer>
   );

@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { ReactComponent as Star } from 'assets/particles/star.svg';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral.svg';
 import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
 import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
 import { ReactComponent as BorrowIcon } from 'assets/icons/borrow.svg';
 import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
-import { closePosition } from 'utils/transaction';
+import { closePosition } from 'services/transaction';
 import { ZETH_ADDRESS } from 'utils/constants';
 import Spinner from 'components/spinner/Spinner';
 import './dashboard.css';
-
-const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
+import { axiosInstance } from 'utils/axios';
 
 const fetchCardData = async ({ walletId }) => {
   if (!walletId) {
@@ -19,7 +17,7 @@ const fetchCardData = async ({ walletId }) => {
     return null;
   }
   try {
-    const response = await axios.get(`${backendUrl}/api/dashboard?wallet_id=${walletId}`);
+    const response = await axiosInstance.get(`/api/dashboard?wallet_id=${walletId}`);
     return response.data;
   } catch (error) {
     console.error('Error during getting the data from API', error);
@@ -34,10 +32,10 @@ const Dashboard = ({ walletId }) => {
       return;
     }
     try {
-      const response = await axios.get(`${backendUrl}/api/get-repay-data?supply_token=ETH&wallet_id=${walletId}`);
+      const response = await axiosInstance.get(`/api/get-repay-data?supply_token=ETH&wallet_id=${walletId}`);
       await closePosition(response.data);
 
-      await axios.get(`${backendUrl}/api/close-position?position_id=${response.data.position_id}`);
+      await axiosInstance.get(`/api/close-position?position_id=${response.data.position_id}`);
     } catch (e) {
       console.error('Error during closePositionEvent', e);
     }
@@ -60,8 +58,11 @@ const Dashboard = ({ walletId }) => {
     },
   ]);
 
+  const [startSum] = useState(0);
+  const [currentSum, setCurrentSum] = useState(0); 
   const [healthFactor, setHealthFactor] = useState('0.00');
   const [loading, setLoading] = useState(true);
+
   const starData = [
     { top: 1, left: 0, size: 1.5 },
     { top: 75, left: 35, size: 2.5 },
@@ -80,7 +81,6 @@ const Dashboard = ({ walletId }) => {
       if (data && data.zklend_position && data.zklend_position.products) {
         const positions = data.zklend_position.products[0].positions || [];
         const healthRatio = data.zklend_position.products[0].health_ratio;
-        console.log('Positions:', positions);
 
         const cardData = positions.map((position, index) => {
           const isFirstCard = index === 0;
@@ -88,10 +88,13 @@ const Dashboard = ({ walletId }) => {
 
           if (isFirstCard) {
             const isEthereum = tokenAddress === ZETH_ADDRESS;
+            const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
+            setCurrentSum(balance);
+
             return {
               title: 'Collateral & Earnings',
               icon: CollateralIcon,
-              balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+              balance: balance,
               currencyName: isEthereum ? 'Ethereum' : 'STRK',
               currencyIcon: isEthereum ? EthIcon : StrkIcon,
             };
@@ -117,6 +120,11 @@ const Dashboard = ({ walletId }) => {
     getData();
   }, [walletId]);
 
+  const getCurrentSumColor = () => {
+    if (startSum === currentSum) return '';
+    return currentSum < startSum ? 'current-sum-red' : 'current-sum-green';
+  };
+
   return (
     <div className="dashboard-container position-relative container">
       {loading && <Spinner loading={loading} />}
@@ -133,8 +141,8 @@ const Dashboard = ({ walletId }) => {
         />
       ))}
       <div className="position-relative">
-        <div className="backdround-gradient"></div>
-        <div className="backdround-gradient"></div>
+        <div className="background-gradient"></div>
+        <div className="background-gradient"></div>
       </div>
       <h1 className="text-white text-center zkLend-text">zkLend Position</h1>
       <div className="card card-health-factor mx-auto d-flex flex-column align-items-center justify-content-center card-shadow">
@@ -150,10 +158,7 @@ const Dashboard = ({ walletId }) => {
               <div className="d-flex align-items-center justify-content-center">
                 <card.icon className="card-icons rounded-circle" />
                 <h1
-                  className="ms-2 icon-text-gap mb-0 text-style"
-                  style={{
-                    color: card.title === 'Borrow' ? 'var(--borrow-color)' : 'var(--collateral-color)',
-                  }}
+                  className={`ms-2 icon-text-gap mb-0 text-style ${card.title === 'Borrow' ? 'borrow-text' : 'collateral-text'}`}
                 >
                   {card.title}
                 </h1>
@@ -168,14 +173,19 @@ const Dashboard = ({ walletId }) => {
                 <div className="d-flex align-items-center">
                   <span className="dashboard-text-color balance-text-size">Balance:</span>
                   <span
-                    className="ms-2 borr-text icon-text-gap text-style"
-                    style={{
-                      color: card.title === 'Borrow' ? 'var(--borrow-color)' : 'var(--collateral-color)',
-                    }}
+                    className={`ms-2 icon-text-gap text-style ${card.title === 'Borrow' ? 'borrow-text' : 'collateral-text'}`}
                   >
                     {card.balance}
                   </span>
                 </div>
+                {card.title === 'Collateral & Earnings' && (
+                  <div className="sum-info">
+                    <span className="start-sum">Start sum: {startSum} $</span>
+                    <span className="current-sum">
+                      Current sum: <span className={getCurrentSumColor()}>{currentSum} $</span>
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

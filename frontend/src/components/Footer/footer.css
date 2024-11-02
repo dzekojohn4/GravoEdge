@@ -31,13 +31,27 @@ li {
   background-color: var(--footer-bg-color);
   width: 100%;
   height: auto;
+  min-height: 408px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.footer-content {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 24px;
 }
 
 .footer-logo {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  margin-left: 64px;
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.footer-logo svg {
+  height: auto;
 }
 
 .follow-us-text {
@@ -51,13 +65,14 @@ li {
 
 .follow-us-text {
   margin-bottom: 0;
+  margin: 16px 0 0 0;
 }
 
 .footer-social-cards {
   display: flex;
-  margin-top: 24px;
   gap: 22px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .social-card {
@@ -73,16 +88,23 @@ li {
   cursor: pointer;
   background-color: var(--card-bg-color);
   transition: background-color 0.3s ease;
+  background-color: var(--primary-color);
+  transition: all 0.3s ease;
   margin: 0;
+}
+
+.social-card p {
   font-family: var(--text-font);
   font-weight: 500;
   font-size: 28px;
   text-align: center;
   color: var(--primary);
+  margin: 0;
 }
 
 .social-card:hover {
   background-color: var(--footer-bg-color);
+  transform: translateY(-2px);
 }
 
 .social-card:active {
@@ -97,6 +119,7 @@ li {
   text-align: center;
   color: var(--primary);
   background-color: var(--primary-color);
+  transform: translateY(0);
 }
 
 .social-card a {
@@ -107,14 +130,23 @@ li {
   text-decoration: none;
   width: 100%;
   height: 100%;
+  gap: 8px;
+}
+
+.social-card svg {
+  transition: transform 0.3s ease;
+}
+
+.social-card:hover svg {
+  transform: scale(1.1);
 }
 
 .line-text-container {
-  padding-left: 64px;
-  padding-right: 64px;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: auto;
 }
 
 .footer-line {
@@ -142,6 +174,65 @@ li {
   .footer-logo {
     margin-left: 0;
     text-align: center;
+/* Tablet Styles */
+@media (max-width: 1024px) {
+  .footer-container {
+    min-height: 350px;
+    padding: 20px 0;
+  }
+
+  .footer-content {
+    padding: 0 20px;
+  }
+
+  .footer-logo {
+    margin-bottom: 30px;
+  }
+
+  .footer-logo svg {
+    width: 140px;
+  }
+
+  .follow-us-text {
+    font-size: 28px;
+  }
+
+  .social-card {
+    width: 180px;
+    height: 140px;
+    padding: 20px 0;
+  }
+
+  .social-card p {
+    font-size: 24px;
+  }
+
+  .footer-line {
+    margin-top: 60px;
+  }
+
+  .footer-text {
+    font-size: 18px;
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 480px) {
+  .footer-container {
+    min-height: auto;
+    padding: 16px 0;
+  }
+
+  .footer-content {
+    padding: 0 16px;
+  }
+
+  .footer-logo {
+    margin-bottom: 24px;
+  }
+
+  .footer-logo svg {
+    width: 120px;
   }
 
   .follow-us-text {
@@ -163,13 +254,34 @@ li {
 
   .line-text-container {
     padding: 0 16px;
+    width: calc(50% - 8px);
+    height: 120px;
+    padding: 16px 0;
+  }
+
+  .social-card p {
+    font-size: 20px;
   }
 
   .footer-line {
     margin-top: 40px;
+    margin-bottom: 12px;
   }
 
   .footer-text {
     font-size: 16px;
+  }
+}
+
+/* Small Mobile Styles */
+@media (max-width: 360px) {
+  .footer-social-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .social-card {
+    width: 100%;
+    max-width: 280px;
   }
 }

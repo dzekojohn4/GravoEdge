@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import TokenSelector from 'components/TokenSelector';
 import BalanceCards from 'components/BalanceCards';
 import MultiplierSelector from 'components/MultiplierSelector';
-import { connectWallet } from 'utils/wallet';
-import { handleTransaction } from 'utils/transaction';
+import { connectWallet } from 'services/wallet';
+import { handleTransaction } from 'services/transaction';
 import Spinner from 'components/spinner/Spinner';
 import StarMaker from 'components/StarMaker';
 import CardGradients from 'components/CardGradients';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
 import './form.css';
+import { createPortal } from 'react-dom';
+import useLockBodyScroll from 'hooks/useLockBodyScroll';
+import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
 
 const Form = ({ walletId, setWalletId }) => {
   const starData = [
@@ -23,6 +26,8 @@ const Form = ({ walletId, setWalletId }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [successful, setSuccessful] = useState(false);
+  useLockBodyScroll(successful);
 
   const connectWalletHandler = async () => {
     try {
@@ -64,12 +69,13 @@ const Form = ({ walletId, setWalletId }) => {
         amount: tokenAmount,
         multiplier: selectedMultiplier,
       };
-      await handleTransaction(connectedWalletId, formData, setError, setTokenAmount, setLoading);
+      await handleTransaction(connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful);
     }
   };
 
   return (
     <div className="form-container container">
+      {successful && createPortal(<CongratulationsModal />, document.body)}
       {/* The rest of the UI stays largely unchanged */}
       <BalanceCards walletId={walletId} />
       <form onSubmit={handleSubmit}>
@@ -84,6 +90,12 @@ const Form = ({ walletId, setWalletId }) => {
           )}
           <label>Select Token</label>
           <TokenSelector setSelectedToken={setSelectedToken} />
+          <h5>Select Multiplier</h5>
+          <MultiplierSelector
+            setSelectedMultiplier={setSelectedMultiplier}
+            selectedToken={selectedToken}
+            sliderValue={selectedMultiplier}
+          />
           <div className="token-label">
             <label>Token Amount</label>
             {error && <p className="error-message">{error}</p>}
@@ -95,8 +107,6 @@ const Form = ({ walletId, setWalletId }) => {
               className={error ? 'error' : ''}
             />
           </div>
-          <h5>Select Multiplier</h5>
-          <MultiplierSelector setSelectedMultiplier={setSelectedMultiplier} />
           <div>
             <button type="submit" className="form-button">
               Submit
