@@ -4,7 +4,7 @@ import './multiplier.css';
 
 
 const MultiplierSelector = ({ setSelectedMultiplier, selectedToken, sliderValue }) => {
-  const { data } = useMaxMultiplier();
+  const { data, isLoading, error } = useMaxMultiplier();
   const [actualValue, setActualValue] = useState(1.0);
 
   const maxMultiplier = useMemo(() => {
@@ -20,11 +20,14 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken, sliderValue 
     const value = mapSliderToValue(sliderValue).toFixed(1);
     setActualValue(value);
     setSelectedMultiplier(value);
-  }, [setSelectedMultiplier]);
+  }, [setSelectedMultiplier, maxMultiplier]);
 
   const getSliderPercentage = useCallback(() => {
     return (((maxMultiplier - actualValue + 1) - 1) / (maxMultiplier - 1)) * 100;
-  }, [sliderValue, maxMultiplier]);
+  }, [actualValue, maxMultiplier]);
+
+  if (isLoading) return <div className='slider-skeleton'>Loading multiplier data...</div>;
+  if (error) return <div className='error-message'>Error loading multiplier data: {error.message}</div>;
 
   return (
     <div className='multiplier-card'>
