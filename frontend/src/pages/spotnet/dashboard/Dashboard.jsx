@@ -9,8 +9,6 @@ import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
 import { closePosition } from 'utils/transaction';
 import { ZETH_ADDRESS } from 'utils/constants';
 import Spinner from 'components/spinner/Spinner';
-import DashboardCard from 'components/Dashboard/DashboardCard';
-
 import './dashboard.css';
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
@@ -30,6 +28,21 @@ const fetchCardData = async ({ walletId }) => {
 };
 
 const Dashboard = ({ walletId }) => {
+  const closePositionEvent = async () => {
+    if (!walletId) {
+      console.error('closePositionEvent: walletId is undefined');
+      return;
+    }
+    try {
+      const response = await axios.get(`${backendUrl}/api/get-repay-data?supply_token=ETH&wallet_id=${walletId}`);
+      await closePosition(response.data);
+
+      await axios.get(`${backendUrl}/api/close-position?position_id=${response.data.position_id}`);
+    } catch (e) {
+      console.error('Error during closePositionEvent', e);
+    }
+  };
+
   const [cardData, setCardData] = useState([
     {
       title: 'Collateral & Earnings',
@@ -46,6 +59,9 @@ const Dashboard = ({ walletId }) => {
       currencyIcon: UsdIcon,
     },
   ]);
+
+  const [startSum] = useState(0);
+  const [currentSum, setCurrentSum] = useState(0); 
   const [healthFactor, setHealthFactor] = useState('0.00');
   const [loading, setLoading] = useState(true);
 
@@ -54,20 +70,6 @@ const Dashboard = ({ walletId }) => {
     { top: 75, left: 35, size: 2.5 },
     { top: -2, left: 94, size: 5.5 },
   ];
-
-  const closePositionEvent = async () => {
-    if (!walletId) {
-      console.error('closePositionEvent: walletId is undefined');
-      return;
-    }
-    try {
-      const response = await axios.get(`${backendUrl}/api/get-repay-data?supply_token=ETH&wallet_id=${walletId}`);
-      await closePosition(response.data);
-      await axios.get(`${backendUrl}/api/close-position?position_id=${response.data.position_id}`);
-    } catch (e) {
-      console.error('Error during closePositionEvent', e);
-    }
-  };
 
   useEffect(() => {
     const getData = async () => {
@@ -81,17 +83,20 @@ const Dashboard = ({ walletId }) => {
       if (data && data.zklend_position && data.zklend_position.products) {
         const positions = data.zklend_position.products[0].positions || [];
         const healthRatio = data.zklend_position.products[0].health_ratio;
-        
+
         const cardData = positions.map((position, index) => {
           const isFirstCard = index === 0;
           const tokenAddress = position.tokenAddress;
 
           if (isFirstCard) {
             const isEthereum = tokenAddress === ZETH_ADDRESS;
+            const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
+            setCurrentSum(balance);
+
             return {
               title: 'Collateral & Earnings',
               icon: CollateralIcon,
-              balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+              balance: balance,
               currencyName: isEthereum ? 'Ethereum' : 'STRK',
               currencyIcon: isEthereum ? EthIcon : StrkIcon,
             };
@@ -108,6 +113,8 @@ const Dashboard = ({ walletId }) => {
 
         setCardData(cardData);
         setHealthFactor(healthRatio);
+      } else {
+        console.error('Data is missing or incorrectly formatted');
       }
       setLoading(false);
     };
@@ -115,50 +122,81 @@ const Dashboard = ({ walletId }) => {
     getData();
   }, [walletId]);
 
+  const getCurrentSumColor = () => {
+    if (startSum === currentSum) return '';
+    return currentSum < startSum ? 'current-sum-red' : 'current-sum-green';
+  };
+
   return (
-    <div className="dashboard-wrapper">
-      <div className="dashboard-container container">
-        {loading && <Spinner loading={loading} />}
+    <div className="dashboard-container position-relative container">
+      {loading && <Spinner loading={loading} />}
 
-        {starData.map((star, index) => (
-          <Star
-            key={index}
-            className="dashboard-star"
-            style={{
-              '--star-top': `${star.top}%`,
-              '--star-left': `${star.left}%`,
-              '--star-size': `${star.size}%`,
-            }}
-          />
-        ))}
-        
-        <div className="background-effects">
-          <div className="background-gradient"></div>
-          <div className="background-gradient"></div>
+      {starData.map((star, index) => (
+        <Star
+          key={index}
+          className="dashboard-star"
+          style={{
+            '--star-top': `${star.top}%`,
+            '--star-left': `${star.left}%`,
+            '--star-size': `${star.size}%`,
+          }}
+        />
+      ))}
+      <div className="position-relative">
+        <div className="background-gradient"></div>
+        <div className="background-gradient"></div>
+      </div>
+      <h1 className="text-white text-center zkLend-text">zkLend Position</h1>
+      <div className="card card-health-factor mx-auto d-flex flex-column align-items-center justify-content-center card-shadow">
+        <div className="bg-custom-health d-flex align-items-center px-4 py-3 rounded bg-card-health">
+          <span className="dashboard-text-color health-text-size">Health factor:</span>
+          <span className="text-white text-style">{healthFactor}</span>
         </div>
-
-        <h1 className="text-white text-center zkLend-text">zkLend Position</h1>
-
-        <div className="health-factor-wrapper">
-          <div className="card card-health-factor mx-auto d-flex flex-column align-items-center justify-content-center card-shadow">
-            <div className="bg-custom-health d-flex align-items-center rounded bg-card-health">
-              <span className="dashboard-text-color health-text-size">Health factor:</span>
-              <span className="text-white text-style">{healthFactor}</span>
+      </div>
+      <div className="mb-4 d-flex flex-row justify-content-center cards-custom">
+        {cardData.map((card, index) => (
+          <div key={index} className="card card-custom-styles d-flex flex-column align-item-center card-shadow">
+            <header className="card-header bg-custom-color text-light text-center card-shadow">
+              <div className="d-flex align-items-center justify-content-center">
+                <card.icon className="card-icons rounded-circle" />
+                <h1
+                  className={`ms-2 icon-text-gap mb-0 text-style ${card.title === 'Borrow' ? 'borrow-text' : 'collateral-text'}`}
+                >
+                  {card.title}
+                </h1>
+              </div>
+            </header>
+            <div className="card-body card-body-custom">
+              <div className="d-flex flex-column align-items-center bg-custom-color rounded">
+                <div className="d-flex align-items-center mb-3">
+                  <card.currencyIcon className="card-icons rounded-circle" />
+                  <span className="ms-2 icon-text-gap text-style">{card.currencyName}</span>
+                </div>
+                <div className="d-flex align-items-center">
+                  <span className="dashboard-text-color balance-text-size">Balance:</span>
+                  <span
+                    className={`ms-2 icon-text-gap text-style ${card.title === 'Borrow' ? 'borrow-text' : 'collateral-text'}`}
+                  >
+                    {card.balance}
+                  </span>
+                </div>
+                {card.title === 'Collateral & Earnings' && (
+                  <div className="sum-info">
+                    <span className="start-sum">Start sum: {startSum} $</span>
+                    <span className="current-sum">
+                      Current sum: <span className={getCurrentSumColor()}>{currentSum} $</span>
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="dashboard-cards">
-          {cardData.map((card, index) => (
-            <DashboardCard key={index} card={card} />
-          ))}
-        </div>
-
-        <div className="redeem-button-wrapper">
-          <button className="btn redeem-btn border-0" onClick={closePositionEvent}>
-            Redeem
-          </button>
-        </div>
+        ))}
+      </div>
+      <div>
+        <button className="btn redeem-btn border-0" onClick={() => closePositionEvent()}>
+          Redeem
+        </button>
       </div>
     </div>
   );
