@@ -1,16 +1,15 @@
 use ekubo::types::keys::PoolKey;
-use spotnet::types::{MarketReserveData, SwapData, SwapResult, DepositData};
-use starknet::{ContractAddress};
+use spotnet::types::{MarketReserveData, DepositData, Claim, EkuboSlippageLimits, TokenPrice};
+use starknet::ContractAddress;
 
 #[starknet::interface]
 pub trait IDeposit<TContractState> {
-    fn swap(ref self: TContractState, swap_data: SwapData) -> SwapResult;
-
     fn loop_liquidity(
         ref self: TContractState,
         deposit_data: DepositData,
         pool_key: PoolKey,
-        pool_price: felt252
+        ekubo_limits: EkuboSlippageLimits,
+        pool_price: TokenPrice
     );
 
     fn close_position(
@@ -18,8 +17,16 @@ pub trait IDeposit<TContractState> {
         supply_token: ContractAddress,
         debt_token: ContractAddress,
         pool_key: PoolKey,
-        supply_price: felt252,
-        debt_price: felt252
+        ekubo_limits: EkuboSlippageLimits,
+        supply_price: TokenPrice,
+        debt_price: TokenPrice
+    );
+
+    fn claim_reward(
+        ref self: TContractState,
+        claim_data: Claim,
+        proof: Span<felt252>,
+        airdrop_addr: ContractAddress
     );
 }
 
@@ -38,4 +45,9 @@ pub trait IMarket<TContractState> {
     fn withdraw_all(ref self: TContractState, token: ContractAddress);
     fn repay(ref self: TContractState, token: ContractAddress, amount: felt252);
     fn repay_all(ref self: TContractState, token: ContractAddress);
+}
+
+#[starknet::interface]
+pub trait IAirdrop<TContractState> {
+    fn claim(ref self: TContractState, claim: Claim, proof: Span<felt252>) -> bool;
 }
