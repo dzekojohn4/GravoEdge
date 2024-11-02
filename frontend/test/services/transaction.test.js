@@ -174,7 +174,7 @@ describe('Transaction Functions', () => {
 
     it('should handle create position error', async () => {
       const mockError = new Error('Create position failed');
-      axiosIn.post.mockRejectedValueOnce(mockError);
+      axiosInstance.post.mockRejectedValueOnce(mockError);
 
       console.error = jest.fn();
 
