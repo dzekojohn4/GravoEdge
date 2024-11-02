@@ -9,6 +9,8 @@ export const ETH_ADDRESS = '0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b156
 export const STRK_ADDRESS = '0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d';
 export const USDC_ADDRESS = '0x53c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8';
 
+export const ONE_HOUR_IN_MILLISECONDS = 3600000;
+
 export function getDeployContractData(walletId) {
   return {
     classHash: CLASS_HASH,
