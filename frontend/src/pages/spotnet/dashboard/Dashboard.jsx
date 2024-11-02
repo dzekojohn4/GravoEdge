@@ -9,6 +9,8 @@ import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
 import { closePosition } from 'utils/transaction';
 import { ZETH_ADDRESS } from 'utils/constants';
 import Spinner from 'components/spinner/Spinner';
+import DashboardCard from 'components/Dashboard/DashboardCard';
+
 import './dashboard.css';
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
@@ -26,37 +28,6 @@ const fetchCardData = async ({ walletId }) => {
     return null;
   }
 };
-
-const DashboardCard = ({ card }) => (
-  <div className="card card-custom-styles d-flex flex-column align-item-center card-shadow">
-    <header className="card-header bg-custom-color text-light text-center">
-      <div className="d-flex align-items-center justify-content-center">
-        <card.icon className="card-icons" />
-        <h2 className="ms-2 icon-text-gap mb-0 text-style" style={{
-          color: card.title === 'Borrow' ? 'var(--borrow-color)' : 'var(--collateral-color)',
-        }}>
-          {card.title}
-        </h2>
-      </div>
-    </header>
-    <div className="card-body card-body-custom">
-      <div className="d-flex flex-column align-items-center bg-custom-color rounded p-3">
-        <div className="d-flex align-items-center mb-3">
-          <card.currencyIcon className="card-icons" />
-          <span className="ms-2 icon-text-gap text-style">{card.currencyName}</span>
-        </div>
-        <div className="d-flex align-items-center">
-          <span className="dashboard-text-color balance-text-size">Balance:</span>
-          <span className="ms-2 icon-text-gap text-style" style={{
-            color: card.title === 'Borrow' ? 'var(--borrow-color)' : 'var(--collateral-color)',
-          }}>
-            {card.balance}
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 const Dashboard = ({ walletId }) => {
   const [cardData, setCardData] = useState([
@@ -110,8 +81,7 @@ const Dashboard = ({ walletId }) => {
       if (data && data.zklend_position && data.zklend_position.products) {
         const positions = data.zklend_position.products[0].positions || [];
         const healthRatio = data.zklend_position.products[0].health_ratio;
-        console.log('Positions:', positions);
-
+        
         const cardData = positions.map((position, index) => {
           const isFirstCard = index === 0;
           const tokenAddress = position.tokenAddress;
@@ -138,8 +108,6 @@ const Dashboard = ({ walletId }) => {
 
         setCardData(cardData);
         setHealthFactor(healthRatio);
-      } else {
-        console.error('Data is missing or incorrectly formatted');
       }
       setLoading(false);
     };
@@ -182,7 +150,7 @@ const Dashboard = ({ walletId }) => {
 
         <div className="dashboard-cards">
           {cardData.map((card, index) => (
-            <DashboardCard key={index} card={card} index={index} />
+            <DashboardCard key={index} card={card} />
           ))}
         </div>
 
