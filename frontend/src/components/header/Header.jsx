@@ -3,28 +3,20 @@ import { ReactComponent as Logo } from 'assets/images/logo.svg';
 import { NavLink } from 'react-router-dom';
 import WalletSection from 'components/WalletSection';
 import NavigationLinks from 'components/NavigationLinks';
+import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import './header.css';
 import '../../globals.css';
 
 function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Use the custom hook for body scroll locking
+  useLockBodyScroll(isMenuOpen);
+
   // Close menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [window.location.pathname]);
-
-  // Prevent scroll when mobile menu is open
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isMenuOpen]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
