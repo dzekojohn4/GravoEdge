@@ -90,6 +90,12 @@ const Form = ({ walletId, setWalletId }) => {
           )}
           <label>Select Token</label>
           <TokenSelector setSelectedToken={setSelectedToken} />
+          <h5>Select Multiplier</h5>
+          <MultiplierSelector
+            setSelectedMultiplier={setSelectedMultiplier}
+            selectedToken={selectedToken}
+            sliderValue={selectedMultiplier}
+          />
           <div className="token-label">
             <label>Token Amount</label>
             {error && <p className="error-message">{error}</p>}
@@ -101,8 +107,6 @@ const Form = ({ walletId, setWalletId }) => {
               className={error ? 'error' : ''}
             />
           </div>
-          <h5>Select Multiplier</h5>
-          <MultiplierSelector setSelectedMultiplier={setSelectedMultiplier} />
           <div>
             <button type="submit" className="form-button">
               Submit
