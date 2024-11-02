@@ -1,11 +1,11 @@
 # Spotnet functionality documentation
 
 ## Overview
-Spotnet is a dApp designed for increasing of initial collateral deposit deposit by utilizing lending 
+Spotnet is a dApp designed for increasing of initial collateral deposit by utilizing lending 
 protocols and AMMs for borrowing tokens, swapping them and redepositing up to x4 of starting capital(as for now).
 
 ## Spotnet Smart Contract
-Smart contract consists of a constructor and two methods for public use.
+Smart contract consists of a constructor and three methods for public use.
 
 ### Constructor
 Constructor of our contract receives three parameters(ekubo_core and zk_market are serialized to Dispatcher types for starknet::interfaces):
@@ -16,10 +16,12 @@ Onwer address is an account address of the user who deploys it, only owner can d
 
 ### loop_liquidity
 The `loop_liquidity` method is responsible for deposit of collateral token. For now only one position can be opened, to create the new you need to close old one.
+For validating the identity of the caller is used an address of account initiated a transaction instead of a caller for testing purposes.
 This method has next parameters:
 * `deposit_data`: DepositData - Object of internal type which stores main deposit information.
 * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping tokens.
-* `pool_price`: felt252 - Price of `deposit` token in terms of `debt` token in Ekubo pool(so for ex. 2400000000 USDC for ETH when depositing ETH).
+* `ekubo_limits`: EkuboSlippageLimits - Object of internal type which represents upper and lower sqrt_ratio values on Ekubo. Used to control slippage while swapping.
+* `pool_price`: felt252 - Price of `deposit` token in terms of `debt` token(so for ex. 2400000000 USDC for ETH when depositing ETH).
 
 It's flow can be described as follows:
 
@@ -48,13 +50,15 @@ emit event
 ```
 
 ### close_position
-The `close_position` method is responsible for repaying debts and withdrawing all tokens from zklend. Can be called only if there is active position. 
+The `close_position` method is responsible for repaying debts and withdrawing all tokens from zklend. Can be called only if there is active position. For validating the 
+identity of the caller is used an address of account initiated a transaction instead of a caller for testing purposes.
 The method has next parameters:
 * `supply_token`: ContractAddress - Address of the token used as collateral.
 * `debt_token`: ContractAddress - Address of the token used as borrowing.
 * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping tokens.
-* `supply_price`: felt252 - Price of `supply` token in terms of `debt` token in Ekubo pool(so for ex. 2400000000 USDC for ETH).
-* `debt_price`: felt252 - Price of `debt` token in terms of `supply` token in Ekubo pool(for ex. 410000000000000 ETH for USDC).
+* `ekubo_limits`: EkuboSlippageLimits - Object of internal type which represents upper and lower sqrt_ratio values on Ekubo. Used to control slippage while swapping.
+* `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token(so for ex. 2400000000 USDC for ETH).
+* `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token(for ex. 410000000000000 ETH for USDC).
 
 It's flow can be described as follows:
 ```
@@ -71,28 +75,55 @@ while debt != 0 {
 
     repay
 }
-swap back extra debt token
+transfer tokens to user
+
+disable collateral token
 
 emit event
 ```
 
+### claim_reward
+The `claim_reward` method claims airdrop reward accumulated by the contract that deposited into zkLend. Claim only possible if position is currently open.
+This method has next parameters:
+* `claim_data`: Claim - contains data about claim operation
+* `proof`: Span<felt252> - proof used to validate the claim
+* `airdrop_addr`: ContractAddress - address of a contract responsible for claim
+
+Ir's flow can be described as follow
+```
+assertions
+
+airdrop claim
+
+transfer half of reward to the treasury
+```
+
 ## Important types, events and constants
 ### Types
+#### DepositData
+The main data about the loop to perform. The `amount` * `multiplier` value is minimal amount that will be deposited after the loop.
+The `borrow_const` sets how much tokens will be borrowed from available amount(borrowing power). So if there is available 1 ETH to borrow and we passed 60%, it will borrow 0.6 ETH.
+This will work up to 99% of available amount, howewer, for stability against slippage and prices difference on zkLend and our source it's better to not go higher than 98%.
+
 ```
 struct DepositData {
     token: ContractAddress,
-    amount: u256,
-    multiplier: u32
+    amount: TokenAmount,
+    multiplier: u32,
+    borrow_const: u8
 }
 ```
+
+#### EkuboSlippageLimits
+This structure sets slippage limits for swapping on Ekubo. Maximal are `6277100250585753475930931601400621808602321654880405518632` for `upper` and `18446748437148339061` for `lower` as stated by [Ekubo docs](https://docs.ekubo.org/integration-guides/reference/error-codes#limit_mag).
 
 ### Events
 ```
 struct LiquidityLooped {
-    initial_amount: u256,
-    deposited: u256,
+    initial_amount: TokenAmount,
+    deposited: TokenAmount,
     token_deposit: ContractAddress,
-    borrowed: u256,
+    borrowed: TokenAmount,
     token_borrowed: ContractAddress
 }
 ```
@@ -100,12 +131,10 @@ struct LiquidityLooped {
 struct PositionClosed {
     deposit_token: ContractAddress,
     debt_token: ContractAddress,
-    withdrawn_amount: u256,
-    repaid_amount: u256
+    withdrawn_amount: TokenAmount,
+    repaid_amount: TokenAmount
 }
 ```
 
 ### Constants
-* For swaps the EKUBO_LOWER_SQRT_LIMIT and EKUBO_UPPER_SQRT_LIMIT constants used. They define how much price can be moved by swappng. For now it is set to limiting values (`18446748437148339061` and `6277100250585753475930931601400621808602321654880405518632` respectively).
-
-* ZK_SCALE_DECIMALS is used for scaling down values obtained by multiplying on zklend collateral and borrow factor.
+* ZK_SCALE_DECIMALS is used for scaling down values obtained by multiplying on zklend collateral and borrow factors.
