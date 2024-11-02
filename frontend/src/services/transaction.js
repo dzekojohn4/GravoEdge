@@ -82,11 +82,14 @@ export const handleTransaction = async (connectedWalletId, formData, setError, s
       params: { position_id: transactionData.position_id },
     });
 
+    openPositionResponse == openPositionResponse;
+
     // Reset form data
     setTokenAmount('');
   } catch (err) {
     console.error('Failed to create position:', err);
     setError('Failed to create position. Please try again.');
+    setSuccessful(false)
   } finally {
     setLoading(false);
   }
