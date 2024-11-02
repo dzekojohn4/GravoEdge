@@ -1,23 +1,29 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ReactComponent as Logo } from 'assets/images/logo.svg';
-import { ReactComponent as Menu } from 'assets/icons/menu.svg';
-import { ReactComponent as Close } from 'assets/icons/close.svg';
 import { NavLink } from 'react-router-dom';
-import TelegramLogin from '../Telegram/TelegramLogin';
-import { useClickOutside } from 'hooks/useClickOutside';
+import WalletSection from 'components/WalletSection';
+import NavigationLinks from 'components/NavigationLinks';
+import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import './header.css';
+import '../../globals.css';
 
 function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef(null);
-  const buttonRef = useRef(null);
 
-  useClickOutside([menuRef, buttonRef], () => {
+  // Use the custom hook for body scroll locking
+  useLockBodyScroll(isMenuOpen);
+
+  // Close menu when route changes
+  useEffect(() => {
     setIsMenuOpen(false);
-  });
+  }, [window.location.pathname]);
 
   const toggleMenu = () => {
-    setIsMenuOpen((prevState) => !prevState);
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleNavClick = () => {
+    setIsMenuOpen(false);
   };
 
   return (
@@ -28,47 +34,40 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
             <Logo className='logo-icon'/>
           </NavLink>
         </div>
-        <div className={`nav-items ${isMenuOpen ? 'open' : ''}`} ref={menuRef}>
-          <NavLink
-            to="/"
-            end
-            className={`link ${({ isActive }) => (isActive ? 'active-link' : '')}`}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/dashboard"
-            className={`link ${({ isActive }) => (isActive ? 'active-link' : '')}`}
-            onClick={() => setIsMenuOpen(false)}
-            style={{fontSize:"1rem"}}
-          >
-            Dashboard
-          </NavLink>
-          <div className="wallet-section">
-            <TelegramLogin user={tgUser} onLogin={setTgUser} />
-            {walletId ? (
-              <div className="wallet-container">
-                <button className="logout-button"  onClick={onLogout}>
-                  Log out
-                </button>
-                <div className="wallet-id">{`${walletId.slice(0, 4)}...${walletId.slice(-4)}`}</div>
-              </div>
-            ) : (
-              <button className="gradient-button" onClick={onConnectWallet}>
-                <span>Connect Wallet</span>
-              </button>
-            )}
-          </div>
-        </div>
-        <button
-          className="hamburger-button"
+        
+        {/* Desktop Navigation */}
+        <NavigationLinks onNavClick={handleNavClick} />
+        <WalletSection 
+          walletId={walletId}
+          onConnectWallet={onConnectWallet}
+          onLogout={onLogout}
+          tgUser={tgUser}
+          setTgUser={setTgUser}
+        />
+        
+        {/* Hamburger Menu Button */}
+        <button 
+          className={`hamburger-menu ${isMenuOpen ? 'active' : ''}`}
           onClick={toggleMenu}
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          ref={buttonRef}
+          aria-label="Toggle menu"
         >
-          {isMenuOpen ? <Close className="menu-icon" /> : <Menu className="menu-icon" />}
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
         </button>
+        
+        {/* Mobile Menu */}
+        <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+          <NavigationLinks onNavClick={handleNavClick} />
+          <WalletSection 
+            walletId={walletId}
+            onConnectWallet={onConnectWallet}
+            onLogout={onLogout}
+            tgUser={tgUser}
+            setTgUser={setTgUser}
+            onAction={() => setIsMenuOpen(false)}
+          />
+        </div>
       </div>
     </nav>
   );
