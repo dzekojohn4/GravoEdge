@@ -22,7 +22,6 @@ const Information = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
