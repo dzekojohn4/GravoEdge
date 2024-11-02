@@ -66,7 +66,7 @@ export async function closePosition(transactionData) {
   ]);
 }
 
-export const handleTransaction = async (connectedWalletId, formData, setError, setTokenAmount, setLoading) => {
+export const handleTransaction = async (connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful) => {
 
   setLoading(true);
   setError('');
@@ -82,7 +82,7 @@ export const handleTransaction = async (connectedWalletId, formData, setError, s
       params: { position_id: transactionData.position_id },
     });
 
-    openPositionResponse == openPositionResponse;
+    openPositionResponse == openPositionResponse
 
     // Reset form data
     setTokenAmount('');
