@@ -1,32 +1,37 @@
-.dont-miss__container{
-    height: 70vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    position: relative;
+.dont-miss__container {
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
 }
 
-.miss-title{
-    color: white;
-    font-size: 50px;
+.miss-title {
+  color: var(--primary);
+  font-size: 50px;
 }
 
-.miss-description{
-    color: darkgray;
-    font-size: 24px;
+.miss-description {
+  color: var(--secondary);
+  font-size: 24px;
+  margin-bottom: 0;
 }
 
-.miss-btn{
-    width: 400px;
+.miss-button {
+  position: relative;
 }
 
-.miss-button{
-    position: relative;
+.hand-icon {
+  position: absolute;
+  right: -50px;
+  top: 26px;
 }
 
-.hand-icon{
-    position: absolute;
-    right: -50px;
-    top: 0;
+.miss-star {
+  position: absolute;
+  top: var(--star-top);
+  left: var(--star-left);
+  width: var(--star-size);
+  height: var(--star-size);
 }

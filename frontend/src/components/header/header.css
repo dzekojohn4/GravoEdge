@@ -1,101 +1,251 @@
-@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
-:root{
-    --text-font:'Rethink Sans',sans-serif;
-    --gradient: linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%);
-    --secondary-color:#1A1C24;
-    --blue-color:#74D6FD;
-}
-
-body{
-    overflow-x: hidden;
-}
-
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-a{
-    text-decoration: none;
-}
-
-li{
-    list-style-type: none;
-}
-
 nav {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    width: 100vw;
-    justify-content: center;
-    background-color: var(--secondary-color);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  position: relative;
 }
 
 .list-items {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    width: 97%;
-    height: 100px;
-    position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent;
+  width: 97%;
+  height: 100px;
+  position: relative;
 }
 
 .logo {
-    position: absolute;
-    left: 10px;
+  z-index: 10;
 }
 
 .nav-items {
-    display: flex;
-    gap: 2.5em;
-    justify-content: center;
-}
-
-.wallet-section {
-    position: absolute;
-    right: 10px;
+  display: flex;
+  gap: 2.5em;
+  justify-content: center;
+  align-items: center;
 }
 
 .nav-items a {
-    position: relative;
-    color: white;
-    font-family:var(--text-font);
-    font-size: 20px;
+  position: relative;
+  color: var(--secondary);
+  font-family: var(--text-font);
+  font-size: 20px;
+  transition: color 0.3s;
 }
 
-.nav-items a:hover{
-    color: var(--blue-color);
+.nav-items a:hover {
+  color: var(--brand);
 }
 
-.gradient-button{
-    background: transparent;
-    border-radius: 8px;
-    height: 52px;
-    width: 190px;
-    font-size: 20px;
-    font-family: var(--text-font);
-    border: 1px solid var(--blue-color);
-    color: white;
-    font-weight: 700;
+.nav-items a.active-link {
+  color: var(--brand);
+  font-weight: 700;
 }
 
-.wallet-container{
+/* Wallet section styles */
+.wallet-section {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.wallet-container {
+  display: flex;
+  gap: 10px;
+}
+
+.wallet-id {
+  background: var(--gradient);
+  border-radius: 8px;
+  height: 52px;
+  width: 190px;
+  font-size: 20px;
+  font-family: var(--text-font);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--black);
+}
+
+.wallet-section .gradient-button {
+  border-radius: 8px;
+  border: none;
+  height: 52px;
+  width: 190px;
+  font-size: 20px;
+  font-family: var(--text-font);
+  color: var(--black);
+  font-weight: 700;
+  background: var(--button-gradient);
+  line-height: 100%;
+}
+
+.wallet-section .gradient-button:hover {
+  background: var(--button-gradient-hover);
+}
+
+.wallet-section .gradient-button:active {
+  background: var(--button-gradient-active);
+}
+
+.wallet-section .gradient-button:disabled {
+  background: var(--button-gradient);
+  color: var(--primary);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wallet-section .logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 190px;
+  height: 52px;
+  border-radius: 8px;
+  border: 1px solid var(--brand);
+  background-color: transparent;
+  color: var(--primary);
+  font-family: var(--text-font);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 100%;
+  transition: all 0.3s ease;
+}
+
+.wallet-section .logout-button:hover {
+  background: var(--button-gradient-hover);
+  border: none;
+  color: var(--black);
+}
+
+.wallet-section .logout-button:active {
+  background: var(--button-gradient-active);
+  color: var(--black);
+}
+
+.wallet-section .logout-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  position: absolute;
+  right: 20px;
+  z-index: 100;
+}
+
+.hamburger-line {
+  width: 30px;
+  height: 2px;
+  background-color: var(--primary);
+  transition: all 0.3s ease;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: var(--secondary-color);
+  overflow: hidden;
+  transition: height 0.3s ease-in-out;
+  z-index: 99;
+}
+
+.mobile-menu.open {
+  height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Hamburger menu animation */
+.hamburger-menu.active .hamburger-line:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+@media (max-width: 1024px) {
+  .nav-items {
+    display: none;
+  }
+  
+  .wallet-section {
+    display: none;
+  }
+  
+  .hamburger-menu {
     display: flex;
-    gap: 10px;
-}
-
-.wallet-id{
-    background: var(--gradient);
-    border-radius: 8px;
-    height: 52px;
-    width: 190px;
-    font-size: 20px;
-    font-family: var(--text-font);
-    font-weight: 700;
+  }
+  
+  .mobile-menu .nav-items {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .mobile-menu .wallet-section {
+    display: flex;
+    flex-direction: column;
+    position: static;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .mobile-menu .wallet-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .gradient-button,
+  .logout-button,
+  .wallet-id {
+    width: 160px;
+    font-size: 16px;
+    height: 48px;
+  }
+  
+  nav {
+    height: 70px;
+  }
+  
+  .mobile-menu {
+    top: 70px;
+  }
+  
+  .mobile-menu.open {
+    height: calc(100vh - 70px);
+  }
+  
+  .logo svg {
+    width: 120px;
+    height: auto;
+  }
 }
