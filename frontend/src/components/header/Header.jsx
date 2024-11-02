@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as Logo } from 'assets/images/logo.svg';
 import { NavLink } from 'react-router-dom';
-import TelegramLogin from '../Telegram/TelegramLogin';
+import WalletSection from 'components/WalletSection';
+import NavigationLinks from 'components/NavigationLinks';
 import './header.css';
+import '../../globals.css';
 
 function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,55 +30,9 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const NavigationLinks = () => (
-    <div className="nav-items">
-      <NavLink 
-        to="/" 
-        end 
-        className={({ isActive }) => (isActive ? 'active-link' : '')}
-        onClick={() => setIsMenuOpen(false)}
-      >
-        Home
-      </NavLink>
-      <NavLink 
-        to="/dashboard" 
-        className={({ isActive }) => (isActive ? 'active-link' : '')}
-        onClick={() => setIsMenuOpen(false)}
-      >
-        Dashboard
-      </NavLink>
-    </div>
-  );
-
-  const WalletSection = () => (
-    <div className="wallet-section">
-      <TelegramLogin user={tgUser} onLogin={setTgUser} />
-      {walletId ? (
-        <div className="wallet-container">
-          <button 
-            className="logout-button" 
-            onClick={() => {
-              onLogout();
-              setIsMenuOpen(false);
-            }}
-          >
-            Log out
-          </button>
-          <div className="wallet-id">{`${walletId.slice(0, 4)}...${walletId.slice(-4)}`}</div>
-        </div>
-      ) : (
-        <button 
-          className="gradient-button" 
-          onClick={() => {
-            onConnectWallet();
-            setIsMenuOpen(false);
-          }}
-        >
-          <span>Connect Wallet</span>
-        </button>
-      )}
-    </div>
-  );
+  const handleNavClick = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
     <nav>
@@ -88,8 +44,14 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
         </div>
         
         {/* Desktop Navigation */}
-        <NavigationLinks />
-        <WalletSection />
+        <NavigationLinks onNavClick={handleNavClick} />
+        <WalletSection 
+          walletId={walletId}
+          onConnectWallet={onConnectWallet}
+          onLogout={onLogout}
+          tgUser={tgUser}
+          setTgUser={setTgUser}
+        />
         
         {/* Hamburger Menu Button */}
         <button 
@@ -104,8 +66,15 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
         
         {/* Mobile Menu */}
         <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
-          <NavigationLinks />
-          <WalletSection />
+          <NavigationLinks onNavClick={handleNavClick} />
+          <WalletSection 
+            walletId={walletId}
+            onConnectWallet={onConnectWallet}
+            onLogout={onLogout}
+            tgUser={tgUser}
+            setTgUser={setTgUser}
+            onAction={() => setIsMenuOpen(false)}
+          />
         </div>
       </div>
     </nav>
