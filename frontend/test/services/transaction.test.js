@@ -1,10 +1,10 @@
 import { connect } from 'get-starknet';
 import { sendTransaction, closePosition, handleTransaction } from '../../src/services/transaction';
-import axios from 'axios';
+import { axiosInstance } from '../../src/utils/axios';
 import { mockBackendUrl } from '../constants';
 
 jest.mock('get-starknet');
-jest.mock('axios');
+jest.mock('../../src/utils/axios');
 
 jest.mock('starknet', () => ({
   CallData: class MockCallData {
@@ -155,16 +155,16 @@ describe('Transaction Functions', () => {
         },
       };
 
-      axios.post.mockResolvedValueOnce({ data: mockTransactionData });
-      axios.get.mockResolvedValueOnce({
+      axiosInstance.post.mockResolvedValueOnce({ data: mockTransactionData });
+      axiosInstance.get.mockResolvedValueOnce({
         data: { status: 'open' },
       });
 
       await handleTransaction(mockWalletId, mockFormData, mockSetError, mockSetTokenAmount, mockSetLoading);
 
       expect(mockSetLoading).toHaveBeenCalledWith(true);
-      expect(axios.post).toHaveBeenCalledWith('http://0.0.0.0:8000/api/create-position', mockFormData);
-      expect(axios.get).toHaveBeenCalledWith('http://0.0.0.0:8000/api/open-position', {
+      expect(axiosInstance.post).toHaveBeenCalledWith('/api/create-position', mockFormData);
+      expect(axiosInstance.get).toHaveBeenCalledWith('/api/open-position', {
         params: { position_id: mockTransactionData.position_id },
       });
       expect(mockSetTokenAmount).toHaveBeenCalledWith('');
@@ -174,7 +174,7 @@ describe('Transaction Functions', () => {
 
     it('should handle create position error', async () => {
       const mockError = new Error('Create position failed');
-      axios.post.mockRejectedValueOnce(mockError);
+      axiosIn.post.mockRejectedValueOnce(mockError);
 
       console.error = jest.fn();
 
