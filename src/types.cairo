@@ -1,7 +1,12 @@
-use ekubo::interfaces::core::SwapParameters;
-use ekubo::types::delta::Delta;
-use ekubo::types::keys::PoolKey;
+// use ekubo::interfaces::core::SwapParameters;
+// use ekubo::types::delta::Delta;
+// use ekubo::types::keys::PoolKey;
+use ekubo::{interfaces::core::SwapParameters, types::{delta::Delta, keys::PoolKey}};
 use starknet::ContractAddress;
+
+pub type TokenPrice = u128;
+pub type TokenAmount = u256;
+pub type DecimalScale = u64;
 
 #[derive(Copy, Drop, Serde)]
 pub struct SwapResult {
@@ -18,8 +23,22 @@ pub struct SwapData {
 #[derive(Copy, Drop, Serde)]
 pub struct DepositData {
     pub token: ContractAddress,
-    pub amount: u256,
-    pub multiplier: u32
+    pub amount: TokenAmount,
+    pub multiplier: u32,
+    pub borrow_const: u8
+}
+
+#[derive(Copy, Drop, Serde)]
+pub struct EkuboSlippageLimits {
+    pub lower: u256,
+    pub upper: u256
+}
+
+#[derive(Copy, Drop, Serde)]
+pub struct Claim {
+    pub id: u64,
+    pub claimee: ContractAddress,
+    pub amount: u128
 }
 
 #[derive(Drop, Serde, starknet::Store)]
@@ -34,10 +53,11 @@ pub struct MarketReserveData {
     last_update_timestamp: felt252,
     lending_accumulator: felt252,
     debt_accumulator: felt252,
-    current_lending_rate: felt252,
-    current_borrowing_rate: felt252,
+    pub current_lending_rate: felt252,
+    pub current_borrowing_rate: felt252,
     raw_total_debt: felt252,
     flash_loan_fee: felt252,
     liquidation_bonus: felt252,
     debt_limit: felt252
 }
+

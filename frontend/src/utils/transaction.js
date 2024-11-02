@@ -66,7 +66,7 @@ export async function closePosition(transactionData) {
   ]);
 }
 
-export const handleTransaction = async (connectedWalletId, formData, setError, setTokenAmount, setLoading) => {
+export const handleTransaction = async (connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful) => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://0.0.0.0:8000';
 
   setLoading(true);
@@ -84,6 +84,8 @@ export const handleTransaction = async (connectedWalletId, formData, setError, s
       params: { position_id: transactionData.position_id },
     });
 
+    setSuccessful(true)
+
     console.log('Position status updated successfully:', openPositionResponse.data);
 
     // Reset form data
@@ -91,6 +93,7 @@ export const handleTransaction = async (connectedWalletId, formData, setError, s
   } catch (err) {
     console.error('Failed to create position:', err);
     setError('Failed to create position. Please try again.');
+    setSuccessful(false)
   } finally {
     setLoading(false);
   }
