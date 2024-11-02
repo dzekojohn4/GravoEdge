@@ -60,6 +60,8 @@ const Dashboard = ({ walletId }) => {
     },
   ]);
 
+  const [startSum] = useState(400);
+  const [currentSum, setCurrentSum] = useState(200);
   const [healthFactor, setHealthFactor] = useState('0.00');
   const [loading, setLoading] = useState(true);
   const starData = [
@@ -80,7 +82,6 @@ const Dashboard = ({ walletId }) => {
       if (data && data.zklend_position && data.zklend_position.products) {
         const positions = data.zklend_position.products[0].positions || [];
         const healthRatio = data.zklend_position.products[0].health_ratio;
-        console.log('Positions:', positions);
 
         const cardData = positions.map((position, index) => {
           const isFirstCard = index === 0;
@@ -88,10 +89,13 @@ const Dashboard = ({ walletId }) => {
 
           if (isFirstCard) {
             const isEthereum = tokenAddress === ZETH_ADDRESS;
+            const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
+            setCurrentSum(balance); 
+
             return {
               title: 'Collateral & Earnings',
               icon: CollateralIcon,
-              balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+              balance: balance,
               currencyName: isEthereum ? 'Ethereum' : 'STRK',
               currencyIcon: isEthereum ? EthIcon : StrkIcon,
             };
@@ -176,6 +180,15 @@ const Dashboard = ({ walletId }) => {
                     {card.balance}
                   </span>
                 </div>
+                {card.title === 'Collateral & Earnings' && (
+                  <div className="sum-info">
+                    <span className="start-sum">Start sum: {startSum} $</span>
+                    <span className="current-sum">
+                      Current sum: <span className={currentSum < startSum ? 'red' : 'green'}>{currentSum} $</span> 
+                    </span>
+                  </div>
+
+                )}
               </div>
             </div>
           </div>
