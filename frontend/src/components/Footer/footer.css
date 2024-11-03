@@ -183,6 +183,7 @@
 
   .follow-us-text {
     font-size: 24px;
+    margin-bottom: 40px;
   }
 
   .footer-social-cards {
@@ -190,9 +191,9 @@
   }
 
   .social-card {
-    width: calc(50% - 8px);
-    height: 120px;
-    padding: 16px 0;
+     width: 100px;
+    height: 140px;
+    padding: 20px 0;
   }
 
   .social-card p {

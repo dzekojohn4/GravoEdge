@@ -10,7 +10,7 @@
   align-items: center;
   flex-direction: column;
   justify-content: space-between;
-  height: 105vh;
+  /* height: 105vh; */
   width: 117%;
   right: 9.2%;
   background-color: var(--primary-color);
@@ -207,5 +207,52 @@
   .about-container {
     width: 95%;
     left: 15px;
+    margin-bottom: 100px;
+  }
+
+  .about-title {
+    margin: 100px 0;
+  }
+}
+
+
+@media (max-width: 1430px) {
+  .card-container {
+    flex: 1 1 50%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-container {
+    margin-top: 60px;
+    flex-wrap: wrap;
+    max-width: 40%;
+  }
+
+  .card-about {
+    margin-bottom: 50px;
+  }
+
+  .card-title h4 {
+  font-size: 20px;
+  line-height: 108%;
+}
+
+  .card-description h6 {
+  font-size: 14px;
+  line-height: 140%;
+}
+}
+
+@media (max-width: 480px) {
+  .card-container {
+    margin-top: 60px;
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  .card-about {
+    margin-bottom: 50px;
   }
 }
