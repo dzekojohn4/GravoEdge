@@ -242,10 +242,18 @@ nav {
   
   .mobile-menu.open {
     height: calc(100vh - 70px);
+    width: 480px;
   }
   
   .logo svg {
     width: 120px;
     height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+ .mobile-menu.open {
+    height: calc(100vh - 70px);
+    width: 410px;
   }
 }

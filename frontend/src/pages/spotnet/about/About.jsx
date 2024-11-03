@@ -1,9 +1,9 @@
 import './about.css';
-import { ReactComponent as Star } from 'assets/particles/star.svg';
 import { ReactComponent as ZkLend } from 'assets/icons/zklend_eth_collateral.svg';
 import { ReactComponent as BorrowUSDC } from 'assets/icons/borrow_usdc.svg';
 import { ReactComponent as EkuboSwap } from 'assets/icons/ekubo_swap.svg';
 import { ReactComponent as Repeat } from 'assets/icons/repeats.svg';
+import StarMaker from '../../../components/StarMaker';
 import React from 'react';
 
 const CardData = [
@@ -41,17 +41,7 @@ const About = () => {
   ];
   return (
     <div className="about-container">
-      {starData.map((star, index) => (
-        <Star
-          key={index}
-          className="about-star"
-          style={{
-            '--star-top': `${star.top}%`,
-            '--star-left': `${star.left}%`,
-            '--star-size': `${star.size}%`,
-          }}
-        />
-      ))}
+      <StarMaker starData={starData} />
       <h1 className="about-title">How it works</h1>
       <div className="card-container flex">
         <div>

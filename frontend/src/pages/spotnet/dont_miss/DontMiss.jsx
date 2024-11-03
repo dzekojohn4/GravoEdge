@@ -22,8 +22,9 @@ const DontMiss = ({ walletId }) => {
   ];
   return (
     <div className="dont-miss__container">
-      <h1 className="miss-title">Don&apos;t miss out</h1>
-      <p className="miss-description">Investing wisely would be the smartest move you&apos;ll make!</p>
+      <div className="text-container">   <h1 className="miss-title">Don&apos;t miss out</h1>
+      <p className="miss-description">Investing wisely would be the smartest move you&apos;ll make!</p></div>
+   
       {starData.map((star, index) => (
         <Star
           key={index}

@@ -35,3 +35,25 @@
   width: var(--star-size);
   height: var(--star-size);
 }
+
+@media (max-width: 768px) {
+  .text-container {
+    width: 70%;
+    text-align: center;
+  }
+  .miss-title {
+    font-size: 35px;
+  }
+
+  .miss-description {
+    font-size: 20px;
+  }
+
+  .hand-icon {
+    position: absolute;
+    right: -30px;
+    top: 40px;
+    width: 85px;
+    height: 85px;
+  }
+}
