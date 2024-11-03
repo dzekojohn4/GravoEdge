@@ -58,16 +58,92 @@
   filter: blur(120px);
 }
 
-.infos .card-gradient:nth-child(2) {
-  position: absolute;
-  right: -450px;
-  bottom: 70px;
-  width: 342px;
-  height: 208px;
-  flex-shrink: 0;
-  border-radius: 2000px;
-  background: var(--gradient);
-  filter: blur(120px);
+.infos .card-gradient:nth-child(2){
+    position: absolute;
+    right: -450px;
+    bottom: 70px;
+    width: 342px;
+    height: 208px;
+    flex-shrink: 0;
+    border-radius: 2000px;
+    background: var(--gradient, linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%));
+    /* Blur */
+    filter: blur(120px);
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+    .card-info__container {
+        width: 90vw;
+        gap: 15px;
+    }
+
+    .card-info {
+        max-width: 400px;
+    }
+
+    .card-info h3 {
+        font-size: 50px;
+    }
+
+    .card-info h1 {
+        font-size: 28px;
+    }
+
+    /* Adjust gradients for tablet screens */
+    .infos .card-gradient:nth-child(1) {
+        top: 50px;
+        left: -200px;
+        width: 180px;
+        height: 180px;
+        filter: blur(100px);
+    }
+
+    .infos .card-gradient:nth-child(2) {
+        right: -200px;
+        bottom: 40px;
+        width: 250px;
+        height: 180px;
+        filter: blur(100px);
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    .card-info__container {
+        width: 95vw;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card-info {
+        max-width: 300px;
+    }
+
+    .card-info h3 {
+        font-size: 40px;
+    }
+
+    .card-info h1 {
+        font-size: 24px;
+    }
+
+    /* Adjust gradient for mobile screens */
+    .infos .card-gradient:nth-child(1) {
+        top: 20px;
+        left: -150px;
+        width: 150px;
+        height: 150px;
+        filter: blur(80px);
+    }
+
+    .infos .card-gradient:nth-child(2) {
+        right: -150px;
+        bottom: 30px;
+        width: 180px;
+        height: 150px;
+        filter: blur(80px);
+    }
 }
 
 @media (max-width: 1024px) {

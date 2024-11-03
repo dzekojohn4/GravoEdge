@@ -40,13 +40,16 @@ function Footer() {
   ];
 
   return (
+    <footer className="footer-container p-3 mt-auto">
+      <div className="container">
+          <Link to="/">
+            <Logo/>
     <footer className='footer-container'>
       <div className='footer-content'>
         <div className='footer-logo'>
           <Link to='/' aria-label='Go to homepage'>
             <Logo />
           </Link>
-        </div>
         <div>
           <h2 className='follow-us-text'>Follow us on</h2>
           <div className='footer-social-cards'>
