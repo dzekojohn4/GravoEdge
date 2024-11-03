@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ReactComponent as Star } from 'assets/particles/star.svg';
-import { useDashboardData } from 'hooks/useDashboardData';
+import useDashboardData from 'hooks/useDashboardData';
 import { useClosePosition } from 'hooks/useClosePosition';
 import Spinner from 'components/spinner/Spinner';
 import './dashboard.css';
@@ -88,7 +88,11 @@ const Dashboard = ({ walletId }) => {
         ))}
       </div>
       <div>
-        <button className="btn redeem-btn border-0" onClick={() => closePositionMutation.mutate()}>
+        <button
+          className="btn redeem-btn border-0"
+          onClick={() => closePositionMutation.mutate()}
+          disabled={closePositionMutation.isLoading}
+        >
           Redeem
         </button>
       </div>
