@@ -1,7 +1,7 @@
 """
 This module defines the serializers for the user data.
 """
-
+from decimal import Decimal
 from pydantic import BaseModel, Field
 
 
@@ -41,13 +41,14 @@ class GetStatsResponse(BaseModel):
     """
     Pydantic model for the get_stats response.
     """
-    total_opened_amount: float = Field(
-        ...,
-        example=1000.0,
+
+    total_opened_amount: Decimal = Field(
+        default=None,
+        example="1000.0",
         description="Total amount for all open positions across all users.",
     )
     unique_users: int = Field(
-        ...,
+        default=0,
         example=5,
         description="Number of unique users in the database.",
     )
