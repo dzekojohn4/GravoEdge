@@ -1,108 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as Star } from 'assets/particles/star.svg';
-import { ReactComponent as CollateralIcon } from 'assets/icons/collateral.svg';
-import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
-import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
-import { ReactComponent as BorrowIcon } from 'assets/icons/borrow.svg';
-import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
-import { closePosition } from 'services/transaction';
-import { ZETH_ADDRESS } from 'utils/constants';
+import { useDashboardData } from 'hooks/useDashboardData';
+import { useClosePosition } from 'hooks/useClosePosition';
 import Spinner from 'components/spinner/Spinner';
 import './dashboard.css';
-import { axiosInstance } from 'utils/axios';
-
-const fetchCardData = async ({ queryKey }) => {
-  const walletId = queryKey[1];
-  if (!walletId) {
-    console.error('fetchCardData: walletId is undefined');
-    return null;
-  }
-  try {
-    const response = await axiosInstance.get(`/api/dashboard?wallet_id=${walletId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error during getting the data from API', error);
-    return null;
-  }
-};
 
 const Dashboard = ({ walletId }) => {
-  const { data, isLoading, isError } = useQuery(['dashboardData', walletId], fetchCardData, {
-    enabled: !!walletId,
-  });
-
-  const closePositionEvent = async () => {
-    if (!walletId) {
-      console.error('closePositionEvent: walletId is undefined');
-      return;
-    }
-    try {
-      const response = await axiosInstance.get(`/api/get-repay-data?supply_token=ETH&wallet_id=${walletId}`);
-      await closePosition(response.data);
-
-      await axiosInstance.get(`/api/close-position?position_id=${response.data.position_id}`);
-    } catch (e) {
-      console.error('Error during closePositionEvent', e);
-    }
-  };
-
-  const initialCardData = [
-    {
-      title: 'Collateral & Earnings',
-      icon: CollateralIcon,
-      balance: '0.00',
-      currencyName: 'Ethereum',
-      currencyIcon: EthIcon,
-    },
-    {
-      title: 'Borrow',
-      icon: BorrowIcon,
-      balance: '0.00',
-      currencyName: 'USD Coin',
-      currencyIcon: UsdIcon,
-    },
-  ];
-
-  const cardData =
-    data && data.zklend_position && data.zklend_position.products
-      ? data.zklend_position.products[0].positions.map((position, index) => {
-          const tokenAddress = position.tokenAddress;
-          if (index === 0) {
-            const isEthereum = tokenAddress === ZETH_ADDRESS;
-            const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
-            setCurrentSum(balance);
-
-            return {
-              title: 'Collateral & Earnings',
-              icon: CollateralIcon,
-              balance: balance,
-              currencyName: isEthereum ? 'Ethereum' : 'STRK',
-              currencyIcon: isEthereum ? EthIcon : StrkIcon,
-            };
-          }
-          return {
-            title: 'Borrow',
-            icon: BorrowIcon,
-            balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
-            currencyName: 'USD Coin',
-            currencyIcon: UsdIcon,
-          };
-        })
-      : initialCardData;
-
-  const healthFactor =
-    data && data.zklend_position && data.zklend_position.products
-      ? data.zklend_position.products[0].health_ratio
-      : '0.00';
-
   const starData = [
     { top: 1, left: 0, size: 1.5 },
     { top: 75, left: 35, size: 2.5 },
     { top: -2, left: 94, size: 5.5 },
   ];
 
-  if (isLoading) return <Spinner loading={true} />;
-  if (isError) return <p>Error loading data...</p>;
+  const [startSum] = useState(0);
+  const { cardData, healthFactor, currentSum, isLoading } = useDashboardData(walletId);
+  const closePositionMutation = useClosePosition(walletId);
 
   const getCurrentSumColor = () => {
     if (startSum === currentSum) return '';
@@ -111,6 +23,8 @@ const Dashboard = ({ walletId }) => {
 
   return (
     <div className="dashboard-container position-relative container">
+      {isLoading && <Spinner loading={isLoading} />}
+
       {starData.map((star, index) => (
         <Star
           key={index}
@@ -174,7 +88,7 @@ const Dashboard = ({ walletId }) => {
         ))}
       </div>
       <div>
-        <button className="btn redeem-btn border-0" onClick={() => closePositionEvent()}>
+        <button className="btn redeem-btn border-0" onClick={() => closePositionMutation.mutate()}>
           Redeem
         </button>
       </div>
