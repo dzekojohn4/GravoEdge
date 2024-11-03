@@ -12,6 +12,7 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
 
   // Use the custom hook for body scroll locking
   useLockBodyScroll(isMenuOpen);
+  0;
 
   // Close menu when route changes
   useEffect(() => {
@@ -31,22 +32,22 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
       <div className="list-items">
         <div className="logo">
           <NavLink to="/">
-            <Logo className='logo-icon'/>
+            <Logo className="logo-icon" />
           </NavLink>
         </div>
-        
+
         {/* Desktop Navigation */}
         <NavigationLinks onNavClick={handleNavClick} />
-        <WalletSection 
+        <WalletSection
           walletId={walletId}
           onConnectWallet={onConnectWallet}
           onLogout={onLogout}
           tgUser={tgUser}
           setTgUser={setTgUser}
         />
-        
+
         {/* Hamburger Menu Button */}
-        <button 
+        <button
           className={`hamburger-menu ${isMenuOpen ? 'active' : ''}`}
           onClick={toggleMenu}
           aria-label="Toggle menu"
@@ -55,11 +56,11 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
           <span className="hamburger-line" />
           <span className="hamburger-line" />
         </button>
-        
+
         {/* Mobile Menu */}
         <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
           <NavigationLinks onNavClick={handleNavClick} />
-          <WalletSection 
+          <WalletSection
             walletId={walletId}
             onConnectWallet={onConnectWallet}
             onLogout={onLogout}

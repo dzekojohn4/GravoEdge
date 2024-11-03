@@ -1,5 +1,4 @@
 .partnership-container {
-  height: 50vh;
   position: relative;
 }
 
@@ -53,5 +52,21 @@
     height: 150px;
     background: var(--gradient);
     right: 460px;
+  }
+}
+
+@media (max-width: 480px) {
+.partnership-container {
+  margin: 20px 0;
+}
+
+  .partnership-content {
+    position: relative;
+    right: inherit;
+    margin-top: 80px;
+  }
+
+  .about-title {
+
   }
 }
