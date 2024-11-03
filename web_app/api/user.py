@@ -146,9 +146,20 @@ async def get_stats() -> GetStatsResponse:
     try:
         total_opened_amount = position_db.get_total_amounts_for_open_positions()
         unique_users = user_db.get_unique_users_count()
+<<<<<<< HEAD
         return GetStatsResponse(total_opened_amount=total_opened_amount, unique_users=unique_users)
     
     except AttributeError as e:
         raise HTTPException(status_code=500, detail=f"AttributeError: {str(e)}")
     except TypeError as e:
         raise HTTPException(status_code=500, detail=f"TypeError: {str(e)}")
+=======
+        return GetStatsResponse(
+            total_opened_amount=total_opened_amount, unique_users=unique_users
+        )
+
+    except AttributeError as e:
+        raise HTTPException(status_code=500, detail=f"AttributeError: {str(e)}")
+    except TypeError as e:
+        raise HTTPException(status_code=500, detail=f"TypeError: {str(e)}")
+>>>>>>> parent of b352638 (Merge pull request #159 from josephchimebuka/feat/TVL-amount-calculated)
