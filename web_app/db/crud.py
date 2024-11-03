@@ -329,6 +329,7 @@ class PositionDBConnector(UserDBConnector):
             self.write_to_db(position)
         return position.status
 
+<<<<<<< HEAD
     def get_unique_users_count(self) -> int:
         """
         Retrieves the number of unique users in the database.
@@ -354,10 +355,150 @@ class PositionDBConnector(UserDBConnector):
             try:
                 total_opened_amount = (
                     db.query(db.func.sum(Position.amount))
+=======
+    def get_total_amounts_for_open_positions(self) -> Decimal:
+        """
+        Calculates the total amount for all positions where status is 'OPENED'.
+
+        :return: Total amount for all opened positions
+        """
+        with self.Session() as db:
+            try:
+                total_opened_amount = (
+                    db.query(func.sum(cast(Position.amount, Numeric)))
+>>>>>>> parent of b352638 (Merge pull request #159 from josephchimebuka/feat/TVL-amount-calculated)
                     .filter(Position.status == Status.OPENED.value)
                     .scalar()
                 )
                 return total_opened_amount
             except SQLAlchemyError as e:
                 logger.error(f"Error calculating total amount for open positions: {e}")
+<<<<<<< HEAD
                 return None
+=======
+                return Decimal(0.0)
+
+    def save_current_price(self, position: Position, price_dict: dict) -> None:
+        """
+        Saves current prices into db.
+        :return: None
+        """
+        start_price = price_dict.get(position.token_symbol)
+        try:
+            position.start_price = start_price
+            self.write_to_db(position)
+        except SQLAlchemyError as e:
+            logger.error(f"Error while saving current_price for position: {e}")
+
+
+class AirDropDBConnector(DBConnector):
+    """
+    Provides database connection and operations management for the AirDrop model.
+    """
+
+    def save_claim_data(self, airdrop_id: uuid.UUID, amount: Decimal) -> None:
+        """
+        Updates the AirDrop instance with claim data.
+        :param airdrop_id: uuid.UUID
+        :param amount: Decimal
+        """
+        airdrop = self.get_object(AirDrop, airdrop_id)
+        if airdrop:
+            airdrop.amount = amount
+            airdrop.is_claimed = True
+            airdrop.claimed_at = datetime.now()
+            self.write_to_db(airdrop)
+        else:
+            logger.error(f"AirDrop with ID {airdrop_id} not found")
+
+    def get_all_unclaimed(self) -> List[AirDrop]:
+        """
+        Returns all unclaimed AirDrop instances (where is_claimed is False).
+
+        :return: List of unclaimed AirDrop instances
+        """
+        with self.Session() as db:
+            try:
+                unclaimed_instances = (
+                    db.query(AirDrop).filter_by(is_claimed=False).all()
+                )
+                return unclaimed_instances
+            except SQLAlchemyError as e:
+                logger.error(
+                    f"Failed to retrieve unclaimed AirDrop instances: {str(e)}"
+                )
+                return []
+
+
+class TelegramUserDBConnector(DBConnector):
+    """
+    Provides database connection and operations management for the TelegramUser model.
+    """
+
+    def get_user_by_telegram_id(self, telegram_id: str) -> TelegramUser | None:
+        """
+        Retrieves a TelegramUser by their Telegram ID.
+        :param telegram_id: str
+        :return: TelegramUser | None
+        """
+        return self.get_object_by_field(TelegramUser, "telegram_id", telegram_id)
+
+    def get_wallet_id_by_telegram_id(self, telegram_id: str) -> str | None:
+        """
+        Retrieves the wallet ID of a TelegramUser by their Telegram ID.
+        :param telegram_id: str
+        :return: str | None
+        """
+        user = self.get_user_by_telegram_id(telegram_id)
+        return user.wallet_id if user else None
+
+    def create_telegram_user(self, user_data: dict) -> TelegramUser:
+        """
+        Creates a new TelegramUser in the database.
+        :param user_data: dict
+        :return: TelegramUser
+        """
+        telegram_user = TelegramUser(**user_data)
+        return self.write_to_db(telegram_user)
+
+    def update_telegram_user(self, telegram_id: str, user_data: dict) -> None:
+        """
+        Updates a TelegramUser in the database.
+        :param telegram_id: str
+        :param user_data: dict
+        :return: None
+        """
+        with self.Session() as session:
+            stmt = (
+                update(TelegramUser)
+                .where(TelegramUser.telegram_id == telegram_id)
+                .values(**user_data)
+            )
+            session.execute(stmt)
+            session.commit()
+
+    def save_or_update_user(self, user_data: dict) -> TelegramUser:
+        """
+        Saves a new TelegramUser or updates an existing one.
+        :param user_data: dict
+        :return: TelegramUser
+        """
+        telegram_id = user_data.get("telegram_id")
+        existing_user = self.get_user_by_telegram_id(telegram_id)
+
+        if existing_user:
+            self.update_telegram_user(telegram_id, user_data)
+            return self.get_user_by_telegram_id(telegram_id)
+        else:
+            return self.create_telegram_user(user_data)
+
+    def delete_telegram_user(self, telegram_id: str) -> None:
+        """
+        Deletes a TelegramUser from the database.
+        :param telegram_id: str
+        :return: None
+        """
+        user = self.get_user_by_telegram_id(telegram_id)
+        if user:
+            self.delete_object(user, user.id)
+>>>>>>> parent of b352638 (Merge pull request #159 from josephchimebuka/feat/TVL-amount-calculated)
