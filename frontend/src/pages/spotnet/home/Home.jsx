@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as SmallStar } from 'assets/particles/small_star.svg';
-import { ReactComponent as Star } from 'assets/particles/star.svg';
+import StarMaker from '../../../components/StarMaker';
 import { ReactComponent as Decoration } from 'assets/particles/deco.svg';
 import { ReactComponent as Starknet } from 'assets/particles/starknet.svg';
 import { ReactComponent as Rocket } from 'assets/icons/rocket.svg';
@@ -77,27 +77,21 @@ function Home({ walletId }) {
             }}
           />
         ))}
-        {starData.map((star, index) => (
-          <Star
-            key={index}
-            className="star"
-            style={{
-              '--top': `${star.top}%`,
-              '--left': `${star.left}%`,
-              '--size': `${star.size}%`,
-            }}
-          />
-        ))}
+        <StarMaker starData={starData} />
+
         <Starknet className="starknet" />
       </div>
-      <h2 className="center-text">
-        <span className="blue-color">Earn</span> by leveraging your assets
-        <span className="text-gradient"> with Spotnet</span>
-      </h2>
-      <h5>
-        Maximize the potential of your resources and start earning today. Join Spotnet and unlock new opportunities to
-        grow your wealth!
-      </h5>
+      <div className="center-text-container">
+        <h2 className="center-text">
+          <span className="blue-color">Earn</span> by leveraging your assets
+          <span className="text-gradient"> with Spotnet</span>
+        </h2>
+        <h5 className="maximize-potential">
+          Maximize the potential of your resources and start earning today. Join Spotnet and unlock new opportunities to
+          grow your wealth!
+        </h5>
+      </div>
+
       <button className="launch-button" onClick={handleLaunchApp}>
         Launch App <Rocket />
       </button>
