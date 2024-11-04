@@ -388,7 +388,7 @@ mod Deposit {
             let part_for_treasury = claim_data.amount - claim_data.amount / 5; // u128 integer division, rounds down
 
             let treasury_addr = self.treasury.read();
-            let remainder = if(treasury_addr.into() == 0) { // Zeroable not publicly accessible in this Cairo version AFAIK
+            let remainder = if(treasury_addr.into() != 0) { // Zeroable not publicly accessible in this Cairo version AFAIK
                strk.transfer(treasury_addr, part_for_treasury.into());
                claim_data.amount - part_for_treasury
             } else {

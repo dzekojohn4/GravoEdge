@@ -56,7 +56,6 @@ fn test_claim_as_keeper() {
 
 
     let fri_in_treasury = strk.balance_of(hypothetical_treasury_address.try_into().unwrap());
-    println!("Fri in treasury: {}", fri_in_treasury);
     assert(fri_in_treasury == 152485773837370811, 'incorrect amount in treasury');
     let strk_left_in_contract = strk.balance_of(address_eligible_for_zklend_rewards.try_into().unwrap());
     assert!(strk_left_in_contract == strk_balance_at_start, "strk left in contract after airdrop claim");
