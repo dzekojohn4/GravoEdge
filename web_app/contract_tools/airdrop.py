@@ -60,4 +60,9 @@ class ZkLendAirdrop:
             )
             validated_items.append(validated_item)
         return AirdropResponseModel(airdrops=validated_items)
-        
+
+
+if __name__ == "__main__":
+    airdrop_fetcher = ZkLendAirdrop()
+    result = airdrop_fetcher.get_contract_airdrop("0x698b63df00be56ba39447c9b9ca576ffd0edba0526d98b3e8e4a902ffcf12f0")
+    print(result)
