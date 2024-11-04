@@ -97,12 +97,6 @@ const Dashboard = ({ walletId }) => {
     getData();
   }, [walletId, data, isLoading, error]);
 
-  if (isLoading) return <div>Loading dashboard data...</div>;
-  if (error) return <div>Error loading dashboard data: {error.message}</div>;
-
-  if (isClosing) return <div>Loading...</div>;
-  if (closePositionError) return <div>Error: {closePositionError.message}</div>;
-
   const getCurrentSumColor = () => {
     if (startSum === currentSum) return '';
     return currentSum < startSum ? 'current-sum-red' : 'current-sum-green';
