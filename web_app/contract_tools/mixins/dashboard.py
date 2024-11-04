@@ -38,13 +38,14 @@ class DashboardMixin:
             response = await APIRequest(base_url=AVNU_PRICE_URL).fetch("")
             if not response:
                 return prices
-            
+
             for token_data in response:
                 try:
                     address = token_data.get("address")
                     current_price = token_data.get("currentPrice")
                     if address and current_price is not None:
-                        symbol = TokenParams.get_token_symbol(address)
+                        address_with_leading_zero = TokenParams.add_underlying_address(address)
+                        symbol = TokenParams.get_token_symbol(address_with_leading_zero)
                         if symbol:
                             # Convert to Decimal for precise calculations
                             prices[symbol] = Decimal(str(current_price))
