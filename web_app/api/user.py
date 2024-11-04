@@ -1,8 +1,11 @@
 """
 This module handles user-related API endpoints.
 """
+import logging
+from decimal import Decimal
+from fastapi import APIRouter, HTTPException
 
-from fastapi import APIRouter, Request, HTTPException
+from web_app.contract_tools.mixins.dashboard import DashboardMixin
 from web_app.db.crud import PositionDBConnector, UserDBConnector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
 from web_app.api.serializers.user import (
@@ -12,6 +15,7 @@ from web_app.api.serializers.user import (
     GetStatsResponse,
 )
 
+logger = logging.getLogger(__name__)
 router = APIRouter()  # Initialize the router
 
 user_db = UserDBConnector()
@@ -149,7 +153,7 @@ async def get_stats() -> GetStatsResponse:
         token_amounts = position_db.get_total_amounts_for_open_positions()
         
         # Fetch current prices
-        current_prices = await position_db.get_current_prices()
+        current_prices = await DashboardMixin.get_current_prices()
         
         # Convert all token amounts to USDC
         total_opened_amount = Decimal('0')
@@ -171,7 +175,6 @@ async def get_stats() -> GetStatsResponse:
             total_opened_amount += usdc_equivalent
         
         unique_users = user_db.get_unique_users_count()
-        
         return GetStatsResponse(
             total_opened_amount=total_opened_amount, 
             unique_users=unique_users
