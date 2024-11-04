@@ -1,20 +1,107 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as Star } from 'assets/particles/star.svg';
-import useDashboardData from 'hooks/useDashboardData';
-import { useClosePosition } from 'hooks/useClosePosition';
+import { ReactComponent as CollateralIcon } from 'assets/icons/collateral.svg';
+import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
+import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
+import { ReactComponent as BorrowIcon } from 'assets/icons/borrow.svg';
+import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
+import { ZETH_ADDRESS } from 'utils/constants';
 import Spinner from 'components/spinner/Spinner';
 import './dashboard.css';
+import useDashboardData from '../../../hooks/useDashboardData';
+import { useClosePosition } from 'hooks/useClosePosition';
 
 const Dashboard = ({ walletId }) => {
+  const { data, isLoading, error } = useDashboardData(walletId);
+  const { mutate: closePositionEvent, isLoading: isClosing, error: closePositionError } = useClosePosition(walletId);
+
+  const [cardData, setCardData] = useState([
+    {
+      title: 'Collateral & Earnings',
+      icon: CollateralIcon,
+      balance: '0.00',
+      currencyName: 'Ethereum',
+      currencyIcon: EthIcon,
+    },
+    {
+      title: 'Borrow',
+      icon: BorrowIcon,
+      balance: '0.00',
+      currencyName: 'USD Coin',
+      currencyIcon: UsdIcon,
+    },
+  ]);
+  const [healthFactor, setHealthFactor] = useState('0.00');
+  const [startSum] = useState(0);
+  const [currentSum, setCurrentSum] = useState(0);
+  const [loading, setLoading] = useState(true);
+
   const starData = [
     { top: 1, left: 0, size: 1.5 },
     { top: 75, left: 35, size: 2.5 },
     { top: -2, left: 94, size: 5.5 },
   ];
 
-  const [startSum] = useState(0);
-  const { cardData, healthFactor, currentSum, isLoading } = useDashboardData(walletId);
-  const closePositionMutation = useClosePosition(walletId);
+  useEffect(() => {
+    const getData = async () => {
+      if (!walletId) {
+        console.error('getData: walletId is undefined');
+        setLoading(false);
+        return;
+      }
+
+      if (!data || !data.zklend_position) {
+        console.error('Data is missing or incorrectly formatted');
+        setLoading(false);
+        return;
+      }
+      if (data && data.zklend_position && data.zklend_position.products) {
+        const positions = data.zklend_position.products[0].positions || [];
+        const healthRatio = data.zklend_position.products[0].health_ratio;
+
+        const cardData = positions.map((position, index) => {
+          const isFirstCard = index === 0;
+          const tokenAddress = position.tokenAddress;
+
+          if (isFirstCard) {
+            const isEthereum = tokenAddress === ZETH_ADDRESS;
+            const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
+            setCurrentSum(balance);
+
+            return {
+              title: 'Collateral & Earnings',
+              icon: CollateralIcon,
+              balance: balance,
+              currencyName: isEthereum ? 'Ethereum' : 'STRK',
+              currencyIcon: isEthereum ? EthIcon : StrkIcon,
+            };
+          }
+
+          return {
+            title: 'Borrow',
+            icon: BorrowIcon,
+            balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+            currencyName: 'USD Coin',
+            currencyIcon: UsdIcon,
+          };
+        });
+
+        setCardData(cardData);
+        setHealthFactor(healthRatio);
+      } else {
+        console.error('Data is missing or incorrectly formatted');
+      }
+      setLoading(false);
+    };
+
+    getData();
+  }, [walletId, data, isLoading, error]);
+
+  if (isLoading) return <div>Loading dashboard data...</div>;
+  if (error) return <div>Error loading dashboard data: {error.message}</div>;
+
+  if (isClosing) return <div>Loading...</div>;
+  if (closePositionError) return <div>Error: {closePositionError.message}</div>;
 
   const getCurrentSumColor = () => {
     if (startSum === currentSum) return '';
@@ -23,7 +110,7 @@ const Dashboard = ({ walletId }) => {
 
   return (
     <div className="dashboard-container position-relative container">
-      {isLoading && <Spinner loading={isLoading} />}
+      {loading && <Spinner loading={loading} />}
 
       {starData.map((star, index) => (
         <Star
@@ -88,13 +175,12 @@ const Dashboard = ({ walletId }) => {
         ))}
       </div>
       <div>
-        <button
-          className="btn redeem-btn border-0"
-          onClick={() => closePositionMutation.mutate()}
-          disabled={closePositionMutation.isLoading}
-        >
-          Redeem
-        </button>
+        <div>
+          <button className="btn redeem-btn border-0" onClick={() => closePositionEvent()}>
+            {isClosing ? 'Closing...' : 'Redeem'}
+          </button>
+          {closePositionError && <div>Error during closing position: {closePositionError.message}</div>}
+        </div>
       </div>
     </div>
   );
