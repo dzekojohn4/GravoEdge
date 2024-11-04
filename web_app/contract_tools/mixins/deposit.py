@@ -4,7 +4,7 @@ This module contains the deposit mixin class.
 
 from decimal import Decimal
 from web_app.contract_tools.blockchain_call import StarknetClient
-from web_app.contract_tools.constants import SPOTNET_CORE_ADDRESS, TokenParams
+from web_app.contract_tools.constants import TokenParams
 
 CLIENT = StarknetClient()
 # alternative ARGENT_X_POSITION_URL
