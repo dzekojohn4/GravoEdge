@@ -32,7 +32,7 @@ const Dashboard = ({ walletId }) => {
     },
   ]);
   const [healthFactor, setHealthFactor] = useState('0.00');
-  const [startSum] = useState(0);
+  const [startSum, setStartSum] = useState(0);
   const [currentSum, setCurrentSum] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -66,8 +66,8 @@ const Dashboard = ({ walletId }) => {
           if (isFirstCard) {
             const isEthereum = tokenAddress === ZETH_ADDRESS;
             const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
-            setCurrentSum(balance);
-
+            setCurrentSum(data.current_sum);
+            setStartSum(data.start_sum);
             return {
               title: 'Collateral & Earnings',
               icon: CollateralIcon,
