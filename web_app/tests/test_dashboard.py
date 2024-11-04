@@ -266,10 +266,12 @@ async def test_empty_positions(mock_db_connector, mock_dashboard_mixin):
     response = await get_dashboard(VALID_WALLET_ID)
     assert isinstance(response, DashboardResponse)
     assert response.dict() == {
-        "balances": MOCK_WALLET_BALANCES,
+        "balances": {"ETH": "10.5", "USDC": "1000.0"},
         "multipliers": {"ETH": None},
         "start_dates": {"ETH": None},
         "zklend_position": {"products": []},
+        "current_sum": Decimal("0"),
+        "start_sum": Decimal("0"),
     }
 
 
