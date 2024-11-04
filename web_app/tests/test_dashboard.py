@@ -8,6 +8,7 @@ IDs and service failures, to confirm that the dashboard endpoint behaves reliabl
 under various conditions.
 """
 
+from decimal import Decimal
 from datetime import datetime
 from unittest.mock import AsyncMock, patch
 
@@ -94,12 +95,22 @@ async def test_get_dashboard_success():
     ) as mock_get_wallet_balances, patch(
         "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_zklend_position",
         new_callable=AsyncMock,
-    ) as mock_get_zklend_position:
+    ) as mock_get_zklend_position, patch(
+        "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_current_position_sum",
+        new_callable=AsyncMock,
+    ) as mock_get_current_position_sum, patch(
+        "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_start_position_sum",
+        new_callable=AsyncMock,
+    ) as mock_get_start_position_sum:
+
         mock_get_contract_address_by_wallet_id.return_value = "0xabcdef1234567890"
         mock_get_positions_by_wallet_id.return_value = [
             {
                 "multiplier": 1,
                 "created_at": "2024-01-01T00:00:00",
+                "start_price": "100.0",
+                "amount": "2.0",
+                "token_symbol": "ETH",
             }
         ]
         mock_get_wallet_balances.return_value = {
@@ -115,6 +126,8 @@ async def test_get_dashboard_success():
                 }
             ]
         }
+        mock_get_current_position_sum.return_value = Decimal("200.0")
+        mock_get_start_position_sum.return_value = Decimal("200.0")
 
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url=BASE_URL
@@ -123,6 +136,7 @@ async def test_get_dashboard_success():
 
         assert response.is_success
         data = response.json()
+
         assert data == {
             "balances": {"ETH": 5.0, "USDC": 1000.0},
             "multipliers": {"ETH": 1},
@@ -130,6 +144,8 @@ async def test_get_dashboard_success():
             "zklend_position": {
                 "products": [{"name": "ZkLend", "health_ratio": "1.2", "positions": []}]
             },
+            "current_sum": "200.0",
+            "start_sum": "200.0",
         }
 
 

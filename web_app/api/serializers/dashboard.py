@@ -124,3 +124,13 @@ class DashboardResponse(BaseModel):
         example={"ETH": {"borrowed": 5000, "collateral": 10}},
         description="Details of the ZkLend position for each asset.",
     )
+    current_sum: Decimal = Field(
+        ...,
+        example=5000.0,
+        description="The current sum of the position.",
+    )
+    start_sum: Decimal = Field(
+        ...,
+        example=1000.0,
+        description="The starting sum of the position.",
+    )
