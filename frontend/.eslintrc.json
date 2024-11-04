@@ -17,16 +17,19 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:@tanstack/query/recommended"
   ],
   "plugins": [
     "react",
-    "react-hooks"
+    "react-hooks",
+    "@tanstack/query"
   ],
   "rules": {
     "react/prop-types": "off",
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+    "@tanstack/query/exhaustive-deps": "error"
   },
   "settings": {
     "react": {

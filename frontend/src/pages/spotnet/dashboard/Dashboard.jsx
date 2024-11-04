@@ -5,41 +5,15 @@ import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
 import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
 import { ReactComponent as BorrowIcon } from 'assets/icons/borrow.svg';
 import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
-import { closePosition } from 'services/transaction';
 import { ZETH_ADDRESS } from 'utils/constants';
 import Spinner from 'components/spinner/Spinner';
 import './dashboard.css';
-import { axiosInstance } from 'utils/axios';
-
-const fetchCardData = async ({ walletId }) => {
-  if (!walletId) {
-    console.error('fetchCardData: walletId is undefined');
-    return null;
-  }
-  try {
-    const response = await axiosInstance.get(`/api/dashboard?wallet_id=${walletId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error during getting the data from API', error);
-    return null;
-  }
-};
+import useDashboardData from '../../../hooks/useDashboardData';
+import { useClosePosition } from 'hooks/useClosePosition';
 
 const Dashboard = ({ walletId }) => {
-  const closePositionEvent = async () => {
-    if (!walletId) {
-      console.error('closePositionEvent: walletId is undefined');
-      return;
-    }
-    try {
-      const response = await axiosInstance.get(`/api/get-repay-data?supply_token=ETH&wallet_id=${walletId}`);
-      await closePosition(response.data);
-
-      await axiosInstance.get(`/api/close-position?position_id=${response.data.position_id}`);
-    } catch (e) {
-      console.error('Error during closePositionEvent', e);
-    }
-  };
+  const { data, isLoading, error } = useDashboardData(walletId);
+  const { mutate: closePositionEvent, isLoading: isClosing, error: closePositionError } = useClosePosition(walletId);
 
   const [cardData, setCardData] = useState([
     {
@@ -57,10 +31,9 @@ const Dashboard = ({ walletId }) => {
       currencyIcon: UsdIcon,
     },
   ]);
-
-  const [startSum] = useState(0);
-  const [currentSum, setCurrentSum] = useState(0); 
   const [healthFactor, setHealthFactor] = useState('0.00');
+  const [startSum] = useState(0);
+  const [currentSum, setCurrentSum] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const starData = [
@@ -77,7 +50,11 @@ const Dashboard = ({ walletId }) => {
         return;
       }
 
-      const data = await fetchCardData({ walletId });
+      if (!data || !data.zklend_position) {
+        console.error('Data is missing or incorrectly formatted');
+        setLoading(false);
+        return;
+      }
       if (data && data.zklend_position && data.zklend_position.products) {
         const positions = data.zklend_position.products[0].positions || [];
         const healthRatio = data.zklend_position.products[0].health_ratio;
@@ -118,7 +95,13 @@ const Dashboard = ({ walletId }) => {
     };
 
     getData();
-  }, [walletId]);
+  }, [walletId, data, isLoading, error]);
+
+  if (isLoading) return <div>Loading dashboard data...</div>;
+  if (error) return <div>Error loading dashboard data: {error.message}</div>;
+
+  if (isClosing) return <div>Loading...</div>;
+  if (closePositionError) return <div>Error: {closePositionError.message}</div>;
 
   const getCurrentSumColor = () => {
     if (startSum === currentSum) return '';
@@ -192,9 +175,12 @@ const Dashboard = ({ walletId }) => {
         ))}
       </div>
       <div>
-        <button className="btn redeem-btn border-0" onClick={() => closePositionEvent()}>
-          Redeem
-        </button>
+        <div>
+          <button className="btn redeem-btn border-0" onClick={() => closePositionEvent()}>
+            {isClosing ? 'Closing...' : 'Redeem'}
+          </button>
+          {closePositionError && <div>Error during closing position: {closePositionError.message}</div>}
+        </div>
       </div>
     </div>
   );
