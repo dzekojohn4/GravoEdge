@@ -7,7 +7,10 @@ mod Deposit {
         types::{i129::i129, keys::PoolKey}
     };
 
+    use openzeppelin_security::ReentrancyGuardComponent;
+
     use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
+    use openzeppelin_upgrades::{UpgradeableComponent, interface::IUpgradeable};
     use spotnet::{
         constants::{ZK_SCALE_DECIMALS, STRK_ADDRESS},
         interfaces::{
@@ -21,9 +24,17 @@ mod Deposit {
     };
 
     use starknet::{
-        ContractAddress, get_contract_address, get_caller_address, get_tx_info, event::EventEmitter,
-        storage::{StoragePointerWriteAccess, StoragePointerReadAccess}
+        ContractAddress, ClassHash, get_contract_address, get_caller_address, get_tx_info,
+        event::EventEmitter, storage::{StoragePointerWriteAccess, StoragePointerReadAccess}
     };
+
+    component!(
+        path: ReentrancyGuardComponent, storage: reentrancy_guard, event: ReentrancyGuardEvent
+    );
+    component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
+
+    impl ReentrancyInternalImpl = ReentrancyGuardComponent::InternalImpl<ContractState>;
+    impl UpgradeableInternalImpl = UpgradeableComponent::InternalImpl<ContractState>;
 
     #[storage]
     struct Storage {
@@ -31,7 +42,11 @@ mod Deposit {
         ekubo_core: ICoreDispatcher,
         zk_market: IMarketDispatcher,
         treasury: ContractAddress,
-        is_position_open: bool
+        is_position_open: bool,
+        #[substorage(v0)]
+        reentrancy_guard: ReentrancyGuardComponent::Storage,
+        #[substorage(v0)]
+        upgradeable: UpgradeableComponent::Storage
     }
 
     #[constructor]
@@ -54,10 +69,10 @@ mod Deposit {
         decimals_difference: DecimalScale,
         total_borrowed: TokenAmount,
         borrow_const: u8
-    ) -> felt252 {
+    ) -> u256 {
         let amount_base_token = token_price.into() * borrow_capacity;
         let amount_quote_token = amount_base_token / decimals_difference.into();
-        ((amount_quote_token - total_borrowed) / 100_u256 * borrow_const.into()).try_into().unwrap()
+        ((amount_quote_token - total_borrowed) / 100_u256 * borrow_const.into())
     }
 
     fn get_withdraw_amount(
@@ -102,6 +117,10 @@ mod Deposit {
     enum Event {
         LiquidityLooped: LiquidityLooped,
         PositionClosed: PositionClosed,
+        #[flat]
+        ReentrancyGuardEvent: ReentrancyGuardComponent::Event,
+        #[flat]
+        UpgradeableEvent: UpgradeableComponent::Event
     }
 
     #[generate_trait]
@@ -146,7 +165,7 @@ mod Deposit {
 
             let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
             let deposit_token_decimals = fast_power(10_u64, token_dispatcher.decimals().into());
-            
+
             let curr_contract_address = get_contract_address();
             assert(
                 token_dispatcher.allowance(user_account, curr_contract_address) >= amount,
@@ -191,8 +210,8 @@ mod Deposit {
                     total_borrowed,
                     borrow_const
                 );
-                total_borrowed += to_borrow.into();
-                zk_market.borrow(borrowing_token, to_borrow);
+                total_borrowed += to_borrow;
+                zk_market.borrow(borrowing_token, to_borrow.try_into().unwrap());
                 let params = SwapParameters {
                     amount: i129 { mag: to_borrow.try_into().unwrap(), sign: false },
                     is_token1,
@@ -359,10 +378,12 @@ mod Deposit {
         /// Claims STRK airdrop on ZKlend
         ///
         /// Can be called by anyone, e.g. a keeper
-        /// 
-        /// If the treasury address is zero, the funds are not sent to treasury to avoid burning them.
-        /// This does mean that a sophisticated user could deploy their own contract with a zero treasury address to avoid sending on fees.
-        /// 
+        ///
+        /// If the treasury address is zero, the funds are not sent to treasury to avoid burning
+        /// them.
+        /// This does mean that a sophisticated user could deploy their own contract with a zero
+        /// treasury address to avoid sending on fees.
+        ///
         /// # Panics
         /// `is_position_open` storage variable is set to false('Open position not exists')
         /// `proof` span is empty
@@ -385,24 +406,25 @@ mod Deposit {
 
             let strk = ERC20ABIDispatcher { contract_address: STRK_ADDRESS.try_into().unwrap() };
             let zk_market = self.zk_market.read();
-            let part_for_treasury = claim_data.amount - claim_data.amount / 5; // u128 integer division, rounds down
+            let part_for_treasury = claim_data.amount
+                - claim_data.amount / 5; // u128 integer division, rounds down
 
             let treasury_addr = self.treasury.read();
-            let remainder = if(treasury_addr.into() != 0) { // Zeroable not publicly accessible in this Cairo version AFAIK
-               strk.transfer(treasury_addr, part_for_treasury.into());
-               claim_data.amount - part_for_treasury
+            let remainder = if (treasury_addr
+                .into() != 0) { // Zeroable not publicly accessible in this Cairo version AFAIK
+                strk.transfer(treasury_addr, part_for_treasury.into());
+                claim_data.amount - part_for_treasury
             } else {
                 claim_data.amount
             };
 
-            
             strk.approve(zk_market.contract_address, remainder.into());
             zk_market.deposit(STRK_ADDRESS.try_into().unwrap(), remainder.into());
             zk_market.enable_collateral(STRK_ADDRESS.try_into().unwrap());
         }
 
         /// Makes a deposit into open zkLend position to control stability
-        /// 
+        ///
         /// Anyone can deposit theoretically
         ///
         /// # Panics
@@ -413,6 +435,7 @@ mod Deposit {
         /// `token`: ContractAddress - token address to withdraw from zkLend
         /// `amount`: TokenAmount - amount to withdraw
         fn extra_deposit(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {
+            self.reentrancy_guard.start();
             assert(self.is_position_open.read(), 'Open position not exists');
             assert(amount != 0, 'Deposit amount is zero');
             let (zk_market, token_dispatcher) = (
@@ -421,6 +444,7 @@ mod Deposit {
             token_dispatcher.transferFrom(get_caller_address(), get_contract_address(), amount);
             token_dispatcher.approve(zk_market.contract_address, amount);
             zk_market.deposit(token, amount.try_into().unwrap());
+            self.reentrancy_guard.end();
         }
 
         /// Withdraws tokens from zkLend if looped tokens are repaid
@@ -468,6 +492,16 @@ mod Deposit {
             let mut arr: Array<felt252> = ArrayTrait::new();
             Serde::serialize(@swap_result, ref arr);
             arr.span()
+        }
+    }
+
+    #[abi(embed_v0)]
+    impl UpgradeableImpl of IUpgradeable<ContractState> {
+        fn upgrade(ref self: ContractState, new_class_hash: ClassHash) {
+            // This function can only be called by the owner
+            assert(get_caller_address() == self.owner.read(), 'Caller is not the owner');
+
+            self.upgradeable.upgrade(new_class_hash);
         }
     }
 }
