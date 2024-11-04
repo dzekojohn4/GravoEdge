@@ -261,10 +261,10 @@
   }
 
   .decoration-0 {
-    width: 70%;
-    height: 70%;
-    top: -1vh;
-    left: -25vw;
+    width: 65%;
+    height: 65%;
+    top: -15vh;
+    left: -20vw;
   }
 
   .decoration-1 {
@@ -282,8 +282,8 @@
   }
 
   .decoration-3 {
-    width: 60%;
-    height: 60%;
+    width: 55%;
+    height: 55%;
     top: -5vh;
     left: 62vw;
   }
