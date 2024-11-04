@@ -25,7 +25,7 @@ sort-module-level-items = true
 
 [[tool.snforge.fork]]
 name = "SEPOLIA"
-url = "http://178.32.172.148:6062/v0_7"
+url = "http://51.195.57.196:6062/v0_7"
 block_id.tag = "latest"
 
 [[tool.snforge.fork]]
