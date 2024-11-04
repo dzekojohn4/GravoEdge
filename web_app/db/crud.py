@@ -374,14 +374,13 @@ class PositionDBConnector(UserDBConnector):
                 # Group by token symbol and sum amounts
                 token_amounts = (
                     db.query(
-                        Position.token, 
+                        Position.token_symbol,
                         func.sum(cast(Position.amount, Numeric)).label('total_amount')
                     )
                     .filter(Position.status == Status.OPENED.value)
-                    .group_by(Position.token)
+                    .group_by(Position.token_symbol)
                     .all()
                 )
-                
                 # Convert to dictionary
                 return {token: Decimal(str(amount)) for token, amount in token_amounts}
             
