@@ -207,6 +207,7 @@ class PositionDBConnector(UserDBConnector):
             "created_at": (
                 position.created_at.isoformat() if position.created_at else None
             ),
+            "start_price": position.start_price,
             "status": position.status,
         }
 
