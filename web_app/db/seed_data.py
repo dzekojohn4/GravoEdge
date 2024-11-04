@@ -48,7 +48,9 @@ def create_positions(session: SessionLocal, users: list[User]) -> None:
         for _ in range(2):
             position = Position(
                 user_id=user.id,
-                token_symbol=fake.random_choices(elements=[token.name for token in TokenParams.tokens()]),
+                token_symbol=fake.random_choices(
+                    elements=[token.name for token in TokenParams.tokens()]
+                ),
                 amount=fake.random_number(digits=5),
                 multiplier=fake.random_int(min=1, max=10),
                 start_price=Decimal(
