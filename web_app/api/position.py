@@ -92,7 +92,6 @@ async def create_position_with_transaction_data(
     ### Returns:
     The created position's details and transaction data.
     """
-
     # Create a new position in the database
     position = position_db_connector.create_position(
         form_data.wallet_id,
@@ -100,6 +99,7 @@ async def create_position_with_transaction_data(
         form_data.amount,
         form_data.multiplier,
     )
+
     # Get the transaction data for the deposit
     deposit_data = await DepositMixin.get_transaction_data(
         form_data.token_symbol,
@@ -185,6 +185,6 @@ async def open_position(position_id: str) -> str:
     if not position_id:
         raise HTTPException(status_code=404, detail="Position not found")
 
-    current_prices =  await DashboardMixin.get_current_prices()
+    current_prices = await DashboardMixin.get_current_prices()
     position_status = position_db_connector.open_position(position_id, current_prices)
     return position_status

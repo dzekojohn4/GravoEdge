@@ -13,16 +13,16 @@ class PositionFormData(BaseModel):
     wallet_id: str
     token_symbol: str
     amount: str
-    multiplier: int
+    multiplier: float
 
-    @field_validator("multiplier")
-    def validate_multiplier(cls, value: int) -> int:
+    @field_validator("multiplier", mode="before")
+    def validate_multiplier(cls, value: str) -> float:
         """
         Validate the multiplier value
         :param value: int
         :return: int
         """
         try:
-            return int(value)
-        except ValueError:
-            raise ValueError("Multiplier should be an integer")
+            return float(value)
+        except (ValueError, TypeError):
+            raise Exception("Multiplier should be an integer")
