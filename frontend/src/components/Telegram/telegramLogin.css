@@ -55,3 +55,11 @@
 .btn-telegram:active {
   background: var(--button-gradient-active);
 }
+
+@media (max-width: 1440px) {
+  .btn-telegram {
+    width: 165px;
+    height: 40px;
+    font-size: 14px;
+  }
+}

@@ -4,20 +4,35 @@ import { NavLink } from 'react-router-dom';
 import WalletSection from 'components/WalletSection';
 import NavigationLinks from 'components/NavigationLinks';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
+import { useLocation } from 'react-router-dom';
 import './header.css';
 import '../../globals.css';
 
 function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation(); // getting object location
 
   // Use the custom hook for body scroll locking
   useLockBodyScroll(isMenuOpen);
-  0;
 
   // Close menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
-  }, [window.location.pathname]);
+  }, [location.pathname]);
+
+  // Close the menu when the window size is changed
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMenuOpen(false);
+    };
+    // Add resize event handler
+    window.addEventListener('resize', handleResize);
+
+    // Remove the handler when the component is unmounted
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []); // Pass an empty array of dependencies so that this effect will only be triggered once when mounting.
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -35,7 +50,6 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
             <Logo className="logo-icon" />
           </NavLink>
         </div>
-
         {/* Desktop Navigation */}
         <NavigationLinks onNavClick={handleNavClick} />
         <WalletSection
@@ -45,20 +59,17 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
           tgUser={tgUser}
           setTgUser={setTgUser}
         />
+      </div>
+      {/* Hamburger Menu Button */}
+      <button className={`hamburger-menu ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
+        <span className="hamburger-line" />
+        <span className="hamburger-line" />
+        <span className="hamburger-line" />
+      </button>
 
-        {/* Hamburger Menu Button */}
-        <button
-          className={`hamburger-menu ${isMenuOpen ? 'active' : ''}`}
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
-        >
-          <span className="hamburger-line" />
-          <span className="hamburger-line" />
-          <span className="hamburger-line" />
-        </button>
-
-        {/* Mobile Menu */}
-        <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+      {/* Mobile Menu */}
+      <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+        <div className="flex-container">
           <NavigationLinks onNavClick={handleNavClick} />
           <WalletSection
             walletId={walletId}
