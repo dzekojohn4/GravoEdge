@@ -57,6 +57,7 @@ The method has next parameters:
 * `debt_token`: ContractAddress - Address of the token used as borrowing.
 * `pool_key`: PoolKey - Ekubo type for obtaining info about the pool and swapping tokens.
 * `ekubo_limits`: EkuboSlippageLimits - Object of internal type which represents upper and lower sqrt_ratio values on Ekubo. Used to control slippage while swapping.
+* `repay_const`: u8 - Sets how much to borrow from free amount. Parameter is used for dealing with price error on zklend or for pairs where debt interest rate accumulates faster than supply interest rate.
 * `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token(so for ex. 2400000000 USDC for ETH).
 * `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token(for ex. 410000000000000 ETH for USDC).
 

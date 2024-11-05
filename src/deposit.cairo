@@ -80,6 +80,7 @@ mod Deposit {
         total_debt: TokenAmount,
         collateral_factor: felt252,
         borrow_factor: felt252,
+        repay_const: u8,
         supply_token_price: TokenPrice,
         debt_token_price: TokenPrice,
         supply_decimals: DecimalScale,
@@ -91,8 +92,7 @@ mod Deposit {
             * borrow_factor.into()
             / ZK_SCALE_DECIMALS)
             - total_debt.into();
-        let withdraw_amount = free_amount * debt_token_price.into() / debt_decimals.into();
-        withdraw_amount
+        free_amount * debt_token_price.into() / debt_decimals.into() * repay_const.into() / 100
     }
 
     #[derive(starknet::Event, Drop)]
@@ -264,6 +264,7 @@ mod Deposit {
         /// tokens.
         /// * `ekubo_limits`: EkuboSlippageLimits - Represents upper and lower sqrt_ratio values on
         /// Ekubo. Used to control slippage while swapping.
+        /// * `repay_const`: u8 - Sets how much to borrow from free amount.
         /// * `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token.
         /// * `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token.
         fn close_position(
@@ -272,6 +273,7 @@ mod Deposit {
             debt_token: ContractAddress,
             pool_key: PoolKey,
             ekubo_limits: EkuboSlippageLimits,
+            repay_const: u8,
             supply_price: TokenPrice,
             debt_price: TokenPrice
         ) {
@@ -316,6 +318,7 @@ mod Deposit {
                     debt,
                     collateral_factor,
                     borrow_factor,
+                    repay_const,
                     supply_price,
                     debt_price,
                     supply_decimals,
@@ -407,7 +410,7 @@ mod Deposit {
             let strk = ERC20ABIDispatcher { contract_address: STRK_ADDRESS.try_into().unwrap() };
             let zk_market = self.zk_market.read();
             let part_for_treasury = claim_data.amount
-                - claim_data.amount / 5; // u128 integer division, rounds down
+                - claim_data.amount / 2; // u128 integer division, rounds down
 
             let treasury_addr = self.treasury.read();
             let remainder = if (treasury_addr
@@ -443,6 +446,7 @@ mod Deposit {
             );
             token_dispatcher.transferFrom(get_caller_address(), get_contract_address(), amount);
             token_dispatcher.approve(zk_market.contract_address, amount);
+            zk_market.enable_collateral(token);
             zk_market.deposit(token, amount.try_into().unwrap());
             self.reentrancy_guard.end();
         }

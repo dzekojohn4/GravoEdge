@@ -65,12 +65,11 @@ fn test_claim_as_keeper() {
     };
     // eligible for 0x2a52c411698a729 = 190607217296713513 fri (fri is lowest denominator of strk
     // token)
-    // treasury should get 152485773837370811 which is 80 %
-
+    // treasury should get 95303608648356757 which is 50 %
     deposit_contract.claim_reward(claim, proof.span(), defispring_claim_contract);
 
     let fri_in_treasury = strk.balance_of(hypothetical_treasury_address.try_into().unwrap());
-    assert(fri_in_treasury == 152485773837370811, 'incorrect amount in treasury');
+    assert(fri_in_treasury == 95303608648356757, 'incorrect amount in treasury');
     let strk_left_in_contract = strk
         .balance_of(address_eligible_for_zklend_rewards.try_into().unwrap());
     assert!(

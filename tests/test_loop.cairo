@@ -438,6 +438,7 @@ fn test_close_position_usdc_valid_time_passed() {
             eth_addr,
             pool_key,
             get_slippage_limits(pool_key),
+            100,
             pool_price,
             quote_token_price
         );
@@ -493,21 +494,96 @@ fn test_close_position_amounts_cleared() {
             get_slippage_limits(pool_key),
             pool_price
         );
-    stop_cheat_account_contract_address(deposit_disp.contract_address);
-    let zk_market = IMarketTestingDispatcher {
-        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
-    };
-    start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .close_position(
             usdc_addr,
             eth_addr,
             pool_key,
             get_slippage_limits(pool_key),
+            100,
             pool_price,
             quote_token_price
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
+    let zk_market = IMarketTestingDispatcher {
+        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
+    };
+
+    assert(
+        zk_market.get_user_debt_for_token(deposit_disp.contract_address, eth_addr) == 0,
+        'Debt remains after repay'
+    );
+    assert(
+        ERC20ABIDispatcher {
+            contract_address: zk_market.get_reserve_data(usdc_addr).z_token_address
+        }
+            .balanceOf(deposit_disp.contract_address) == 0,
+        'Not all withdrawn'
+    );
+}
+
+#[test]
+#[fork("MAINNET")]
+fn test_close_position_partial_debt_utilization() {
+    let usdc_addr: ContractAddress =
+        0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8
+        .try_into()
+        .unwrap();
+    let eth_addr: ContractAddress =
+        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+        .try_into()
+        .unwrap();
+    let user: ContractAddress = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5
+        .try_into()
+        .unwrap();
+
+    let pool_key = PoolKey {
+        token0: eth_addr,
+        token1: usdc_addr,
+        fee: 170141183460469235273462165868118016,
+        tick_spacing: 1000,
+        extension: 0.try_into().unwrap()
+    };
+    let pool_price = get_asset_price_pragma('ETH/USD').into();
+
+    let token_disp = ERC20ABIDispatcher { contract_address: eth_addr };
+    let decimals_sum_power: u128 = fast_power(
+        10,
+        (ERC20ABIDispatcher { contract_address: usdc_addr }.decimals() + token_disp.decimals())
+            .into()
+    );
+    let quote_token_price = 1 * decimals_sum_power.into() / pool_price;
+
+    let deposit_disp = get_deposit_dispatcher(user);
+
+    start_cheat_caller_address(eth_addr.try_into().unwrap(), user);
+    token_disp.approve(deposit_disp.contract_address, 1000000000000000);
+    stop_cheat_caller_address(eth_addr);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp
+        .loop_liquidity(
+            DepositData {
+                token: eth_addr, amount: 1000000000000000, multiplier: 4, borrow_const: 98
+            },
+            pool_key,
+            get_slippage_limits(pool_key),
+            pool_price
+        );
+    deposit_disp
+        .close_position(
+            eth_addr,
+            usdc_addr,
+            pool_key,
+            get_slippage_limits(pool_key),
+            85,
+            pool_price,
+            quote_token_price
+        );
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    let zk_market = IMarketTestingDispatcher {
+        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
+    };
 
     assert(
         zk_market.get_user_debt_for_token(deposit_disp.contract_address, eth_addr) == 0,
@@ -662,6 +738,7 @@ fn test_extra_deposit_supply_token_close_position_fuzz(extra_amount: u32) {
             eth_addr,
             pool_key,
             get_slippage_limits(pool_key),
+            100,
             pool_price,
             quote_token_price
         );
@@ -741,6 +818,7 @@ fn test_withdraw_valid_fuzz(amount: u32) {
             eth_addr,
             pool_key,
             get_slippage_limits(pool_key),
+            100,
             pool_price,
             quote_token_price
         );
