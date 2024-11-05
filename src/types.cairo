@@ -24,7 +24,7 @@ pub struct SwapData {
 pub struct DepositData {
     pub token: ContractAddress,
     pub amount: TokenAmount,
-    pub multiplier: u32,
+    pub multiplier: u8,
     pub borrow_const: u8
 }
 
