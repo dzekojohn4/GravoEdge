@@ -14,7 +14,6 @@ nav {
   justify-content: space-between;
   background-color: transparent;
   width: 97%;
-  height: 100px;
   position: relative;
 }
 
@@ -35,12 +34,14 @@ nav {
   position: relative;
   color: var(--secondary);
   font-family: var(--text-font);
-  font-size: 20px;
+  font-size: 17px;
   transition: color 0.3s;
 }
 
 .nav-items a:hover {
   color: var(--brand);
+  /* font-weight: 700; */
+  /* font-weight: bold; */
 }
 
 .nav-items a.active-link {
@@ -64,9 +65,9 @@ nav {
 .wallet-id {
   background: var(--gradient);
   border-radius: 8px;
-  height: 52px;
-  width: 190px;
-  font-size: 20px;
+  height: 40px;
+  width: 150px;
+  font-size: 15px;
   font-family: var(--text-font);
   font-weight: 700;
   display: flex;
@@ -107,14 +108,14 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 190px;
-  height: 52px;
+  width: 150px;
+  height: 40px;
   border-radius: 8px;
   border: 1px solid var(--brand);
   background-color: transparent;
   color: var(--primary);
   font-family: var(--text-font);
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 100%;
   transition: all 0.3s ease;
@@ -176,6 +177,11 @@ nav {
   padding: 20px;
 }
 
+.no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}
+
 /* Hamburger menu animation */
 .hamburger-menu.active .hamburger-line:nth-child(1) {
   transform: translateY(8px) rotate(45deg);
@@ -189,6 +195,11 @@ nav {
   transform: translateY(-8px) rotate(-45deg);
 }
 
+.logo svg {
+  width: 160px;
+  height: auto;
+}
+
 @media (max-width: 1440px) {
   .logo svg {
     width: 160px;
@@ -196,15 +207,28 @@ nav {
   }
 
   .nav-items a {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .wallet-section .gradient-button,
   .wallet-section .logout-button,
   .wallet-id {
-    width: 165px;
+    width: 120px;
     height: 40px;
-    font-size: 14px;
+    font-size: 15px;
+  }
+
+  .wallet-section {
+    gap: 8px;
+  }
+  .wallet-container {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 1300px) {
+  .nav-items a {
+    font-size: 15px;
   }
 
   .wallet-section {
@@ -222,6 +246,12 @@ nav {
   .nav-items {
     display: none;
     transform: none;
+  }
+
+  .wallet-section .gradient-button,
+  .wallet-section .logout-button,
+  .wallet-id {
+    width: 166px;
   }
 
   .wallet-section {
@@ -272,9 +302,9 @@ nav {
   .gradient-button,
   .logout-button,
   .wallet-id {
-    width: 160px;
-    font-size: 16px;
-    height: 48px;
+    width: 100%;
+    font-size: 14px;
+    height: 40px;
   }
 
   .mobile-menu {

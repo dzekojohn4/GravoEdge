@@ -3,16 +3,16 @@ import { useEffect } from 'react';
 function useLockBodyScroll(lock) {
   useEffect(() => {
     if (lock) {
-      document.body.style.height = '100vh';
-      document.body.style.overflow = 'hidden';
+      document.body.classList.add('no-scroll');
+      document.documentElement.classList.add('no-scroll');
     } else {
-      document.body.style.height = '';
-      document.body.style.overflow = '';
+      document.body.classList.remove('no-scroll');
+      document.documentElement.classList.remove('no-scroll');
     }
 
     return () => {
-      document.body.style.height = '';
-      document.body.style.overflow = '';
+      document.body.classList.remove('no-scroll');
+      document.documentElement.classList.remove('no-scroll');
     };
   }, [lock]);
 }
