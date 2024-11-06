@@ -44,7 +44,7 @@ const About = () => {
       <StarMaker starData={starData} />
       <h1 className="about-title">How it works</h1>
       <div className="card-container flex">
-        <div>
+        <div className="cards-gradient">
           <div className="card-gradient"></div>
           <div className="card-gradient"></div>
         </div>
