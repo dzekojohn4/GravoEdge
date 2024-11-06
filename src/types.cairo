@@ -25,7 +25,7 @@ pub struct DepositData {
     pub token: ContractAddress,
     pub amount: TokenAmount,
     pub multiplier: u8,
-    pub borrow_const: u8
+    pub borrow_portion_percent: u8
 }
 
 #[derive(Copy, Drop, Serde)]

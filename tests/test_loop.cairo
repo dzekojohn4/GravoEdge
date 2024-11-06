@@ -16,6 +16,7 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
 use snforge_std::{declare, DeclareResultTrait, ContractClassTrait};
+use spotnet::constants::ZK_SCALE_DECIMALS;
 use spotnet::interfaces::{
     IDepositDispatcher, IDepositSafeDispatcher, IDepositSafeDispatcherTrait, IDepositDispatcherTrait
 };
@@ -117,7 +118,7 @@ fn test_loop_eth_valid() {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: eth_addr, amount: 685000000000000, multiplier: 4, borrow_const: 98
+                token: eth_addr, amount: 685000000000000, multiplier: 4, borrow_portion_percent: 98
             },
             pool_key,
             get_slippage_limits(pool_key),
@@ -160,7 +161,9 @@ fn test_loop_eth_fuzz(amount: u64) {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     if let Result::Err(panic_data) = deposit_disp
         .loop_liquidity(
-            DepositData { token: eth_addr, amount: amount.into(), multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: eth_addr, amount: amount.into(), multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -206,7 +209,11 @@ fn test_loop_usdc_valid() {
         (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
             .into()
     );
-    let pool_price = 1 * decimals_sum_power.into() / get_asset_price_pragma('ETH/USD');
+    let pool_price = (1
+        * ZK_SCALE_DECIMALS
+        * decimals_sum_power.into()
+        / get_asset_price_pragma('ETH/USD').into())
+        / ZK_SCALE_DECIMALS;
 
     let deposit_disp = get_deposit_dispatcher(user);
     start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
@@ -216,10 +223,12 @@ fn test_loop_usdc_valid() {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 60000000, multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: usdc_addr, amount: 60000000, multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
-            pool_price.into()
+            pool_price.try_into().unwrap()
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
 }
@@ -260,7 +269,9 @@ fn test_loop_unauthorized() {
 
     disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 10000000, multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: usdc_addr, amount: 10000000, multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price.into()
@@ -306,14 +317,18 @@ fn test_loop_position_exists() {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 60000000, multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: usdc_addr, amount: 60000000, multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price.into()
         );
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 60000000, multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: usdc_addr, amount: 60000000, multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price.into()
@@ -356,7 +371,9 @@ fn test_loop_position_exists_fuzz(amount: u64) {
 
     if let Result::Err(_) = deposit_disp
         .loop_liquidity(
-            DepositData { token: eth_addr, amount: amount.into(), multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: eth_addr, amount: amount.into(), multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -365,7 +382,9 @@ fn test_loop_position_exists_fuzz(amount: u64) {
     };
     match deposit_disp
         .loop_liquidity(
-            DepositData { token: eth_addr, amount: amount.into(), multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: eth_addr, amount: amount.into(), multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -420,7 +439,9 @@ fn test_close_position_usdc_valid_time_passed() {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -489,7 +510,9 @@ fn test_close_position_amounts_cleared() {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -564,7 +587,7 @@ fn test_close_position_partial_debt_utilization() {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: eth_addr, amount: 1000000000000000, multiplier: 4, borrow_const: 98
+                token: eth_addr, amount: 1000000000000000, multiplier: 4, borrow_portion_percent: 98
             },
             pool_key,
             get_slippage_limits(pool_key),
@@ -576,7 +599,7 @@ fn test_close_position_partial_debt_utilization() {
             usdc_addr,
             pool_key,
             get_slippage_limits(pool_key),
-            85,
+            99,
             pool_price,
             quote_token_price
         );
@@ -638,7 +661,9 @@ fn test_extra_deposit_valid() {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -706,7 +731,9 @@ fn test_extra_deposit_supply_token_close_position_fuzz(extra_amount: u32) {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -793,7 +820,9 @@ fn test_withdraw_valid_fuzz(amount: u32) {
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
         .loop_liquidity(
-            DepositData { token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_const: 98 },
+            DepositData {
+                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 98
+            },
             pool_key,
             get_slippage_limits(pool_key),
             pool_price
@@ -913,7 +942,7 @@ fn test_extra_deposit_position_zero_amount() {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: eth_addr, amount: 685000000000000, multiplier: 2, borrow_const: 98
+                token: eth_addr, amount: 685000000000000, multiplier: 2, borrow_portion_percent: 98
             },
             pool_key,
             get_slippage_limits(pool_key),
@@ -960,7 +989,7 @@ fn test_withdraw_position_open() {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: eth_addr, amount: 685000000000000, multiplier: 2, borrow_const: 98
+                token: eth_addr, amount: 685000000000000, multiplier: 2, borrow_portion_percent: 98
             },
             pool_key,
             get_slippage_limits(pool_key),

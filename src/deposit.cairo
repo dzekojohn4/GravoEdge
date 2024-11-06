@@ -1,6 +1,7 @@
 #[starknet::contract]
 mod Deposit {
     use alexandria_math::fast_power::fast_power;
+    use core::num::traits::Zero;
 
     use ekubo::{
         interfaces::core::{ICoreDispatcher, ICoreDispatcherTrait, ILocker, SwapParameters},
@@ -57,6 +58,7 @@ mod Deposit {
         zk_market: IMarketDispatcher,
         treasury: ContractAddress
     ) {
+        assert(owner.is_non_zero(), 'Owner address is zero');
         self.owner.write(owner);
         self.ekubo_core.write(ekubo_core);
         self.zk_market.write(zk_market);
@@ -66,13 +68,18 @@ mod Deposit {
     fn get_borrow_amount(
         borrow_capacity: TokenAmount,
         token_price: TokenPrice,
-        decimals_difference: DecimalScale,
+        deposit_token_decimals: DecimalScale,
         total_borrowed: TokenAmount,
-        borrow_const: u8
+        borrow_portion_percent: u8
     ) -> u256 {
-        let amount_base_token = token_price.into() * borrow_capacity;
-        let amount_quote_token = amount_base_token / decimals_difference.into();
-        ((amount_quote_token - total_borrowed) / 100_u256 * borrow_const.into())
+        // Borrow capacity already scaled.
+        let amount_borrow_token = borrow_capacity
+            * token_price.into()
+            / deposit_token_decimals.into();
+        ((amount_borrow_token - (total_borrowed * ZK_SCALE_DECIMALS))
+            * borrow_portion_percent.into()
+            / 100)
+            / ZK_SCALE_DECIMALS
     }
 
     fn get_withdraw_amount(
@@ -80,19 +87,22 @@ mod Deposit {
         total_debt: TokenAmount,
         collateral_factor: felt252,
         borrow_factor: felt252,
-        repay_const: u8,
+        borrow_portion_percent: u8,
         supply_token_price: TokenPrice,
         debt_token_price: TokenPrice,
         supply_decimals: DecimalScale,
         debt_decimals: DecimalScale
     ) -> u256 {
-        let deposited = (total_deposited * supply_token_price.into()).into()
-            / supply_decimals.into();
-        let free_amount = ((deposited * collateral_factor.into() / ZK_SCALE_DECIMALS)
+        let deposited = ((total_deposited * ZK_SCALE_DECIMALS * supply_token_price.into()).into()
+            / supply_decimals.into());
+        let free_amount = (((deposited * collateral_factor.into() / ZK_SCALE_DECIMALS)
             * borrow_factor.into()
-            / ZK_SCALE_DECIMALS)
-            - total_debt.into();
-        free_amount * debt_token_price.into() / debt_decimals.into() * repay_const.into() / 100
+            / ZK_SCALE_DECIMALS))
+            - (total_debt.into() * ZK_SCALE_DECIMALS);
+        ((free_amount * debt_token_price.into() / debt_decimals.into())
+            * borrow_portion_percent.into()
+            / 100)
+            / ZK_SCALE_DECIMALS
     }
 
     #[derive(starknet::Event, Drop)]
@@ -158,8 +168,11 @@ mod Deposit {
             let user_account = get_tx_info().unbox().account_contract_address;
             assert(user_account == self.owner.read(), 'Caller is not the owner');
             assert(!self.is_position_open.read(), 'Open position already exists');
-            let DepositData { token, amount, multiplier, borrow_const } = deposit_data;
-            assert(borrow_const > 0 && borrow_const < 100, 'Cannot calculate borrow amount');
+            let DepositData { token, amount, multiplier, borrow_portion_percent } = deposit_data;
+            assert(
+                borrow_portion_percent > 0 && borrow_portion_percent < 100,
+                'Cannot calculate borrow amount'
+            );
             assert(multiplier < 6 && multiplier > 1, 'Multiplier not supported');
             assert(amount != 0 && pool_price != 0, 'Parameters cannot be zero');
 
@@ -200,7 +213,10 @@ mod Deposit {
             let mut deposited = amount;
 
             while (amount + accumulated) / amount < multiplier.into() {
-                let borrow_capacity = ((deposited * collateral_factor / ZK_SCALE_DECIMALS)
+                let borrow_capacity = ((deposited
+                    * ZK_SCALE_DECIMALS
+                    * collateral_factor
+                    / ZK_SCALE_DECIMALS)
                     * borrow_factor
                     / ZK_SCALE_DECIMALS);
                 let to_borrow = get_borrow_amount(
@@ -208,7 +224,7 @@ mod Deposit {
                     pool_price,
                     deposit_token_decimals.into(),
                     total_borrowed,
-                    borrow_const
+                    borrow_portion_percent
                 );
                 total_borrowed += to_borrow;
                 zk_market.borrow(borrowing_token, to_borrow.try_into().unwrap());
@@ -273,7 +289,7 @@ mod Deposit {
             debt_token: ContractAddress,
             pool_key: PoolKey,
             ekubo_limits: EkuboSlippageLimits,
-            repay_const: u8,
+            borrow_portion_percent: u8,
             supply_price: TokenPrice,
             debt_price: TokenPrice
         ) {
@@ -318,7 +334,7 @@ mod Deposit {
                     debt,
                     collateral_factor,
                     borrow_factor,
-                    repay_const,
+                    borrow_portion_percent,
                     supply_price,
                     debt_price,
                     supply_decimals,
@@ -326,9 +342,11 @@ mod Deposit {
                 );
                 zk_market.withdraw(supply_token, withdraw_amount.try_into().unwrap());
 
-                let params = if (debt > withdraw_amount
+                let params = if (debt > (withdraw_amount
+                    * ZK_SCALE_DECIMALS
                     * supply_price.into()
-                    / supply_decimals.into()) {
+                    / supply_decimals.into())
+                    / ZK_SCALE_DECIMALS) {
                     SwapParameters {
                         amount: i129 { mag: withdraw_amount.try_into().unwrap(), sign: false },
                         is_token1: is_token1_repay_swap,

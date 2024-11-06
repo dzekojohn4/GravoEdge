@@ -20,7 +20,7 @@ pub trait IDeposit<TContractState> {
         debt_token: ContractAddress,
         pool_key: PoolKey,
         ekubo_limits: EkuboSlippageLimits,
-        repay_const: u8,
+        borrow_portion_percent: u8,
         supply_price: TokenPrice,
         debt_price: TokenPrice
     );
