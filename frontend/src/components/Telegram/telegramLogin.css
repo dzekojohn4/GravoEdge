@@ -36,16 +36,18 @@
   background: var(--button-gradient);
   color: var(--black);
   border: none;
-  height: 52px;
-  padding: 0 20px;
+  height: 40px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 15px;
   font-family: var(--text-font);
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  padding: 0 17px;
+  box-sizing: border-box;
 }
 
 .btn-telegram:hover {
@@ -57,9 +59,4 @@
 }
 
 @media (max-width: 1440px) {
-  .btn-telegram {
-    width: 165px;
-    height: 40px;
-    font-size: 14px;
-  }
 }
