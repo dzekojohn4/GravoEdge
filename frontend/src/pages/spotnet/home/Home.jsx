@@ -44,59 +44,63 @@ function Home({ walletId }) {
   ];
 
   const decorationData = [
-    { top: -10, left: -10, size: 50 },
-    { top: -10, left: -39, size: 90 },
-    { top: -35, left: 50, size: 65 },
-    { top: -30, left: 45, size: 95 },
+    { top: -5, left: -30 },
+    { top: -1, left: 3 },
+    { top: -15, left: 60 },
+    { top: -14, left: 55 },
   ];
 
   return (
     <div className="home">
-      <div>
-        {decorationData.map((decoration, index) => (
-          <Decoration
-            key={index}
-            className="decoration"
-            style={{
-              '--top': `${decoration.top}%`,
-              '--left': `${decoration.left}%`,
-              '--size': `${decoration.size}%`,
-            }}
-          />
-        ))}
-      </div>
-      <div className="top-gradient"></div>
-      <div>
-        {starsData.map((star, index) => (
-          <SmallStar
-            key={index}
-            className="small-star"
-            style={{
-              '--top': `${star.top}%`,
-              '--left': `${star.left}%`,
-            }}
-          />
-        ))}
-        <StarMaker starData={starData} />
+      <div className="container">
+        <div>
+          {decorationData.map((decoration, index) => (
+            <Decoration
+              key={index}
+              className={`decoration decoration-${index}`}
+              style={{
+                '--top': `${decoration.top}vh`,
+                '--left': `${decoration.left}vw`,
+              }}
+            />
+          ))}
+        </div>
+        <div className="top-gradient"></div>
+        <div>
+          {starsData.map((star, index) => (
+            <SmallStar
+              key={index}
+              className="small-star"
+              style={{
+                '--top': `${star.top}%`,
+                '--left': `${star.left}%`,
+              }}
+            />
+          ))}
+          <StarMaker starData={starData} />
 
-        <Starknet className="starknet" />
-      </div>
-      <div className="center-text-container">
-        <h2 className="center-text">
-          <span className="blue-color">Earn</span> by leveraging your assets
-          <span className="text-gradient"> with Spotnet</span>
-        </h2>
-        <h5 className="maximize-potential">
-          Maximize the potential of your resources and start earning today. Join Spotnet and unlock new opportunities to
-          grow your wealth!
-        </h5>
-      </div>
+          <Starknet className="starknet" />
+        </div>
+        <div className="center-text-container">
+          <h2 className="center-text">
+            <span className="blue-color">Earn</span> by leveraging your <br /> assets
+            <span className="text-gradient"> with Spotnet</span>
+          </h2>
+          <h5 className="maximize-potential">
+            Maximize the potential of your resources and start earning today. Join <br /> Spotnet and unlock new
+            opportunities to grow your wealth!
+          </h5>
+        </div>
 
-      <button className="launch-button" onClick={handleLaunchApp}>
-        Launch App <Rocket />
-      </button>
-      <Notifier />
-      <div className="bottom-gradient"></div>
+        <button className="launch-button" onClick={handleLaunchApp}>
+          <div className="btn-elements">
+            <span className="button-text">Launch App</span>
+            <Rocket className="rocket-icon" />
+          </div>
+        </button>
+        <Notifier />
+        <div className="bottom-gradient"></div>
+      </div>
     </div>
   );
 }

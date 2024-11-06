@@ -1,3 +1,8 @@
+.container {
+  margin-top: 400px;
+  margin-bottom: 200px;
+  height: 100%;
+}
 
 .home {
   position: relative;
@@ -5,11 +10,43 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 160px);
   color: var(--secondary);
   text-align: center;
   margin-top: 10px;
-  right: 10px;
+  width: 100%;
+}
+
+.center-text-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.center-text {
+  font-family: var(--text-font);
+  color: var(--primary);
+  margin: 0 auto;
+  font-size: 70px;
+  line-height: 95%;
+  text-align: center;
+}
+
+.blue-color {
+  color: var(--brand);
+}
+
+.maximize-potential {
+  font-weight: 400;
+  margin-top: 12px;
+  font-size: 17px;
+}
+
+.text-gradient {
+  background: var(--gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .decoration,
@@ -24,6 +61,26 @@
   left: var(--left);
   width: var(--size);
   height: var(--size);
+}
+
+.decoration-0 {
+  width: 80%;
+  height: 80%;
+}
+
+.decoration-1 {
+  width: 30%;
+  height: 30%;
+}
+
+.decoration-2 {
+  width: 45%;
+  height: 45%;
+}
+
+.decoration-3 {
+  width: 75%;
+  height: 75%;
 }
 
 .small-star {
@@ -59,22 +116,10 @@
   bottom: -50px;
 }
 
-.center-text {
-  font-weight: 600;
-  font-family: var(--text-font);
-  color: var(--primary);
-  margin: 0 auto;
-}
-
-.blue-color {
-  color: var(--brand);
-}
-
-.text-gradient {
-  background: var(--gradient);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.starknet {
+  position: absolute;
+  top: 0;
+  right: 20px;
 }
 
 .launch-button {
@@ -88,6 +133,11 @@
   font-weight: 700;
   transition: background 1.3s ease;
   margin-top: 20px;
+  height: 60px;
+}
+
+.button-text {
+  font-size: 21px;
 }
 
 .launch-button:hover {
@@ -97,147 +147,186 @@
   background: var(--button-gradient-active);
 }
 
-.starknet {
-  position: absolute;
-  top: 0;
-  right: 20px;
+.btn-elements {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@media (min-width: 1800px) {
-  .center-text {
-    font-size: 100px;
-    width: 1200px;
-  }
-
-  .launch-button {
-    width: 650px;
-    font-size: 26px;
-    height: 70px;
-  }
-
-  .home h5 {
-    font-size: 1.4em;
-    width: 800px;
-  }
+.rocket-icon {
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
 }
 
 @media (max-width: 1800px) {
-  .center-text {
-    font-size: 80px;
-    width: 1000px;
-  }
-
   .launch-button {
-    width: 550px;
-    font-size: 26px;
-    height: 60px;
+    width: 380px;
+    height: 55px;
   }
 
-  .home h5 {
-    font-size: 1.2em;
-    width: 700px;
+  .maximize-potential {
+    font-weight: 400;
+    margin-top: 12px;
+    font-size: 17px;
   }
 }
 
 @media (max-width: 1440px) {
+  .decoration {
+    width: 60%;
+    height: 60%;
+  }
+  .launch-button {
+    width: 380px;
+    height: 60px;
+  }
+
+  .maximize-potential {
+    font-weight: 400;
+    margin-top: 12px;
+    font-size: 17px;
+  }
+
+  .decoration-0 {
+    width: 80%;
+    height: 80%;
+  }
+
+  .decoration-1 {
+    width: 30%;
+    height: 30%;
+  }
+
+  .decoration-2 {
+    width: 45%;
+    height: 45%;
+  }
+
+  .decoration-3 {
+    width: 70%;
+    height: 70%;
+  }
+}
+
+@media (max-width: 1024px) {
   .center-text {
-    font-size: 70px;
-    max-width: 750px;
+    font-size: 45px;
   }
 
   .launch-button {
-    width: 350px;
+    width: 290px;
+    height: 45px;
+    margin-top: 16px;
+  }
+
+  .maximize-potential {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+
+  .button-text {
     font-size: 18px;
   }
 
-  .home h5 {
-    font-size: 0.9em;
-    width: 600px;
+  .rocket-icon {
+    width: 20px;
+    height: 20px;
   }
 }
 
-@media (max-width: 1280px) {
-  .center-text {
-    font-size: 50px;
-    max-width: 600px;
-  }
-
-  .launch-button {
-    width: 300px;
-    font-size: 16px;
-  }
-
-  .home h5 {
-    font-size: 0.85em;
-    width: 500px;
-  }
-}
-
-@media (max-width: 1050px) {
-  .center-text {
-    font-size: 35px;
-    max-width: 500px;
-  }
-
-  .launch-button {
-    font-size: 27px;
-  }
-
-  .home h5 {
-    font-size: 1.em;
-    width: 450px;
-  }
-}
-
-/* strange */
 @media (max-width: 768px) {
-  .card-container {
-    margin-top: 60px;
-    flex-wrap: wrap;
-    max-width: 40%;
+  .center-text {
+    font-size: 40px;
   }
 
-  .card-about {
-    margin-bottom: 50px;
+  .maximize-potential {
+    margin-top: 8px;
+    font-size: 10px;
   }
 
-  /* .center-text-container {
-    position: realtive;
-    left: 0px;
-    width: 50px;
-    height: auto;
-    text-wrap: wrap;
-    text-align: center;
-  } */
+  .launch-button {
+    width: 240px;
+    height: 40px;
+    margin-top: 14px;
+  }
+
+  .button-text {
+    font-size: 15px;
+  }
+
+  .rocket-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .decoration-0 {
+    width: 65%;
+    height: 65%;
+    top: -15vh;
+    left: -20vw;
+  }
+
+  .decoration-1 {
+    width: 20%;
+    height: 20%;
+    top: -5vh;
+    left: 10vw;
+  }
+
+  .decoration-2 {
+    width: 40%;
+    height: 40%;
+    top: -10vh;
+    left: 55vw;
+  }
+
+  .decoration-3 {
+    width: 55%;
+    height: 55%;
+    top: -5vh;
+    left: 62vw;
+  }
 }
 
 @media (max-width: 480px) {
   .center-text {
-    font-weight: 600;
-    font-size: 1.1rem;
-    text-wrap: wrap;
+    font-size: 35px;
   }
 
   .maximize-potential {
-    font-size: 0.8rem !important;
-  }
-
-  .center-text-container {
-    position: relative;
-    right: -30px;
-    /* width: 50px; */
-    padding: 0 100px;
-    height: auto;
-    text-wrap: wrap;
-    text-align: center;
+    margin-top: 8px;
+    font-size: 10px;
   }
 
   .launch-button {
-    font-size: 1rem;
-    width: 170px;
+    width: 240px;
+    height: 40px;
+    margin-top: 14px;
   }
 
-  .home {
-    /* overflow: hidden; */
+  .button-text {
+    font-size: 15px;
+  }
+
+  .rocket-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .decoration:nth-child(2),
+  .decoration:nth-child(4) {
+    display: none;
+  }
+
+  .decoration-0 {
+    width: 40%;
+    height: 40%;
+    top: -15vh;
+    left: -5vw;
+  }
+  .decoration-2 {
+    width: 50%;
+    height: 50%;
   }
 }
