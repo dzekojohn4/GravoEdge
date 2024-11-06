@@ -93,8 +93,7 @@ mod Deposit {
         supply_decimals: DecimalScale,
         debt_decimals: DecimalScale
     ) -> u256 {
-        let deposited = ((total_deposited * ZK_SCALE_DECIMALS * supply_token_price.into()).into()
-            / supply_decimals.into());
+        let deposited = ((total_deposited * ZK_SCALE_DECIMALS * supply_token_price.into()) / supply_decimals.into());
         let free_amount = (((deposited * collateral_factor.into() / ZK_SCALE_DECIMALS)
             * borrow_factor.into()
             / ZK_SCALE_DECIMALS))
