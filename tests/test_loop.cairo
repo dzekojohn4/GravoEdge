@@ -224,7 +224,7 @@ fn test_loop_usdc_valid() {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: usdc_addr, amount: 60000000, multiplier: 4, borrow_portion_percent: 98
+                token: usdc_addr, amount: 60000000, multiplier: 4, borrow_portion_percent: 90
             },
             pool_key,
             get_slippage_limits(pool_key),
@@ -263,18 +263,18 @@ fn test_loop_unauthorized() {
             + ERC20ABIDispatcher { contract_address: usdc_addr }.decimals())
             .into()
     );
-    let pool_price = 1 * decimals_sum_power.into() / get_asset_price_pragma('ETH/USD');
+    let pool_price = ((1 * ZK_SCALE_DECIMALS * decimals_sum_power.into() / get_asset_price_pragma('ETH/USD').into()) / ZK_SCALE_DECIMALS).try_into().unwrap();
 
     let disp = get_deposit_dispatcher(user);
 
     disp
         .loop_liquidity(
             DepositData {
-                token: usdc_addr, amount: 10000000, multiplier: 4, borrow_portion_percent: 98
+                token: usdc_addr, amount: 10000000, multiplier: 4, borrow_portion_percent: 90
             },
             pool_key,
             get_slippage_limits(pool_key),
-            pool_price.into()
+            pool_price
         );
 }
 
@@ -308,7 +308,7 @@ fn test_loop_position_exists() {
         (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
             .into()
     );
-    let pool_price = 1 * decimals_sum_power.into() / get_asset_price_pragma('ETH/USD');
+    let pool_price = ((1 * ZK_SCALE_DECIMALS * decimals_sum_power.into() / get_asset_price_pragma('ETH/USD').into()) / ZK_SCALE_DECIMALS).try_into().unwrap();
     let deposit_disp = get_deposit_dispatcher(user);
     start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
     token_disp.approve(deposit_disp.contract_address, 60000000);
@@ -318,11 +318,11 @@ fn test_loop_position_exists() {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: usdc_addr, amount: 60000000, multiplier: 4, borrow_portion_percent: 98
+                token: usdc_addr, amount: 60000000, multiplier: 4, borrow_portion_percent: 90
             },
             pool_key,
             get_slippage_limits(pool_key),
-            pool_price.into()
+            pool_price
         );
     deposit_disp
         .loop_liquidity(
@@ -331,7 +331,7 @@ fn test_loop_position_exists() {
             },
             pool_key,
             get_slippage_limits(pool_key),
-            pool_price.into()
+            pool_price
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
 }
@@ -429,7 +429,7 @@ fn test_close_position_usdc_valid_time_passed() {
         (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
             .into()
     );
-    let pool_price = 1 * decimals_sum_power.into() / quote_token_price;
+    let pool_price = ((1 * ZK_SCALE_DECIMALS * decimals_sum_power.into() / get_asset_price_pragma('ETH/USD').into()) / ZK_SCALE_DECIMALS).try_into().unwrap();
     let deposit_disp = get_deposit_dispatcher(user);
 
     start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
@@ -440,7 +440,7 @@ fn test_close_position_usdc_valid_time_passed() {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 98
+                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 90
             },
             pool_key,
             get_slippage_limits(pool_key),
@@ -459,7 +459,7 @@ fn test_close_position_usdc_valid_time_passed() {
             eth_addr,
             pool_key,
             get_slippage_limits(pool_key),
-            100,
+            95,
             pool_price,
             quote_token_price
         );
@@ -500,7 +500,7 @@ fn test_close_position_amounts_cleared() {
         (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
             .into()
     );
-    let pool_price = 1 * decimals_sum_power.into() / quote_token_price;
+    let pool_price = (1 * ZK_SCALE_DECIMALS * decimals_sum_power.into() / quote_token_price.into()) / ZK_SCALE_DECIMALS;
     let deposit_disp = get_deposit_dispatcher(user);
 
     start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
@@ -511,11 +511,11 @@ fn test_close_position_amounts_cleared() {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 98
+                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 90
             },
             pool_key,
             get_slippage_limits(pool_key),
-            pool_price
+            pool_price.try_into().unwrap()
         );
     deposit_disp
         .close_position(
@@ -523,8 +523,8 @@ fn test_close_position_amounts_cleared() {
             eth_addr,
             pool_key,
             get_slippage_limits(pool_key),
-            100,
-            pool_price,
+            95,
+            pool_price.try_into().unwrap(),
             quote_token_price
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
@@ -575,7 +575,7 @@ fn test_close_position_partial_debt_utilization() {
         (ERC20ABIDispatcher { contract_address: usdc_addr }.decimals() + token_disp.decimals())
             .into()
     );
-    let quote_token_price = 1 * decimals_sum_power.into() / pool_price;
+    let quote_token_price = ((1 * ZK_SCALE_DECIMALS * decimals_sum_power.into() / pool_price.into()) / ZK_SCALE_DECIMALS).try_into().unwrap();
 
     let deposit_disp = get_deposit_dispatcher(user);
 
@@ -599,7 +599,7 @@ fn test_close_position_partial_debt_utilization() {
             usdc_addr,
             pool_key,
             get_slippage_limits(pool_key),
-            99,
+            95,
             pool_price,
             quote_token_price
         );
@@ -651,7 +651,7 @@ fn test_extra_deposit_valid() {
         (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
             .into()
     );
-    let pool_price = 1 * decimals_sum_power.into() / quote_token_price;
+    let pool_price = ((1 * ZK_SCALE_DECIMALS * decimals_sum_power.into() / quote_token_price) / ZK_SCALE_DECIMALS).try_into().unwrap();
     let deposit_disp = get_deposit_dispatcher(user);
 
     start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
@@ -765,7 +765,7 @@ fn test_extra_deposit_supply_token_close_position_fuzz(extra_amount: u32) {
             eth_addr,
             pool_key,
             get_slippage_limits(pool_key),
-            100,
+            95,
             pool_price,
             quote_token_price
         );
@@ -810,7 +810,7 @@ fn test_withdraw_valid_fuzz(amount: u32) {
         (ERC20ABIDispatcher { contract_address: eth_addr }.decimals() + token_disp.decimals())
             .into()
     );
-    let pool_price = 1 * decimals_sum_power.into() / quote_token_price;
+    let pool_price = ((1 * ZK_SCALE_DECIMALS * decimals_sum_power.into() / get_asset_price_pragma('ETH/USD').into()) / ZK_SCALE_DECIMALS).try_into().unwrap();
     let deposit_disp = get_deposit_dispatcher(user);
 
     start_cheat_caller_address(usdc_addr.try_into().unwrap(), user);
@@ -821,7 +821,7 @@ fn test_withdraw_valid_fuzz(amount: u32) {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 98
+                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 90
             },
             pool_key,
             get_slippage_limits(pool_key),
@@ -847,7 +847,7 @@ fn test_withdraw_valid_fuzz(amount: u32) {
             eth_addr,
             pool_key,
             get_slippage_limits(pool_key),
-            100,
+            95,
             pool_price,
             quote_token_price
         );
