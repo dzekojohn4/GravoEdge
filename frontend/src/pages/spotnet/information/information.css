@@ -8,14 +8,15 @@
 
 .card-info__container {
   position: relative;
-  width: 70vw;
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   justify-content: space-around;
 }
 
 .card-info {
-  width: 450px;
-  height: 300px;
+  width: 420px;
+  height: 250px;
   background: var(--card-bg-gradient);
   flex-direction: column;
   gap: 15px;
@@ -58,128 +59,129 @@
   filter: blur(120px);
 }
 
-.infos .card-gradient:nth-child(2){
-    position: absolute;
-    right: -450px;
-    bottom: 70px;
-    width: 342px;
-    height: 208px;
-    flex-shrink: 0;
-    border-radius: 2000px;
-    background: var(--gradient, linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%));
-    /* Blur */
-    filter: blur(120px);
+.infos .card-gradient:nth-child(2) {
+  position: absolute;
+  right: -450px;
+  bottom: 70px;
+  width: 342px;
+  height: 208px;
+  flex-shrink: 0;
+  border-radius: 2000px;
+  background: var(--gradient);
+  filter: blur(120px);
 }
 
-/* Tablet adjustments */
-@media (max-width: 1024px) {
-    .card-info__container {
-        width: 90vw;
-        gap: 15px;
-    }
-
-    .card-info {
-        max-width: 400px;
-    }
-
-    .card-info h3 {
-        font-size: 50px;
-    }
-
-    .card-info h1 {
-        font-size: 28px;
-    }
-
-    /* Adjust gradients for tablet screens */
-    .infos .card-gradient:nth-child(1) {
-        top: 50px;
-        left: -200px;
-        width: 180px;
-        height: 180px;
-        filter: blur(100px);
-    }
-
-    .infos .card-gradient:nth-child(2) {
-        right: -200px;
-        bottom: 40px;
-        width: 250px;
-        height: 180px;
-        filter: blur(100px);
-    }
-}
-
-/* Mobile adjustments */
-@media (max-width: 600px) {
-    .card-info__container {
-        width: 95vw;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .card-info {
-        max-width: 300px;
-    }
-
-    .card-info h3 {
-        font-size: 40px;
-    }
-
-    .card-info h1 {
-        font-size: 24px;
-    }
-
-    /* Adjust gradient for mobile screens */
-    .infos .card-gradient:nth-child(1) {
-        top: 20px;
-        left: -150px;
-        width: 150px;
-        height: 150px;
-        filter: blur(80px);
-    }
-
-    .infos .card-gradient:nth-child(2) {
-        right: -150px;
-        bottom: 30px;
-        width: 180px;
-        height: 150px;
-        filter: blur(80px);
-    }
-}
-
-@media (max-width: 1024px) {
-  .infos {
-    width: 10%;
-  }
-}
-
-@media (max-width: 768px) {
+@media (max-width: 1440px) {
   .information {
-    margin-top: 100px;
+    height: 60vh;
+    margin-top: 60px;
   }
 
   .card-info__container {
-    flex-direction: column;
-    align-items: center;
-    width: 90vw;
-    margin-top: 100px;
+    max-width: 1100px;
   }
 
   .card-info {
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 50px;
+    width: 380px;
+    height: 225px;
+    gap: 12px;
   }
+
+  .card-info h3 {
+    font-size: 55px;
+  }
+
+  .card-info h1 {
+    font-size: 30px;
+  }
+
+  @media (max-width: 1024px) {
+    .information {
+      height: 50vh;
+    }
+
+    .card-info__container {
+      max-width: 880px;
+    }
+
+    .card-info {
+      width: 340px;
+      height: 200px;
+      gap: 10px;
+    }
 
     .card-info h3 {
-    font-size: 40px;
-  }
-}
+      font-size: 50px;
+    }
 
-@media (max-width: 480px) {
-  .information {
-    margin-top: 80px;
+    .card-info h1 {
+      font-size: 25px;
+    }
+
+    .infos .card-gradient:nth-child(1) {
+      top: 50px;
+      left: -200px;
+      width: 180px;
+      height: 180px;
+    }
+
+    .infos .card-gradient:nth-child(2) {
+      right: -200px;
+      bottom: 40px;
+      width: 250px;
+      height: 180px;
+    }
   }
-  .infos {
-    gap: 30px;
+
+  @media (max-width: 768px) {
+    .information {
+      height: 40vh;
+    }
+
+    .card-info__container {
+      max-width: 700px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card-info {
+      margin-bottom: 70px;
+    }
+    .infos .card-gradient:nth-child(1) {
+      top: 100px;
+      left: -50px;
+      width: 180px;
+      height: 180px;
+    }
+
+    .infos .card-gradient:nth-child(2) {
+      right: -100px;
+      bottom: 40px;
+      width: 250px;
+      height: 180px;
+    }
+    @media (max-width: 480px) {
+      .information {
+        margin-top: 50px;
+      }
+    }
+
+    .card-info {
+      margin-bottom: 60px;
+    }
+
+    .infos .card-gradient:nth-child(1) {
+      top: -50px;
+      left: 10px;
+      width: 180px;
+      height: 180px;
+    }
+
+    .infos .card-gradient:nth-child(2) {
+      right: -220px;
+      bottom: 40px;
+      width: 250px;
+      height: 180px;
+    }
   }
 }
