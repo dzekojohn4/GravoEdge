@@ -81,7 +81,7 @@ fn get_slippage_limits(pool_key: PoolKey) -> EkuboSlippageLimits {
         contract_address: contracts::EKUBO_CORE_MAINNET.try_into().unwrap()
     };
     let sqrt_ratio = ekubo_core.get_pool_price(pool_key).sqrt_ratio;
-    let tolerance = sqrt_ratio * 5 / 100;
+    let tolerance = sqrt_ratio * 15 / 100;
     EkuboSlippageLimits { lower: sqrt_ratio - tolerance, upper: sqrt_ratio + tolerance }
 }
 
