@@ -240,16 +240,66 @@
 
   .card-number h2 {
     padding: 5px;
-    width: 70px;
+    width: 60px;
     font-weight: 600;
     font-size: 25px;
   }
 }
 
-@media (max-width: 503px) {
-  .card-gradient:nth-child(2) {
-    right: 100px;
-    bottom: -90px;
+@media (max-width: 768px) {
+  .card-about {
+    width: 175px;
+    height: 205px;
+    gap: 8px;
+    padding: 6px;
+  }
+
+  .about-container {
+    margin-bottom: 150px;
+  }
+
+  .about-title {
+    margin-top: 30px;
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 120px;
+  }
+
+  .card-container .card-about {
+    margin-right: 12px;
+  }
+
+  .card-icon {
+    height: 80px;
+  }
+
+  .card-icon svg {
+    width: 60px;
+    height: 60px;
+  }
+
+  .card-gradient:nth-child(1) {
+    left: 600px;
+  }
+
+  .card-title h4 {
+    font-weight: 400;
+    font-size: 15px;
+  }
+
+  .card-description h6 {
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 130%;
+  }
+
+  .card-number h2 {
+    position: absolute;
+    top: 8px;
+    padding: 6px;
+    width: 45px;
+    font-weight: 600;
+    font-size: 18px;
   }
 }
 
@@ -260,5 +310,24 @@
 
   .about-title {
     margin-bottom: 80px;
+  }
+
+  .card-container {
+    flex-direction: column;
+    gap: 35px;
+  }
+
+  .card-container .card-about {
+    margin-right: 0;
+  }
+
+  .card-gradient:nth-child(1) {
+    left: 150px;
+    top: 850px;
+  }
+
+  .card-gradient:nth-child(2) {
+    right: 150px;
+    bottom: -190px;
   }
 }
