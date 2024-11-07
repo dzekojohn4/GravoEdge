@@ -1,6 +1,3 @@
-// use ekubo::interfaces::core::SwapParameters;
-// use ekubo::types::delta::Delta;
-// use ekubo::types::keys::PoolKey;
 use ekubo::{interfaces::core::SwapParameters, types::{delta::Delta, keys::PoolKey}};
 use starknet::ContractAddress;
 
@@ -24,8 +21,8 @@ pub struct SwapData {
 pub struct DepositData {
     pub token: ContractAddress,
     pub amount: TokenAmount,
-    pub multiplier: u32,
-    pub borrow_const: u8
+    pub multiplier: u8,
+    pub borrow_portion_percent: u8
 }
 
 #[derive(Copy, Drop, Serde)]

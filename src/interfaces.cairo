@@ -1,5 +1,7 @@
 use ekubo::types::keys::PoolKey;
-use spotnet::types::{MarketReserveData, DepositData, Claim, EkuboSlippageLimits, TokenPrice};
+use spotnet::types::{
+    MarketReserveData, DepositData, Claim, EkuboSlippageLimits, TokenPrice, TokenAmount
+};
 use starknet::ContractAddress;
 
 #[starknet::interface]
@@ -18,6 +20,7 @@ pub trait IDeposit<TContractState> {
         debt_token: ContractAddress,
         pool_key: PoolKey,
         ekubo_limits: EkuboSlippageLimits,
+        borrow_portion_percent: u8,
         supply_price: TokenPrice,
         debt_price: TokenPrice
     );
@@ -28,6 +31,10 @@ pub trait IDeposit<TContractState> {
         proof: Span<felt252>,
         airdrop_addr: ContractAddress
     );
+
+    fn extra_deposit(ref self: TContractState, token: ContractAddress, amount: TokenAmount);
+
+    fn withdraw(ref self: TContractState, token: ContractAddress, amount: TokenAmount);
 }
 
 #[starknet::interface]
