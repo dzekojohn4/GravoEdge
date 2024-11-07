@@ -15,6 +15,10 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
   // Use the custom hook for body scroll locking
   useLockBodyScroll(isMenuOpen);
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   // Close menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
@@ -23,7 +27,9 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
   // Close the menu when the window size is changed
   useEffect(() => {
     const handleResize = () => {
-      setIsMenuOpen(false);
+      if (window.innerWidth > 1024) {
+        setIsMenuOpen(false);
+      }
     };
     // Add resize event handler
     window.addEventListener('resize', handleResize);
@@ -33,10 +39,6 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
       window.removeEventListener('resize', handleResize);
     };
   }, []); // Pass an empty array of dependencies so that this effect will only be triggered once when mounting.
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   const handleNavClick = () => {
     setIsMenuOpen(false);
