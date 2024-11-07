@@ -1,15 +1,19 @@
 #[starknet::contract]
 mod Deposit {
     use alexandria_math::fast_power::fast_power;
+    use core::num::traits::Zero;
 
     use ekubo::{
         interfaces::core::{ICoreDispatcher, ICoreDispatcherTrait, ILocker, SwapParameters},
         types::{i129::i129, keys::PoolKey}
     };
 
+    use openzeppelin_security::ReentrancyGuardComponent;
+
     use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
+    use openzeppelin_upgrades::{UpgradeableComponent, interface::IUpgradeable};
     use spotnet::{
-        constants::ZK_SCALE_DECIMALS,
+        constants::{ZK_SCALE_DECIMALS, STRK_ADDRESS},
         interfaces::{
             IMarketDispatcher, IMarketDispatcherTrait, IAirdropDispatcher, IAirdropDispatcherTrait,
             IDeposit
@@ -21,16 +25,29 @@ mod Deposit {
     };
 
     use starknet::{
-        ContractAddress, get_contract_address, get_tx_info, event::EventEmitter,
-        storage::{StoragePointerWriteAccess, StoragePointerReadAccess}
+        ContractAddress, ClassHash, get_contract_address, get_caller_address, get_tx_info,
+        event::EventEmitter, storage::{StoragePointerWriteAccess, StoragePointerReadAccess}
     };
+
+    component!(
+        path: ReentrancyGuardComponent, storage: reentrancy_guard, event: ReentrancyGuardEvent
+    );
+    component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
+
+    impl ReentrancyInternalImpl = ReentrancyGuardComponent::InternalImpl<ContractState>;
+    impl UpgradeableInternalImpl = UpgradeableComponent::InternalImpl<ContractState>;
 
     #[storage]
     struct Storage {
         owner: ContractAddress,
         ekubo_core: ICoreDispatcher,
         zk_market: IMarketDispatcher,
-        is_position_open: bool
+        treasury: ContractAddress,
+        is_position_open: bool,
+        #[substorage(v0)]
+        reentrancy_guard: ReentrancyGuardComponent::Storage,
+        #[substorage(v0)]
+        upgradeable: UpgradeableComponent::Storage
     }
 
     #[constructor]
@@ -38,23 +55,31 @@ mod Deposit {
         ref self: ContractState,
         owner: ContractAddress,
         ekubo_core: ICoreDispatcher,
-        zk_market: IMarketDispatcher
+        zk_market: IMarketDispatcher,
+        treasury: ContractAddress
     ) {
+        assert(owner.is_non_zero(), 'Owner address is zero');
         self.owner.write(owner);
         self.ekubo_core.write(ekubo_core);
         self.zk_market.write(zk_market);
+        self.treasury.write(treasury);
     }
 
     fn get_borrow_amount(
         borrow_capacity: TokenAmount,
         token_price: TokenPrice,
-        decimals_difference: DecimalScale,
+        deposit_token_decimals: DecimalScale,
         total_borrowed: TokenAmount,
-        borrow_const: u8
-    ) -> felt252 {
-        let amount_base_token = token_price.into() * borrow_capacity;
-        let amount_quote_token = amount_base_token / decimals_difference.into();
-        ((amount_quote_token - total_borrowed) / 100_u256 * borrow_const.into()).try_into().unwrap()
+        borrow_portion_percent: u8
+    ) -> u256 {
+        // Borrow capacity already scaled.
+        let amount_borrow_token = borrow_capacity
+            * token_price.into()
+            / deposit_token_decimals.into();
+        ((amount_borrow_token - (total_borrowed * ZK_SCALE_DECIMALS))
+            * borrow_portion_percent.into()
+            / 100)
+            / ZK_SCALE_DECIMALS
     }
 
     fn get_withdraw_amount(
@@ -62,19 +87,21 @@ mod Deposit {
         total_debt: TokenAmount,
         collateral_factor: felt252,
         borrow_factor: felt252,
+        borrow_portion_percent: u8,
         supply_token_price: TokenPrice,
         debt_token_price: TokenPrice,
         supply_decimals: DecimalScale,
         debt_decimals: DecimalScale
     ) -> u256 {
-        let deposited = (total_deposited * supply_token_price.into()).into()
-            / supply_decimals.into();
-        let free_amount = ((deposited * collateral_factor.into() / ZK_SCALE_DECIMALS)
+        let deposited = ((total_deposited * ZK_SCALE_DECIMALS * supply_token_price.into()) / supply_decimals.into());
+        let free_amount = (((deposited * collateral_factor.into() / ZK_SCALE_DECIMALS)
             * borrow_factor.into()
-            / ZK_SCALE_DECIMALS)
-            - total_debt.into();
-        let withdraw_amount = free_amount * debt_token_price.into() / debt_decimals.into();
-        withdraw_amount
+            / ZK_SCALE_DECIMALS))
+            - (total_debt.into() * ZK_SCALE_DECIMALS);
+        ((free_amount * debt_token_price.into() / debt_decimals.into())
+            * borrow_portion_percent.into()
+            / 100)
+            / ZK_SCALE_DECIMALS
     }
 
     #[derive(starknet::Event, Drop)]
@@ -99,6 +126,10 @@ mod Deposit {
     enum Event {
         LiquidityLooped: LiquidityLooped,
         PositionClosed: PositionClosed,
+        #[flat]
+        ReentrancyGuardEvent: ReentrancyGuardComponent::Event,
+        #[flat]
+        UpgradeableEvent: UpgradeableComponent::Event
     }
 
     #[generate_trait]
@@ -133,23 +164,26 @@ mod Deposit {
             ekubo_limits: EkuboSlippageLimits,
             pool_price: TokenPrice
         ) {
-            let user_acount = get_tx_info().unbox().account_contract_address;
-            assert(user_acount == self.owner.read(), 'Caller is not the owner');
+            let user_account = get_tx_info().unbox().account_contract_address;
+            assert(user_account == self.owner.read(), 'Caller is not the owner');
             assert(!self.is_position_open.read(), 'Open position already exists');
-            let DepositData { token, amount, multiplier, borrow_const } = deposit_data;
-            assert(borrow_const > 0 && borrow_const < 100, 'Cannot calculate borrow amount');
+            let DepositData { token, amount, multiplier, borrow_portion_percent } = deposit_data;
+            assert(
+                borrow_portion_percent > 0 && borrow_portion_percent < 100,
+                'Cannot calculate borrow amount'
+            );
             assert(multiplier < 6 && multiplier > 1, 'Multiplier not supported');
             assert(amount != 0 && pool_price != 0, 'Parameters cannot be zero');
 
             let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
             let deposit_token_decimals = fast_power(10_u64, token_dispatcher.decimals().into());
-            
+
             let curr_contract_address = get_contract_address();
             assert(
-                token_dispatcher.allowance(user_acount, curr_contract_address) >= amount,
+                token_dispatcher.allowance(user_account, curr_contract_address) >= amount,
                 'Approved amount insufficient'
             );
-            assert(token_dispatcher.balanceOf(user_acount) >= amount, 'Insufficient balance');
+            assert(token_dispatcher.balanceOf(user_account) >= amount, 'Insufficient balance');
 
             let zk_market = self.zk_market.read();
 
@@ -178,7 +212,10 @@ mod Deposit {
             let mut deposited = amount;
 
             while (amount + accumulated) / amount < multiplier.into() {
-                let borrow_capacity = ((deposited * collateral_factor / ZK_SCALE_DECIMALS)
+                let borrow_capacity = ((deposited
+                    * ZK_SCALE_DECIMALS
+                    * collateral_factor
+                    / ZK_SCALE_DECIMALS)
                     * borrow_factor
                     / ZK_SCALE_DECIMALS);
                 let to_borrow = get_borrow_amount(
@@ -186,10 +223,10 @@ mod Deposit {
                     pool_price,
                     deposit_token_decimals.into(),
                     total_borrowed,
-                    borrow_const
+                    borrow_portion_percent
                 );
-                total_borrowed += to_borrow.into();
-                zk_market.borrow(borrowing_token, to_borrow);
+                total_borrowed += to_borrow;
+                zk_market.borrow(borrowing_token, to_borrow.try_into().unwrap());
                 let params = SwapParameters {
                     amount: i129 { mag: to_borrow.try_into().unwrap(), sign: false },
                     is_token1,
@@ -242,6 +279,7 @@ mod Deposit {
         /// tokens.
         /// * `ekubo_limits`: EkuboSlippageLimits - Represents upper and lower sqrt_ratio values on
         /// Ekubo. Used to control slippage while swapping.
+        /// * `repay_const`: u8 - Sets how much to borrow from free amount.
         /// * `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token.
         /// * `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token.
         fn close_position(
@@ -250,6 +288,7 @@ mod Deposit {
             debt_token: ContractAddress,
             pool_key: PoolKey,
             ekubo_limits: EkuboSlippageLimits,
+            borrow_portion_percent: u8,
             supply_price: TokenPrice,
             debt_price: TokenPrice
         ) {
@@ -294,6 +333,7 @@ mod Deposit {
                     debt,
                     collateral_factor,
                     borrow_factor,
+                    borrow_portion_percent,
                     supply_price,
                     debt_price,
                     supply_decimals,
@@ -301,9 +341,11 @@ mod Deposit {
                 );
                 zk_market.withdraw(supply_token, withdraw_amount.try_into().unwrap());
 
-                let params = if (debt > withdraw_amount
+                let params = if (debt > (withdraw_amount
+                    * ZK_SCALE_DECIMALS
                     * supply_price.into()
-                    / supply_decimals.into()) {
+                    / supply_decimals.into())
+                    / ZK_SCALE_DECIMALS) {
                     SwapParameters {
                         amount: i129 { mag: withdraw_amount.try_into().unwrap(), sign: false },
                         is_token1: is_token1_repay_swap,
@@ -355,6 +397,13 @@ mod Deposit {
 
         /// Claims STRK airdrop on ZKlend
         ///
+        /// Can be called by anyone, e.g. a keeper
+        ///
+        /// If the treasury address is zero, the funds are not sent to treasury to avoid burning
+        /// them.
+        /// This does mean that a sophisticated user could deploy their own contract with a zero
+        /// treasury address to avoid sending on fees.
+        ///
         /// # Panics
         /// `is_position_open` storage variable is set to false('Open position not exists')
         /// `proof` span is empty
@@ -374,7 +423,73 @@ mod Deposit {
                 IAirdropDispatcher { contract_address: airdrop_addr }.claim(claim_data, proof),
                 'Claim failed'
             );
-            // TODO: Add transfer to the Treasury
+
+            let strk = ERC20ABIDispatcher { contract_address: STRK_ADDRESS.try_into().unwrap() };
+            let zk_market = self.zk_market.read();
+            let part_for_treasury = claim_data.amount
+                - claim_data.amount / 2; // u128 integer division, rounds down
+
+            let treasury_addr = self.treasury.read();
+            let remainder = if (treasury_addr
+                .into() != 0) { // Zeroable not publicly accessible in this Cairo version AFAIK
+                strk.transfer(treasury_addr, part_for_treasury.into());
+                claim_data.amount - part_for_treasury
+            } else {
+                claim_data.amount
+            };
+
+            strk.approve(zk_market.contract_address, remainder.into());
+            zk_market.deposit(STRK_ADDRESS.try_into().unwrap(), remainder.into());
+            zk_market.enable_collateral(STRK_ADDRESS.try_into().unwrap());
+        }
+
+        /// Makes a deposit into open zkLend position to control stability
+        ///
+        /// Anyone can deposit theoretically
+        ///
+        /// # Panics
+        /// `is_position_open` variable is set to false
+        /// `amount` is equal to zero
+        ///
+        /// # Parameters
+        /// `token`: ContractAddress - token address to withdraw from zkLend
+        /// `amount`: TokenAmount - amount to withdraw
+        fn extra_deposit(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {
+            self.reentrancy_guard.start();
+            assert(self.is_position_open.read(), 'Open position not exists');
+            assert(amount != 0, 'Deposit amount is zero');
+            let (zk_market, token_dispatcher) = (
+                self.zk_market.read(), ERC20ABIDispatcher { contract_address: token }
+            );
+            token_dispatcher.transferFrom(get_caller_address(), get_contract_address(), amount);
+            token_dispatcher.approve(zk_market.contract_address, amount);
+            zk_market.enable_collateral(token);
+            zk_market.deposit(token, amount.try_into().unwrap());
+            self.reentrancy_guard.end();
+        }
+
+        /// Withdraws tokens from zkLend if looped tokens are repaid
+        ///
+        /// # Panics
+        /// address of account that started the transaction is not equal to `owner` storage variable
+        ///
+        /// # Parameters
+        /// `token`: TokenAddress - token address to withdraw from zkLend
+        /// `amount`: TokenAmount - amount to withdraw. Pass `0` to withdraw all
+        fn withdraw(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {
+            assert(get_caller_address() == self.owner.read(), 'Caller is not the owner');
+            let zk_market = self.zk_market.read();
+            let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
+            if amount == 0 {
+                zk_market.withdraw_all(token);
+                token_dispatcher
+                    .transfer(
+                        self.owner.read(), token_dispatcher.balanceOf(get_contract_address())
+                    );
+            } else {
+                zk_market.withdraw(token, amount.try_into().unwrap());
+                token_dispatcher.transfer(self.owner.read(), amount);
+            };
         }
     }
 
@@ -398,6 +513,16 @@ mod Deposit {
             let mut arr: Array<felt252> = ArrayTrait::new();
             Serde::serialize(@swap_result, ref arr);
             arr.span()
+        }
+    }
+
+    #[abi(embed_v0)]
+    impl UpgradeableImpl of IUpgradeable<ContractState> {
+        fn upgrade(ref self: ContractState, new_class_hash: ClassHash) {
+            // This function can only be called by the owner
+            assert(get_caller_address() == self.owner.read(), 'Caller is not the owner');
+
+            self.upgradeable.upgrade(new_class_hash);
         }
     }
 }
