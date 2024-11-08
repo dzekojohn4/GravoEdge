@@ -161,7 +161,7 @@
 
 @media (max-width: 1800px) {
   .launch-button {
-    width: 380px;
+    width: 390px;
     height: 55px;
   }
 
@@ -173,13 +173,14 @@
 }
 
 @media (max-width: 1440px) {
+  .launch-button {
+    width: 370px;
+    height: 50px;
+  }
+
   .decoration {
     width: 60%;
     height: 60%;
-  }
-  .launch-button {
-    width: 380px;
-    height: 60px;
   }
 
   .maximize-potential {
