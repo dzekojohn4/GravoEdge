@@ -10,10 +10,10 @@
   align-items: center;
   flex-direction: column;
   justify-content: space-between;
-  width: 117%;
-  right: 9.2%;
+  width: 100%;
   background-color: var(--primary-color);
-  margin-bottom: 300px;
+  margin-bottom: 350px;
+  padding: 0;
 }
 
 .about-star {
@@ -260,7 +260,7 @@
 
   .about-title {
     margin-top: 30px;
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 600;
     margin-bottom: 120px;
   }
@@ -309,6 +309,7 @@
   }
 
   .about-title {
+    font-size: 30px;
     margin-bottom: 80px;
   }
 
