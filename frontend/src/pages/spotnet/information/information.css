@@ -1,9 +1,8 @@
 .information {
-  height: 70vh;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 80px;
 }
 
 .card-info__container {
@@ -12,6 +11,8 @@
   max-width: 1200px;
   display: flex;
   justify-content: space-around;
+  margin-top: 190px;
+  margin-bottom: 180px;
 }
 
 .card-info {
@@ -24,19 +25,24 @@
   border: var(--card-border);
   box-shadow: var(--card-box-shadow);
   backdrop-filter: var(--card-bg-filter);
-}
-
-.card-info {
   color: var(--primary);
 }
 
 .card-info h3 {
   font-size: 60px;
+  min-height: 60px;
   font-family: var(--text-font);
   font-weight: 600;
   line-height: 95%;
   text-align: center;
+  align-items: center;
   color: var(--primary);
+  margin-bottom: 0;
+  margin-top: 3px;
+}
+
+.card-info h3.loading-text {
+  font-size: 38px;
 }
 
 .card-info h1 {
@@ -45,6 +51,8 @@
   font-weight: 600;
   font-size: 32px;
   text-align: center;
+  margin-bottom: 0;
+  margin-top: 7px;
 }
 
 .infos .card-gradient:nth-child(1) {
@@ -72,50 +80,60 @@
 }
 
 @media (max-width: 1440px) {
-  .information {
-    height: 60vh;
-    margin-top: 60px;
-  }
-
   .card-info__container {
-    max-width: 1100px;
+    max-width: 1000px;
   }
 
   .card-info {
-    width: 380px;
+    width: 370px;
     height: 225px;
     gap: 12px;
   }
 
   .card-info h3 {
     font-size: 55px;
+    min-height: 55px;
+    margin-bottom: 0;
+    margin-top: 3px;
+  }
+
+  .card-info h3.loading-text {
+    font-size: 33px;
   }
 
   .card-info h1 {
     font-size: 30px;
+    margin-bottom: 0;
+    margin-top: 7px;
   }
 
   @media (max-width: 1024px) {
-    .information {
-      height: 50vh;
-    }
-
     .card-info__container {
-      max-width: 880px;
+      max-width: 750px;
+      margin-top: 150px;
+      margin-bottom: 120px;
     }
-
     .card-info {
-      width: 340px;
-      height: 200px;
-      gap: 10px;
+      width: 300px;
+      height: 180px;
+      gap: 8px;
     }
 
     .card-info h3 {
-      font-size: 50px;
+      font-size: 45px;
+      min-height: 45px;
+      margin-bottom: 0;
+      margin-top: 3px;
+    }
+
+    .card-info h3.loading-text {
+      font-size: 28px;
     }
 
     .card-info h1 {
-      font-size: 25px;
+      font-size: 23px;
+      margin-bottom: 0;
+      margin-top: 7px;
     }
 
     .infos .card-gradient:nth-child(1) {
@@ -134,54 +152,73 @@
   }
 
   @media (max-width: 768px) {
-    .information {
-      height: 40vh;
-    }
-
     .card-info__container {
-      max-width: 700px;
-      flex-direction: column;
-      align-items: center;
+      width: 700px;
+      margin-top: 120px;
+      margin-bottom: 90px;
     }
 
     .card-info {
-      margin-bottom: 70px;
-    }
-    .infos .card-gradient:nth-child(1) {
-      top: 100px;
-      left: -50px;
-      width: 180px;
-      height: 180px;
-    }
-
-    .infos .card-gradient:nth-child(2) {
-      right: -100px;
-      bottom: 40px;
-      width: 250px;
-      height: 180px;
-    }
-    @media (max-width: 480px) {
-      .information {
-        margin-top: 50px;
-      }
-    }
-
-    .card-info {
+      width: 270px;
+      height: 160px;
       margin-bottom: 60px;
     }
 
+    .card-info h3 {
+      font-size: 40px;
+      min-height: 40px;
+      margin-bottom: 0;
+      margin-top: 3px;
+    }
+
+    .card-info h3.loading-text {
+      font-size: 25px;
+    }
+
+    .card-info h1 {
+      font-size: 20px;
+      margin-bottom: 0;
+      margin-top: 7px;
+    }
     .infos .card-gradient:nth-child(1) {
-      top: -50px;
-      left: 10px;
-      width: 180px;
-      height: 180px;
+      top: 10px;
     }
 
     .infos .card-gradient:nth-child(2) {
-      right: -220px;
-      bottom: 40px;
-      width: 250px;
-      height: 180px;
+      right: -300px;
+      bottom: -40px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .card-info__container {
+      flex-direction: column;
+      align-items: center;
+      margin-top: 100px;
+      margin-bottom: 80px;
+    }
+
+    .card-info {
+      width: 240px;
+      height: 145px;
+      margin-bottom: 60px;
+    }
+
+    .card-info h3 {
+      font-size: 35px;
+      min-height: 35px;
+      margin-bottom: 0;
+      margin-top: 3px;
+    }
+
+    .card-info h3.loading-text {
+      font-size: 25px;
+    }
+
+    .card-info h1 {
+      font-size: 18px;
+      margin-bottom: 0;
+      margin-top: 7px;
     }
   }
 }
