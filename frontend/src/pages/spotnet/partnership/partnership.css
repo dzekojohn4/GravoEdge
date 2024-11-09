@@ -14,8 +14,7 @@
   text-align: center;
   font-family: var(--text-font);
   color: var(--primary);
-  margin-top: 60px;
-  margin-bottom: 100px;
+  margin-bottom: 130px;
   font-weight: 600;
   font-size: 48px;
 }
@@ -25,7 +24,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  animation: scroll 20s linear infinite; /* Infinite scroll */
+  animation: scroll 13s linear infinite; /* Infinite scroll */
   width: calc(150px * 8 * 2); /* Adjust width for duplicated logos */
 }
 
@@ -47,60 +46,88 @@
 
 @media (max-width: 1440px) {
   .partnership-content {
-    width: 100vw;
-    height: 130px;
+    height: 120px;
   }
 
   .partner-title {
     margin-top: 50px;
-    margin-bottom: 80px;
-    font-weight: 600;
-    font-size: 40px;
   }
 
   .partnership-logo {
-    animation: scroll 12s linear infinite;
-    width: calc(130px * 8 * 2);
+    animation: scroll 11s linear infinite;
+    width: calc(110px * 8 * 2);
   }
 
   .partnership-logo > * {
-    flex-shrink: 0;
-    width: 150px;
-    height: 80px;
-    margin: 0 20px;
+    width: 135px;
+    height: 85px;
+    margin: 0 18px;
   }
 }
 
 @media (max-width: 1024px) {
   .partnership-content {
-    height: 110px;
+    height: 100px;
   }
 
   .partner-title {
     font-size: 35px;
+    margin-bottom: 100px;
   }
 
   .partnership-logo {
-    animation: scroll 10s linear infinite;
-    width: calc(110px * 8 * 2);
+    animation: scroll 8s linear infinite;
   }
 
   .partnership-logo > * {
-    height: 60px;
+    width: 120px;
+    height: 80px;
+    margin: 0 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .partnership-content {
+    height: 90px;
+  }
+
+  .partner-title {
+    font-size: 32px;
+    margin-bottom: 90px;
+  }
+
+  .partner-title {
+    font-size: 30px;
+  }
+
+  .partnership-logo {
+    animation: scroll 7s linear infinite;
+  }
+
+  .partnership-logo > * {
+    width: 105px;
+    height: 70px;
+    margin: 0 15px;
   }
 }
 
 @media (max-width: 480px) {
   .partnership-content {
-    height: 100px;
+    height: 80px;
+  }
+
+  .partner-title {
+    font-size: 28px;
+    margin-bottom: 80px;
   }
 
   .partnership-logo {
-    animation: scroll 5s linear infinite; /* Infinite scroll */
-    width: calc(110px * 8 * 2); /* Adjust width for duplicated logos */
+    animation: scroll 5s linear infinite;
   }
 
   .partnership-logo > * {
+    width: 100px;
     height: 60px;
+    margin: 0 14px;
   }
 }
