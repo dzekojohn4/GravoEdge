@@ -17,14 +17,17 @@ const DontMiss = ({ walletId }) => {
     }
   };
   const starData = [
-    { top: 20, left: 5, size: 9 },
-    { top: 75, left: 80, size: 12 },
+    { top: 45, left: 8, size: 25 },
+    { top: 150, left: 70, size: 25 },
   ];
   return (
     <div className="dont-miss__container">
-      <div className="text-container">   <h1 className="miss-title">Don&apos;t miss out</h1>
-      <p className="miss-description">Investing wisely would be the smartest move you&apos;ll make!</p></div>
-   
+      <div className="text-container">
+        {' '}
+        <h1 className="miss-title">Don&apos;t miss out</h1>
+        <p className="miss-description">Investing wisely would be the smartest move you&apos;ll make!</p>
+      </div>
+
       {starData.map((star, index) => (
         <Star
           key={index}
@@ -38,7 +41,10 @@ const DontMiss = ({ walletId }) => {
       ))}
       <div className="miss-button">
         <button className="launch-button" onClick={handleLaunchApp}>
-          Launch App <Rocket />
+          <div className="btn-elements">
+            <span className="button-text">Launch App</span>
+            <Rocket className="rocket-icon" />
+          </div>
         </button>
         <Hand className="hand-icon" />
         <Notifier />
