@@ -49,7 +49,7 @@ function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
       <div className="list-items">
         <div className="logo">
           <NavLink to="/">
-            <Logo className="logo-icon" />
+            <Logo />
           </NavLink>
         </div>
         {/* Desktop Navigation */}
