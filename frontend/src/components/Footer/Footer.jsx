@@ -36,24 +36,23 @@ function Footer() {
 
   return (
     <footer className="footer-container">
-      <div className="footer-content">
+      <div className="footer-center-text">
         <div className="footer-logo">
           <Link to="/" aria-label="Go to homepage">
             <Logo />
           </Link>
-          <div>
-            <h2 className="follow-us-text">Follow us on</h2>
-            <div className="footer-social-cards">
-              {socialLinks.map((social) => (
-                <SocialCard key={social.name} href={social.href} Icon={social.icon} name={social.name} />
-              ))}
-            </div>
-          </div>
         </div>
-        <div className="line-text-container">
-          <div className="footer-line" aria-hidden="true" />
-          <div className="footer-text">©{new Date().getFullYear()}. Spotnet All Rights Reserved.</div>
-        </div>
+        <p className="follow-us-text">Follow us on</p>
+      </div>
+      <div className="footer-social-cards">
+        {socialLinks.map((social) => (
+          <SocialCard key={social.name} href={social.href} Icon={social.icon} name={social.name} />
+        ))}
+      </div>
+
+      <div className="line-text-container">
+        <div className="footer-line" aria-hidden="true" />
+        <div className="footer-text">©{new Date().getFullYear()}. Spotnet All Rights Reserved.</div>
       </div>
     </footer>
   );
