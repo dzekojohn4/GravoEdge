@@ -6,23 +6,15 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-.footer-content {
   position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 0 24px;
 }
 
-.footer-logo {
+.footer-center-text {
   position: relative;
-  margin-bottom: 40px;
-}
-
-.footer-logo svg {
-  height: auto;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  margin-top: 10px;
 }
 
 .follow-us-text {
@@ -31,14 +23,23 @@
   font-size: 32px;
   text-align: center;
   color: var(--footer-text-color);
-  margin: 16px 0 0 0;
+  margin-bottom: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+}
+
+.footer-logo svg {
+  width: 200px;
+  height: auto;
 }
 
 .footer-social-cards {
   display: flex;
+  margin-top: 24px;
   gap: 22px;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 .social-card {
@@ -84,7 +85,6 @@
   text-decoration: none;
   width: 100%;
   height: 100%;
-  gap: 8px;
 }
 
 .social-card svg {
@@ -96,11 +96,10 @@
 }
 
 .line-text-container {
-  padding: 0 24px;
+  padding: 0 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: auto;
 }
 
 .footer-line {
@@ -113,30 +112,19 @@
 
 .footer-text {
   font-family: var(--font-family);
-  font-weight: 400;
   font-size: 20px;
   line-height: 140%;
-  text-align: center;
   color: var(--footer-text-color);
 }
 
-/* Tablet Styles */
-@media (max-width: 1024px) {
+@media (max-width: 1440px) {
   .footer-container {
-    min-height: 350px;
-    padding: 20px 0;
-  }
-
-  .footer-content {
-    padding: 0 20px;
-  }
-
-  .footer-logo {
-    margin-bottom: 30px;
+    min-height: 375px;
   }
 
   .footer-logo svg {
-    width: 140px;
+    width: 160px;
+    height: auto;
   }
 
   .follow-us-text {
@@ -144,81 +132,143 @@
   }
 
   .social-card {
-    width: 180px;
-    height: 140px;
-    padding: 20px 0;
+    padding: 22px 0;
+    width: 181px;
+    height: 135px;
   }
 
   .social-card p {
     font-size: 24px;
   }
 
-  .footer-line {
-    margin-top: 60px;
-  }
-
   .footer-text {
-    font-size: 18px;
-  }
-}
-
-/* Mobile Styles */
-@media (max-width: 480px) {
-  .footer-container {
-    min-height: auto;
-    padding: 16px 0;
-  }
-
-  .footer-content {
-    padding: 0 16px;
-  }
-
-  .footer-logo {
-    margin-bottom: 24px;
-  }
-
-  .footer-logo svg {
-    width: 120px;
-  }
-
-  .follow-us-text {
-    font-size: 24px;
-    margin-bottom: 40px;
+    font-size: 17px;
   }
 
   .footer-social-cards {
-    gap: 16px;
+    margin-top: 18px;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .footer-container {
+    padding: 18px 0;
+    min-height: 300px;
+  }
+
+  .follow-us-text {
+    font-size: 25px;
   }
 
   .social-card {
-     width: 100px;
-    height: 140px;
     padding: 20px 0;
+    width: 155px;
+    height: 118px;
   }
 
   .social-card p {
     font-size: 20px;
   }
 
-  .footer-line {
-    margin-top: 40px;
-    margin-bottom: 12px;
-  }
-
   .footer-text {
     font-size: 16px;
   }
+
+  .footer-social-cards {
+    margin-top: 16px;
+    gap: 18px;
+  }
+
+  .footer-line {
+    margin-top: 70px;
+    margin-bottom: 12px;
+  }
 }
 
-/* Small Mobile Styles */
-@media (max-width: 360px) {
-  .footer-social-cards {
-    flex-direction: column;
-    align-items: center;
+@media (max-width: 768px) {
+  .footer-container {
+    padding: 16px 0;
+  }
+
+  .footer-logo svg {
+    width: 150px;
+    height: auto;
+  }
+
+  .follow-us-text {
+    font-size: 20px;
   }
 
   .social-card {
-    width: 100%;
-    max-width: 280px;
+    padding: 20px 0;
+    width: 143px;
+    height: 106px;
+  }
+
+  .footer-text {
+    font-size: 14px;
+  }
+
+  .footer-social-cards {
+    margin-top: 14px;
+    gap: 16px;
+  }
+
+  .footer-line {
+    margin-top: 65px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-container {
+    padding: 12px 0;
+    min-height: 200px;
+  }
+
+  .footer-center-text {
+    padding: 0 20px;
+  }
+
+  .footer-logo svg {
+    width: 120px;
+    height: auto;
+  }
+
+  .follow-us-text {
+    font-size: 16px;
+  }
+
+  .social-card {
+    padding: 14px 0;
+    width: 116px;
+    height: 86px;
+    border-radius: 14px;
+  }
+
+  .social-card p {
+    font-size: 18px;
+  }
+
+  .footer-text {
+    font-size: 12px;
+  }
+
+  .footer-social-cards {
+    margin-top: 20px;
+    gap: 14px;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-line {
+    margin-top: 45px;
+    margin-bottom: 10px;
+  }
+
+  .line-text-container {
+    padding: 0 20px;
   }
 }
