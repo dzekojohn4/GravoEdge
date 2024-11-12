@@ -52,3 +52,10 @@ class GetStatsResponse(BaseModel):
         example=5,
         description="Number of unique users in the database.",
     )
+
+class SubscribeToNotificationRequest(BaseModel):
+    """
+    Pydantic model for the subscribe to notification request.
+    """
+    telegram_id: str = Field(..., example="123457789", description="The Telegram ID of the user.")
+    wallet_id: str = Field(..., example="0xabc123772", description="The wallet ID of the user.")
