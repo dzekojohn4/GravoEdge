@@ -105,6 +105,22 @@ async def update_user_contract(
     else:
         return {"is_contract_deployed": False}
 
+@router.post(
+    "/api/subscribe-to-notification",
+    tags=["User Operations"],
+    summary="Subscribe user to notifications",
+    response_description="Returns 200 if the subscription is successful.",
+)
+async def subscribe_to_notification(data: SubscribeToNotificationRequest):
+    user = user_db.get_user_by_wallet_id(data.wallet_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    success = user_db.subscribe_to_notification(user_id=user.id, telegram_id=data.telegram_id)
+    if success:
+        return {"detail": "User subscribed to notifications successfully"}
+    else:
+        raise HTTPException(status_code=500, detail="Failed to subscribe user to notifications")
 
 @router.get(
     "/api/get-user-contract-address",
