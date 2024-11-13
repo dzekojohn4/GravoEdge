@@ -10,7 +10,7 @@ from typing import List, Type, TypeVar
 
 from sqlalchemy import create_engine, update, func, cast, Numeric
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, joinedload
 
 from web_app.db.database import SQLALCHEMY_DATABASE_URL
 from web_app.db.models import AirDrop, Base, Position, Status, User, TelegramUser
@@ -89,20 +89,25 @@ class DBConnector:
         finally:
             db.close()
 
-    def get_all_users_with_opened_position(
-        self, model: Type[ModelType] = None
-    ) -> list[ModelType] | None:
+
+    def get_all_users_with_opened_position(self) -> List[User]:
         """
         Retrieves all users with an OPENED position status from the database.
         
-        :param model: type[Base] = None
-        :return: list[Base] | None
+        :return: List[User]
         """
-        db = self.Session()
-        try:
-            return db.query(model).filter(model.position == 'OPENED').all()
-        finally:
-            db.close()
+        with self.Session() as db:
+            try:
+                return (
+                    db.query(User)
+                    .join(User.positions)
+                    .filter(Position.status == Status.OPENED.value)
+                    .options(joinedload(User.positions))
+                    .all()
+                )
+            except SQLAlchemyError as e:
+                logger.error(f"Error retrieving users with OPENED positions: {e}")
+                return []
 
 
     def delete_object(self, model: Type[Base] = None, obj_id: uuid = None) -> None:
@@ -159,7 +164,7 @@ class UserDBConnector(DBConnector):
         Retrieve all users from the database with an OPENED position status.
         :return: List[User] | None
         """
-        return self.get_all_users_with_opened_position(User, "position", "OPENED")
+        return self.get_all_users_with_opened_position()
 
 
     def get_contract_address_by_wallet_id(self, wallet_id: str) -> str:
