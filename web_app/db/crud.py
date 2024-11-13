@@ -89,6 +89,22 @@ class DBConnector:
         finally:
             db.close()
 
+    def get_all_users_with_opened_position(
+        self, model: Type[ModelType] = None
+    ) -> list[ModelType] | None:
+        """
+        Retrieves all users with an OPENED position status from the database.
+        
+        :param model: type[Base] = None
+        :return: list[Base] | None
+        """
+        db = self.Session()
+        try:
+            return db.query(model).filter(model.position == 'OPENED').all()
+        finally:
+            db.close()
+
+
     def delete_object(self, model: Type[Base] = None, obj_id: uuid = None) -> None:
         """
         Delete an object by its ID from the database. Rolls back if the operation fails.
@@ -137,6 +153,14 @@ class UserDBConnector(DBConnector):
         :return: User | None
         """
         return self.get_object_by_field(User, "wallet_id", wallet_id)
+    
+    def get_all_users(self) -> List[User] | None:
+        """
+        Retrieve all users from the database with an OPENED position status.
+        :return: List[User] | None
+        """
+        return self.get_all_users_with_opened_position(User)
+
 
     def get_contract_address_by_wallet_id(self, wallet_id: str) -> str:
         """
