@@ -159,7 +159,7 @@ class UserDBConnector(DBConnector):
         Retrieve all users from the database with an OPENED position status.
         :return: List[User] | None
         """
-        return self.get_all_users_with_opened_position(User)
+        return self.get_all_users_with_opened_position(User, "position", "OPENED")
 
 
     def get_contract_address_by_wallet_id(self, wallet_id: str) -> str:
