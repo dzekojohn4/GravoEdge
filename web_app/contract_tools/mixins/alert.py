@@ -4,6 +4,23 @@ This module contains the alert mixin class.
 from typing import List
 from web_app.db.crud import UserDBConnector
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
+from enum import Enum
+
+class Status(Enum):
+    """
+    Enum for the position status.
+    """
+    PENDING = "pending"
+    OPENED = "opened"
+    CLOSED = "closed"
+
+    @classmethod
+    def choices(cls):
+        """
+        Returns the list of status choices.
+        """
+        return [status.value for status in cls]
+
 
 class HealthRatioLevelLowException(Exception):
     """
@@ -28,8 +45,10 @@ class AlertMixin:
 
         if users:
             for user in users:
-                zk_lend_position = DashboardMixin.get_zklend_position(user.contract_address)
+                for position in user.positions:
+                    if position.status == Status.OPENED.value:
+                        zk_lend_position = DashboardMixin.get_zklend_position(user.contract_address)
 
-                health_ratio_level = zk_lend_position.health_ratio_level
-                if health_ratio_level < 1.1:
-                    raise HealthRatioLevelLowException(user.id, health_ratio_level)
+                        health_ratio_level = zk_lend_position.health_ratio_level
+                        if health_ratio_level < 1.1:
+                            raise HealthRatioLevelLowException(user.id, health_ratio_level)
