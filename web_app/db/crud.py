@@ -10,7 +10,7 @@ from typing import List, Type, TypeVar
 
 from sqlalchemy import create_engine, update, func, cast, Numeric
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import scoped_session, sessionmaker, joinedload
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from web_app.db.database import SQLALCHEMY_DATABASE_URL
 from web_app.db.models import AirDrop, Base, Position, Status, User, TelegramUser
@@ -90,26 +90,6 @@ class DBConnector:
             db.close()
 
 
-    def get_all_users_with_opened_position(self) -> List[User]:
-        """
-        Retrieves all users with an OPENED position status from the database.
-        
-        :return: List[User]
-        """
-        with self.Session() as db:
-            try:
-                return (
-                    db.query(User)
-                    .join(User.positions)
-                    .filter(Position.status == Status.OPENED.value)
-                    .options(joinedload(User.positions))
-                    .all()
-                )
-            except SQLAlchemyError as e:
-                logger.error(f"Error retrieving users with OPENED positions: {e}")
-                return []
-
-
     def delete_object(self, model: Type[Base] = None, obj_id: uuid = None) -> None:
         """
         Delete an object by its ID from the database. Rolls back if the operation fails.
@@ -151,6 +131,27 @@ class UserDBConnector(DBConnector):
     Provides database connection and operations management for the User model.
     """
 
+    def get_all_users_with_opened_position(self) -> List[User]:
+        """
+        Retrieves all users with an OPENED position status from the database.
+        First queries Position table for OPENED positions, then gets the associated users.
+        
+        :return: List[User]
+        """
+        with self.Session() as db:
+            try:
+                positions = (
+                    db.query(Position)
+                    .filter(Position.status == Status.OPENED.value)
+                    .all()
+                )
+
+                user_ids = {position.user_id for position in positions}
+                return db.query(User).filter(User.id.in_(user_ids)).all()
+            except SQLAlchemyError as e:
+                logger.error(f"Error retrieving users with OPENED positions: {e}")
+                return []
+
     def get_user_by_wallet_id(self, wallet_id: str) -> User | None:
         """
         Retrieves a user by their wallet ID.
@@ -159,14 +160,6 @@ class UserDBConnector(DBConnector):
         """
         return self.get_object_by_field(User, "wallet_id", wallet_id)
     
-    def get_all_users(self) -> List[User] | None:
-        """
-        Retrieve all users from the database with an OPENED position status.
-        :return: List[User] | None
-        """
-        return self.get_all_users_with_opened_position()
-
-
     def get_contract_address_by_wallet_id(self, wallet_id: str) -> str:
         """
         Retrieves the contract address of a user by their wallet ID.

@@ -3,32 +3,9 @@ This module contains the alert mixin class.
 """
 from typing import List
 from web_app.db.crud import UserDBConnector
+from web_app.db.models import Status
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
-from enum import Enum
-
-class Status(Enum):
-    """
-    Enum for the position status.
-    """
-    PENDING = "pending"
-    OPENED = "opened"
-    CLOSED = "closed"
-
-    @classmethod
-    def choices(cls):
-        """
-        Returns the list of status choices.
-        """
-        return [status.value for status in cls]
-
-
-class HealthRatioLevelLowException(Exception):
-    """
-    Exception raised when a user's health ratio level is lower than 1.1.
-    """
-    def __init__(self, user_id: int, health_ratio_level: float):
-        self.message = f"User {user_id} has a low health ratio level: {health_ratio_level}"
-        super().__init__(self.message)
+from web_app.contract_tools.mixins.custom_exception import HealthRatioLevelLowException
 
 class AlertMixin:
     """
@@ -41,14 +18,12 @@ class AlertMixin:
         If a user's health ratio level is lower than 1.1, raise a `HealthRatioLevelLowException`.
         """
 
-        users = UserDBConnector().get_all_users()
+        users = UserDBConnector().get_all_users_with_opened_position()
 
         if users:
             for user in users:
-                for position in user.positions:
-                    if position.status == Status.OPENED.value:
-                        zk_lend_position = DashboardMixin.get_zklend_position(user.contract_address)
+                zk_lend_position = DashboardMixin.get_zklend_position(user.contract_address)
 
-                        health_ratio_level = zk_lend_position.health_ratio_level
-                        if health_ratio_level < 1.1:
-                            raise HealthRatioLevelLowException(user.id, health_ratio_level)
+                health_ratio_level = zk_lend_position.health_ratio_level
+                if health_ratio_level < 1.1:
+                    raise HealthRatioLevelLowException(user.id, health_ratio_level)
