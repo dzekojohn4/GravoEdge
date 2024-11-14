@@ -573,3 +573,31 @@ class TelegramUserDBConnector(DBConnector):
                     "is_allowed_notification": True
                 }
                 return self.create_telegram_user(user_data)
+            
+    def allow_notification(self, telegram_id: int) -> TelegramUser:
+        """
+        Update is_allowed_notification field to True for a specific telegram user
+        
+        Args:
+            telegram_id: Telegram user ID
+            
+        Returns:
+            Updated TelegramUser instance
+            
+        Raises:
+            SQLAlchemyError: If there's an error during the database operation
+        """ 
+        with self.Session() as session:
+            try:
+                user = session.query(TelegramUser).filter_by(telegram_id=telegram_id).first()
+                if not user:
+                    raise ValueError(f"User with telegram_id {telegram_id} not found")
+                
+                user.is_allowed_notification = True
+                session.commit()
+                session.refresh(user)
+                return user
+            except SQLAlchemyError as e:
+                session.rollback()
+                logging.error(f"Error allowing notification for user {telegram_id}: {str(e)}")
+                raise
