@@ -89,6 +89,7 @@ class DBConnector:
         finally:
             db.close()
 
+
     def delete_object(self, model: Type[Base] = None, obj_id: uuid = None) -> None:
         """
         Delete an object by its ID from the database. Rolls back if the operation fails.
@@ -130,6 +131,27 @@ class UserDBConnector(DBConnector):
     Provides database connection and operations management for the User model.
     """
 
+    def get_all_users_with_opened_position(self) -> List[User]:
+        """
+        Retrieves all users with an OPENED position status from the database.
+        First queries Position table for OPENED positions, then gets the associated users.
+        
+        :return: List[User]
+        """
+        with self.Session() as db:
+            try:
+                users = (
+                    db.query(User)
+                    .join(Position, Position.user_id == User.id)
+                    .filter(Position.status == Status.OPENED.value)
+                    .distinct()
+                    .all()
+                )
+                return users
+            except SQLAlchemyError as e:
+                logger.error(f"Error retrieving users with OPENED positions: {e}")
+                return []
+
     def get_user_by_wallet_id(self, wallet_id: str) -> User | None:
         """
         Retrieves a user by their wallet ID.
@@ -137,7 +159,7 @@ class UserDBConnector(DBConnector):
         :return: User | None
         """
         return self.get_object_by_field(User, "wallet_id", wallet_id)
-
+    
     def get_contract_address_by_wallet_id(self, wallet_id: str) -> str:
         """
         Retrieves the contract address of a user by their wallet ID.
