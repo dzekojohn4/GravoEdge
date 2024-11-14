@@ -132,6 +132,7 @@ async def subscribe_to_notification(
         raise HTTPException(status_code=404, detail="User not found")
 
     # Simulate subscription logic
+    #TODO add crud method to subscribe user to notification
     success = True  # Placeholder for actual success condition
 
     if success:
