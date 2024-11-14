@@ -140,14 +140,14 @@ class UserDBConnector(DBConnector):
         """
         with self.Session() as db:
             try:
-                positions = (
-                    db.query(Position)
+                users = (
+                    db.query(User)
+                    .join(Position, Position.user_id == User.id)
                     .filter(Position.status == Status.OPENED.value)
+                    .distinct()
                     .all()
                 )
-
-                user_ids = {position.user_id for position in positions}
-                return db.query(User).filter(User.id.in_(user_ids)).all()
+                return users
             except SQLAlchemyError as e:
                 logger.error(f"Error retrieving users with OPENED positions: {e}")
                 return []
