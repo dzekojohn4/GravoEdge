@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from web_app.api.serializers.telegram import TelegramUserAuth, TelegramUserCreate
 from web_app.db.crud import DBConnector, TelegramUserDBConnector
 from web_app.telegram import TELEGRAM_TOKEN, bot, dp
+from web_app.telegram.notifications import send_welcome_message
 from web_app.telegram.utils import build_response_writer, check_telegram_authorization
 
 # Create a FastAPI router for handling Telegram webhook requests
@@ -115,3 +116,40 @@ async def get_wallet_id(telegram_auth: TelegramUserAuth, telegram_id: str):
 
     wallet_id = telegram_user_db_connector.get_wallet_id_by_telegram_id(telegram_id)
     return {"wallet_id": wallet_id}
+
+@router.post(
+    "/api/telegram/toggle-notifications/{telegram_id}",
+    tags=["Telegram Operations"],
+    summary="Toggle notification settings for a user"
+)
+async def toggle_notifications(telegram_id: str, enable: bool):
+    """Toggle notification settings for a Telegram user"""
+    try:
+        user = telegram_user_db_connector.get_user_by_telegram_id(telegram_id)
+        if not user:
+            raise HTTPException(404, "User not found")
+            
+        telegram_user_db_connector.update_telegram_user(
+            telegram_id,
+            {"is_allowed_notification": enable}
+        )
+        
+        if enable:
+            await send_welcome_message(telegram_id)
+            
+        return {"message": "Notification settings updated"}
+    except Exception as e:
+        raise HTTPException(500, f"Error updating notification settings: {str(e)}")
+
+@router.get(
+    "/api/telegram/bot-link",
+    tags=["Telegram Operations"],
+    summary="Get bot join link"
+)
+async def get_bot_link():
+    """Get link to join the Telegram bot"""
+    bot_username = (await bot.get_me()).username
+    return {
+        "link": f"https://t.me/{bot_username}",
+        "deep_link": f"https://t.me/{bot_username}?start=notifications"
+    }
