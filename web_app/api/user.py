@@ -13,6 +13,7 @@ from web_app.api.serializers.user import (
     UpdateUserContractResponse,
     GetUserContractAddressResponse,
     GetStatsResponse,
+    SubscribeToNotificationResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -104,6 +105,39 @@ async def update_user_contract(
         return {"is_contract_deployed": True}
     else:
         return {"is_contract_deployed": False}
+
+
+@router.post(
+    "/api/subscribe-to-notification",
+    tags=["User Operations"],
+    summary="Subscribe user to notifications",
+    response_model=SubscribeToNotificationResponse,
+    response_description="Returns success status of notification subscription",
+)
+async def subscribe_to_notification(
+    data: SubscribeToNotificationResponse,
+) -> SubscribeToNotificationResponse:
+    """
+    This endpoint subscribes a user to notifications by linking their telegram ID to their wallet.
+
+    ### Parameters:
+    - **telegram_id**: The Telegram id of the user.
+    - **wallet_id**: The wallet id of the user.
+
+    ### Returns:
+    Success status of the subscription.
+    """
+    user = user_db.get_user_by_wallet_id(data.wallet_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Simulate subscription logic
+    #TODO add crud method to subscribe user to notification
+    success = True  # Placeholder for actual success condition
+
+    if success:
+        return {"detail": "User subscribed to notifications successfully"}
+    raise HTTPException(status_code=400, detail="Failed to subscribe user to notifications")
 
 
 @router.get(
