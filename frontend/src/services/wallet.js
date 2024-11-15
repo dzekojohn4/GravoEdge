@@ -8,8 +8,9 @@ import { ReactComponent as STRK } from 'assets/icons/strk.svg';
 const CRM_TOKEN_ADDRESS = "0x051c4b1fe3bf6774b87ad0b15ef5d1472759076e42944fff9b9f641ff13e5bbe";
 
 // Check if the connected wallet holds the CRM token
-const checkForCRMToken = async (walletAddress) => {
-  if (process.env.IS_DEV === "true") {
+export const checkForCRMToken = async (walletAddress) => {
+  console.log(process.env.REACT_APP_IS_DEV)
+  if (process.env.REACT_APP_IS_DEV === "true") {
     console.log("Development mode: Skipping CRM token check.");
     return true;
   }
@@ -29,7 +30,6 @@ const checkForCRMToken = async (walletAddress) => {
     const balance = BigInt(response.result[0]).toString();
 
     if (Number(balance) > 0) {
-      console.log(`Wallet has ${balance} CRM tokens.`);
       return true;
     } else {
       alert("Beta testing is allowed only for users who hold the CRM token.");
@@ -38,27 +38,6 @@ const checkForCRMToken = async (walletAddress) => {
   } catch (error) {
     console.error("Error checking CRM token balance:", error);
     return false;
-  }
-};
-
-const handleConnectWallet = async (setWalletId, setError) => {
-  try {
-    setError(null);
-    const walletAddress = await connectWallet();
-
-    if (!walletAddress) {
-      throw new Error('Failed to connect wallet');
-    }
-
-    const hasCRMToken = await checkForCRMToken(walletAddress);
-    if (!hasCRMToken) {
-      return; // Stop further actions if wallet doesn't have CRM token
-    }
-
-    setWalletId(walletAddress);
-  } catch (err) {
-    console.error('Failed to connect wallet:', err);
-    setError(err.message);
   }
 };
 
