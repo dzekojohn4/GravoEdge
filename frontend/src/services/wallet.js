@@ -9,8 +9,7 @@ const CRM_TOKEN_ADDRESS = "0x051c4b1fe3bf6774b87ad0b15ef5d1472759076e42944fff9b9
 
 // Check if the connected wallet holds the CRM token
 export const checkForCRMToken = async (walletAddress) => {
-  console.log(process.env.REACT_APP_IS_DEV)
-  if (process.env.REACT_APP_IS_DEV === "true") {
+  if (process.env.IS_DEV === "true") {
     console.log("Development mode: Skipping CRM token check.");
     return true;
   }

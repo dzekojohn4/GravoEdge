@@ -1,27 +1,73 @@
 import { connect } from 'get-starknet';
-import { connectWallet, getTokenBalances, getBalances, logout } from '../../src/services/wallet';
+import {
+  checkForCRMToken,
+  connectWallet,
+  getTokenBalances,
+  getBalances,
+  logout,
+} from '../services/wallet';
 import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../../src/utils/constants';
-
-jest.mock('../assets/icons/ethereum.svg', () => ({
-  ReactComponent: () => 'ETH-icon',
-}));
-jest.mock('../assets/icons/borrow_usdc.svg', () => ({
-  ReactComponent: () => 'USDC-icon',
-}));
-jest.mock('../assets/icons/strk.svg', () => ({
-  ReactComponent: () => 'STRK-icon',
-}));
-jest.mock('../assets/icons/dai.svg', () => ({
-  ReactComponent: () => 'DAI-icon',
-}));
 
 jest.mock('get-starknet', () => ({
   connect: jest.fn(),
 }));
 
-describe('Wallet Functions', () => {
+describe('Wallet Services', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('checkForCRMToken', () => {
+    it('should return true in development mode', async () => {
+      process.env.REACT_APP_IS_DEV = 'true';
+      const result = await checkForCRMToken('0x123');
+      expect(result).toBe(true);
+    });
+
+    it('should validate CRM token and return true if wallet has tokens', async () => {
+      process.env.REACT_APP_IS_DEV = 'false';
+      const mockStarknet = {
+        isConnected: true,
+        provider: {
+          callContract: jest.fn().mockResolvedValue({ result: ['1'] }),
+        },
+      };
+
+      connect.mockResolvedValue(mockStarknet);
+
+      const result = await checkForCRMToken('0x123');
+      expect(result).toBe(true);
+    });
+
+    it('should return false and alert if wallet lacks CRM tokens', async () => {
+      process.env.REACT_APP_IS_DEV = 'false';
+      const mockStarknet = {
+        isConnected: true,
+        provider: {
+          callContract: jest.fn().mockResolvedValue({ result: ['0'] }),
+        },
+      };
+
+      global.alert = jest.fn();
+
+      connect.mockResolvedValue(mockStarknet);
+
+      const result = await checkForCRMToken('0x123');
+      expect(result).toBe(false);
+      expect(global.alert).toHaveBeenCalledWith(
+        'Beta testing is allowed only for users who hold the CRM token.'
+      );
+    });
+
+    it('should throw an error if wallet is not connected', async () => {
+      const mockStarknet = {
+        isConnected: false,
+      };
+
+      connect.mockResolvedValue(mockStarknet);
+
+      await expect(checkForCRMToken('0x123')).rejects.toThrow('Wallet not connected');
+    });
   });
 
   describe('connectWallet', () => {
@@ -45,7 +91,7 @@ describe('Wallet Functions', () => {
       expect(address).toBe('0x123');
     });
 
-    it('should throw error when Starknet object is not found', async () => {
+    it('should throw error when StarkNet object is not found', async () => {
       connect.mockResolvedValue(null);
 
       await expect(connectWallet()).rejects.toThrow('Failed to connect to wallet');
@@ -69,12 +115,12 @@ describe('Wallet Functions', () => {
         isConnected: true,
         provider: {
           callContract: jest.fn().mockImplementation(({ contractAddress }) => {
-            const mockBalances = {
+            const balances = {
               [ETH_ADDRESS]: { result: ['1000000000000000000'] },
-              [USDC_ADDRESS]: { result: ['1000000000000000000'] },
-              [STRK_ADDRESS]: { result: ['2000000000000000000'] },
+              [USDC_ADDRESS]: { result: ['2000000000000000000'] },
+              [STRK_ADDRESS]: { result: ['3000000000000000000'] },
             };
-            return mockBalances[contractAddress];
+            return balances[contractAddress];
           }),
         },
       };
@@ -85,8 +131,8 @@ describe('Wallet Functions', () => {
 
       expect(balances).toEqual({
         ETH: '1.0000',
-        USDC: '1.0000',
-        STRK: '2.0000',
+        USDC: '2.0000',
+        STRK: '3.0000',
       });
     });
 
@@ -103,23 +149,26 @@ describe('Wallet Functions', () => {
     it('should update balances state with token balances', async () => {
       const mockSetBalances = jest.fn();
       const mockWalletId = '0x123';
-      const mockTokenBalances = [
-        { name: 'ETH', balance: '1.0000', icon: 'ETH-icon' },
-        { name: 'USDC', balance: '2.0000', icon: 'USDC-icon' },
-        { name: 'STRK', balance: '3.0000', icon: 'STRK-icon' },
-      ];
+      const mockTokenBalances = {
+        ETH: '1.0000',
+        USDC: '2.0000',
+        STRK: '3.0000',
+      };
 
-      jest.spyOn(require('../../src/services/wallet'), 'getTokenBalances').mockResolvedValue(mockTokenBalances);
+      jest.spyOn(require('../services/wallet'), 'getTokenBalances').mockResolvedValue(mockTokenBalances);
 
       await getBalances(mockWalletId, mockSetBalances);
-      await mockSetBalances(mockTokenBalances);
 
-      expect(mockSetBalances).toHaveBeenCalledWith(mockTokenBalances);
+      expect(mockSetBalances).toHaveBeenCalledWith([
+        { icon: expect.anything(), title: 'ETH', balance: '1.0000' },
+        { icon: expect.anything(), title: 'USDC', balance: '2.0000' },
+        { icon: expect.anything(), title: 'STRK', balance: '3.0000' },
+      ]);
     });
 
     it('should not fetch balances if wallet ID is not provided', async () => {
       const mockSetBalances = jest.fn();
-      const mockGetTokenBalances = jest.spyOn(require('../../src/services/wallet'), 'getTokenBalances');
+      const mockGetTokenBalances = jest.spyOn(require('../services/wallet'), 'getTokenBalances');
 
       await getBalances(null, mockSetBalances);
 
