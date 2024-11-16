@@ -180,3 +180,69 @@ async def test_get_user_contract_address(
 
     contract_address = response_json.get("contract_address")
     assert str(contract_address) == str(expected_contract_address)
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "telegram_id, wallet_id, expected_status_code, expected_response",
+    [
+        (
+            "123456789",
+            "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49",
+            200,
+            {"detail": "User subscribed to notifications successfully"},
+        ),
+        ("", "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49", 422, None),
+        ("123456789", "", 422, None),
+        ("123456789", "invalid_wallet_id", 404, {"detail": "User not found"}),
+        ("123456789", None, 422, None),
+        (None, "0x27994c503bd8c32525fbdaf9d398bdd4e86757988c64581b055a06c5955ea49", 422, None),
+    ],
+)
+async def test_subscribe_to_notification(
+    client: client,
+    mock_user_db_connector: MagicMock,
+    telegram_id: str,
+    wallet_id: str,
+    expected_status_code: int,
+    expected_response: dict | None,
+) -> None:
+    """
+    Test subscribe_to_notification endpoint with both positive and negative cases.
+
+    :param client: fastapi.testclient.TestClient
+    :param mock_user_db_connector: unittest.mock.MagicMock
+    :param telegram_id: str[Telegram ID of the user]
+    :param wallet_id: str[Wallet ID of the user]
+    :param expected_status_code: int[Expected HTTP status code]
+    :param expected_response: dict | None[Expected JSON response]
+    :return: None
+    """
+    if wallet_id == "invalid_wallet_id":
+        mock_user_db_connector.get_user_by_wallet_id.return_value = None
+    else:
+        mock_user_db_connector.get_user_by_wallet_id.return_value = {"wallet_id": wallet_id}
+
+    if telegram_id and wallet_id:
+        data = SubscribeToNotificationResponse(
+            telegram_id=telegram_id,
+            wallet_id=wallet_id,
+        ).model_dump()
+    else:
+        data = {"telegram_id": telegram_id, "wallet_id": wallet_id}
+
+    response = client.post(
+        url="/api/subscribe-to-notification",
+        json=data,
+    )
+    response_json = response.json()
+
+    assert response.status_code == expected_status_code
+
+    if expected_response:
+        assert response_json == expected_response
+    elif expected_status_code == 422:
+        assert "detail" in response_json
+        assert isinstance(response_json["detail"], list)
+    elif expected_status_code == 404:
+        assert "detail" in response_json
+        assert response_json["detail"] == "User not found"
