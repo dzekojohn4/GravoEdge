@@ -112,12 +112,11 @@ async def update_user_contract(
     "/api/subscribe-to-notification",
     tags=["User Operations"],
     summary="Subscribe user to notifications",
-    response_model=SubscribeToNotificationResponse,
     response_description="Returns success status of notification subscription",
 )
 async def subscribe_to_notification(
     data: SubscribeToNotificationResponse,
-) -> SubscribeToNotificationResponse:
+):
     """
     This endpoint subscribes a user to notifications by linking their telegram ID to their wallet.
 
@@ -226,12 +225,8 @@ async def allow_notification(
 ):
     """Enable notifications for a specific telegram user"""
     try:
-        user = telegram_db.allow_notification(telegram_id=telegram_id)
-        return {
-            "telegram_id": user.telegram_id,
-            "is_allowed_notification": user.is_allowed_notification,
-            "message": "Notifications enabled successfully"
-        }
+        telegram_db.allow_notification(telegram_id=telegram_id)
+        return {"message": "Notifications enabled successfully"}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
