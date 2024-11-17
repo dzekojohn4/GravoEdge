@@ -4,6 +4,7 @@ from web_app.api.main import app
 
 client = TestClient(app)
 
+
 def get_app_stats() -> dict:
     """
     Simulate fetching application stats via the `get_stats` API.
@@ -28,7 +29,9 @@ def get_token_multipliers() -> dict:
     return response.json()
 
 
-def create_position(wallet_id: str, token_symbol: str, amount: float, multiplier: float) -> str:
+def create_position(
+    wallet_id: str, token_symbol: str, amount: float, multiplier: float
+) -> str:
     """
     Simulate creating a position using the `create_position` API.
 
@@ -51,7 +54,9 @@ def create_position(wallet_id: str, token_symbol: str, amount: float, multiplier
     assert response.status_code == 200, "Failed to create position"
     data = response.json()
     assert "position_id" in data, "Position ID missing in create response"
-    assert data["position_status"] == "pending", "Position should be in 'pending' state after creation"
+    assert (
+        data["position_status"] == "pending"
+    ), "Position should be in 'pending' state after creation"
     return data["position_id"]
 
 
@@ -105,7 +110,9 @@ def test_full_open_position_flow(wallet_id, token_symbol, amount, multiplier):
 
     # Get Token Multipliers
     token_multipliers = get_token_multipliers()
-    assert token_symbol in token_multipliers["multipliers"], f"Multiplier for {token_symbol} not found"
+    assert (
+        token_symbol in token_multipliers["multipliers"]
+    ), f"Multiplier for {token_symbol} not found"
     multiplier_range = token_multipliers["multipliers"][token_symbol]
     assert multiplier <= multiplier_range, f"Multiplier {multiplier} exceeds range"
 
@@ -121,5 +128,6 @@ def test_full_open_position_flow(wallet_id, token_symbol, amount, multiplier):
     # Get App Stats after position opening and verify
     updated_stats = get_app_stats()
     updated_opened_amount = updated_stats.get("total_opened_amount", 0)
-    assert updated_opened_amount > initial_opened_amount, "The opened amount did not increase as expected"
-    
+    assert (
+        updated_opened_amount > initial_opened_amount
+    ), "The opened amount did not increase as expected"
