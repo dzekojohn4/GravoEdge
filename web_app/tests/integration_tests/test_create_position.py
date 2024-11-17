@@ -11,13 +11,13 @@ class PositionCreationTest:
         # Step 3. The PositionDBConnection.create_position method is called with the following parameters
         # Step 4. The method should return a Position instance
         # Step 5. The created Position instance should have the following attributes:
-        # - wallet_id
-        # - supply_token
-        # - borrowing_token
-        # - amount
-        # - multiplier
-        # - approve_data
-        # - loop_liquidity_data
+        # user_id
+        # token_symbol
+        # amount
+        # multiplier
+        # created_at
+        # status
+        # start_price # call DashboardMixin.get_current_prices method with the token_symbol and amount
         # Step 6. The PositionDBConnection.update_position_status method is called with the following parameters
         # Step 7. The method should update the position status to 'opened'
         pass
