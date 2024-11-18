@@ -273,6 +273,32 @@ class PositionDBConnector(UserDBConnector):
                 logger.error(f"Failed to retrieve positions: {str(e)}")
                 return []
 
+    def has_opened_position(self, wallet_id: str) -> bool:
+        """
+        Checks if a user has any opened positions.
+        :param wallet_id: str
+        :return: bool
+        """
+        with self.Session() as db:
+            user = self._get_user_by_wallet_id(wallet_id)
+            if not user:
+                return False
+
+            try:
+                position_exists = db.query(
+                    db.query(Position)
+                    .filter(
+                        Position.user_id == user.id,
+                        Position.status == Status.OPENED.value,
+                    )
+                    .exists()
+                ).scalar()
+                return position_exists
+
+            except SQLAlchemyError as e:
+                logger.error(f"Failed to check for opened positions: {str(e)}")
+                return False
+
     def create_position(
         self, wallet_id: str, token_symbol: str, amount: str, multiplier: int
     ) -> Position:
