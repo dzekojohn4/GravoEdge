@@ -706,9 +706,9 @@ fn test_extra_deposit_valid() {
         .approve(deposit_disp.contract_address, 10000000000000);
     stop_cheat_caller_address(eth_addr);
 
-    start_cheat_caller_address(deposit_disp.contract_address, user);
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp.extra_deposit(eth_addr, 10000000000000);
-    stop_cheat_caller_address(deposit_disp.contract_address);
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
 
     assert(
         ERC20ABIDispatcher {
@@ -763,7 +763,7 @@ fn test_extra_deposit_supply_token_close_position_fuzz(extra_amount: u32) {
     deposit_disp
         .loop_liquidity(
             DepositData {
-                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 98
+                token: usdc_addr, amount: 1000000000, multiplier: 4, borrow_portion_percent: 94
             },
             pool_key,
             get_slippage_limits(pool_key),
@@ -781,13 +781,13 @@ fn test_extra_deposit_supply_token_close_position_fuzz(extra_amount: u32) {
     let safe_deposit_disp = IDepositSafeDispatcher {
         contract_address: deposit_disp.contract_address
     };
-    start_cheat_caller_address(deposit_disp.contract_address, user);
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
     if let Result::Err(panic_data) = safe_deposit_disp
         .extra_deposit(usdc_addr, extra_amount.into()) {
         assert(*panic_data.at(0) == 'Deposit amount is zero', *panic_data.at(0));
         return;
     }
-    stop_cheat_caller_address(deposit_disp.contract_address);
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
 
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
@@ -873,9 +873,9 @@ fn test_withdraw_valid_fuzz(amount: u32) {
     eth_disp.approve(deposit_disp.contract_address, 10000000000000);
     stop_cheat_caller_address(eth_addr);
 
-    start_cheat_caller_address(deposit_disp.contract_address, user);
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp.extra_deposit(eth_addr, 10000000000000);
-    stop_cheat_caller_address(deposit_disp.contract_address);
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
 
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
@@ -903,9 +903,9 @@ fn test_withdraw_valid_fuzz(amount: u32) {
 
     let user_pre_balance = eth_disp.balanceOf(user);
 
-    start_cheat_caller_address(deposit_disp.contract_address, user);
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp.withdraw(eth_addr, amount.into());
-    stop_cheat_caller_address(deposit_disp.contract_address);
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
 
     if amount == 0 {
         assert(z_eth_disp.balanceOf(deposit_disp.contract_address) == 0, 'Wrong contract balance');
@@ -1034,9 +1034,9 @@ fn test_withdraw_position_open() {
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
 
-    start_cheat_caller_address(deposit_disp.contract_address, user);
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp.withdraw(eth_addr, 100000000000000);
-    stop_cheat_caller_address(deposit_disp.contract_address);
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
 }
 
 #[test]
