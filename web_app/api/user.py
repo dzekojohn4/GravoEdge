@@ -155,8 +155,9 @@ async def subscribe_to_notification(
         except (TelegramNotFound, TelegramForbiddenError):
             return {
                 "status": "failed",
-                "detail": "User not subscribed to notifications successfully. You can also subscribe to notifications through our bot.",
                 "url": generate_subscription_deeplink(data.wallet_id),
+                "detail": "User not subscribed to notifications successfully. "
+                    "You can also subscribe to notifications through our bot.",
             }
 
     if success:

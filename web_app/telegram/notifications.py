@@ -1,3 +1,7 @@
+"""
+This module provides functionalities to send telegram notifications
+"""
+
 from decimal import Decimal
 from aiogram.exceptions import TelegramRetryAfter
 
