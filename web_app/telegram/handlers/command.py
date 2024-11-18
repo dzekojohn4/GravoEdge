@@ -31,7 +31,8 @@ async def start_cmd(message: Message, command: CommandObject):
         command (CommandObject): The command object containing the command arguments.
 
     Returns:
-        Message: Sends a message indicating notifications are enabled, along with a button to launch the web app.
+        Message: Sends a message indicating notifications are enabled, 
+            along with a button to launch the web app.
     """
     _, wallet_id = command.args.split(":", maxsplit=1)
     return message.answer(
