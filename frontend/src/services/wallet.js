@@ -36,7 +36,7 @@ export const checkForCRMToken = async (walletAddress) => {
     }
   } catch (error) {
     console.error("Error checking CRM token balance:", error);
-    return false;
+    throw error; // Ensures test will catch errors as thrown
   }
 };
 
@@ -133,6 +133,7 @@ export const getBalances = async (walletId, setBalances) => {
         title: 'STRK',
         balance: data.STRK !== undefined ? data.STRK.toString() : '0.00',
       },
+      // { icon: <DAI />, title: 'DAI', balance: data.DAI !== undefined ? data.DAI.toString() : '0.00' },  dont have DAI in the constants file
     ];
 
     setBalances(updatedBalances);

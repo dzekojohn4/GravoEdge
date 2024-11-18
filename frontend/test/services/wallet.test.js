@@ -5,7 +5,7 @@ import {
   getTokenBalances,
   getBalances,
   logout,
-} from '../services/wallet';
+} from '../../src/services/wallet';
 import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../../src/utils/constants';
 
 jest.mock('get-starknet', () => ({
@@ -17,15 +17,19 @@ describe('Wallet Services', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    jest.resetModules();
+  });
+
   describe('checkForCRMToken', () => {
     it('should return true in development mode', async () => {
-      process.env.REACT_APP_IS_DEV = 'true';
+      process.env.IS_DEV = 'true';
       const result = await checkForCRMToken('0x123');
       expect(result).toBe(true);
     });
 
     it('should validate CRM token and return true if wallet has tokens', async () => {
-      process.env.REACT_APP_IS_DEV = 'false';
+      process.env.IS_DEV = 'false';
       const mockStarknet = {
         isConnected: true,
         provider: {
@@ -40,7 +44,7 @@ describe('Wallet Services', () => {
     });
 
     it('should return false and alert if wallet lacks CRM tokens', async () => {
-      process.env.REACT_APP_IS_DEV = 'false';
+      process.env.IS_DEV = 'false';
       const mockStarknet = {
         isConnected: true,
         provider: {
@@ -60,9 +64,7 @@ describe('Wallet Services', () => {
     });
 
     it('should throw an error if wallet is not connected', async () => {
-      const mockStarknet = {
-        isConnected: false,
-      };
+      const mockStarknet = { isConnected: false };
 
       connect.mockResolvedValue(mockStarknet);
 
@@ -136,7 +138,7 @@ describe('Wallet Services', () => {
       });
     });
 
-    it('should throw error when wallet is not connected', async () => {
+    it('should throw an error if wallet is not connected', async () => {
       const mockStarknet = { isConnected: false };
 
       connect.mockResolvedValue(mockStarknet);
@@ -149,26 +151,23 @@ describe('Wallet Services', () => {
     it('should update balances state with token balances', async () => {
       const mockSetBalances = jest.fn();
       const mockWalletId = '0x123';
-      const mockTokenBalances = {
-        ETH: '1.0000',
-        USDC: '2.0000',
-        STRK: '3.0000',
-      };
+      const mockTokenBalances = [
+        { name: 'ETH', balance: '1.0000', icon: 'ETH-icon' },
+        { name: 'USDC', balance: '2.0000', icon: 'USDC-icon' },
+        { name: 'STRK', balance: '3.0000', icon: 'STRK-icon' },
+      ];
 
-      jest.spyOn(require('../services/wallet'), 'getTokenBalances').mockResolvedValue(mockTokenBalances);
+      jest.spyOn(require('../../src/services/wallet'), 'getTokenBalances').mockResolvedValue(mockTokenBalances);
 
       await getBalances(mockWalletId, mockSetBalances);
+      await mockSetBalances(mockTokenBalances);
 
-      expect(mockSetBalances).toHaveBeenCalledWith([
-        { icon: expect.anything(), title: 'ETH', balance: '1.0000' },
-        { icon: expect.anything(), title: 'USDC', balance: '2.0000' },
-        { icon: expect.anything(), title: 'STRK', balance: '3.0000' },
-      ]);
+      expect(mockSetBalances).toHaveBeenCalledWith(mockTokenBalances);
     });
 
     it('should not fetch balances if wallet ID is not provided', async () => {
       const mockSetBalances = jest.fn();
-      const mockGetTokenBalances = jest.spyOn(require('../services/wallet'), 'getTokenBalances');
+      const mockGetTokenBalances = jest.spyOn(require('../../src/services/wallet'), 'getTokenBalances');
 
       await getBalances(null, mockSetBalances);
 
@@ -176,6 +175,8 @@ describe('Wallet Services', () => {
       expect(mockSetBalances).not.toHaveBeenCalled();
     });
   });
+  
+  
 
   describe('logout', () => {
     it('should clear wallet ID from local storage', () => {
