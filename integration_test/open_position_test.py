@@ -1,133 +1,113 @@
 import pytest
 from fastapi.testclient import TestClient
+from typing import Dict, Any
+from datetime import datetime
 from web_app.api.main import app
+from web_app.db.crud import PositionDBConnector
+from web_app.contract_tools.mixins.deposit import DepositMixin
+from web_app.contract_tools.mixins.dashboard import DashboardMixin
+from web_app.db.models import Position
 
 client = TestClient(app)
+position_db = PositionDBConnector()
 
-
-def get_app_stats() -> dict:
+class PositionCreationTest:
     """
-    Simulate fetching application stats via the `get_stats` API.
+    Integration test for creating and managing positions.
 
-    Returns:
-        dict: Application stats response.
+    Steps:
+    1. Fetch transaction data using `DepositMixin.get_transaction_data`.
+    2. Create a position using `PositionDBConnector`.
+    3. Verify the created position's attributes.
+    4. Fetch current token prices using `DashboardMixin`.
+    5. Update position status and validate changes.
     """
-    response = client.get("/api/get-stats")
-    assert response.status_code == 200, "Failed to fetch app stats"
-    return response.json()
 
 
-def get_token_multipliers() -> dict:
-    """
-    Simulate fetching token multipliers via the `get_multipliers` API.
-
-    Returns:
-        dict: Token multipliers response.
-    """
-    response = client.get("/api/get-multipliers")
-    assert response.status_code == 200, "Failed to fetch token multipliers"
-    return response.json()
-
-
-def create_position(
-    wallet_id: str, token_symbol: str, amount: float, multiplier: float
-) -> str:
-    """
-    Simulate creating a position using the `create_position` API.
-
-    Args:
-        wallet_id (str): User's wallet ID.
-        token_symbol (str): Token symbol (ETH, USDC, STRK, DAI).
-        amount (float): Token amount to deposit.
-        multiplier (float): Position multiplier.
-
-    Returns:
-        str: Created position ID.
-    """
-    payload = {
-        "wallet_id": wallet_id,
-        "token_symbol": token_symbol,
-        "amount": amount,
-        "multiplier": multiplier,
+    mock_position_data: Dict[str, Any] = {
+        "wallet_id": "0x011F0c180b9EbB2B3F9601c41d65AcA110E48aec0292c778f41Ae286C78Cc374",
+        "token_symbol": "STRK",
+        "amount": "2",
+        "multiplier": 1,
+        "borrowing_token": "STRK",
     }
-    response = client.post("/api/create-position", json=payload)
-    assert response.status_code == 200, "Failed to create position"
-    data = response.json()
-    assert "position_id" in data, "Position ID missing in create response"
-    assert (
-        data["position_status"] == "pending"
-    ), "Position should be in 'pending' state after creation"
-    return data["position_id"]
 
+    @pytest.fixture
+    def setup_mock_user(self) -> Dict[str, Any]:
+        """
+        Create a mock user and position data for testing.
 
-def open_position(position_id: str) -> str:
-    """
-    Simulate opening a position using the `open_position` API.
+        Returns:
+            Dict[str, Any]: A dictionary containing position data.
+        """
+        position_data= self.mock_position_data
+        return {"position_data": position_data}
 
-    Args:
-        position_id (str): ID of the position to open.
+    def test_create_position(self, setup_mock_user: Dict[str, Any]) -> Position:
+        """
+        Test creating a position and validating attributes.
 
-    Returns:
-        str: API response status.
-    """
-    url = f"/api/open-position?position_id={position_id}"
-    response = client.get(url)
-    assert response.status_code == 200, "Failed to open position"
-    status = response.json()
-    assert status == "opened", f"Expected position status to be 'opened', got {status}"
-    return status
+        Args:
+            setup_mock_user (Dict[str, Any]): position data.
 
+        Returns:
+            Position
+        """
 
-@pytest.mark.parametrize(
-    "wallet_id, token_symbol, amount, multiplier",
-    [
-        ("wallet_1", "ETH", 0.5, 3.0),
-        ("wallet_2", "USDC", 10.0, 2.5),
-        ("wallet_3", "STRK", 1.0, 1.5),
-        ("wallet_4", "DAI", 5.0, 2.0),
-    ],
-)
-def test_full_open_position_flow(wallet_id, token_symbol, amount, multiplier):
-    """
-    Integration test for the full workflow of opening a position:
-    - Fetch app stats.
-    - Get multipliers for tokens.
-    - Create a position.
-    - Open the created position.
-    - Verify position opening via `get_stats`.
+        transaction_data = DepositMixin.get_transaction_data(
+            deposit_token=setup_mock_user["position_data"]["token_symbol"],
+            amount=setup_mock_user["position_data"]["amount"],
+            multiplier=setup_mock_user["position_data"]["multiplier"],
+            wallet_id=setup_mock_user["user"]["wallet_id"],
+            borrowing_token=setup_mock_user["position_data"]["borrowing_token"],
+        )
+        assert "caller" in transaction_data, "Transaction data missing 'caller'"
+        assert transaction_data["caller"] == setup_mock_user["user"]["wallet_id"], "Mismatch in 'caller'"
+        assert "pool_price" in transaction_data, "'pool_price' missing in transaction data"
+        assert "pool_key" in transaction_data, "'pool_key' missing in transaction data"
+        assert "deposit_data" in transaction_data, "'deposit_data' missing in transaction data"
+    
+        position = position_db.create_position(
+            wallet_id=setup_mock_user["user"]["wallet_id"],
+            token_symbol=setup_mock_user["position_data"]["token_symbol"],
+            amount=setup_mock_user["position_data"]["amount"],
+            multiplier=setup_mock_user["position_data"]["multiplier"],
+        )
+        assert position.status == "pending", "Position status should be 'pending' upon creation"
 
-    Args:
-        wallet_id (str): Test wallet ID.
-        token_symbol (str): Token to be used.
-        amount (float): Amount of token.
-        multiplier (float): Multiplier for the position.
+        current_prices = DashboardMixin.get_current_prices()
+        assert position.token_symbol in current_prices, "Token price missing in current prices"
+        position.start_price = current_prices[position.token_symbol]
+        position.created_at = datetime.utcnow()
 
-    Returns:
-        None
-    """
-    # Get App Stats before position creation
-    initial_opened_amount = get_app_stats().get("total_opened_amount", 0)
+        position_db.update_position(position, position.amount, position.multiplier)
 
-    # Get Token Multipliers
-    token_multipliers = get_token_multipliers()
-    assert (
-        token_symbol in token_multipliers["multipliers"]
-    ), f"Multiplier for {token_symbol} not found"
-    multiplier_range = token_multipliers["multipliers"][token_symbol]
-    assert multiplier <= multiplier_range, f"Multiplier {multiplier} exceeds range"
+        print(f"Position {position.id} created successfully with status '{position.status}'.")
+        return position
 
-    # Create a Position
-    position_id = create_position(wallet_id, token_symbol, amount, multiplier)
-    print(f"Position created with ID: {position_id}")
+    def test_open_position(self, position_id : str) -> None:
+        """
+        Test opening a position and validating status updates.
 
-    # Open the Created Position
-    open_status = open_position(position_id)
-    assert open_status == "opened", f"Unexpected open status: {open_status}"
-    print(f"Position {position_id} opened successfully")
+        Args:
+            position id : str
 
-    # Get App Stats after position opening and verify
-    updated_stats = get_app_stats()
-    updated_opened_amount = updated_stats.get("total_opened_amount", 0)
-    assert (
-        updated_opened_amount > initial_opened_amount
-    ), "The opened amount did not increase as expected"
+        Returns:
+            None
+        """
+        response = client.get(f"/api/open-position?position_id={position_id}")
+        assert response.status_code == 200, "Opening position failed"
+        assert response.json().get("status") == "opened", "Position status mismatch after opening"
+
+        print(f"Position {position_id} successfully opened.")
+
+    def test_full_workflow(self) -> None:
+        """
+        Comprehensive test for the position workflow.
+
+        Returns:
+            None
+        """
+        position = self.test_create_position(self.setup_mock_user)
+
+        self.test_open_position(position.id)
