@@ -22,5 +22,5 @@ NOTIFICATIONS_ENABLED_MESSAGE = (
 HEALTH_RATIO_WARNING_MESSAGE = (
     "⚠️ Warning: Your health ratio level is {health_ratio}. "
     "This is getting low - please add more deposit to avoid liquidation.\n\n"
-    "Visit app.spotnet.xyz to manage your position."
+    "Visit spotnet.xyz to manage your position."
 )

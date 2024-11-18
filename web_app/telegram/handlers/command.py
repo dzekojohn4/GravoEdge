@@ -10,6 +10,9 @@ from aiogram.types import Message
 
 from ..markups import launch_main_web_app_kb
 from ..texts import NOTIFICATIONS_ENABLED_MESSAGE, WELCOME_MESSAGE
+from web_app.db.crud import TelegramUserDBConnector
+
+telegram_db = TelegramUserDBConnector()
 
 # Create a router for handling commands
 cmd_router = Router()
@@ -35,6 +38,9 @@ async def start_cmd(message: Message, command: CommandObject):
             along with a button to launch the web app.
     """
     _, wallet_id = command.args.split(":", maxsplit=1)
+    telegram_db.set_notification_allowed(
+        telegram_id=message.from_user.id, wallet_id=wallet_id
+    )
     return message.answer(
         NOTIFICATIONS_ENABLED_MESSAGE, reply_markup=launch_main_web_app_kb
     )
