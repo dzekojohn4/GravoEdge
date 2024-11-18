@@ -3,6 +3,7 @@ This module contains utility functions for the Telegram bot.
 
 It includes functions for building response writers for webhook responses.
 """
+
 import hashlib
 import hmac
 import secrets
@@ -13,16 +14,34 @@ from aiogram import Bot
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
 from aiogram.types import InputFile
+from aiogram.utils.deep_linking import create_start_link
 from aiohttp import MultipartWriter
 
 
-def check_telegram_authorization(token: str, auth_data: dict, expired: int = None) -> bool:
+def generate_subscription_deeplink(wallet_id: str) -> str:
+    """
+    Generate a Telegram bot deep link for subscription with wallet ID.
+
+    Args:
+        wallet_id (str): The wallet ID to include in the deep link
+
+    Returns:
+        str: The generated deep link URL
+    """
+    from . import bot
+
+    return create_start_link(bot, "subscribe:" + str(wallet_id), encode=True)
+
+
+def check_telegram_authorization(
+    token: str, auth_data: dict, expired: int = None
+) -> bool:
     """
     Verify the Telegram authorization data.
 
     Args:
         token (str): The bot's token used for verification.
-        auth_data (dict): The authorization data received from Telegram, 
+        auth_data (dict): The authorization data received from Telegram,
                           including the hash and auth_date.
 
     Raises:
@@ -34,7 +53,9 @@ def check_telegram_authorization(token: str, auth_data: dict, expired: int = Non
     check_hash = auth_data.get("hash")
     if not check_hash:
         return False
-    data_check_arr = [f"{key}={value}" for key, value in auth_data.items() if key != "hash"]
+    data_check_arr = [
+        f"{key}={value}" for key, value in auth_data.items() if key != "hash"
+    ]
     data_check_arr.sort()
     data_check_string = "\n".join(data_check_arr)
 
