@@ -1,26 +1,35 @@
 """
 This module handles user-related API endpoints.
 """
-import logging
-from decimal import Decimal
-from fastapi import APIRouter, HTTPException
 
-from web_app.contract_tools.mixins.dashboard import DashboardMixin
-from web_app.db.crud import PositionDBConnector, UserDBConnector
+import logging
+from contextlib import suppress
+from decimal import Decimal
+
+from aiogram.exceptions import TelegramForbiddenError, TelegramNotFound
+from fastapi import APIRouter, HTTPException
 from web_app.api.serializers.transaction import UpdateUserContractRequest
 from web_app.api.serializers.user import (
     CheckUserResponse,
-    UpdateUserContractResponse,
-    GetUserContractAddressResponse,
     GetStatsResponse,
+    GetUserContractAddressResponse,
     SubscribeToNotificationResponse,
+    UpdateUserContractResponse,
 )
+from web_app.contract_tools.mixins.dashboard import DashboardMixin
+from web_app.db.crud import (
+    PositionDBConnector,
+    TelegramUserDBConnector,
+    UserDBConnector,
+)
+from web_app.telegram.notifications import send_subscribe_to_notification_message
+from web_app.telegram.utils import generate_subscription_deeplink
 
 logger = logging.getLogger(__name__)
 router = APIRouter()  # Initialize the router
 
 user_db = UserDBConnector()
-
+telegram_db = TelegramUserDBConnector()
 position_db = PositionDBConnector()
 
 
@@ -131,13 +140,33 @@ async def subscribe_to_notification(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Simulate subscription logic
-    #TODO add crud method to subscribe user to notification
-    success = True  # Placeholder for actual success condition
+    success = False
+    tg_user = telegram_db.get_user_by_telegram_id(telegram_id)
+    if tg_user:
+        success = tg_user.is_allowed_notification
+
+    if not success:
+        try:
+            await send_subscribe_to_notification_message(data.telegram_id)
+            telegram_db.set_notification_allowed(
+                telegram_id=data.telegram_id, wallet_id=data.wallet_id
+            )
+            success = True
+        except (TelegramNotFound, TelegramForbiddenError):
+            return {
+                "status": "failed",
+                "detail": "User not subscribed to notifications successfully. You can also subscribe to notifications through our bot.",
+                "url": generate_subscription_deeplink(data.wallet_id),
+            }
 
     if success:
-        return {"detail": "User subscribed to notifications successfully"}
-    raise HTTPException(status_code=400, detail="Failed to subscribe user to notifications")
+        return {
+            "status": "ok",
+            "detail": "User subscribed to notifications successfully",
+        }
+    raise HTTPException(
+        status_code=400, detail="Failed to subscribe user to notifications"
+    )
 
 
 @router.get(
@@ -173,47 +202,46 @@ async def get_user_contract_address(wallet_id: str) -> GetUserContractAddressRes
     response_description="Total amount for all open positions across all users & \
                               Number of unique users in the database.",
 )
-async def get_stats() -> GetStatsResponse: 
-    """ 
-    Retrieves the total amount for open positions converted to USDC 
-    and the count of unique users. 
-    
+async def get_stats() -> GetStatsResponse:
+    """
+    Retrieves the total amount for open positions converted to USDC
+    and the count of unique users.
+
     ### Returns:
-    - total_opened_amount: Sum of amounts for all open positions in USDC. 
-    - unique_users: Total count of unique users. 
+    - total_opened_amount: Sum of amounts for all open positions in USDC.
+    - unique_users: Total count of unique users.
     """
     try:
         # Fetch open positions amounts by token
         token_amounts = position_db.get_total_amounts_for_open_positions()
-        
+
         # Fetch current prices
         current_prices = await DashboardMixin.get_current_prices()
-        
+
         # Convert all token amounts to USDC
-        total_opened_amount = Decimal('0')
+        total_opened_amount = Decimal("0")
         for token, amount in token_amounts.items():
             # Skip if no price available for the token
-            if token not in current_prices or 'USDC' not in current_prices:
+            if token not in current_prices or "USDC" not in current_prices:
                 logger.warning(f"No price data available for {token}")
                 continue
-            
+
             # If the token is USDC, use it directly
-            if token == 'USDC':
+            if token == "USDC":
                 total_opened_amount += amount
                 continue
-            
+
             # Convert other tokens to USDC
             # Price is typically in USDC per token
             usdc_price = current_prices[token]
             usdc_equivalent = amount * Decimal(usdc_price)
             total_opened_amount += usdc_equivalent
-        
+
         unique_users = user_db.get_unique_users_count()
         return GetStatsResponse(
-            total_opened_amount=total_opened_amount, 
-            unique_users=unique_users
+            total_opened_amount=total_opened_amount, unique_users=unique_users
         )
-    
+
     except Exception as e:
         logger.error(f"Error in get_stats: {e}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")

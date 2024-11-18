@@ -12,11 +12,9 @@ from aiogram.utils.web_app import check_webapp_signature
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-
 from web_app.api.serializers.telegram import TelegramUserAuth, TelegramUserCreate
 from web_app.db.crud import DBConnector, TelegramUserDBConnector
 from web_app.telegram import TELEGRAM_TOKEN, bot, dp
-from web_app.telegram.notifications import send_welcome_message
 from web_app.telegram.utils import build_response_writer, check_telegram_authorization
 
 # Create a FastAPI router for handling Telegram webhook requests
