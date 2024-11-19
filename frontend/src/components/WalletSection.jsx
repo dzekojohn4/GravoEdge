@@ -1,44 +1,88 @@
-import React from 'react';
-import TelegramLogin from './Telegram/TelegramLogin';
+import React, { useState, useEffect, useRef } from 'react';
 
-const WalletSection = ({ 
-  walletId, 
-  onConnectWallet, 
-  onLogout, 
-  tgUser, 
-  setTgUser, 
-  onAction 
-}) => {
-  const handleWalletAction = (action) => {
-    if (action === 'connect') {
-      onConnectWallet();
-    } else if (action === 'logout') {
-      onLogout();
-    }
-    // Call onAction callback if provided (for mobile menu handling)
-    if (onAction) {
-      onAction();
-    }
+const WalletSection = ({ walletId, onConnectWallet, onLogout }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1025);
+  const menuRef = useRef(null);
+
+  const toggleMenu = () => {
+    setIsMenuOpen((prevState) => !prevState);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target) && !event.target.closest('.menu-dots')) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1025);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div className="wallet-section">
-      <TelegramLogin user={tgUser} onLogin={setTgUser} />
-      {walletId ? (
-        <div className="wallet-container">
-          <button 
-            className="logout-button" 
-            onClick={() => handleWalletAction('logout')}
-          >
-            Log out
-          </button>
-          <div className="wallet-id">{`${walletId.slice(0, 4)}...${walletId.slice(-4)}`}</div>
+      {/* Wallet Container */}
+      {(isMobile || walletId) && (
+        <div className="wallet-container" ref={menuRef}>
+          {/* rendering walletId on big screens only */}
+          {walletId && !isMobile && (
+            <span className="wallet-id">{`${walletId.slice(0, 4)}...${walletId.slice(-4)}`}</span>
+          )}
+
+          {/* three dots menu */}
+          <span className="menu-dots" onClick={toggleMenu}>
+            &#x22EE;
+          </span>
+
+          {/* dropdown-menu */}
+          {isMenuOpen && (
+            <div className="menu-dropdown">
+              {/* Connect Wallet button for mob screens */}
+              {isMobile && !walletId && (
+                <button className="connect-wallet" onClick={onConnectWallet}>
+                  <span>Connect Wallet</span>
+                </button>
+              )}
+
+              {/* Logout is available only if walletId connected */}
+              {walletId && (
+                <div>
+                  <div>
+                    <span className="wallet-id">{`${walletId.slice(0, 4)}...${walletId.slice(-4)}`}</span>
+                  </div>
+                  <button
+                    className="logout-button"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      onLogout();
+                    }}
+                  >
+                    Log out
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      ) : (
-        <button 
-          className="gradient-button" 
-          onClick={() => handleWalletAction('connect')}
-        >
+      )}
+
+      {/* Connect Wallet button for big screens (outside menu) */}
+      {!isMobile && !walletId && (
+        <button className="connect-wallet" onClick={onConnectWallet}>
           <span>Connect Wallet</span>
         </button>
       )}
