@@ -1,393 +1,251 @@
 body {
-  background-color: var(--dashboard-bg);
-  font-family: 'Rethink Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif;
+}
+
+.dashboard-wrapper {
+  background: url('../../../../public/background.png') no-repeat center 20% fixed;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  padding-top: 4rem;
 }
 
 .dashboard-container {
-  margin-top: 4rem;
-  margin-bottom: 12rem;
-  min-height: 100vh;
-  position: relative;
+  max-width: 50rem;
   width: 100%;
+  border-radius: 20px;
+  padding: 2rem;
+  color: white;
+  text-align: center;
 }
 
-.dashboard-text-color {
-  color: var(--secondary);
-}
-
-.dashboard-star {
-  position: absolute;
-  top: var(--star-top);
-  left: var(--star-left);
-  width: var(--star-size);
-  height: var(--star-size);
-}
-
-/* Health factor styles */
-.health-text-size {
-  font-size: 28px;
-  font-weight: 500;
-  margin-right: 12px;
-}
-
-.bg-custom-color {
-  background-color: var(--primary-color);
-  padding: 30px 65px;
-}
-
-.bg-custom-health {
-  background-color: var(--primary-color);
-  padding: 30px 65px;
-}
-
-.bg-card-health {
-  height: 74px;
-  padding: 23px 24px;
-}
-
-.zkLend-text {
-  font-size: 48px;
-  margin-bottom: 24px;
-}
-
-.card-health-factor {
-  background: var(--card-bg-gradient);
-  padding: 36px;
-  border-radius: 6px;
-  width: 100%;
-  border: var(--card-border);
-  height: 146px;
-}
-
-/* Cards styles */
-.card-icons {
-  width: 44px;
-  height: 44px;
-}
-
-.text-style {
-  font-size: 32px;
-  font-weight: 600;
-}
-
-.cards-custom {
-  margin-top: 29px;
-  display: flex;
-  gap: 1.5rem; 
-}
-
-.card-custom-styles {
-  flex: 1;
-  background: var(--card-bg-gradient);
-  border: var(--card-border);
-  border-radius: 6px; 
-}
-
-.collateral-text {
-  color: var(--collateral-color);
-}
-
-.borrow-text {
-  color: var(--borrow-color);
-}
-
-.card-header {
-  padding-top: 13px;
-  padding-bottom: 13px;
-}
-
-.card-shadow {
-  box-shadow: var(--card-box-shadow);
-}
-
-.card-body-custom {
-  color: var(--primary);
-  padding-top: 24px;
-  padding-bottom: 36px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.icon-text-gap {
-  margin-left: 4px;
-}
-
-.balance-text-size {
-  font-size: 28px;
-  font-weight: 500;
-}
-
-.mb-0 {
-  margin-bottom: 0;
-}
-
-.mb-3 {
+.dashboard-title {
+  font-size: 2rem;
   margin-bottom: 2rem;
 }
 
-/* Button "Redeem" styles */
-.redeem-btn {
-  align-self: stretch;
-  border-radius: 8px;
-  background: var(--button-gradient);
-  padding: 18px 24px;
-  color: var(--black);
-  font: 700 24px/1 Rethink Sans;
-  width: 100%;
-  transition: background 1.3s ease;
-}
-
-.redeem-btn:hover {
-  background: var(--button-gradient-hover);
-}
-
-.redeem-btn:active {
-  background: var(--button-gradient-active);
-}
-
-/* Background styles */
-.background-gradient {
-  position: absolute;
-  width: 332px;
-  height: 128px;
-  flex-shrink: 0;
-  border-radius: 2000px;
-  background: var(--gradient);
-  filter: blur(80px);
-}
-
-.background-gradient:nth-child(1) {
-  top: 250px;
-  left: -250px;
-}
-
-.background-gradient:nth-child(2) {
-  bottom: -160px;
-  right: -180px;
-}
-
-/* Sum Information Styles */
-.sum-info {
-  width: 100%;
+.top-cards {
   display: flex;
-  justify-content: space-around;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  width: 309px;
+  height: 114px;
+  background: rgba(18, 7, 33, 1);
+  border: 1px solid rgba(54, 41, 78, 1);
+  border-radius: 900px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-right: 24px;
+  padding-left: 24px;
+  flex: 1;
+  text-align: center;
+}
+
+.card-header {
+  display: flex;
+  justify-content: center;
   align-items: center;
-  margin-top: 10px;
-}
-
-.start-sum {
-  color: beige;
-  font-size: 21px;
-  font-weight: 500;
-}
-
-.current-sum {
-  font-size: 21px;
-  font-weight: 500;
+  border: none;
   color: white;
 }
 
+.icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+  background: rgba(32, 19, 56, 1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.card-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.main-card {
+  background: rgba(18, 7, 33, 1);
+  border: 2px solid rgba(54, 41, 78, 1);
+  padding: 2rem;
+  border-radius: 48px;
+  margin-bottom: 2rem;
+  
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  color: #8b8a91;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 1rem;
+  position: relative;
+}
+
+.tab.active {
+  color: rgba(73, 171, 210, 1); 
+}
+
+.tab.active.borrow {
+  color: rgba(255, 53, 211, 1); 
+}
+
+.tab-indicator {
+  position: absolute;
+  bottom: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 3px; 
+  border-bottom: 3px solid transparent; 
+}
+
+.tab-indicator.collateral {
+  border-image-source: linear-gradient(90deg, #49abd2 0%, #281029 100%);
+  border-image-slice: 1;
+}
+
+.tab-indicator.borrow {
+  border-image-source: linear-gradient(90deg, #281029 0%, #ff35d3 100%);
+  border-image-slice: 1;
+}
+
+.tab-icon{
+  margin-right: 0.5rem;
+}
+
+.tab-divider {
+  width: 3px;
+  height: 2rem;
+  background-color: #2d2b38;
+  margin: 0 1rem; 
+}
+
+.tab-content {
+  font-size: 1rem;
+  color: #8b8a91;
+  text-align: left;
+}
+
+.currency-info {
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.currency-name {
+  font-size: 1.2rem;
+  color: white;
+}
+
+.balance-info {
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.balance-value {
+  color: white;
+}
+
+.balance-value.negative {
+  color: rgba(255, 53, 211, 1);
+}
+
+.redeem-button {
+  width: 100%;
+  height: 3rem;
+  border-radius: 9999px;
+  background: linear-gradient(73.48deg, #e01dee 1.13%, #49abd2 51.27%);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.telegram-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 3rem;
+  background: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 100px;
+  overflow: hidden;
+  text-align: center;
+  line-height: 3rem;
+}
+
+.telegram-button {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 3rem;
+  background: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none; 
+  border-radius: 50px; 
+  z-index: 1;
+  overflow: hidden;
+  text-align: center;
+  line-height: 3rem;
+}
+
+.telegram-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50px; 
+  padding: 2px; 
+  background: linear-gradient(90deg, #74D6FD 0%, #E01DEE 100%);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  z-index: -1; 
+}
+
 .current-sum-green {
-  color: var(--success-color); 
+  color: #00ff00; 
+  font-weight: bold;
 }
 
 .current-sum-red {
-  color: var(--error-color); 
-}
-
-/* Responsive adjustments */
-@media (min-width: 992px) and (max-width: 1400px) {
-  .dashboard-container {
-    max-width: 960px;
-  }
-
-  .health-text-size {
-    font-size: 18px;
-    font-weight: 500;
-    margin-right: 8px;
-  }
-
-  .zkLend-text {
-    font-size: 32px;
-    margin-bottom: 14px;
-  }
-
-  .bg-custom-color {
-    padding: 12px 24px;
-  }
-
-  .bg-custom-health {
-    padding: 23px 24px;
-  }
-
-  .card-health-factor {
-    padding: 24px;
-    height: 120px;
-  }
-
-  .card-icons {
-    width: 32px;
-    height: 33px;
-  }
-
-  .text-style {
-    font-size: 22px;
-  }
-
-  .cards-custom {
-    margin-top: 18px;
-  }
-
-  .card-body-custom {
-    padding: 16px 10px 22px;
-  }
-
-  .icon-text-gap {
-    margin-left: 3px;
-  }
-
-  .balance-text-size {
-    font-size: 18px;
-    font-weight: 400;
-  }
-
-  .redeem-btn {
-    padding: 14px 18px;
-    font-size: 20px;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  .dashboard-container {
-    margin-top: 1.5rem;
-    margin-bottom: 4rem;
-    width: 100%;
-  }
-
-  .health-text-size {
-    font-size: 16px;
-    font-weight: 500;
-    margin-right: 6px;
-  }
-
-  .zkLend-text {
-    font-size: 30px;
-    margin-bottom: 12px;
-  }
-
-  .bg-custom-color {
-    padding: 12px 24px;
-  }
-
-  .bg-custom-health {
-    padding: 23px 24px;
-  }
-
-  .card-health-factor {
-    padding: 14px;
-    height: 90px;
-  }
-
-  .bg-card-health {
-    height: 45px;
-  }
-
-  .card-icons {
-    width: 30px;
-    height: 30px;
-  }
-
-  .text-style {
-    font-size: 20px;
-  }
-
-  .cards-custom {
-    margin-top: 12px;
-  }
-
-  .card-body-custom {
-    padding: 12px 8px 18px;
-  }
-
-  .icon-text-gap {
-    margin-left: 3px;
-  }
-
-  .balance-text-size {
-    font-size: 16px;
-    font-weight: 400;
-  }
-
-  .redeem-btn {
-    padding: 14px 18px;
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 767px) {
-  .cards-custom {
-    display: block;
-  }
-
-  .dashboard-container {
-    margin-top: 1.5rem;
-    margin-bottom: 4rem;
-    width: 100%;
-  }
-
-  .health-text-size {
-    font-size: 16px;
-    font-weight: 500;
-    margin-right: 6px;
-  }
-
-  .zkLend-text {
-    font-size: 30px;
-    margin-bottom: 12px;
-  }
-
-  .card-health-factor {
-    padding: 14px;
-    height: 90px;
-  }
-
-  .bg-card-health {
-    height: 45px;
-  }
-
-  .bg-custom-color {
-    padding: 12px 10px;
-  }
-
-  .bg-custom-health {
-    padding: 8px 8px;
-  }
-
-  .card-icons {
-    width: 30px;
-    height: 30px;
-  }
-
-  .text-style {
-    font-size: 20px;
-  }
-
-  .cards-custom {
-    margin-top: 12px;
-  }
-
-  .card-body-custom {
-    padding: 12px 8px 18px;
-  }
-
-  .balance-text-size {
-    font-size: 16px;
-    font-weight: 400;
-  }
-
-  .redeem-btn {
-    padding: 12px 16px;
-    font-size: 18px;
-  }
+  color: #ff0000; 
+  font-weight: bold;
 }
