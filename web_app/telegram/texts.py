@@ -11,14 +11,6 @@ WELCOME_MESSAGE = (
     "right away by clicking the button below to launch the web app! 🚀👇"
 )
 
-NOTIFICATIONS_ENABLED_MESSAGE = (
-    "🔔 Notifications enabled!\n\n"
-    "You will now receive alerts about:\n"
-    "- Health ratio changes\n"
-    "- Position updates\n\n"
-    "You can disable notifications at any time in the app settings."
-)
-
 HEALTH_RATIO_WARNING_MESSAGE = (
     "⚠️ Warning: Your health ratio level is {health_ratio}. "
     "This is getting low - please add more deposit to avoid liquidation.\n\n"

@@ -14,23 +14,7 @@ from aiogram import Bot
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
 from aiogram.types import InputFile
-from aiogram.utils.deep_linking import create_start_link
 from aiohttp import MultipartWriter
-
-
-def generate_subscription_deeplink(wallet_id: str) -> str:
-    """
-    Generate a Telegram bot deep link for subscription with wallet ID.
-
-    Args:
-        wallet_id (str): The wallet ID to include in the deep link
-
-    Returns:
-        str: The generated deep link URL
-    """
-    from . import bot
-
-    return create_start_link(bot, "subscribe:" + str(wallet_id), encode=True)
 
 
 def check_telegram_authorization(

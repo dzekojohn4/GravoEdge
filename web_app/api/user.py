@@ -1,12 +1,11 @@
 """
 This module handles user-related API endpoints.
 """
+
 import logging
 from decimal import Decimal
-from fastapi import APIRouter, Depends, HTTPException
 
-from web_app.contract_tools.mixins.dashboard import DashboardMixin
-from web_app.db.crud import PositionDBConnector, TelegramUserDBConnector, UserDBConnector
+from fastapi import APIRouter, Depends, HTTPException
 from web_app.api.serializers.transaction import UpdateUserContractRequest
 from web_app.api.serializers.user import (
     CheckUserResponse,
@@ -21,8 +20,6 @@ from web_app.db.crud import (
     TelegramUserDBConnector,
     UserDBConnector,
 )
-from web_app.telegram.notifications import send_subscribe_to_notification_message
-from web_app.telegram.utils import generate_subscription_deeplink
 
 logger = logging.getLogger(__name__)
 router = APIRouter()  # Initialize the router
@@ -30,6 +27,7 @@ telegram_db = TelegramUserDBConnector()
 
 user_db = UserDBConnector()
 position_db = PositionDBConnector()
+
 
 @router.get(
     "/api/has-user-opened-position",
@@ -49,9 +47,9 @@ async def has_user_opened_position(wallet_id: str) -> dict:
         return {"has_opened_position": has_position}
     except ValueError as e:
         raise HTTPException(
-            status_code=404,
-            detail=f"Invalid wallet ID format: {str(e)}"
+            status_code=404, detail=f"Invalid wallet ID format: {str(e)}"
         )
+
 
 @router.get(
     "/api/get-user-contract",
@@ -162,7 +160,9 @@ async def subscribe_to_notification(
 
     if is_allowed_notification:
         return {"detail": "User subscribed to notifications successfully"}
-    raise HTTPException(status_code=400, detail="Failed to subscribe user to notifications")
+    raise HTTPException(
+        status_code=400, detail="Failed to subscribe user to notifications"
+    )
 
 
 @router.get(
@@ -241,7 +241,8 @@ async def get_stats() -> GetStatsResponse:
     except Exception as e:
         logger.error(f"Error in get_stats: {e}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
-    
+
+
 @router.post("/allow-notification/{telegram_id}")
 async def allow_notification(
     telegram_id: int,
