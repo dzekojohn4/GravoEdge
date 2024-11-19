@@ -21,7 +21,6 @@ router = APIRouter()  # Initialize the router
 telegram_db = TelegramUserDBConnector()
 
 user_db = UserDBConnector()
-
 position_db = PositionDBConnector()
 
 @router.get(
@@ -151,12 +150,9 @@ async def subscribe_to_notification(
     user = user_db.get_user_by_wallet_id(data.wallet_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    is_allowed_notification = telegram_db.allow_notification(data.telegram_id)
 
-    # Simulate subscription logic
-    #TODO add crud method to subscribe user to notification
-    success = True  # Placeholder for actual success condition
-
-    if success:
+    if is_allowed_notification:
         return {"detail": "User subscribed to notifications successfully"}
     raise HTTPException(status_code=400, detail="Failed to subscribe user to notifications")
 
