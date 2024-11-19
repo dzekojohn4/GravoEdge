@@ -20,9 +20,25 @@ export default function Component({ walletId }) {
     error: closePositionError,
   } = useClosePosition(walletId);
 
+  const [cardData, setCardData] = useState([
+    {
+      title: "Collateral & Earnings",
+      icon: CollateralIcon,
+      balance: "0.00",
+      currencyName: "Ethereum",
+      currencyIcon: EthIcon,
+    },
+    {
+      title: "Borrow",
+      icon: BorrowIcon,
+      balance: "0.00",
+      currencyName: "USD Coin",
+      currencyIcon: UsdIcon,
+    },
+  ]);
   const [healthFactor, setHealthFactor] = useState("0.00");
   const [startSum, setStartSum] = useState(2);
-  const [currentSum, setCurrentSum] = useState(1);
+  const [currentSum, setCurrentSum] = useState(4);
 
   useEffect(() => {
     const getData = async () => {
@@ -37,10 +53,38 @@ export default function Component({ walletId }) {
       }
 
       if (data.zklend_position.products) {
+        const positions = data.zklend_position.products[0].positions || [];
         const healthRatio = data.zklend_position.products[0].health_ratio;
+
+        const updatedCardData = positions.map((position, index) => {
+          const isFirstCard = index === 0;
+          const tokenAddress = position.tokenAddress;
+
+          if (isFirstCard) {
+            const isEthereum = tokenAddress === "ZETH_ADDRESS"; 
+            const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
+            setCurrentSum(data.current_sum);
+            setStartSum(data.start_sum);
+            return {
+              title: "Collateral & Earnings",
+              icon: CollateralIcon,
+              balance: balance,
+              currencyName: isEthereum ? "Ethereum" : "STRK",
+              currencyIcon: isEthereum ? EthIcon : BorrowIcon,
+            };
+          }
+
+          return {
+            title: "Borrow",
+            icon: BorrowIcon,
+            balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+            currencyName: "USD Coin",
+            currencyIcon: UsdIcon,
+          };
+        });
+
+        setCardData(updatedCardData);
         setHealthFactor(healthRatio);
-        setCurrentSum(data.current_sum);
-        setStartSum(data.start_sum);
       }
     };
 
@@ -50,7 +94,7 @@ export default function Component({ walletId }) {
   const getCurrentSumColor = () => {
     if (currentSum > startSum) return "current-sum-green";
     if (currentSum < startSum) return "current-sum-red";
-    return ""; 
+    return "";
   };
 
   return (
@@ -78,6 +122,7 @@ export default function Component({ walletId }) {
           </div>
         </div>
 
+        {/* Main Card */}
         <div className="main-card">
           <div className="tabs">
             <button
@@ -86,9 +131,7 @@ export default function Component({ walletId }) {
             >
               <CollateralIcon className="tab-icon" />
               Collateral & Earnings
-              {isCollateralActive && (
-                <div className="tab-indicator collateral" />
-              )}
+              {isCollateralActive && <div className="tab-indicator collateral" />}
             </button>
 
             <div className="tab-divider" />
@@ -99,9 +142,7 @@ export default function Component({ walletId }) {
             >
               <BorrowIcon className="tab-icon" />
               Borrow
-              {!isCollateralActive && (
-                <div className="tab-indicator borrow" />
-              )}
+              {!isCollateralActive && <div className="tab-indicator borrow" />}
             </button>
           </div>
 
@@ -115,8 +156,8 @@ export default function Component({ walletId }) {
               <div className="balance-info">
                 <span>Balance: $0.00</span>
                 <span>Start sum: ${startSum}</span>
-                <span className={getCurrentSumColor()}>
-                  Current sum: ${currentSum}
+                <span>
+                  Current sum: <text className={getCurrentSumColor()}>${currentSum}</text>
                 </span>
               </div>
             </div>
@@ -139,9 +180,7 @@ export default function Component({ walletId }) {
         >
           {isClosing ? "Closing..." : "Redeem"}
         </button>
-        {closePositionError && (
-          <div>Error: {closePositionError.message}</div>
-        )}
+        {closePositionError && <div>Error: {closePositionError.message}</div>}
 
         <button className="telegram-button">
           <TelegramIcon className="tab-icon" />
