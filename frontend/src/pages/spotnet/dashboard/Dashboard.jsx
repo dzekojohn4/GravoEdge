@@ -39,8 +39,8 @@ export default function Component({ walletId }) {
   ]);
 
   const [healthFactor, setHealthFactor] = useState("0.00");
-  const [startSum, setStartSum] = useState(2);
-  const [currentSum, setCurrentSum] = useState(1);
+  const [startSum, setStartSum] = useState(0);
+  const [currentSum, setCurrentSum] = useState(0);
 
   useEffect(() => {
     const getData = async () => {
