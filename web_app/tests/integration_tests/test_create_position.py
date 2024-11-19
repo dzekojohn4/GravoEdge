@@ -17,7 +17,8 @@ class PositionCreationTest:
 
         # Step 2. The method should return a dictionary with approve_data and loop_liquidity_data
 
-        # Step 3. The PositionDBConnection.create_position method is called with the following parameters
+        # Step 3. The PositionDBConnection.create_position method is called with
+        # the following parameters
 
         # Step 4. The method should return a Position instance
 
