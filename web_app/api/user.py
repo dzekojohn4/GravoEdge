@@ -1,13 +1,12 @@
 """
 This module handles user-related API endpoints.
 """
-
 import logging
-from contextlib import suppress
 from decimal import Decimal
+from fastapi import APIRouter, Depends, HTTPException
 
-from aiogram.exceptions import TelegramForbiddenError, TelegramNotFound
-from fastapi import APIRouter, HTTPException
+from web_app.contract_tools.mixins.dashboard import DashboardMixin
+from web_app.db.crud import PositionDBConnector, TelegramUserDBConnector, UserDBConnector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
 from web_app.api.serializers.user import (
     CheckUserResponse,
@@ -27,9 +26,9 @@ from web_app.telegram.utils import generate_subscription_deeplink
 
 logger = logging.getLogger(__name__)
 router = APIRouter()  # Initialize the router
+telegram_db = TelegramUserDBConnector()
 
 user_db = UserDBConnector()
-telegram_db = TelegramUserDBConnector()
 position_db = PositionDBConnector()
 
 @router.get(
@@ -141,12 +140,11 @@ async def update_user_contract(
     "/api/subscribe-to-notification",
     tags=["User Operations"],
     summary="Subscribe user to notifications",
-    response_model=SubscribeToNotificationResponse,
     response_description="Returns success status of notification subscription",
 )
 async def subscribe_to_notification(
     data: SubscribeToNotificationResponse,
-) -> SubscribeToNotificationResponse:
+):
     """
     This endpoint subscribes a user to notifications by linking their telegram ID to their wallet.
 
@@ -160,35 +158,11 @@ async def subscribe_to_notification(
     user = user_db.get_user_by_wallet_id(data.wallet_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    is_allowed_notification = telegram_db.allow_notification(data.telegram_id)
 
-    success = False
-    tg_user = telegram_db.get_user_by_telegram_id(telegram_id)
-    if tg_user:
-        success = tg_user.is_allowed_notification
-
-    if not success:
-        try:
-            await send_subscribe_to_notification_message(data.telegram_id)
-            telegram_db.set_notification_allowed(
-                telegram_id=data.telegram_id, wallet_id=data.wallet_id
-            )
-            success = True
-        except (TelegramNotFound, TelegramForbiddenError):
-            return {
-                "status": "failed",
-                "url": generate_subscription_deeplink(data.wallet_id),
-                "detail": "User not subscribed to notifications successfully. "
-                    "You can also subscribe to notifications through our bot.",
-            }
-
-    if success:
-        return {
-            "status": "ok",
-            "detail": "User subscribed to notifications successfully",
-        }
-    raise HTTPException(
-        status_code=400, detail="Failed to subscribe user to notifications"
-    )
+    if is_allowed_notification:
+        return {"detail": "User subscribed to notifications successfully"}
+    raise HTTPException(status_code=400, detail="Failed to subscribe user to notifications")
 
 
 @router.get(
@@ -267,3 +241,17 @@ async def get_stats() -> GetStatsResponse:
     except Exception as e:
         logger.error(f"Error in get_stats: {e}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    
+@router.post("/allow-notification/{telegram_id}")
+async def allow_notification(
+    telegram_id: int,
+    telegram_db: TelegramUserDBConnector = Depends(lambda: TelegramUserDBConnector()),
+):
+    """Enable notifications for a specific telegram user"""
+    try:
+        telegram_db.allow_notification(telegram_id=telegram_id)
+        return {"message": "Notifications enabled successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
