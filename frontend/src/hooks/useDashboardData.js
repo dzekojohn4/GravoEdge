@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import QueryKeys from '../../src/QueryKeys/queryKeys';
+import QueryKeys from 'QueryKeys/QueryKeys';
 import { axiosInstance } from 'utils/axios';
 
 export const fetchDashboardData = async (walletId) => {
