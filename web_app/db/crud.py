@@ -600,7 +600,7 @@ class TelegramUserDBConnector(DBConnector):
                 }
                 return self.create_telegram_user(user_data)
             
-    def allow_notification(self, telegram_id: int) -> None:
+    def allow_notification(self, telegram_id: int) -> bool:
         """
         Update is_allowed_notification field to True for a specific telegram user
         
@@ -617,3 +617,4 @@ class TelegramUserDBConnector(DBConnector):
             
             user.is_allowed_notification = True
             session.commit()
+            return True
