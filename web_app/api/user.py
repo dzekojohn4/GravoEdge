@@ -3,25 +3,47 @@ This module handles user-related API endpoints.
 """
 import logging
 from decimal import Decimal
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
-from web_app.db.crud import PositionDBConnector, UserDBConnector
+from web_app.db.crud import PositionDBConnector, TelegramUserDBConnector, UserDBConnector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
 from web_app.api.serializers.user import (
     CheckUserResponse,
     UpdateUserContractResponse,
     GetUserContractAddressResponse,
     GetStatsResponse,
+    SubscribeToNotificationResponse,
 )
 
 logger = logging.getLogger(__name__)
 router = APIRouter()  # Initialize the router
+telegram_db = TelegramUserDBConnector()
 
 user_db = UserDBConnector()
-
 position_db = PositionDBConnector()
 
+@router.get(
+    "/api/has-user-opened-position",
+    tags=["Position Operations"],
+    summary="Check if user has opened position",
+    response_description="Returns true if the user has an opened position, false otherwise",
+)
+async def has_user_opened_position(wallet_id: str) -> dict:
+    """
+    Check if a user has any opened positions.
+    :param wallet_id: wallet id
+    :return: Dict containing boolean result
+    :raises: HTTPException
+    """
+    try:
+        has_position = position_db.has_opened_position(wallet_id)
+        return {"has_opened_position": has_position}
+    except ValueError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Invalid wallet ID format: {str(e)}"
+        )
 
 @router.get(
     "/api/get-user-contract",
@@ -106,6 +128,35 @@ async def update_user_contract(
         return {"is_contract_deployed": False}
 
 
+@router.post(
+    "/api/subscribe-to-notification",
+    tags=["User Operations"],
+    summary="Subscribe user to notifications",
+    response_description="Returns success status of notification subscription",
+)
+async def subscribe_to_notification(
+    data: SubscribeToNotificationResponse,
+):
+    """
+    This endpoint subscribes a user to notifications by linking their telegram ID to their wallet.
+
+    ### Parameters:
+    - **telegram_id**: The Telegram id of the user.
+    - **wallet_id**: The wallet id of the user.
+
+    ### Returns:
+    Success status of the subscription.
+    """
+    user = user_db.get_user_by_wallet_id(data.wallet_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    is_allowed_notification = telegram_db.allow_notification(data.telegram_id)
+
+    if is_allowed_notification:
+        return {"detail": "User subscribed to notifications successfully"}
+    raise HTTPException(status_code=400, detail="Failed to subscribe user to notifications")
+
+
 @router.get(
     "/api/get-user-contract-address",
     tags=["User Operations"],
@@ -183,3 +234,17 @@ async def get_stats() -> GetStatsResponse:
     except Exception as e:
         logger.error(f"Error in get_stats: {e}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    
+@router.post("/allow-notification/{telegram_id}")
+async def allow_notification(
+    telegram_id: int,
+    telegram_db: TelegramUserDBConnector = Depends(lambda: TelegramUserDBConnector()),
+):
+    """Enable notifications for a specific telegram user"""
+    try:
+        telegram_db.allow_notification(telegram_id=telegram_id)
+        return {"message": "Notifications enabled successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
