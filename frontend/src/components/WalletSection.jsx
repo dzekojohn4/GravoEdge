@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './walletSection.css';
 
 const WalletSection = ({ walletId, onConnectWallet, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

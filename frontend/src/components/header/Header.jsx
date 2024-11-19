@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { ReactComponent as Logo } from 'assets/icons/spotnet-logo.svg';
-import WalletSection from 'components/walletSection/WalletSection';
+import WalletSection from '../WalletSection';
 import NavigationLinks from 'components/NavigationLinks';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import MobDropdownMenu from '../mobDropdownMenu/MobDropdownMenu';
