@@ -4,19 +4,39 @@ import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../utils/constants';
 import { ReactComponent as ETH } from 'assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from 'assets/icons/borrow_usdc.svg';
 import { ReactComponent as STRK } from 'assets/icons/strk.svg';
-// import { ReactComponent as DAI } from 'assets/icons/dai.svg';
 
-// eslint-disable-next-line no-unused-vars
-const handleConnectWallet = async (setWalletId, setError) => {
+const CRM_TOKEN_ADDRESS = "0x051c4b1fe3bf6774b87ad0b15ef5d1472759076e42944fff9b9f641ff13e5bbe";
+
+// Check if the connected wallet holds the CRM token
+export const checkForCRMToken = async (walletAddress) => {
+  if (process.env.IS_DEV === "true") {
+    console.log("Development mode: Skipping CRM token check.");
+    return true;
+  }
+
   try {
-    setError(null);
-    const address = await connectWallet();
-    if (address) {
-      setWalletId(address);
+    const starknet = await connect();
+    if (!starknet.isConnected) {
+      throw new Error('Wallet not connected');
     }
-  } catch (err) {
-    console.error('Failed to connect wallet:', err);
-    setError(err.message);
+
+    const response = await starknet.provider.callContract({
+      contractAddress: CRM_TOKEN_ADDRESS,
+      entrypoint: 'balanceOf',
+      calldata: [walletAddress],
+    });
+
+    const balance = BigInt(response.result[0]).toString();
+
+    if (Number(balance) > 0) {
+      return true;
+    } else {
+      alert("Beta testing is allowed only for users who hold the CRM token.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error checking CRM token balance:", error);
+    throw error; // Ensures test will catch errors as thrown
   }
 };
 
@@ -31,7 +51,7 @@ export const connectWallet = async () => {
     });
 
     if (!starknet) {
-      console.error('No Starknet object found');
+      console.error('No StarkNet object found');
       throw new Error('Failed to connect to wallet');
     }
 
@@ -51,7 +71,6 @@ export const connectWallet = async () => {
 };
 
 export function logout() {
-  // Clear local storage
   localStorage.removeItem('wallet_id');
 }
 
@@ -83,19 +102,13 @@ async function getTokenBalance(starknet, walletAddress, tokenAddress) {
       calldata: [walletAddress],
     });
 
-    // Convert the balance to a human-readable format
-    // Note: This assumes the balance is returned as a single uint256
-    // You may need to adjust this based on the actual return value of your contract
     const balance = BigInt(response.result[0]).toString();
-
-    // Convert to a more readable format (e.g., whole tokens instead of wei)
-    // This example assumes 18 decimal places, adjust as needed for each token
     const readableBalance = (Number(balance) / 1e18).toFixed(4);
 
     return readableBalance;
   } catch (error) {
     console.error(`Error fetching balance for token ${tokenAddress}:`, error);
-    return '0'; // Return '0' in case of error
+    return '0';
   }
 }
 
@@ -129,6 +142,5 @@ export const getBalances = async (walletId, setBalances) => {
   }
 };
 
-// Add this line at the top of your file if you're using Create React App or a similar setup
-// that doesn't recognize BigInt as a global
+// Add this line for environments that don't recognize BigInt
 const BigInt = window.BigInt;
