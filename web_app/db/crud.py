@@ -89,6 +89,7 @@ class DBConnector:
         finally:
             db.close()
 
+
     def delete_object(self, model: Type[Base] = None, obj_id: uuid = None) -> None:
         """
         Delete an object by its ID from the database. Rolls back if the operation fails.
@@ -130,6 +131,27 @@ class UserDBConnector(DBConnector):
     Provides database connection and operations management for the User model.
     """
 
+    def get_all_users_with_opened_position(self) -> List[User]:
+        """
+        Retrieves all users with an OPENED position status from the database.
+        First queries Position table for OPENED positions, then gets the associated users.
+        
+        :return: List[User]
+        """
+        with self.Session() as db:
+            try:
+                users = (
+                    db.query(User)
+                    .join(Position, Position.user_id == User.id)
+                    .filter(Position.status == Status.OPENED.value)
+                    .distinct()
+                    .all()
+                )
+                return users
+            except SQLAlchemyError as e:
+                logger.error(f"Error retrieving users with OPENED positions: {e}")
+                return []
+
     def get_user_by_wallet_id(self, wallet_id: str) -> User | None:
         """
         Retrieves a user by their wallet ID.
@@ -137,7 +159,7 @@ class UserDBConnector(DBConnector):
         :return: User | None
         """
         return self.get_object_by_field(User, "wallet_id", wallet_id)
-
+    
     def get_contract_address_by_wallet_id(self, wallet_id: str) -> str:
         """
         Retrieves the contract address of a user by their wallet ID.
@@ -250,6 +272,32 @@ class PositionDBConnector(UserDBConnector):
             except SQLAlchemyError as e:
                 logger.error(f"Failed to retrieve positions: {str(e)}")
                 return []
+
+    def has_opened_position(self, wallet_id: str) -> bool:
+        """
+        Checks if a user has any opened positions.
+        :param wallet_id: str
+        :return: bool
+        """
+        with self.Session() as db:
+            user = self._get_user_by_wallet_id(wallet_id)
+            if not user:
+                return False
+
+            try:
+                position_exists = db.query(
+                    db.query(Position)
+                    .filter(
+                        Position.user_id == user.id,
+                        Position.status == Status.OPENED.value,
+                    )
+                    .exists()
+                ).scalar()
+                return position_exists
+
+            except SQLAlchemyError as e:
+                logger.error(f"Failed to check for opened positions: {str(e)}")
+                return False
 
     def create_position(
         self, wallet_id: str, token_symbol: str, amount: str, multiplier: int
@@ -551,3 +599,22 @@ class TelegramUserDBConnector(DBConnector):
                     "is_allowed_notification": True
                 }
                 return self.create_telegram_user(user_data)
+            
+    def allow_notification(self, telegram_id: int) -> bool:
+        """
+        Update is_allowed_notification field to True for a specific telegram user
+        
+        Args:
+            telegram_id: Telegram user ID
+            
+        Raises:
+            ValueError: If the user with the given telegram_id is not found
+        """
+        with self.Session() as session:
+            user = session.query(TelegramUser).filter_by(telegram_id=telegram_id).first()
+            if not user:
+                raise ValueError(f"User with telegram_id {telegram_id} not found")
+            
+            user.is_allowed_notification = True
+            session.commit()
+            return True

@@ -7,7 +7,7 @@ import Footer from './components/Footer/Footer';
 import SpotnetApp from 'pages/spotnet/spotnet_app/SpotnetApp';
 import Login from 'pages/Login';
 import Form from 'pages/forms/Form';
-import { connectWallet, logout } from 'services/wallet';
+import { connectWallet, logout, checkForCRMToken } from 'services/wallet';
 import { saveTelegramUser, getTelegramUserWalletId } from 'services/telegram';
 
 function App() {
@@ -49,10 +49,18 @@ function App() {
   const handleConnectWallet = async () => {
     try {
       setError(null);
-      const address = await connectWallet();
-      if (address) {
-        setWalletId(address);
+      const walletAddress = await connectWallet();
+  
+      if (!walletAddress) {
+        throw new Error('Failed to connect wallet');
       }
+  
+      const hasCRMToken = await checkForCRMToken(walletAddress);
+      if (!hasCRMToken) {
+        return; // Stop further actions if wallet doesn't have CRM token
+      }
+  
+      setWalletId(walletAddress);
     } catch (err) {
       console.error('Failed to connect wallet:', err);
       setError(err.message);
