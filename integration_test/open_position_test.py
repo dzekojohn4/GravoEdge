@@ -47,16 +47,15 @@ class PositionCreationTest:
         "borrowing_token": "ETH",
     }
 
-    @pytest.mark.parametrize("mock_user", [(mock_user_1), (mock_user_2), (mock_user_3)])
+    @pytest.mark.parametrize("mock_user", [mock_user_1, mock_user_2, mock_user_3])
     def test_create_position(self, mock_user: Dict[str, Any]) -> None:
         """
         Args:
-            mock_user (Dict[str, Any]): position data.
+            mock_user (Dict[str, Any]): Position data.
 
         Returns:
             None
         """
-        # Extract position data
         wallet_id = mock_user["wallet_id"]
         token_symbol = mock_user["token_symbol"]
         amount = mock_user["amount"]
@@ -103,11 +102,11 @@ class PositionCreationTest:
             f"Position {position.id} created successfully with status '{position.status}'."
         )
 
-        # Open position
         position_db.open_position(position.id, current_prices)
         assert (
             position.status == "opened"
-        ), "Position status should be 'opened' upon creation"
+        ), "Position status should be 'opened' after updating"
         print(f"Position {position.id} successfully opened.")
 
-        position_db.delete_position(position)
+        position_db.delete_position(position.id)
+        position_db.delete_user_by_wallet_id(wallet_id)
