@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import "./dashboard.css";
 import { ReactComponent as EthIcon } from "assets/icons/ethereum.svg";
@@ -7,8 +6,9 @@ import { ReactComponent as HealthIcon } from "assets/icons/health.svg";
 import { ReactComponent as CollateralIcon } from "assets/icons/collateral_dynamic.svg";
 import { ReactComponent as BorrowIcon } from "assets/icons/borrow_dynamic.svg";
 import { ReactComponent as TelegramIcon } from "assets/icons/telegram_dashboard.svg";
-import { TrendingDown } from "lucide-react";
+import { TrendingDown } from 'lucide-react';
 import Spinner from "components/spinner/Spinner";
+import { ZETH_ADDRESS } from "utils/constants";
 import useDashboardData from "hooks/useDashboardData";
 import { useClosePosition } from "hooks/useClosePosition";
 
@@ -32,11 +32,12 @@ export default function Component({ walletId }) {
     {
       title: "Borrow",
       icon: BorrowIcon,
-      balance: "0.00",
+      balance: "2.00",
       currencyName: "USD Coin",
       currencyIcon: UsdIcon,
     },
   ]);
+
   const [healthFactor, setHealthFactor] = useState("0.00");
   const [startSum, setStartSum] = useState(2);
   const [currentSum, setCurrentSum] = useState(1);
@@ -47,51 +48,54 @@ export default function Component({ walletId }) {
         console.error("getData: walletId is undefined");
         return;
       }
-
+  
       if (!data || !data.zklend_position) {
         console.error("Data is missing or incorrectly formatted");
         return;
       }
-
+  
       if (data.zklend_position.products) {
         const positions = data.zklend_position.products[0].positions || [];
         const healthRatio = data.zklend_position.products[0].health_ratio;
-
+  
         const updatedCardData = positions.map((position, index) => {
           const isFirstCard = index === 0;
           const tokenAddress = position.tokenAddress;
-
+  
           if (isFirstCard) {
-            const isEthereum = tokenAddress === "ZETH_ADDRESS"; // Replace with actual ZETH_ADDRESS constant
-            const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
+            const isEthereum = tokenAddress === ZETH_ADDRESS;
+            const balance = parseFloat(
+              position.totalBalances[Object.keys(position.totalBalances)[0]]
+            );
             setCurrentSum(data.current_sum);
             setStartSum(data.start_sum);
+  
             return {
               title: "Collateral & Earnings",
               icon: CollateralIcon,
-              balance: balance,
+              balance: balance.toFixed(2),
               currencyName: isEthereum ? "Ethereum" : "STRK",
               currencyIcon: isEthereum ? EthIcon : BorrowIcon,
             };
           }
-
+  
           return {
             title: "Borrow",
             icon: BorrowIcon,
-            balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+            balance: parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]),
             currencyName: "USD Coin",
             currencyIcon: UsdIcon,
           };
         });
-
+  
         setCardData(updatedCardData);
         setHealthFactor(healthRatio);
       }
     };
-
+  
     getData();
   }, [walletId, data]);
-
+  
   const getCurrentSumColor = () => {
     if (currentSum > startSum) return "current-sum-green";
     if (currentSum < startSum) return "current-sum-red";
@@ -115,10 +119,10 @@ export default function Component({ walletId }) {
 
           <div className="card">
             <div className="card-header">
-              <EthIcon className="icon" />
+              <EthIcon className="icon"/>
               <span className="label">Borrow Balance</span>
             </div>
-            <div className="card-value">$0.00</div>
+            <div className="card-value">${cardData[1].balance}</div>
           </div>
         </div>
 
@@ -130,7 +134,6 @@ export default function Component({ walletId }) {
             >
               <CollateralIcon className="tab-icon" />
               Collateral & Earnings
-              {isCollateralActive && <div className="tab-indicator collateral" />}
             </button>
 
             <div className="tab-divider" />
@@ -141,22 +144,30 @@ export default function Component({ walletId }) {
             >
               <BorrowIcon className="tab-icon" />
               Borrow
-              {!isCollateralActive && <div className="tab-indicator borrow" />}
             </button>
+            <div className="tab-indicator-container">
+              <div className={`tab-indicator ${isCollateralActive ? 'collateral' : 'borrow'}`} />
+            </div>
           </div>
 
           {isCollateralActive ? (
             <div className="tab-content">
               <div className="currency-info">
-                <EthIcon className="icon" />
-                <span className="currency-name">Ethereum</span>
+                {React.createElement(cardData[0].currencyIcon, { className: "icon" })}
+                <span className="currency-name">{cardData[0].currencyName}</span>
               </div>
 
               <div className="balance-info">
-                <span>Balance: $0.00</span>
-                <span>Start sum: ${startSum}</span>
                 <span>
-                  Current sum:{" "}
+                  <span className="balance-label">Balance: </span>
+                  <span className="balance-value">${cardData[0].balance}</span>
+                </span>
+                <span>
+                  <span className="balance-label">Start sum: </span>
+                  <span className="balance-value">${startSum}</span>
+                </span>
+                <span>
+                  <span className="balance-label">Current sum: </span>
                   <span className={getCurrentSumColor()}>
                     ${currentSum}
                   </span>
@@ -173,10 +184,11 @@ export default function Component({ walletId }) {
           ) : (
             <div className="tab-content">
               <div className="currency-info">
-                <UsdIcon className="icon" />
-                <span className="currency-name">USD Coin</span>
+                {React.createElement(cardData[1].currencyIcon, { className: "icon" })}
+                <span className="currency-name">{cardData[1].currencyName}</span>
               </div>
-              <span className="balance-value">Balance: $0.00</span>
+
+              <span className="balance-value">Balance: ${cardData[1].balance}</span>
             </div>
           )}
         </div>
