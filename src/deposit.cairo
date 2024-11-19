@@ -139,7 +139,8 @@ mod Deposit {
     #[derive(starknet::Event, Drop)]
     struct ExtraDeposit {
         token: ContractAddress,
-        amount: TokenAmount
+        amount: TokenAmount,
+        depositor: ContractAddress
     }
 
     #[derive(starknet::Event, Drop)]
@@ -522,7 +523,7 @@ mod Deposit {
             zk_market.enable_collateral(token);
             zk_market.deposit(token, amount.try_into().unwrap());
             
-            self.emit(ExtraDeposit { token, amount });
+            self.emit(ExtraDeposit { token, amount, depositor: user_account });
             self.reentrancy_guard.end();
         }
 
