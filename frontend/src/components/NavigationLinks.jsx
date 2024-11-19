@@ -4,19 +4,11 @@ import './header/header.css';
 
 const NavigationLinks = ({ onNavClick }) => (
   <div className="nav-items">
-    <NavLink 
-      to="/" 
-      end 
-      className={({ isActive }) => (isActive ? 'active-link' : '')}
-      onClick={onNavClick}
-    >
+    <NavLink to="/" end className={({ isActive }) => (isActive ? 'active-link' : '')} onClick={onNavClick}>
       Home
     </NavLink>
-    <NavLink 
-      to="/dashboard" 
-      className={({ isActive }) => (isActive ? 'active-link' : '')}
-      onClick={onNavClick}
-    >
+    <div className="nav-divider"></div>
+    <NavLink to="/dashboard" className={({ isActive }) => (isActive ? 'active-link' : '')} onClick={onNavClick}>
       Dashboard
     </NavLink>
   </div>

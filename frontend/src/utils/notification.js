@@ -1,4 +1,4 @@
-import { notify } from 'components/Notifier/Notifier';
+import { notify } from 'components/notifier/Notifier';
 
 const defaultStyles = {
   success: { backgroundColor: 'green', color: 'white' },
