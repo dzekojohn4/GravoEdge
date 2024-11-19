@@ -115,7 +115,9 @@ export default function Component({ walletId }) {
               <span className="label">Health Factor</span>
             </div>
             <div className="card-value">
-              {healthFactor}
+              <span className="top-card-value">
+                {healthFactor}
+              </span>
             </div>
           </div>
 
@@ -126,7 +128,9 @@ export default function Component({ walletId }) {
             </div>
             <div className="card-value">
               <span className="currency-symbol">$</span>
-              {cardData[1].balance}
+              <span className="top-card-value">
+                {cardData[1].balance}
+              </span>
             </div>
           </div>
         </div>
