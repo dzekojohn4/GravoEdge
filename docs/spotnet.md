@@ -201,7 +201,8 @@ struct Withdraw {
 #[derive(starknet::Event, Drop)]
 struct ExtraDeposit {
     token: ContractAddress,
-    amount: TokenAmount
+    amount: TokenAmount,
+    depositor: ContractAddress
 }
 ```
 
