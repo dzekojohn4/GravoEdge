@@ -3,10 +3,10 @@ This module handles user-related API endpoints.
 """
 import logging
 from decimal import Decimal
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
-from web_app.db.crud import PositionDBConnector, UserDBConnector
+from web_app.db.crud import PositionDBConnector, TelegramUserDBConnector, UserDBConnector
 from web_app.api.serializers.transaction import UpdateUserContractRequest
 from web_app.api.serializers.user import (
     CheckUserResponse,
@@ -18,6 +18,7 @@ from web_app.api.serializers.user import (
 
 logger = logging.getLogger(__name__)
 router = APIRouter()  # Initialize the router
+telegram_db = TelegramUserDBConnector()
 
 user_db = UserDBConnector()
 
@@ -132,12 +133,11 @@ async def update_user_contract(
     "/api/subscribe-to-notification",
     tags=["User Operations"],
     summary="Subscribe user to notifications",
-    response_model=SubscribeToNotificationResponse,
     response_description="Returns success status of notification subscription",
 )
 async def subscribe_to_notification(
     data: SubscribeToNotificationResponse,
-) -> SubscribeToNotificationResponse:
+):
     """
     This endpoint subscribes a user to notifications by linking their telegram ID to their wallet.
 
@@ -238,3 +238,17 @@ async def get_stats() -> GetStatsResponse:
     except Exception as e:
         logger.error(f"Error in get_stats: {e}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    
+@router.post("/allow-notification/{telegram_id}")
+async def allow_notification(
+    telegram_id: int,
+    telegram_db: TelegramUserDBConnector = Depends(lambda: TelegramUserDBConnector()),
+):
+    """Enable notifications for a specific telegram user"""
+    try:
+        telegram_db.allow_notification(telegram_id=telegram_id)
+        return {"message": "Notifications enabled successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
