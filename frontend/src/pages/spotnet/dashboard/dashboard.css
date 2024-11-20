@@ -3,8 +3,9 @@ body {
 }
 
 .dashboard-wrapper {
-  background: url('../../../../public/background.png') no-repeat center 20% fixed;
+  background: url('../../../../public/background.png') no-repeat;
   background-size: cover;
+  background-position: center 38%; 
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -13,9 +14,17 @@ body {
   padding-top: 1rem;
 }
 
-.dashboard-container {
+
+.dashboard-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+}
+
+.main-container {
   width: 642px;
-  gap: 6px;
+  gap: 24px;
   border-radius: 20px;
   padding: 1rem;
   color: white;
@@ -28,14 +37,14 @@ body {
 
 .dashboard-title {
   font-size: 32px;
-  font-weight: 600px;
-  margin-bottom: 3rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
 }
 
 .top-cards {
   display: flex;
   gap: 1.8rem;
-  margin-bottom: 1rem;
   width: 642px;
   height: 101px;
 }
@@ -50,12 +59,10 @@ body {
   background: rgba(18, 7, 33, 1);
   border: 1px solid rgba(54, 41, 78, 1);
   border-radius: 900px;
-  padding-top: 5px;
+  padding-top: 4px;
   padding-right: 24px;
   padding-left: 24px;
   text-align: center;
-  width: 309px;
-  height: 101px;
 }
 
 .card-header {
@@ -80,7 +87,7 @@ body {
 
 .card-value {
   font-size: 24px;
-  font-weight: 600px;
+  font-weight: 600;
   color: white;
 }
 
@@ -89,16 +96,18 @@ body {
   border: 1px solid rgba(54, 41, 78, 1);
   padding: 2rem;
   border-radius: 48px;
-  margin-bottom: 1rem;
   width: 642px;
   height: 318px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .tabs {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1.7rem;
   position: relative;
+  align-items: center;
 }
 
 .tab {
@@ -110,7 +119,7 @@ body {
   border: none;
   background: none;
   font-size: 18px;
-  font-weight: 600px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,6 +165,11 @@ body {
   margin-right: 0.5rem;
 }
 
+.tab-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
 .tab-divider {
   width: 3px;
   height: 18px;
@@ -165,7 +179,8 @@ body {
 }
 
 .tab-content {
-  font-size: 1rem;
+  font-size: 16px;
+  font-weight: 400;
   color: #8b8a91;
   text-align: left;
   width: 594px;
@@ -177,8 +192,6 @@ body {
 .currency-info {
   display: flex;
   align-items: center;
-  margin-top: 2px;
-  margin-bottom: 4px;
 }
 
 .currency-name {
@@ -188,7 +201,7 @@ body {
 
 .balance-info {
   font-size: 1rem;
-  gap: 7px;
+  gap: 8px;
   display: flex;
   flex-direction: column;
   width: 594px;
@@ -197,12 +210,13 @@ body {
 
 .label {
   font-size: 14px;
+  font-weight: 600;
 }
 
 .balance-label {
   color: #9AA7B4;
   font-size: 16px;
-  font-weight: 400px;
+  font-weight: 400;
 }
 
 .balance-value {
@@ -224,35 +238,33 @@ body {
   color: inherit;
 }
 
-
 .redeem-button {
   width: 642px;
-  height: 3rem;
-  border-radius: 9999px;
+  height: 60px;
+  border-radius: 900px;
   background: linear-gradient(73.48deg, #e01dee 1.13%, #49abd2 51.27%);
   color: white;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 600;
   border: none;
   cursor: pointer;
-  margin-bottom: 1rem;
+  padding: 18px 24px 18px 24px;
 }
 
 .telegram-button {
   position: relative;
   display: inline-block;
+  font-weight: 600;
   width: 642px;
-  height: 3rem;
+  height: 60px;
   background: none;
   color: white;
-  font-size: 1rem;
+  font-size: 16px;
   cursor: pointer;
   border: none;
-  border-radius: 50px;
+  padding: 16px 24px 16px 24px;
   z-index: 1;
   overflow: hidden;
-  text-align: center;
-  line-height: 3rem;
 }
 
 .telegram-button::before {
@@ -278,10 +290,10 @@ body {
 
 .current-sum-green {
   color: #60AF77;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .current-sum-red {
   color: #F42222;
-  font-weight: bold;
+  font-weight: 600;
 }
