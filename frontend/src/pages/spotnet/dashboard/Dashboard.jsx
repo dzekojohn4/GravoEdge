@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./dashboard.css";
 import { ReactComponent as EthIcon } from "assets/icons/ethereum.svg";
+import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
 import { ReactComponent as UsdIcon } from "assets/icons/usd_coin.svg";
 import { ReactComponent as HealthIcon } from "assets/icons/health.svg";
 import { ReactComponent as CollateralIcon } from "assets/icons/collateral_dynamic.svg";
@@ -72,7 +73,7 @@ export default function Component({ walletId }) {
               icon: CollateralIcon,
               balance: balance,
               currencyName: isEthereum ? 'Ethereum' : 'STRK',
-              currencyIcon: isEthereum ? EthIcon : EthIcon,
+              currencyIcon: isEthereum ? EthIcon : StrkIcon,
             };
           }
 
