@@ -15,11 +15,7 @@ import { useClosePosition } from "hooks/useClosePosition";
 export default function Component({ walletId }) {
   const [isCollateralActive, setIsCollateralActive] = useState(true);
   const { data, isLoading } = useDashboardData(walletId);
-  const {
-    mutate: closePositionEvent,
-    isLoading: isClosing,
-    error: closePositionError,
-  } = useClosePosition(walletId);
+  const { mutate: closePositionEvent, isLoading: isClosing, error: closePositionError } = useClosePosition(walletId);
 
   const [cardData, setCardData] = useState([
     {
@@ -38,63 +34,67 @@ export default function Component({ walletId }) {
     },
   ]);
 
-  const [healthFactor, setHealthFactor] = useState("0.0");
+  const [healthFactor, setHealthFactor] = useState("0.00");
   const [startSum, setStartSum] = useState(0);
   const [currentSum, setCurrentSum] = useState(0);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const getData = async () => {
       if (!walletId) {
         console.error("getData: walletId is undefined");
+        setLoading(false);
         return;
       }
 
       if (!data || !data.zklend_position) {
         console.error("Data is missing or incorrectly formatted");
+        setLoading(false);
         return;
       }
 
-      if (data.zklend_position.products) {
+      if (data && data.zklend_position && data.zklend_position.products) {
         const positions = data.zklend_position.products[0].positions || [];
         const healthRatio = data.zklend_position.products[0].health_ratio;
 
-        const updatedCardData = positions.map((position, index) => {
+        const cardData = positions.map((position, index) => {
           const isFirstCard = index === 0;
           const tokenAddress = position.tokenAddress;
 
           if (isFirstCard) {
             const isEthereum = tokenAddress === ZETH_ADDRESS;
-            const balance = parseFloat(
-              position.totalBalances[Object.keys(position.totalBalances)[0]]
-            );
+            const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
             setCurrentSum(data.current_sum);
             setStartSum(data.start_sum);
-
             return {
-              title: "Collateral & Earnings",
+              title: 'Collateral & Earnings',
               icon: CollateralIcon,
-              balance: balance.toFixed(2),
-              currencyName: isEthereum ? "Ethereum" : "STRK",
-              currencyIcon: isEthereum ? EthIcon : BorrowIcon,
+              balance: balance,
+              currencyName: isEthereum ? 'Ethereum' : 'STRK',
+              currencyIcon: isEthereum ? EthIcon : EthIcon,
             };
           }
 
           return {
-            title: "Borrow",
+            title: 'Borrow',
             icon: BorrowIcon,
-            balance: parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]),
-            currencyName: "USD Coin",
+            balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+            currencyName: 'USD Coin',
             currencyIcon: UsdIcon,
           };
         });
 
-        setCardData(updatedCardData);
+        setCardData(cardData);
         setHealthFactor(healthRatio);
+      } else {
+        console.error('Data is missing or incorrectly formatted');
       }
+      setLoading(false);
     };
 
     getData();
-  }, [walletId, data]);
+  }, [walletId, data, isLoading]);
 
   const getCurrentSumColor = () => {
     if (currentSum > startSum) return "current-sum-green";
@@ -105,7 +105,7 @@ export default function Component({ walletId }) {
   return (
     <div className="dashboard-wrapper">
       <div className="dashboard-container">
-        {isLoading && <Spinner loading={isLoading} />}
+        {loading && <Spinner loading={loading} />}
         <h1 className="dashboard-title">zkLend Position</h1>
         <div className="main-container">
           <div className="top-cards">
@@ -115,9 +115,7 @@ export default function Component({ walletId }) {
                 <span className="label">Health Factor</span>
               </div>
               <div className="card-value">
-                <span className="top-card-value">
-                  {healthFactor}
-                </span>
+                <span className="top-card-value">{healthFactor}</span>
               </div>
             </div>
 
@@ -128,9 +126,7 @@ export default function Component({ walletId }) {
               </div>
               <div className="card-value">
                 <span className="currency-symbol">$</span>
-                <span className="top-card-value">
-                  {cardData[1].balance}
-                </span>
+                <span className="top-card-value">{cardData[1]?.balance || "0.00"}</span>
               </div>
             </div>
           </div>
@@ -142,9 +138,7 @@ export default function Component({ walletId }) {
                 className={`tab ${isCollateralActive ? "active" : ""}`}
               >
                 <CollateralIcon className="tab-icon" />
-                <span className="tab-title">
-                  Collateral & Earnings
-                </span>
+                <span className="tab-title">Collateral & Earnings</span>
               </button>
 
               <div className="tab-divider" />
@@ -154,9 +148,7 @@ export default function Component({ walletId }) {
                 className={`tab ${!isCollateralActive ? "active borrow" : ""}`}
               >
                 <BorrowIcon className="tab-icon" />
-                <span className="tab-title">
-                  Borrow
-                </span>
+                <span className="tab-title">Borrow</span>
               </button>
               <div className="tab-indicator-container">
                 <div
@@ -169,14 +161,14 @@ export default function Component({ walletId }) {
               <div className="tab-content">
                 <div className="balance-info">
                   <div className="currency-info">
-                    {React.createElement(cardData[0].currencyIcon, { className: "icon" })}
-                    <span className="currency-name">{cardData[0].currencyName}</span>
+                    {React.createElement(cardData[0]?.currencyIcon || CollateralIcon, {
+                      className: "icon",
+                    })}
+                    <span className="currency-name">{cardData[0]?.currencyName || "N/A"}</span>
                   </div>
                   <span>
                     <span className="balance-label">Balance: </span>
-                    <span className="balance-value">
-                      {cardData[0].balance}
-                    </span>
+                    <span className="balance-value">{cardData[0]?.balance || "0.00"}</span>
                   </span>
                   <span>
                     <span className="balance-label">Start sum: </span>
@@ -216,14 +208,14 @@ export default function Component({ walletId }) {
               <div className="tab-content">
                 <div className="balance-info">
                   <div className="currency-info">
-                    {React.createElement(cardData[1].currencyIcon, { className: "icon" })}
-                    <span className="currency-name">{cardData[1].currencyName}</span>
+                    {React.createElement(cardData[1]?.currencyIcon || BorrowIcon, {
+                      className: "icon",
+                    })}
+                    <span className="currency-name">{cardData[1]?.currencyName || "N/A"}</span>
                   </div>
                   <span>
                     <span className="balance-label">Balance: </span>
-                    <span className="balance-value">
-                      {cardData[1].balance}
-                    </span>
+                    <span className="balance-value">{cardData[1]?.balance || "0.00"}</span>
                   </span>
                 </div>
               </div>
@@ -238,7 +230,6 @@ export default function Component({ walletId }) {
             {isClosing ? "Closing..." : "Redeem"}
           </button>
           {closePositionError && <div>Error: {closePositionError.message}</div>}
-
           <button className="telegram-button">
             <TelegramIcon className="tab-icon" />
             Enable telegram notification bot
