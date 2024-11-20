@@ -19,6 +19,7 @@ body {
   text-align: center;
   margin-top: 10px;
   width: 100%;
+  pointer-events: none;
 }
 
 .center-text-container {
@@ -45,6 +46,7 @@ body {
   font-weight: 400;
   margin-top: 12px;
   font-size: 17px;
+  z-index: -1;
 }
 
 .text-gradient {
@@ -125,6 +127,7 @@ body {
   position: absolute;
   top: 0;
   right: 20px;
+  z-index: -1;
 }
 
 .launch-button {
@@ -139,6 +142,8 @@ body {
   transition: background 1.3s ease;
   margin-top: 20px;
   height: 60px;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .button-text {
@@ -223,6 +228,7 @@ body {
   }
   .center-text {
     font-size: 45px;
+    z-index: -1;
   }
 
   .launch-button {

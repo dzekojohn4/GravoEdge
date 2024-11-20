@@ -11,6 +11,7 @@ const StarMaker = ({ starData }) =>
         left: `${star.left}%`,
         width: `${star.size}%`,
         height: `${star.size}%`,
+        zIndex: star.top === 0 && star.left === 76 && star.size === 8 ? -1 : 0,
       }}
     />
   ));
