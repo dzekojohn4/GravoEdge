@@ -11,7 +11,7 @@ import Spinner from 'components/spinner/Spinner';
 import './dashboard.css';
 import useDashboardData from '../../../hooks/useDashboardData';
 import { useClosePosition } from 'hooks/useClosePosition';
-import StyledPopup from 'components/Popup/StyledPopup';
+import StyledPopup from 'components/openpositionpopup/StyledPopup';
 
 const Dashboard = ({ walletId }) => {
   const { data, isLoading, error } = useDashboardData(walletId);
@@ -48,11 +48,11 @@ const Dashboard = ({ walletId }) => {
 
   useEffect(() => {
     const getData = async () => {
-      // if (!walletId) {
-      //   console.error('getData: walletId is undefined');
-      //   setLoading(false);
-      //   return;
-      // }
+      if (!walletId) {
+        console.error('getData: walletId is undefined');
+        setLoading(false);
+        return;
+      }
 
       if (!data || !data.zklend_position) {
         console.error('Data is missing or incorrectly formatted');
