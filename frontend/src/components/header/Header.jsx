@@ -1,86 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { ReactComponent as Logo } from 'assets/images/logo.svg';
+import { useLocation } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import WalletSection from 'components/WalletSection';
+import { ReactComponent as Logo } from 'assets/icons/spotnet-logo.svg';
+import WalletSection from '../WalletSection';
 import NavigationLinks from 'components/NavigationLinks';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
-import { useLocation } from 'react-router-dom';
+import MobDropdownMenu from '../mobDropdownMenu/MobDropdownMenu';
 import './header.css';
 import '../../globals.css';
 
-function Header({ walletId, onConnectWallet, onLogout, tgUser, setTgUser }) {
+function Header({ walletId, onConnectWallet, onLogout }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation(); // getting object location
+  const location = useLocation(); // Getting object of currant route
 
-  // Use the custom hook for body scroll locking
+  // Blocking screen scroll if menu is open
   useLockBodyScroll(isMenuOpen);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Close menu when route changes
+  // Closing menu is case route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  // Close the menu when the window size is changed
+  // Closing menu in case of screen size change
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 1024) {
         setIsMenuOpen(false);
       }
     };
-    // Add resize event handler
-    window.addEventListener('resize', handleResize);
 
-    // Remove the handler when the component is unmounted
+    window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []); // Pass an empty array of dependencies so that this effect will only be triggered once when mounting.
+  }, []);
 
   const handleNavClick = () => {
     setIsMenuOpen(false);
   };
 
   return (
-    <nav>
+    <nav className="header-nav">
       <div className="list-items">
         <div className="logo">
           <NavLink to="/">
             <Logo />
           </NavLink>
         </div>
-        {/* Desktop Navigation */}
+        {/* desktop navigation */}
         <NavigationLinks onNavClick={handleNavClick} />
-        <WalletSection
-          walletId={walletId}
-          onConnectWallet={onConnectWallet}
-          onLogout={onLogout}
-          tgUser={tgUser}
-          setTgUser={setTgUser}
-        />
-      </div>
-      {/* Hamburger Menu Button */}
-      <button className={`hamburger-menu ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
-        <span className="hamburger-line" />
-        <span className="hamburger-line" />
-        <span className="hamburger-line" />
-      </button>
-
-      {/* Mobile Menu */}
-      <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
-        <div className="flex-container">
-          <NavigationLinks onNavClick={handleNavClick} />
-          <WalletSection
-            walletId={walletId}
-            onConnectWallet={onConnectWallet}
-            onLogout={onLogout}
-            tgUser={tgUser}
-            setTgUser={setTgUser}
-            onAction={() => setIsMenuOpen(false)}
-          />
+        <div className="menu-section">
+          <div className="dropdown">
+            <MobDropdownMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+          </div>
+          <WalletSection walletId={walletId} onConnectWallet={onConnectWallet} onLogout={onLogout} />
         </div>
       </div>
     </nav>

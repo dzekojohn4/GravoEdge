@@ -1,6 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Allerta+Stencil&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
 :root {
   --text-font: 'Rethink Sans', sans-serif;
+  --font-family: 'Open Sans', sans-serif;
+  --third-family: 'Allerta Stencil', sans-serif;
+  --font3: 'Inter', sans-serif;
+  --backdrop-filter: blur(12px);
+  --header-bg: rgba(7, 0, 22, 0.8);
+  --nav-button-hover: #49abd2;
+  --nav-divider-bg: #36294e;
+  --second-primary: #fdfdfd;
+  --second-gradient: linear-gradient(55deg, #e01dee 0%, #49abd2 49%);
+  --header-button-bg: #120721;
+  --border-gradient: linear-gradient(90deg, #49abd2 0%, #df1ced 99.5%);
+  --mask-gradient: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   --primary: #fff;
   --primary-color: #0b0c10;
   --black: #000;

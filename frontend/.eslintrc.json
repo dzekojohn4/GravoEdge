@@ -1,27 +1,10 @@
 {
-  "env": {
-    "es6": true,
-    "browser": true,
-    "jest": true
-  },
-  "globals": {
-    "BigInt": "readonly",
-    "process": "readonly"
-  },
-  "parserOptions": {
-    "sourceType": "module",
-    "ecmaVersion": 2022,
-    "ecmaFeatures": {
-      "jsx": true
-    }
-  },
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
     "plugin:@tanstack/query/recommended"
   ],
   "plugins": [
-    "react",
     "react-hooks",
     "@tanstack/query"
   ],
@@ -37,3 +20,5 @@
     }
   }
 }
+
+
