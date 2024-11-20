@@ -5,7 +5,6 @@ This module contains integratin tests for the creation and management
 of user positions within the webapp
 
 Key Components:
-- **TestClient**: Simulates API requests.
 - **PositionDBConnector**: Manages database operations for positions.
 - **DepositMixin**: Processes transaction data.
 - **DashboardMixin**: Retrieves current token prices.
@@ -18,7 +17,6 @@ Test Class:
 """
 
 import pytest
-from fastapi.testclient import TestClient
 from typing import Dict, Any
 from datetime import datetime
 from web_app.api.main import app
@@ -26,7 +24,6 @@ from web_app.db.crud import PositionDBConnector
 from web_app.contract_tools.mixins.deposit import DepositMixin
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
 
-client = TestClient(app)
 position_db = PositionDBConnector()
 
 
