@@ -26,7 +26,7 @@ def deposit_to_vault(
         db (Session): SQLAlchemy database session
 
     Returns:
-        VaultDepositResponse: The created deposit record with status used.
+        VaultDepositResponse: This is the created deposit record with status used.
 
     Raises:
         HTTPException: If there is an error processing the deposit this method will be called.
