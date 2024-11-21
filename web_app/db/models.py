@@ -17,9 +17,11 @@ from sqlalchemy import (
     ForeignKey,
     DateTime,
     Enum,
+    Numeric,
 )
 from enum import Enum as PyEnum
 from web_app.db.database import Base
+from datetime import datetime
 
 
 class Status(PyEnum):
@@ -114,3 +116,15 @@ class TelegramUser(Base):
     updated_at = Column(
         DateTime, nullable=False, default=func.now(), onupdate=func.now()
     )
+
+
+class VaultDeposit(Base):
+    __tablename__ = "vault_deposits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    wallet_id = Column(String, nullable=False)
+    amount = Column(Numeric(precision=36, scale=18), nullable=False)
+    symbol = Column(String, nullable=False)
+    status = Column(String, nullable=False, default="pending")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
