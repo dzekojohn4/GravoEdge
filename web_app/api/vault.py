@@ -1,39 +1,26 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Optional
 from decimal import Decimal
+import logging
+from sqlalchemy.orm import Session
 
-from web_app.contract_tools.blockchain_call import StarknetClient
 from web_app.db.models import VaultDeposit
 from web_app.db.database import get_database
 from web_app.schemas.vault import VaultDepositRequest, VaultDepositResponse
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/api/vault", tags=["vault"])
-client = StarknetClient()
 
 @router.post("/deposit", response_model=VaultDepositResponse)
-async def deposit_to_vault(request: VaultDepositRequest, db=Depends(get_database)) -> VaultDepositResponse:
-    """
-    Endpoint to handle deposits to the vault
-    
-    Args:
-        request: VaultDepositRequest containing wallet_id, amount and symbol
-        
-    Returns:
-        VaultDepositResponse with transaction details
-    """
-    try:
-        # Validate wallet balance
-        balance = await client.get_balance(
-            token_addr=request.symbol,
-            holder_addr=request.wallet_id
-        )
-        
-        if Decimal(balance) < request.amount:
-            raise HTTPException(
-                status_code=400,
-                detail="Insufficient balance for deposit"
-            )
+def deposit_to_vault(
+    request: VaultDepositRequest, 
+    db: Session = Depends(get_database)
+) -> VaultDepositResponse:
 
+    try:
+        logger.info(f"Processing deposit request for wallet {request.wallet_id}")
+        
         # Create vault deposit record
         deposit = VaultDeposit(
             wallet_id=request.wallet_id,
@@ -43,8 +30,10 @@ async def deposit_to_vault(request: VaultDepositRequest, db=Depends(get_database
         )
         
         db.add(deposit)
-        await db.commit()
-        await db.refresh(deposit)
+        db.commit()
+        db.refresh(deposit)
+        
+        logger.info(f"Created deposit record with ID {deposit.id}")
 
         return VaultDepositResponse(
             deposit_id=deposit.id,
@@ -55,6 +44,8 @@ async def deposit_to_vault(request: VaultDepositRequest, db=Depends(get_database
         )
 
     except Exception as e:
+        logger.error(f"Error processing deposit: {str(e)}")
+        db.rollback()
         raise HTTPException(
             status_code=500,
             detail=f"Failed to process deposit: {str(e)}"
