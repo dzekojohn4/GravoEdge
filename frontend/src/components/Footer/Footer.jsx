@@ -1,58 +1,72 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ReactComponent as Logo } from 'assets/images/logo.svg';
-import { ReactComponent as TwitterIcon } from 'assets/icons/twitter.svg';
+import { NavLink } from 'react-router-dom';
+import { ReactComponent as TwitterIcon } from 'assets/icons/new-twitter.svg';
 import { ReactComponent as TelegramIcon } from 'assets/icons/telegram.svg';
-import { ReactComponent as DiscordIcon } from 'assets/icons/discord.svg';
-import './footer.css';
+import { ReactComponent as GithubIcon } from 'assets/icons/github.svg';
+import { ReactComponent as DashboardIcon } from 'assets/icons/dashboard-icon.svg';
+import { ReactComponent as FormIcon } from 'assets/icons/form-icon.svg';
 
-const SocialCard = ({ href, Icon, name }) => (
-  <div className="social-card">
-    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`Visit our ${name} page`}>
-      <Icon />
-      <p>{name}</p>
-    </a>
-  </div>
-);
+import './footer.css';
 
 function Footer() {
   const socialLinks = [
     {
-      name: 'Twitter',
-      icon: TwitterIcon,
-      href: 'https://x.com',
-    },
-    {
-      name: 'Discord',
-      icon: DiscordIcon,
-      href: 'https://discord.com',
+      name: 'Github',
+      icon: GithubIcon,
+      href: 'https://github.com',
     },
     {
       name: 'Telegram',
       icon: TelegramIcon,
       href: 'https://t.me/djeck_vorobey1',
     },
+    {
+      name: 'Twitter',
+      icon: TwitterIcon,
+      href: 'https://x.com',
+    },
   ];
 
   return (
     <footer className="footer-container">
-      <div className="footer-center-text">
-        <div className="footer-logo">
-          <Link to="/" aria-label="Go to homepage">
-            <Logo />
-          </Link>
-        </div>
-        <p className="follow-us-text">Follow us on</p>
+      <div className="footer-text">
+        <p>Copyright© Spotnet {new Date().getFullYear()}</p>
       </div>
-      <div className="footer-social-cards">
-        {socialLinks.map((social) => (
-          <SocialCard key={social.name} href={social.href} Icon={social.icon} name={social.name} />
+      <nav className="footer-docs">
+        <Link to="/documentation">Documentation</Link>
+        <Link to="/overview">Overview</Link>
+        <Link to="/terms">Terms & Conditions</Link>
+        <Link to="/defi">Defi Spring Rewards</Link>
+      </nav>
+      <div className="footer-social">
+        {socialLinks.map(({ name, href, icon: Icon }) => (
+          <a key={name} href={href} target="_blank" rel="noopener noreferrer" arial-label={name}>
+            <Icon />
+          </a>
         ))}
       </div>
-
-      <div className="line-text-container">
-        <div className="footer-line" aria-hidden="true" />
-        <div className="footer-text">©{new Date().getFullYear()}. Spotnet All Rights Reserved.</div>
+      <div className="footer-mob-nav">
+        <NavLink
+          to="/dashboard"
+          className={({ isActive }) => (isActive ? 'active-link footer-link-dashboard' : 'footer-link-dashboard')}
+        >
+          <div className="link-wrapper">
+            <DashboardIcon className="footer-icon" />
+            <span>Dashboard</span>
+          </div>
+        </NavLink>
+        <div className="footer-mob-divider"></div>
+        <NavLink
+          to="/form"
+          className={({ isActive }) => (isActive ? 'active-link footer-link-form' : 'footer-link-form')}
+        >
+          <div className="link-wrapper">
+            <FormIcon className="footer-icon" />
+            <span>Form</span>
+          </div>
+        </NavLink>
+        <div className="footer-line"></div>
       </div>
     </footer>
   );
