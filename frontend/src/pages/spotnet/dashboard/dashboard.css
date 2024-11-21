@@ -332,10 +332,9 @@ body {
     justify-content: center;
   }
 
-  .card {
-    width: 280px;
+  .card {    
     height: 90px;
-    padding: 8px 8px 14px 8px;
+    padding: 8px 2px 14px 2px;
     border-radius: 14px;
     display: flex;    
     flex-direction: column;
@@ -343,8 +342,12 @@ body {
     align-items: center;
   }
 
+  .card-header {
+    padding: 0;
+  }
+
   .card-header .label {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 400;
   }
 
@@ -361,7 +364,7 @@ body {
   }
 
   .redeem-button {    
-    border-radius: 14px;
+    border-radius: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -375,7 +378,7 @@ body {
     padding: 18px 24px 18px 24px;
   }
   .telegram-button::before {
-    border-radius: 14px;    
+    border-radius: 16px;    
   }
 
   .tab {
@@ -413,7 +416,8 @@ body {
   }
 
   .tab-title {
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 600;
   }
 
   .currency-name {
@@ -428,6 +432,34 @@ body {
   .top-card-value {
     font-size: 20px;
   }
+
+  .tabs {
+    padding: 0 8px;
+    gap: 2px;
+  }
+
+  .tab {
+    padding: 8px 12px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .tab-divider {
+    width: 2px;
+    height: 16px;
+    margin: 0 4px;
+  }
+
+  .tab-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+  }
+
+  .tab-indicator-container {
+    bottom: -12px;
+    width: calc(100% - 16px);
+  }
 }
 
 @media screen and (max-width: 380px) {  
@@ -439,10 +471,6 @@ body {
     font-size: 14px;
   }
 
-  .card-header .label {
-    font-size: 10px;
-  }
-
   .top-cards {
     gap: 8px;
   }
@@ -451,7 +479,8 @@ body {
     padding: 8px 8px 12px 8px;
   } 
 
-  .tab-title {
+  .tab {
+    padding: 6px 8px;
     font-size: 12px;
   }
 }
