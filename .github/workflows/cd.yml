@@ -1,52 +1,53 @@
 name: CD Pipeline
 
 on:
-  workflow_run:
-    workflows:
-      - CI Workflow
-    types:
-      - completed
+    workflow_run:
+        workflows:
+            - CI Workflow
+        types:
+            - completed
 
 jobs:
-  deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
+    deploy:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: unnecessary
-          if_key_exists: replace
+            - name: Prepare environment file
+              run: cp .env.dev .env
 
-      - name: Add known hosts
-        run: |
-          ssh-keyscan -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+            - name: Build and Deploy with Docker Compose
+              run: |
+                  # Ensure Docker Compose is installed
+                  sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                  sudo chmod +x /usr/local/bin/docker-compose
 
-      - name: Prepare environment file
-        run: |
-          cp .env.dev .env
+                  # Navigate to the deployment directory
+                  mkdir -p ~/app
+                  cp docker-compose.yml ~/app/
+                  cp .env ~/app/
 
-      - name: Copy deployment files to server
-        run: |
-          ssh -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
-            mkdir -p /home/${{ secrets.SERVER_USER }}/app"
-          
-          scp -P ${{ secrets.SERVER_PORT }} docker-compose.yml .env \
-              ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/app/
+                  cd ~/app
 
-      - name: Deploy to server
-        run: |
-          ssh -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
-            set -e
-            cd /home/${{ secrets.SERVER_USER }}/app
-            docker-compose pull
-            docker-compose down
-            docker-compose up -d
-            docker system prune -f
-            docker-compose ps
-          "
+                  # Backup current .env if exists
+                  if [ -f '.env' ]; then
+                    cp .env .env.backup
+                  fi
+
+                  # Pull the latest Docker images
+                  docker-compose pull
+
+                  # Stop and remove existing containers
+                  docker-compose down
+
+                  # Start containers with the latest configuration
+                  docker-compose up -d
+
+                  # Clean up unused Docker images
+                  docker image prune -f
+
+                  # Verify deployment
+                  echo 'Checking container status...'
+                  docker-compose ps
