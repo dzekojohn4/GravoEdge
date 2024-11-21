@@ -19,17 +19,17 @@ def deposit_to_vault(
     request: VaultDepositRequest, db: Session = Depends(get_database)
 ) -> VaultDepositResponse:
     """
-    Create a new vault deposit record.
+    Created a new vault deposit record.
 
     Args:
         request (VaultDepositRequest): The deposit request containing wallet_id, amount, and symbol
         db (Session): SQLAlchemy database session
 
     Returns:
-        VaultDepositResponse: The created deposit record with status
+        VaultDepositResponse: The created deposit record with status used.
 
     Raises:
-        HTTPException: If there's an error processing the deposit
+        HTTPException: If there is an error processing the deposit this method will be called.
     """
     try:
         logger.info(f"Processing deposit request for wallet {request.wallet_id}")

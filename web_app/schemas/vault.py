@@ -6,11 +6,11 @@ from pydantic import BaseModel, Field
 
 class VaultDepositRequest(BaseModel):
     """
-    Schema for vault deposit request.
+    Schema for vault deposit request used to create a new deposit record.
 
     Attributes:
         wallet_id (str): Starknet wallet address
-        amount (Decimal): Amount to deposit (must be greater than 0)
+        amount (Decimal): Amount to deposit
         symbol (str): Token symbol or address
     """
 
@@ -21,7 +21,7 @@ class VaultDepositRequest(BaseModel):
 
 class VaultDepositResponse(BaseModel):
     """
-    Schema for vault deposit response.
+    Schema for vault deposit response is here.
 
     Attributes:
         deposit_id (int): Unique identifier for the deposit
