@@ -24,7 +24,7 @@ const TokenSelector = ({ setSelectedToken }) => (
         />
         <label htmlFor={token.id}>
           <h5>
-            {token.component} {token.label}
+            <span className="token-icon">{token.component}</span> {token.label}
           </h5>
         </label>
       </div>
