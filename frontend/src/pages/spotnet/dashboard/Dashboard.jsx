@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as Star } from 'assets/particles/star.svg';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral.svg';
@@ -11,7 +10,6 @@ import Spinner from 'components/spinner/Spinner';
 import './dashboard.css';
 import useDashboardData from '../../../hooks/useDashboardData';
 import { useClosePosition } from 'hooks/useClosePosition';
-import StyledPopup from 'components/openpositionpopup/StyledPopup';
 
 const Dashboard = ({ walletId }) => {
   const { data, isLoading, error } = useDashboardData(walletId);
@@ -37,8 +35,6 @@ const Dashboard = ({ walletId }) => {
   const [startSum, setStartSum] = useState(0);
   const [currentSum, setCurrentSum] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [showPopup, setShowPopup] = useState(false);
-  const [hasOpenPosition, setHasOpenPosition] = useState(false);
 
   const starData = [
     { top: 1, left: 0, size: 1.5 },
@@ -101,40 +97,9 @@ const Dashboard = ({ walletId }) => {
     getData();
   }, [walletId, data, isLoading, error]);
 
-  useEffect(() => {
-    const checkOpenPosition = async () => {
-      try {
-        const response = await fetch('/api/has-user-opened-position');
-        const data = await response.json();
-        setHasOpenPosition(data.has_opened_position);
-      } catch (error) {
-        console.error('Failed to check open position:', error);
-      }
-    };
-
-    checkOpenPosition();
-  }, []);
-
   const getCurrentSumColor = () => {
     if (startSum === currentSum) return '';
     return currentSum < startSum ? 'current-sum-red' : 'current-sum-green';
-  };
-
-  const handleRedeemClick = () => {
-    if (!hasOpenPosition) {
-      setShowPopup(true);
-    } else {
-      closePositionEvent();
-    }
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
-
-  const handleCloseActivePosition = () => {
-    closePositionEvent();
-    setShowPopup(false);
   };
 
   return (
@@ -205,9 +170,7 @@ const Dashboard = ({ walletId }) => {
       </div>
       <div>
         <div>
-        <StyledPopup isOpen={showPopup} onClose={handleClosePopup} onClosePosition={handleCloseActivePosition} />
-
-          <button className="btn redeem-btn border-0" onClick={handleRedeemClick}>
+          <button className="btn redeem-btn border-0" onClick={() => closePositionEvent()}>
             {isClosing ? 'Closing...' : 'Redeem'}
           </button>
           {closePositionError && <div>Error during closing position: {closePositionError.message}</div>}
