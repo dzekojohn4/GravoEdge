@@ -706,9 +706,9 @@ fn test_extra_deposit_valid() {
         .approve(deposit_disp.contract_address, 10000000000000);
     stop_cheat_caller_address(eth_addr);
 
-    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    start_cheat_caller_address(deposit_disp.contract_address, user);
     deposit_disp.extra_deposit(eth_addr, 10000000000000);
-    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    stop_cheat_caller_address(deposit_disp.contract_address);
 
     assert(
         ERC20ABIDispatcher {
@@ -781,13 +781,13 @@ fn test_extra_deposit_supply_token_close_position_fuzz(extra_amount: u32) {
     let safe_deposit_disp = IDepositSafeDispatcher {
         contract_address: deposit_disp.contract_address
     };
-    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    start_cheat_caller_address(deposit_disp.contract_address, user);
     if let Result::Err(panic_data) = safe_deposit_disp
         .extra_deposit(usdc_addr, extra_amount.into()) {
         assert(*panic_data.at(0) == 'Deposit amount is zero', *panic_data.at(0));
         return;
     }
-    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    stop_cheat_caller_address(deposit_disp.contract_address);
 
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp
@@ -873,9 +873,9 @@ fn test_withdraw_valid_fuzz(amount: u32) {
     eth_disp.approve(deposit_disp.contract_address, 10000000000000);
     stop_cheat_caller_address(eth_addr);
 
-    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    start_cheat_caller_address(deposit_disp.contract_address, user);
     deposit_disp.extra_deposit(eth_addr, 10000000000000);
-    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    stop_cheat_caller_address(deposit_disp.contract_address);
 
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     deposit_disp

@@ -26,7 +26,7 @@ mod Deposit {
     };
 
     use starknet::{
-        ContractAddress, ClassHash, get_contract_address, get_tx_info,
+        ContractAddress, ClassHash, get_contract_address, get_tx_info, get_caller_address,
         event::EventEmitter, storage::{StoragePointerWriteAccess, StoragePointerReadAccess}
     };
 
@@ -508,22 +508,22 @@ mod Deposit {
             let (zk_market, token_dispatcher) = (
                 self.zk_market.read(), ERC20ABIDispatcher { contract_address: token }
             );
-            let user_account = get_tx_info().unbox().account_contract_address;
+            let depositor = get_caller_address();
 
             assert(
-                token_dispatcher.allowance(user_account, get_contract_address()) >= amount,
+                token_dispatcher.allowance(depositor, get_contract_address()) >= amount,
                 'Approved amount insufficient'
             );
-            assert(token_dispatcher.balanceOf(user_account) >= amount, 'Insufficient balance');
+            assert(token_dispatcher.balanceOf(depositor) >= amount, 'Insufficient balance');
             assert(zk_market.get_reserve_data(token).enabled, 'Reserve must be enabled');
 
-            token_dispatcher.transferFrom(user_account, get_contract_address(), amount);
+            token_dispatcher.transferFrom(depositor, get_contract_address(), amount);
             token_dispatcher.approve(zk_market.contract_address, amount);
 
             zk_market.enable_collateral(token);
             zk_market.deposit(token, amount.try_into().unwrap());
             
-            self.emit(ExtraDeposit { token, amount, depositor: user_account });
+            self.emit(ExtraDeposit { token, amount, depositor });
             self.reentrancy_guard.end();
         }
 
