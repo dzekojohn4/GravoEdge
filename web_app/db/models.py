@@ -125,6 +125,6 @@ class VaultDeposit(Base):
     wallet_id = Column(String, nullable=False)
     amount = Column(Numeric(precision=36, scale=18), nullable=False)
     symbol = Column(String, nullable=False)
-    status = Column(String, nullable=False, default="pending")
+    status = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
