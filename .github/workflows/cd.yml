@@ -36,14 +36,7 @@ jobs:
           # Verify backend is running
           docker compose ps backend
           
-          # Run any database migrations if needed
-          docker compose exec -T backend poetry run python manage.py migrate
           
-          # Collect static files if using Django
-          docker compose exec -T backend poetry run python manage.py collectstatic --noinput
-          
-          # Optional: Run health check
-          docker compose exec -T backend poetry run python manage.py check --deploy
 
       - name: Verify deployment
         run: |
