@@ -19,13 +19,15 @@
 
 .form-title h1 {
   text-align: center;
+  font-weight: normal;
+  font-size: 1rem;
 }
 
 .token-card label {
-  border: 1px solid var(--brand);
-  border-radius: 8px;
-  padding: 5px;
-  width: 120px;
+  border: 1px solid rgba(32, 19, 56, 1);
+  border-radius: 12px;
+  padding: 4px 15px;
+  /* min-width: 120px; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -49,6 +51,23 @@
 
 .token-card label:active svg {
   fill: var(--brand);
+}
+
+.token-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 2000px;
+  background-color: rgb(31, 11, 32);
+}
+.balance-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 2000px;
+  background-color: hsla(261, 49%, 15%, 1);
 }
 
 .token-label {
@@ -77,6 +96,9 @@
   margin-top: 9px;
   font-size: 20px;
   color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .token-card svg {
@@ -298,11 +320,9 @@ input[type='number'].error {
   width: 300px;
   align-items: center;
   border-radius: 8px;
-  border: var(--card-border);
+  border: 1px solid rgba(32, 19, 56, 1);
   justify-content: center;
-  background: var(--card-bg-gradient);
   margin-right: 20px;
-  box-shadow: var(--card-box-shadow);
 }
 
 .balance-item label:nth-child(1) {
@@ -329,22 +349,27 @@ input[type='number'].error {
 
 /* Responsiveness */
 @media (max-width: 768px) {
+  .form-container {
+    margin-top: 3rem !important;
+    padding: 0 !important;
+  }
   .balance-container {
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     gap: 1rem;
     align-items: center;
   }
   .balance-item {
     height: fit-content;
-    padding: 1rem 0rem;
+    padding: 1rem 2rem;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
+    border-radius: 16px;
   }
 .balance-item .balance-title {
-  font-size: 1.2rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
 }
@@ -353,7 +378,7 @@ input[type='number'].error {
 }
 .title-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
   .form-token {
     gap: 3px;
@@ -361,6 +386,11 @@ input[type='number'].error {
   .multiplier-card {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     display: grid;
+  }
+
+  .balance-item label:nth-child(2) {
+    color: var(--secondary);
+    font-size: 1rem;
   }
 
 }

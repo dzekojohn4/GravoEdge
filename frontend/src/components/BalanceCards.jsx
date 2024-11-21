@@ -25,13 +25,13 @@ const BalanceCards = ({ walletId }) => {
       {balances.map((balance) =>
         isMobile ? (
           <div className="balance-item" key={balance.title}>
-            <label htmlFor="icon" className="balance-title">
-              {balance.icon}
-            </label>
             <div className="title-container">
+              <label htmlFor="icon" className="balance-title">
+              <span className="balance-icon">{balance.icon}</span>
+              </label>
               <label htmlFor={balance.title}>{balance.title} Balance:</label>
-              <label htmlFor={balance.title}>{balance.balance}</label>
             </div>
+              <label htmlFor={balance.title}>{balance.balance}</label>
           </div>
         ) : (
           <div className="balance-item" key={balance.title}>
