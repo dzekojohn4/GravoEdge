@@ -690,7 +690,7 @@ class DepositDBConnector(DBConnector):
 
         :return: None
         """
-        vault = self.get_or_create_vault(wallet_id, symbol)
+        vault = self.get_vault(wallet_id, symbol)
         if not vault:
             return
         with self.Session() as db:
@@ -707,5 +707,5 @@ class DepositDBConnector(DBConnector):
 
         :returns: str or None
         """
-        vault = self.get_or_create_vault(wallet_id, symbol)
+        vault = self.get_vault(wallet_id, symbol)
         return vault.amount if vault else None
