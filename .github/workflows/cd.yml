@@ -1,53 +1,77 @@
 name: CD Pipeline
 
 on:
-    workflow_run:
-        workflows:
-            - CI Workflow
-        types:
-            - completed
+  workflow_run:
+    workflows: ["CI Workflow"]
+    types:
+      - completed
+    branches:
+      - main
 
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
-            - name: Prepare environment file
-              run: cp .env.dev .env
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
-            - name: Build and Deploy with Docker Compose
-              run: |
-                  # Ensure Docker Compose is installed
-                  sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-                  sudo chmod +x /usr/local/bin/docker-compose
+      - name: Create .env file
+        run: cp .env.dev .env
 
-                  # Navigate to the deployment directory
-                  mkdir -p ~/app
-                  cp docker-compose.yml ~/app/
-                  cp .env ~/app/
+      - name: Build and deploy
+        run: |
+          # Build and start containers for production
+          docker compose -f docker-compose.yaml up -d --build
+          
+          # Verify backend is running
+          docker compose ps backend
+          
+          # Run any database migrations if needed
+          docker compose exec -T backend poetry run python manage.py migrate
+          
+          # Collect static files if using Django
+          docker compose exec -T backend poetry run python manage.py collectstatic --noinput
+          
+          # Optional: Run health check
+          docker compose exec -T backend poetry run python manage.py check --deploy
 
-                  cd ~/app
+      - name: Verify deployment
+        run: |
+          # Check if all services are running
+          if ! docker compose ps --services --filter "status=running" | grep -q .; then
+            echo "Deployment verification failed - containers are not running"
+            exit 1
+          fi
+          
+          # Wait for backend to be ready (adjust URL as needed)
+          timeout 60s bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:8000/health)" != "200" ]]; do sleep 5; done'
 
-                  # Backup current .env if exists
-                  if [ -f '.env' ]; then
-                    cp .env .env.backup
-                  fi
+      - name: Cleanup
+        if: always()
+        run: |
+          # Remove unused images
+          docker image prune -f
+          
+          # Optional: Remove old backups
+          find . -name "*.bak" -type f -mtime +7 -delete
 
-                  # Pull the latest Docker images
-                  docker-compose pull
-
-                  # Stop and remove existing containers
-                  docker-compose down
-
-                  # Start containers with the latest configuration
-                  docker-compose up -d
-
-                  # Clean up unused Docker images
-                  docker image prune -f
-
-                  # Verify deployment
-                  echo 'Checking container status...'
-                  docker-compose ps
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          # Stop current deployment
+          docker compose down
+          
+          # Restore from previous state if available
+          if [ -f "docker-compose.prev.yaml" ]; then
+            docker compose -f docker-compose.prev.yaml up -d
+          fi
