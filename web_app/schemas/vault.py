@@ -26,7 +26,7 @@ class VaultDepositRequest(BaseModel):
 
 class VaultDepositResponse(BaseModel):
     """
-    Schema for vault deposit response is here.
+    Schema for vault deposit response.
 
     Attributes:
         deposit_id (int): Unique identifier for the deposit

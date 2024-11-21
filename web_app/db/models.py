@@ -116,20 +116,3 @@ class TelegramUser(Base):
     updated_at = Column(
         DateTime, nullable=False, default=func.now(), onupdate=func.now()
     )
-
-
-class VaultDeposit(Base):
-    """
-    SQLAlchemy model for vault deposits.
-    Stores information about user deposits including wallet address,
-    amount, token symbol, and status.
-    """
-    __tablename__ = "vault_deposits"
-
-    id = Column(Integer, primary_key=True, index=True)
-    wallet_id = Column(String, nullable=False)
-    amount = Column(Numeric(precision=36, scale=18), nullable=False)
-    symbol = Column(String, nullable=False)
-    status = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
