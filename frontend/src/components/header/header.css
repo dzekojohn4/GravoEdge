@@ -1,4 +1,4 @@
-nav {
+.header-nav {
   position: relative;
   display: flex;
   align-items: center;
@@ -58,6 +58,7 @@ nav {
 }
 
 .logo svg {
+  margin-top: 9px;
   width: 300px;
   height: auto;
 }
