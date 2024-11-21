@@ -1,3 +1,8 @@
+"""
+Module for handling vault deposit operations in the SPOTNET API.
+This module provides endpoints for creating and managing vault deposits.
+"""
+
 import logging
 from decimal import Decimal
 from typing import Optional

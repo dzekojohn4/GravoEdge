@@ -119,6 +119,11 @@ class TelegramUser(Base):
 
 
 class VaultDeposit(Base):
+    """
+    SQLAlchemy model for vault deposits.
+    Stores information about user deposits including wallet address,
+    amount, token symbol, and status.
+    """
     __tablename__ = "vault_deposits"
 
     id = Column(Integer, primary_key=True, index=True)
