@@ -23,9 +23,10 @@
   --borrow-color: #f42222;
   --spinner-bgn: rgba(0, 0, 0, 0.5);
   --spinner-content: #393939;
-  --footer-bg-color: #1a1c24;
+  --footer-bg-color: #00000d;
   --footer-text-color: #e7ebf5;
   --footer-line-color: rgba(231, 235, 245, 0.2);
+  --footer-divider-bg: #201338;
   --gradient: linear-gradient(73deg, #74d6fd 1.13%, #e01dee 103.45%);
   --button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
   --button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
