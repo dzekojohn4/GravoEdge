@@ -9,6 +9,7 @@ import Login from 'pages/Login';
 import Form from 'pages/forms/Form';
 import { connectWallet, logout, checkForCRMToken } from 'services/wallet';
 import { saveTelegramUser, getTelegramUserWalletId } from 'services/telegram';
+import Documentation from 'pages/spotnet/documentation/Documentation';
 
 function App() {
   const [walletId, setWalletId] = useState(localStorage.getItem('wallet_id'));
@@ -95,6 +96,7 @@ function App() {
           />
           <Route path="/dashboard" element={<Dashboard walletId={walletId} />} />
           <Route path="/form" element={<Form walletId={walletId} setWalletId={setWalletId} />} />
+          <Route path="/documentation" element={<Documentation/>} />
         </Routes>
       </main>
       <Footer />
