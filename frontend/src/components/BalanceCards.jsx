@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as ETH } from '../assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from '../assets/icons/borrow_usdc.svg';
 import { ReactComponent as STRK } from '../assets/icons/strk.svg';
 import { ReactComponent as DAI } from '../assets/icons/dai.svg';
 import { useMatchMedia } from 'hooks/useMatchMedia';
 import { getBalances } from '../services/wallet';
+import useScrollTracker from 'hooks/useScrollTracker';
+import PaginationDots from './PaginationDots';
 
 const BalanceCards = ({ walletId }) => {
   const [balances, setBalances] = useState([
@@ -15,30 +17,21 @@ const BalanceCards = ({ walletId }) => {
   ]);
 
   const isMobile = useMatchMedia('(max-width: 768px)');
-  const [activeIndex, setActiveIndex] = useState(0);
-  const scrollRef = useRef(null);
-  
-  const handleScroll = () => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-      const scrollPercentage = scrollLeft / (scrollWidth - clientWidth);
-      const index = Math.round(scrollPercentage);
-      setActiveIndex(index);
-    }
-  };
+  const { scrollRef, activeIndex, setActiveIndex } = useScrollTracker();
 
+  const handleDotClick = (index) => {
+    setActiveIndex(index);
+    const balanceContainer = scrollRef.current;
+    const containerWidth = balanceContainer.offsetWidth;
+    const scrollAmount = index * containerWidth;
+  
+    balanceContainer.scrollTo({ left: scrollAmount, behavior: "smooth" });
+  };
+  
 
   useEffect(() => {
     getBalances(walletId, setBalances);
   }, [walletId]);
-
-  useEffect(() => {
-    const scrollElement = scrollRef.current;
-    if (scrollElement) {
-      scrollElement.addEventListener("scroll", handleScroll);
-      return () => scrollElement.removeEventListener("scroll", handleScroll);
-    }
-  }, []);
 
   return (
     <div className='balance-card'>
@@ -65,10 +58,11 @@ const BalanceCards = ({ walletId }) => {
         )
       )}
     </div>
-      <div className="pagination">
-        <div className={`dot ${activeIndex === 0 ? "active" : ""}`}></div>
-        <div className={`dot ${activeIndex === 1 ? "active" : ""}`}></div>
-      </div>
+      <PaginationDots
+          balances={balances}
+          activeIndex={activeIndex}
+          onDotClick={handleDotClick}
+        />
       </div>
   );
 };
