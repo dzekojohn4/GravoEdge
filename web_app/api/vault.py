@@ -25,7 +25,8 @@ async def deposit_to_vault(
         db (DepositDBConnector): Database connector for vault operations
 
     Returns:
-        VaultDepositResponse: The deposit response containing deposit_id, wallet_id, amount, symbol, and status
+        VaultDepositResponse: Response containing deposit details (id, wallet_id, amount, symbol, 
+            and status)
 
     Raises:
         HTTPException: If the deposit operation fails
