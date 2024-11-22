@@ -5,8 +5,6 @@ import MultiplierSelector from 'components/MultiplierSelector';
 import { connectWallet } from 'services/wallet';
 import { handleTransaction } from 'services/transaction';
 import Spinner from 'components/spinner/Spinner';
-import StarMaker from 'components/StarMaker';
-import CardGradients from 'components/CardGradients';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
 import './form.css';
 import { createPortal } from 'react-dom';
@@ -14,12 +12,6 @@ import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
 
 const Form = ({ walletId, setWalletId }) => {
-  const starData = [
-    { top: 35, left: 12, size: 12 },
-    { top: 90, left: 7, size: 7 },
-    { top: 40, left: 80, size: 7 },
-    { top: 75, left: 90, size: 9 },
-  ];
   const [tokenAmount, setTokenAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState('');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
@@ -115,8 +107,6 @@ const Form = ({ walletId, setWalletId }) => {
                 </button>
               </div>
             </div>
-            <CardGradients additionalClassName={'forms-gradient'} />
-            <StarMaker starData={starData} />
           </div>
         </form>
         <Spinner loading={loading} />
