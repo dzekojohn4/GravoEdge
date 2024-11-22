@@ -3,7 +3,6 @@ import "./logoutModal.css";
 
 export default function LogoutModal({ onClose, onLogout }) {
 
-
   return (
     <div className="modal-container">
       <div className="main-container">
@@ -15,12 +14,12 @@ export default function LogoutModal({ onClose, onLogout }) {
           <p className="logout-text">Do you want to disconnect your wallet and logout of this account?</p>
         </div>
         <div className="buttons-container">
-          <button className="cancel-button" onClick={() => onClose()}>
+          <button className="cancel-button" onClick={onClose}>
             Cancel
           </button>
           <button
             className="logout-btn"
-            onClick={() => onLogout()}
+            onClick={onLogout}
           >
             Yes, logout
           </button>

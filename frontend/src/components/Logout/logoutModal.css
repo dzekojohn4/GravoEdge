@@ -26,36 +26,9 @@
   align-items: center;
 }
 
-.card {
-  width: 309px;
-  height: 101px;
-  background: rgba(18, 7, 33, 1);
-  border: 1px solid rgba(54, 41, 78, 1);
-  border-radius: 900px;
-  padding-top: 4px;
-  padding-right: 24px;
-  padding-left: 24px;
-  text-align: center;
-}
-
-.card-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  color: white;
-}
-
-
-.card-value {
-  font-size: 24px;
-  font-weight: 600;
-  color: white;
-}
-
 .main-card {
-  background: rgba(18, 7, 33, 1);
-  border: 1px solid rgba(54, 41, 78, 1);
+  background: var(--header-button-bg);
+  border: 1px solid var(--nav-divider-bg);
   padding: 2rem;
   border-radius: 48px;
   width: 642px;
@@ -67,7 +40,7 @@
 }
 
 .logout-heading-container {
-  border-bottom: 1px solid #36294E;
+  border-bottom: 1px solid var(--nav-divider-bg);
 }
 
 .logout-heading {
@@ -95,7 +68,7 @@
   width: 642px;
   height: 60px;
   border-radius: 900px;
-  background: linear-gradient(73.48deg, #e01dee 1.13%, #49abd2 51.27%);
+  background: var(--second-gradient);
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -105,12 +78,12 @@
 }
 
 .cancel-button {
+  background-color: var(--plain-button-bg);
   position: relative;
   display: inline-block;
   font-weight: 600;
   width: 642px;
   height: 60px;
-  background: none;
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -129,7 +102,7 @@
   bottom: 0;
   border-radius: 50px;
   padding: 2px;
-  background: linear-gradient(90deg, #74D6FD 0%, #E01DEE 100%);
+  background: var(--gradient);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
