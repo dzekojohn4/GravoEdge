@@ -235,16 +235,11 @@ mod Deposit {
                 debt_reserve_data.borrow_factor.into()
             );
 
-            assert(
-                deposit_reserve_data.enabled && debt_reserve_data.enabled,
-                'Reserves must be enabled'
-            );
-
             zk_market.enable_collateral(token);
 
             token_dispatcher.approve(zk_market.contract_address, amount);
             zk_market.deposit(token, amount.try_into().expect('Overflow'));
-            
+
             let deposit_token_decimals = fast_power(10_u64, token_dispatcher.decimals().into());
             let mut total_borrowed = 0;
             let mut accumulated = 0;
@@ -346,11 +341,6 @@ mod Deposit {
             let (collateral_factor, borrow_factor) = (
                 deposit_reserve_data.collateral_factor.into(),
                 debt_reserve_data.borrow_factor.into()
-            );
-
-            assert(
-                deposit_reserve_data.enabled && debt_reserve_data.enabled,
-                'Reserves must be enabled'
             );
 
             let z_token_disp = ERC20ABIDispatcher {
@@ -486,7 +476,12 @@ mod Deposit {
             zk_market.deposit(STRK_ADDRESS.try_into().unwrap(), remainder.into());
             zk_market.enable_collateral(STRK_ADDRESS.try_into().unwrap());
 
-            self.emit(RewardClaimed {treasury_amount: part_for_treasury.into(), user_amount: remainder.into()});
+            self
+                .emit(
+                    RewardClaimed {
+                        treasury_amount: part_for_treasury.into(), user_amount: remainder.into()
+                    }
+                );
         }
 
         /// Makes a deposit into open zkLend position to control stability
@@ -508,26 +503,25 @@ mod Deposit {
             let (zk_market, token_dispatcher) = (
                 self.zk_market.read(), ERC20ABIDispatcher { contract_address: token }
             );
-            let depositor = get_caller_address();
+            let (depositor, current_contract) = (get_caller_address(), get_contract_address());
 
             assert(
-                token_dispatcher.allowance(depositor, get_contract_address()) >= amount,
+                token_dispatcher.allowance(depositor, current_contract) >= amount,
                 'Approved amount insufficient'
             );
             assert(token_dispatcher.balanceOf(depositor) >= amount, 'Insufficient balance');
-            assert(zk_market.get_reserve_data(token).enabled, 'Reserve must be enabled');
 
-            token_dispatcher.transferFrom(depositor, get_contract_address(), amount);
+            token_dispatcher.transferFrom(depositor, current_contract, amount);
             token_dispatcher.approve(zk_market.contract_address, amount);
 
             zk_market.enable_collateral(token);
             zk_market.deposit(token, amount.try_into().unwrap());
-            
+
             self.emit(ExtraDeposit { token, amount, depositor });
             self.reentrancy_guard.end();
         }
 
-        /// Withdraws tokens from zkLend
+        /// Withdraws tokens from zkLend position and transfers them to the owner.
         ///
         /// # Panics
         /// address of account that started the transaction is not equal to `owner` storage variable
@@ -540,9 +534,8 @@ mod Deposit {
                 get_tx_info().unbox().account_contract_address == self.ownable.owner(),
                 'Caller is not the owner'
             );
-            
+
             let zk_market = self.zk_market.read();
-            assert(zk_market.get_reserve_data(token).enabled, 'Reserve must be enabled');
 
             let token_dispatcher = ERC20ABIDispatcher { contract_address: token };
             let mut withdrawn_amount = amount;

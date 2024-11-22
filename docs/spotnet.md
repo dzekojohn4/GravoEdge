@@ -108,6 +108,8 @@ approve zkLend to spend remaining tokens
 deposit remaining tokens into zkLend
 
 enable STRK as collateral
+
+emit event
 ```
 
 The method can be called by anyone (e.g., a keeper) to claim rewards. If the treasury address is set to zero when deploying the contract, all claimed rewards will be deposited into zkLend on behalf of the user instead of being split with the treasury. This is intended behavior; sophisticated users wanting to bypass the functionality could deploy their modified contract anyway. This serves to avoid burning the STRK.
@@ -146,7 +148,7 @@ Parameters
 It's flow can be described as follows:
 
 ```
-assertions(transaction started by the owner, reserve is enabled)
+assertions(transaction started by the owner)
 
 withdraw tokens from zkLend and transfer to the owner
 
