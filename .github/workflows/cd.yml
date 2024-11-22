@@ -1,5 +1,4 @@
 name: CD Pipeline
-
 on:
   workflow_run:
     workflows: ["CI Workflow"]
@@ -28,34 +27,17 @@ jobs:
 
       - name: Prepare environment file
         run: |
-          # Rename .env.dev to .env for docker-compose
-          cp .env.dev .env
+          # Creating .env file using secrets
+          echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
+          echo "SERVER_HOST=${{ secrets.SERVER_HOST }}" >> .env
+          echo "SERVER_USER=${{ secrets.SERVER_USER }}" >> .env
+          echo "PROJECT_PATH=${{ secrets.PROJECT_PATH }}" >> .env
           
-          # Optional: You can modify env values here if needed
-          # sed -i 's/DEBUG=.*/DEBUG=False/' .env
-
-      - name: Copy deployment files
-        run: |
-          # Create project directory if it doesn't exist
-          ssh -p ${{ env.SERVER_PORT }} ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "mkdir -p ${{ env.PROJECT_PATH }}"
-          
-          # Copy docker-compose and env files
-          scp -P ${{ env.SERVER_PORT }} docker-compose.yml ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.PROJECT_PATH }}/
-          scp -P ${{ env.SERVER_PORT }} .env ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.PROJECT_PATH }}/
 
       - name: Deploy to server
         run: |
-          ssh -p ${{ env.SERVER_PORT }} ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "
-            cd ${{ env.PROJECT_PATH }}
-            
-            
-            # Pull latest images
-            docker-compose pull
-            
-            # Stop and remove existing containers
-            docker-compose down
-            
-            # Start new containers with new env
-            docker-compose up -d
-            
+          ssh -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
+          mkdir -p ${{ secrets.PROJECT_PATH }}
+          cd ${{ secrets.PROJECT_PATH }}
+          docker-compose pull && docker-compose up --detach --remove-orphans
           "
