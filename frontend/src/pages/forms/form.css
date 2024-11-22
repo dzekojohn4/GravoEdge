@@ -1,3 +1,13 @@
+.form-content-wrapper {
+  background: url('/public/background.png') no-repeat;
+  background-size: cover;
+  background-position: center 39%; 
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
 .form-container {
   margin-top: 10rem !important;
   margin-bottom: 12rem !important;
@@ -101,7 +111,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  margin-bottom: 20px;
 }
 
 .multiplier-card {
@@ -194,7 +205,7 @@ input[type='number'].error {
   color: var(--black);
 }
 
-.form-gradient:nth-child(1) {
+/* .form-gradient:nth-child(1) {
   position: absolute;
   top: 250px;
   left: -40px;
@@ -216,12 +227,12 @@ input[type='number'].error {
   border-radius: 2000px;
   background: var(--gradient);
   filter: blur(80px);
-}
+} */
 
 .form-button {
   width: 100%;
   border: solid 5px transparent;
-  height: 55px;
+  height: 60px;
   border-radius: inherit;
   font-size: 20px;
   font-family: var(--text-font);
@@ -277,7 +288,7 @@ input[type='number'].error {
   }
 }
 
-.forms-gradient .card-gradient:nth-child(1) {
+/* .forms-gradient .card-gradient:nth-child(1) {
   position: absolute;
   top: 240px;
   left: -156px;
@@ -287,19 +298,19 @@ input[type='number'].error {
   border-radius: 2000px;
   background: var(--gradient);
   filter: blur(111px);
-}
+} */
 
-.forms-gradient .card-gradient:nth-child(2) {
+/* .forms-gradient .card-gradient:nth-child(2) {
   position: absolute;
   right: -70px;
-  bottom: -55px;
+  bottom: -60px;
   width: 232px;
   height: 208px;
   flex-shrink: 0;
   border-radius: 2000px;
   background: var(--gradient);
   filter: blur(123px);
-}
+} */
 
 .form-alert {
   display: flex;
@@ -354,7 +365,7 @@ input[type='number'].error {
 /* Responsiveness */
 @media (max-width: 768px) {
   .form-container {
-    margin-top: 3rem !important;
+    margin-top: 6rem !important;
     padding: 0 !important;
     margin-left: 0;
     margin-right: 0;
@@ -391,7 +402,7 @@ input[type='number'].error {
     align-items: center;
     gap: 5px;
     margin-right: 0;
-    border-radius: 16px;
+    border-radius: 24px;
     background: none;
   }
   .balance-item:first-child {
@@ -414,9 +425,6 @@ input[type='number'].error {
     align-items: center;
     justify-content: center;
     width: max-content;
-  }
-  .form-token {
-    gap: 6px;
   }
   .multiplier-card {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));

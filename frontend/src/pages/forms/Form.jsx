@@ -74,51 +74,53 @@ const Form = ({ walletId, setWalletId }) => {
   };
 
   return (
-    <div className="form-container container">
-      {successful && createPortal(<CongratulationsModal />, document.body)}
-      {/* The rest of the UI stays largely unchanged */}
-      <BalanceCards walletId={walletId} />
-      <form onSubmit={handleSubmit}>
-        <div className="form-wrapper">
-          <div className="form-title">
-            <h1>Please submit your leverage details</h1>
-          </div>
-          {alertMessage && (
-            <p className="error-message form-alert">
-              {alertMessage} <AlertHexagon className="form-alert-hex" />
-            </p>
-          )}
-          <label>Select Token</label>
-          <TokenSelector setSelectedToken={setSelectedToken} />
-          <label>Select Multiplier</label>
-          <MultiplierSelector
-            setSelectedMultiplier={setSelectedMultiplier}
-            selectedToken={selectedToken}
-            sliderValue={selectedMultiplier}
-          />
-          <div className="token-label">
-            <label>Token Amount</label>
-            {error && <p className="error-message">{error}</p>}
-            <input
-              type="number"
-              placeholder="Enter Token Amount"
-              value={tokenAmount}
-              onChange={(e) => setTokenAmount(e.target.value)}
-              className={error ? 'error' : ''}
-            />
-          </div>
-          <div>
-            <div className="form-button-container">
-              <button type="submit" className="form-button">
-                Submit
-              </button>
+    <div className="form-content-wrapper">
+      <div className="form-container container">
+        {successful && createPortal(<CongratulationsModal />, document.body)}
+        {/* The rest of the UI stays largely unchanged */}
+        <BalanceCards walletId={walletId} />
+        <form onSubmit={handleSubmit}>
+          <div className="form-wrapper">
+            <div className="form-title">
+              <h1>Please submit your leverage details</h1>
             </div>
+            {alertMessage && (
+              <p className="error-message form-alert">
+                {alertMessage} <AlertHexagon className="form-alert-hex" />
+              </p>
+            )}
+            <label>Select Token</label>
+            <TokenSelector setSelectedToken={setSelectedToken} />
+            <label>Select Multiplier</label>
+            <MultiplierSelector
+              setSelectedMultiplier={setSelectedMultiplier}
+              selectedToken={selectedToken}
+              sliderValue={selectedMultiplier}
+            />
+            <div className="token-label">
+              <label>Token Amount</label>
+              {error && <p className="error-message">{error}</p>}
+              <input
+                type="number"
+                placeholder="Enter Token Amount"
+                value={tokenAmount}
+                onChange={(e) => setTokenAmount(e.target.value)}
+                className={error ? 'error' : ''}
+              />
+            </div>
+            <div>
+              <div className="form-button-container">
+                <button type="submit" className="form-button">
+                  Submit
+                </button>
+              </div>
+            </div>
+            <CardGradients additionalClassName={'forms-gradient'} />
+            <StarMaker starData={starData} />
           </div>
-          <CardGradients additionalClassName={'forms-gradient'} />
-          <StarMaker starData={starData} />
-        </div>
-      </form>
-      <Spinner loading={loading} />
+        </form>
+        <Spinner loading={loading} />
+      </div>
     </div>
   );
 };
