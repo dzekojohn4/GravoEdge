@@ -12,17 +12,17 @@ const Tokens = [
 ];
 
 const TokenSelector = ({ setSelectedToken }) => (
-  <div className='form-token'>
+  <div className="form-token">
     {Tokens.map((token) => (
-      <div className='token-card flex' key={token.id}>
+      <div className="token-card flex" key={token.id}>
         <input
-          type='radio'
+          type="radio"
           id={token.id}
-          name='token-options'
+          name="token-options"
           value={token.label}
           onChange={() => setSelectedToken(token.label)}
         />
-        <label htmlFor={token.id}>
+        <label htmlFor={token.id} className={token.label === 'STRK' ? 'strk-token' : ''}>
           <h5>
             {token.component} {token.label}
           </h5>

@@ -19,16 +19,42 @@
 
 .form-title h1 {
   text-align: center;
+  font-weight: 400;
+  color: var(--primary);
 }
 
 .token-card label {
-  border: 1px solid var(--brand);
-  border-radius: 8px;
+  border: 1px solid #36294e;
+  border-radius: 48px;
   padding: 5px;
   width: 120px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.token-card label.strk-token {
+  border: 1px solid transparent;
+  position: relative;
+  background-color: var(--secondary-color);
+  color: #fff;
+  background-clip: padding-box;
+}
+
+.token-card label.strk-token::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  margin: -1px;
+  /* !importanté */
+  border-radius: inherit;
+  /* !importanté */
+  background: linear-gradient(90deg, #74d6fd 0%, #e01dee 100%);
+  /* border: 2px solid; */
 }
 
 .token-card label:hover {
@@ -59,17 +85,17 @@
 
 .token-label input {
   background-color: transparent;
-  border: 1px solid var(--brand);
-  border-radius: 8px;
-  padding: 10px;
+  border: 1px solid #36294e;
+  border-radius: 900px;
+  padding: 20px;
 }
 
 .token-label-component svg {
   fill: red;
 }
 
-.form-wrapper > * {
-  color: var(--primary);
+.form-wrapper>* {
+  color: #83919f;
   margin-bottom: 10px;
 }
 
@@ -149,11 +175,11 @@ input[type='radio'] {
   box-sizing: border-box;
 }
 
-.token-card input[type='radio']:checked + label {
+.token-card input[type='radio']:checked+label {
   background-color: var(--brand);
 }
 
-.multiplier-item input[type='radio']:checked + label {
+.multiplier-item input[type='radio']:checked+label {
   border-color: var(--brand);
   box-shadow: 0 4px 20px var(--brand);
 }
@@ -211,15 +237,33 @@ input[type='number'].error {
 
 .form-button {
   width: 100%;
-  border: none;
   height: 55px;
-  background: var(--button-gradient);
-  border-radius: 8px;
+  color: #fff;
+  background: #120721;
+  background-clip: padding-box;
+  border-radius: 900px;
   font-size: 20px;
   margin-top: 20px;
   font-family: var(--text-font);
   font-weight: 700;
   transition: background 1.3s ease;
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.form-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  margin: -1px;
+  /* !importanté */
+  border-radius: inherit;
+  /* !importanté */
+  background: linear-gradient(90deg, #74d6fd 0%, #e01dee 100%);
 }
 
 .form-button:hover {
@@ -297,12 +341,12 @@ input[type='number'].error {
   height: 129px;
   width: 300px;
   align-items: center;
-  border-radius: 8px;
-  border: var(--card-border);
+  border-radius: 900px;
+  border: 1px solid #36294e;
   justify-content: center;
-  background: var(--card-bg-gradient);
+  background: #130713;
   margin-right: 20px;
-  box-shadow: var(--card-box-shadow);
+  font-weight: 600;
 }
 
 .balance-item label:nth-child(1) {
@@ -335,6 +379,7 @@ input[type='number'].error {
     gap: 1rem;
     align-items: center;
   }
+
   .balance-item {
     height: fit-content;
     padding: 1rem 0rem;
@@ -343,24 +388,28 @@ input[type='number'].error {
     align-items: center;
     gap: 1rem;
   }
-.balance-item .balance-title {
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-}
-.balance-item label {
-  font-size: 1rem;
-}
-.title-container {
-  display: flex;
-  flex-direction: column;
-}
+
+  .balance-item .balance-title {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .balance-item label {
+    font-size: 1rem;
+  }
+
+  .title-container {
+    display: flex;
+    flex-direction: column;
+  }
+
   .form-token {
     gap: 3px;
   }
+
   .multiplier-card {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     display: grid;
   }
-
 }
