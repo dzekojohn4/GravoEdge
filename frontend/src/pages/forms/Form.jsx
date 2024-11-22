@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import TokenSelector from 'components/TokenSelector';
 import BalanceCards from 'components/BalanceCards';
 import MultiplierSelector from 'components/MultiplierSelector';
@@ -14,6 +13,8 @@ import { createPortal } from 'react-dom';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
 import StyledPopup from 'components/openpositionpopup/StyledPopup';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 const Form = ({ walletId, setWalletId }) => {
   const starData = [
@@ -31,28 +32,18 @@ const Form = ({ walletId, setWalletId }) => {
   const [successful, setSuccessful] = useState(false);
   useLockBodyScroll(successful);
   const [showPopup, setShowPopup] = useState(false);
-  const [hasOpenPosition, setHasOpenPosition] = useState(false);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkOpenPosition = async () => {
-      if (!walletId) return;
-      
-      try {
-        const response = await fetch(`/api/has-user-opened-position?wallet_id=${walletId}`);
-        if (!response.ok) {
-          throw new Error('Failed to check position status');
-        }
-        const data = await response.json();
-        setHasOpenPosition(data.has_opened_position);
-      } catch (error) {
-        console.error('Failed to check open position:', error);
-        setError('Failed to check position status');
-      }
-    };
-
-    checkOpenPosition();
-  }, [walletId]);
+  const { data: positionData, refetch: refetchPosition } = useQuery({
+    queryKey: ['hasOpenPosition', walletId],
+    queryFn: async () => {
+      if (!walletId) return { has_opened_position: false };
+      const { data } = await axios.get('/api/has-user-opened-position', {
+        params: { wallet_id: walletId },
+      });
+      return data;
+    },
+    enabled: !!walletId,
+  });
 
   const connectWalletHandler = async () => {
     try {
@@ -72,11 +63,16 @@ const Form = ({ walletId, setWalletId }) => {
     }
     return null;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (hasOpenPosition) {
+
+    let connectedWalletId = walletId;
+    if (!connectedWalletId) {
+      connectedWalletId = await connectWalletHandler();
+      if (!connectedWalletId) return;
+    }
+    await refetchPosition();
+    if (positionData?.has_opened_position) {
       setShowPopup(true);
       return;
     }
@@ -85,21 +81,16 @@ const Form = ({ walletId, setWalletId }) => {
       setAlertMessage('Please fill the form');
       return;
     }
-    
-    let connectedWalletId = walletId;
-    if (!connectedWalletId) {
-      connectedWalletId = await connectWalletHandler();
-    }
 
-    if (connectedWalletId) {
-      const formData = {
-        wallet_id: connectedWalletId,
-        token_symbol: selectedToken,
-        amount: tokenAmount,
-        multiplier: selectedMultiplier,
-      };
-      await handleTransaction(connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful);
-    }
+    setAlertMessage('');
+
+    const formData = {
+      wallet_id: connectedWalletId,
+      token_symbol: selectedToken,
+      amount: tokenAmount,
+      multiplier: selectedMultiplier,
+    };
+    await handleTransaction(connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful);
   };
 
   const handleClosePopup = () => {
@@ -107,17 +98,17 @@ const Form = ({ walletId, setWalletId }) => {
   };
 
   const handleClosePosition = () => {
-    navigate('/dashboard');
+    window.location.href = '/dashboard';
   };
 
   return (
     <div className="form-container container">
       {successful && createPortal(<CongratulationsModal />, document.body)}
-      <StyledPopup 
+      <StyledPopup
         isOpen={showPopup}
         onClose={handleClosePopup}
         onClosePosition={handleClosePosition}
-      />
+        />
       {/* The rest of the UI stays largely unchanged */}
       <BalanceCards walletId={walletId} />
       <form onSubmit={handleSubmit}>
