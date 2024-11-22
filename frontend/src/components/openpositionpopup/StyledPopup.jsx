@@ -1,11 +1,11 @@
-/* eslint-disable react/no-unescaped-entities */
 import React from 'react';
+import { createPortal } from 'react-dom';
 import './popup.css';
 
 const StyledPopup = ({ isOpen, onClose, onClosePosition }) => {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="popup-overlay">
       <div className="popup-backdrop" onClick={onClose} />
       <div className="popup-container">
@@ -15,7 +15,7 @@ const StyledPopup = ({ isOpen, onClose, onClosePosition }) => {
           </div>
           
           <div className="popup-body">
-            <h2>Do you want to open new<br />a position?</h2>
+            <h2>Do you want to open new a position?</h2>
             <p>
               You have already opened a position. Please close
               active position to open a new one. Click the 'Close
@@ -39,7 +39,8 @@ const StyledPopup = ({ isOpen, onClose, onClosePosition }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

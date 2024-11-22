@@ -17,8 +17,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background-color: var(--spinner-bgn);
+  backdrop-filter: var(--backdrop-filter);
 }
 
 .popup-container {
@@ -29,7 +29,7 @@
 }
 
 .popup-content {
-  background-color: #1a1025;
+  background-color: var(--secondary-color);
   border-radius: 32px;
   overflow: hidden;
   padding: 24px;
@@ -39,7 +39,7 @@
 }
 
 .popup-header {
-  color: #ffffff;
+  color: var(--primary);
   text-align: center;
   font-size: 16px;
   padding-bottom: 24px;
@@ -52,7 +52,7 @@
 }
 
 .popup-body h2 {
-  color: #ffffff;
+  color: var(--primary);
   font-size: 24px;
   font-weight: 500;
   margin-bottom: 16px;
@@ -82,12 +82,13 @@
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: var(--text-font);
 }
 
 .popup-button-cancel {
-  color: #ffffff;
+  color: var(--primary);
   background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--footer-line-color);
 }
 
 .popup-button-cancel:hover {
@@ -95,11 +96,11 @@
 }
 
 .popup-button-close {
-  color: #ffffff;
-  background: linear-gradient(to right, #a855f7, #3b82f6);
+  color: var(--primary);
+  background: var(--button-gradient);
   border: none;
 }
 
 .popup-button-close:hover {
-  opacity: 0.9;
+  background: var(--button-gradient-hover);
 }
