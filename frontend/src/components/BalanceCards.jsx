@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ReactComponent as ETH } from '../assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from '../assets/icons/borrow_usdc.svg';
 import { ReactComponent as STRK } from '../assets/icons/strk.svg';
@@ -15,13 +15,34 @@ const BalanceCards = ({ walletId }) => {
   ]);
 
   const isMobile = useMatchMedia('(max-width: 768px)');
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef(null);
+  
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      const scrollPercentage = scrollLeft / (scrollWidth - clientWidth);
+      const index = Math.round(scrollPercentage);
+      setActiveIndex(index);
+    }
+  };
+
 
   useEffect(() => {
     getBalances(walletId, setBalances);
   }, [walletId]);
 
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener("scroll", handleScroll);
+      return () => scrollElement.removeEventListener("scroll", handleScroll);
+    }
+  }, []);
+
   return (
-    <div className="balance-container">
+    <div className='balance-card'>
+    <div className="balance-container" ref={scrollRef}>
       {balances.map((balance) =>
         isMobile ? (
           <div className="balance-item" key={balance.title}>
@@ -44,6 +65,11 @@ const BalanceCards = ({ walletId }) => {
         )
       )}
     </div>
+      <div className="pagination">
+        <div className={`dot ${activeIndex === 0 ? "active" : ""}`}></div>
+        <div className={`dot ${activeIndex === 1 ? "active" : ""}`}></div>
+      </div>
+      </div>
   );
 };
 
