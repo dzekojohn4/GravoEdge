@@ -73,7 +73,7 @@ function App() {
   const handleLogout = () => {
     logout();
     setWalletId(null);
-    setShowModal(false);
+    closeModal();
     navigate('/');
   };
 
