@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import { useMaxMultiplier } from 'hooks/useMaxMultiplier';
+import thumbImage from '../assets/icons/slider-thumb.svg';
 import './multiplier.css';
-
 
 const MultiplierSelector = ({ setSelectedMultiplier, selectedToken, sliderValue }) => {
   const { data, isLoading, error } = useMaxMultiplier();
@@ -15,43 +15,62 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken, sliderValue 
     return maxMultiplier - sliderValue + 1;
   };
 
-  const handleMultiplierChange = useCallback((e) => {
-    const sliderValue = parseFloat(e.target.value);
-    const value = mapSliderToValue(sliderValue).toFixed(1);
-    setActualValue(value);
-    setSelectedMultiplier(value);
-  }, [setSelectedMultiplier, maxMultiplier]);
+  const handleMultiplierChange = useCallback(
+    (e) => {
+      const sliderValue = parseFloat(e.target.value);
+      const value = mapSliderToValue(sliderValue).toFixed(1);
+      setActualValue(value);
+      setSelectedMultiplier(value);
+    },
+    [setSelectedMultiplier, maxMultiplier]
+  );
 
   const getSliderPercentage = useCallback(() => {
-    return (((maxMultiplier - actualValue + 1) - 1) / (maxMultiplier - 1)) * 100;
+    return ((maxMultiplier - actualValue + 1 - 1) / (maxMultiplier - 1)) * 100;
   }, [actualValue, maxMultiplier]);
 
-  if (isLoading) return <div className='slider-skeleton'>Loading multiplier data...</div>;
-  if (error) return <div className='error-message'>Error loading multiplier data: {error.message}</div>;
+  console.log('slider percentage', getSliderPercentage());
+  console.log('maxMultiplier', maxMultiplier);
+  console.log('actual value', actualValue);
+  console.log('slider value', sliderValue);
+
+  if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
+  if (error) return <div className="error-message">Error loading multiplier data: {error.message}</div>;
+
+  const style = {
+    '--thumb-image': `url(${thumbImage})`,
+  };
 
   return (
-    <div className='multiplier-card'>
-      <div className='slider-container'>
-        <div className='slider-labels'>
+    <div className="multiplier-card">
+      <div className="slider-container">
+        <div className="slider-labels">
           <span>Max</span>
           <span>Low</span>
         </div>
-        <div className='slider-with-tooltip'>
-          <div 
-            className='slider-tooltip' 
-            style={{ left: `${getSliderPercentage()}%` }}
-          >
-            {sliderValue}x
+        <div className="slider-with-tooltip">
+          <div className="multiplier-slider-outer">
+            <div className="multiplier-slider-inner">
+              <input
+                type="range"
+                min="1"
+                max={maxMultiplier}
+                step="0.1"
+                value={maxMultiplier - actualValue + 1}
+                onChange={handleMultiplierChange}
+                style={style}
+                className="multiplier-slider"
+              />
+            </div>
           </div>
-          <input
-            type='range'
-            min='1'
-            max={maxMultiplier}
-            step='0.1'
-            value={maxMultiplier - actualValue + 1}
-            onChange={handleMultiplierChange}
-            className='multiplier-slider'
-          />
+        </div>
+        <div className="range-meter">
+          {Array.from({ length: 11 }).map((_, index) => (
+            <div key={index} className="meter-inner">
+              <div className="meter-marks"></div>
+              <div className="meter-label">{index}x</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

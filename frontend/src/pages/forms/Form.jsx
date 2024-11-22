@@ -81,7 +81,7 @@ const Form = ({ walletId, setWalletId }) => {
       <form onSubmit={handleSubmit}>
         <div className="form-wrapper">
           <div className="form-title">
-            <h1>Submit your leverage details</h1>
+            <h1>Please submit your leverage details</h1>
           </div>
           {alertMessage && (
             <p className="error-message form-alert">
