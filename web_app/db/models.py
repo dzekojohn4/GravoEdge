@@ -22,7 +22,6 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 
 from web_app.db.database import Base
-from datetime import datetime
 
 
 class Status(PyEnum):

@@ -31,13 +31,11 @@ class VaultDepositResponse(BaseModel):
     Attributes:
         deposit_id (UUID): Unique identifier for the deposit
         wallet_id (str): Starknet wallet address
-        amount (Decimal): Deposited amount
+        amount (str): Deposited amount
         symbol (str): Token symbol or address
-        status (str): Current status of the deposit
     """
 
     deposit_id: UUID
     wallet_id: str
     amount: str
     symbol: str
-    status: str

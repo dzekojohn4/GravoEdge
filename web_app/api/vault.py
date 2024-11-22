@@ -4,10 +4,8 @@ Module for handling vault deposit operations in the SPOTNET API.
 
 import logging
 from fastapi import APIRouter, HTTPException, Depends
-from web_app.db.crud import DepositDBConnector
-from web_app.db.models import User
+from web_app.db.crud import DepositDBConnector, UserDBConnector
 from web_app.schemas.vault import VaultDepositRequest, VaultDepositResponse
-from web_app.db.crud import UserDBConnector
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/vault", tags=["vault"])
@@ -15,31 +13,20 @@ router = APIRouter(prefix="/api/vault", tags=["vault"])
 @router.post("/deposit", response_model=VaultDepositResponse)
 async def deposit_to_vault(
     request: VaultDepositRequest,
-    db: DepositDBConnector = Depends(DepositDBConnector)
+    deposit_connector: DepositDBConnector = Depends(DepositDBConnector)
 ) -> VaultDepositResponse:
     """
     Process a vault deposit request.
-
-    Args:
-        request (VaultDepositRequest): The deposit request containing wallet_id, amount, and symbol
-        db (DepositDBConnector): Database connector for vault operations
-
-    Returns:
-        VaultDepositResponse: Response containing deposit details (id, wallet_id, amount, symbol, 
-            and status)
-
-    Raises:
-        HTTPException: If the deposit operation fails
     """
+    logger.info(f"Processing deposit request for wallet {request.wallet_id}")
+    
     try:
-        logger.info(f"Processing deposit request for wallet {request.wallet_id}")
-        
         user_db = UserDBConnector()
         user = user_db.get_user_by_wallet_id(request.wallet_id)
         if not user:
-            user = user_db.create_user(request.wallet_id)
-            
-        vault = db.create_vault(
+            raise HTTPException(status_code=404, detail="User not found")
+
+        vault = deposit_connector.create_vault(
             user=user,
             symbol=request.symbol,
             amount=request.amount
@@ -49,11 +36,8 @@ async def deposit_to_vault(
             deposit_id=vault.id,
             wallet_id=request.wallet_id,
             amount=request.amount,
-            symbol=request.symbol,
-            status="pending"
+            symbol=request.symbol
         )
-    except Exception as e:
-        logger.error(f"Error processing deposit: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Failed to process deposit: {str(e)}"
-        )
+    except (ValueError, TypeError) as e:
+        logger.error(f"Invalid input data: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
