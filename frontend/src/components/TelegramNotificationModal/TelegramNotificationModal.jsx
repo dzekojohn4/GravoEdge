@@ -13,6 +13,7 @@ const TelegramNotificationModal = ({ onClose, telegramId, walletId }) => {
   return (
     <div className="notification-overlay">
       <Notifier />
+      <div className="notification-backdrop" onClick={onClose} />
       <div className="notification-wrapper">
         <div className="notification-box">
           <div className="notification-content">
@@ -35,7 +36,7 @@ const TelegramNotificationModal = ({ onClose, telegramId, walletId }) => {
               className="notification-btn notification-confirm-btn"
               disabled={isLoading}
             >
-              {isLoading ? 'Subscribing...' : 'Yes, sure'}
+              {isLoading ? 'Subscribing...' : 'Yes, Sure'}
             </button>
           </div>
         </div>
