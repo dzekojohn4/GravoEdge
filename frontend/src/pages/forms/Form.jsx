@@ -1,8 +1,10 @@
+import { useQuery } from '@tanstack/react-query';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
+import axios from 'axios';
 import BalanceCards from 'components/BalanceCards';
 import CardGradients from 'components/CardGradients';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
-import PositionModal from 'components/modals/Modal';
+import ClosePositionModal from 'components/modals/ClosePositionModal';
 import MultiplierSelector from 'components/MultiplierSelector';
 import Spinner from 'components/spinner/Spinner';
 import StarMaker from 'components/StarMaker';
@@ -31,6 +33,18 @@ const Form = ({ walletId, setWalletId }) => {
   const [successful, setSuccessful] = useState(false);
   const [positionModal, setPositionModal] = useState(false);
 
+  const { data: positionData, refetch: refetchPosition } = useQuery({
+    queryKey: ['hasOpenPosition', walletId],
+    queryFn: async () => {
+      if (!walletId) return { has_opened_position: false };
+      const { data } = await axios.get('/api/has-user-opened-position', {
+        params: { wallet_id: walletId },
+      });
+      return data;
+    },
+    enabled: !!walletId,
+  });
+
   const navigate = useNavigate();
   useLockBodyScroll(successful);
 
@@ -39,7 +53,7 @@ const Form = ({ walletId, setWalletId }) => {
       setError(null);
       const address = await connectWallet();
       if (address) {
-        setWalletId(address); // Correctly set the walletId using the passed setWalletId function
+        setWalletId(address);
         console.log('Wallet successfully connected. Address:', address);
         return address;
       } else {
@@ -52,15 +66,16 @@ const Form = ({ walletId, setWalletId }) => {
     }
     return null;
   };
-  const checkOpenPosition = () => {
-    // write api check for position
-    return true;
-  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     let connectedWalletId = walletId;
-    const hasOpenPosition = checkOpenPosition();
-    if (hasOpenPosition) {
+    if (!connectedWalletId) {
+      connectedWalletId = await connectWalletHandler();
+    }
+
+    await refetchPosition();
+    if (positionData?.has_opened_position) {
       setPositionModal(true);
       return;
     }
@@ -69,10 +84,6 @@ const Form = ({ walletId, setWalletId }) => {
       setAlertMessage('Please fill the form');
     } else {
       setAlertMessage('');
-    }
-
-    if (!connectedWalletId) {
-      connectedWalletId = await connectWalletHandler();
     }
 
     if (connectedWalletId) {
@@ -132,7 +143,7 @@ const Form = ({ walletId, setWalletId }) => {
           </div>
           <CardGradients additionalClassName={'forms-gradient'} />
           <StarMaker starData={starData} />
-          <PositionModal
+          <ClosePositionModal
             text={
               " You have already opened a position. Please close active position to open a new one. Click the 'Close Active Position' button to continue."
             }
