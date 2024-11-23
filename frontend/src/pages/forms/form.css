@@ -2,38 +2,34 @@
   background: url('/public/background.png') no-repeat;
   background-size: cover;
   background-position: center 39%; 
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .form-container {
-  margin-top: 10rem;
-  margin-bottom: 12rem;
-  position: relative;
-  width: 90%;
   display: flex;
-  align-content: center;
+  justify-content: center;
   flex-direction: column;
-  max-width: 1312px;
-  padding-left: 12px;
-  padding-right: 12px;
-}
-
-.form-wrapper {
-  width: 60%;
-  margin: 0 auto;
+  gap: 10px;
+  padding-bottom: 60px;
 }
 
 .form-title h1 {
   text-align: center;
   font-weight: normal;
-  font-size: 1.75rem;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
 .token-card label {
   border-radius: 100px;
-  padding: 4px 2.25rem;
+  padding: 9px 32px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,7 +55,6 @@
   padding: 5px;
   border-radius: 2000px;
   background-color: hsla(261, 49%, 15%, 1);
-  margin-right: 10px;
 }
 
 .token-label {
@@ -72,17 +67,16 @@
   background-color: transparent;
   border: 1px solid var(--light-purple);
   border-radius: 50px;
-  padding: 14px 20px;
+  padding: 20px 30px;
   color: var(--gray);
 }
 
 
-.form-wrapper > * {
+.form-container > * {
   color: var(--primary);
-  margin-bottom: 10px;
 }
 
-.form-wrapper label {
+.form-container label {
   color: var(--gray);
   font-size: 1rem;
 }
@@ -231,9 +225,8 @@ input[type='number'].error {
 }
 
 .balance-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 100%;
+  margin-top: 20px;
 }
 
 @media (min-width: 1800px) {
@@ -270,33 +263,34 @@ input[type='number'].error {
 
 .balance-container {
   display: flex;
-  margin-bottom: 60px;
   justify-content: space-between;
+  max-width: 100%;
+  gap: 16px;
 }
 
 .balance-item {
   display: flex;
   flex-direction: column;
-  height: 129px;
   width: max-content;
   align-items: center;
   border-radius: 900px;
   border: 1px solid var(--light-purple);
   justify-content: center;
-  margin-right: 20px;
   background-color: var(--dark-purple);
-  padding: 1rem 3rem;
+  padding: 16px 30px;
 }
 
 .balance-item label:nth-child(1) {
-  font-size: 20px;
+  font-size: 16px;
   color: var(--secondary);
-  letter-spacing: 0.5px;
+  display: flex;
+  gap: 4px;
 }
 
 .balance-item label:nth-child(2) {
-  font-size: 32px;
+  font-size: 24px;
   color: var(--secondary);
+  font-weight: 600;
 }
 
 .balance-title {
@@ -305,25 +299,32 @@ input[type='number'].error {
 }
 
 .balance-title svg {
-  height: 25px;
-  width: 24px;
+  height: 20px;
+  width: 20px;
 }
 
 /* Responsiveness */
 @media (max-width: 768px) {
+  .form-content-wrapper {
+    background: url('/public/mobilebackground.png') no-repeat;
+    background-size: cover;
+    background-position: center 40%; 
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+  }
   .form-container {
-    margin-top: 6rem;
     padding: 0;
     margin-left: 0;
     margin-right: 0;
     width: 100%;
+    padding: 1rem;
   }
   .form-container>form {
     padding: 0 1rem;
-  }
-  .form-wrapper {
-    width: 100%;
-    margin: 0 auto;
   }
   .form-button-container {
     border-radius: 16px;
@@ -343,12 +344,12 @@ input[type='number'].error {
   }
   .balance-item {
     height: fit-content;
-    padding: 1rem 2rem;
+    padding: 16px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-right: 0;
-    border-radius: 24px;
+    border-radius: 16px;
     background: none;
   }
   .balance-item:first-child {
@@ -363,7 +364,8 @@ input[type='number'].error {
     align-items: center;
   }
   .balance-item .title-container + label:nth-of-type(1) {
-    font-size: 2rem;
+    font-size: 20px;
+    font-weight: 600;
   }
   .title-container {
     display: flex;
@@ -397,25 +399,26 @@ input[type='number'].error {
     font-size: 1rem;
   }
   .token-card svg {
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
   }
   .token-label input {
     border-radius: 16px;
   }
   .token-card label {
-    border-radius: 16px;
+    border-radius: 12px;
     max-width: max-content;
     padding: 4px 8px;
   }
   .token-container {
-    border-radius: 16px;
+    border-radius: 12px;
     max-width: fit-content;
   }
   .pagination {
     display: flex;
     gap: 8px;
-    margin: 25px 0px;
+    margin-top: 25px;
+    justify-content: center;
   }
   .dot {
     width: 8px;

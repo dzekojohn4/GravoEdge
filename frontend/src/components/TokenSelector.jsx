@@ -13,7 +13,7 @@ const Tokens = [
   { id: 'daiOption', component: <DAI />, label: 'DAI' },
 ];
 const starData = [
-  { top: 43, left: 28, size: 7 },
+  { top: 44, left: 28, size: 7 },
 ];
 
 
