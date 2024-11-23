@@ -1,9 +1,8 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import { useMaxMultiplier } from 'hooks/useMaxMultiplier';
-import thumbImage from '../assets/icons/slider-thumb.svg';
 import './multiplier.css';
 
-const MultiplierSelector = ({ setSelectedMultiplier, selectedToken, sliderValue }) => {
+const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   const { data, isLoading, error } = useMaxMultiplier();
   const [actualValue, setActualValue] = useState(1.0);
 
@@ -29,16 +28,11 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken, sliderValue 
     return ((maxMultiplier - actualValue + 1 - 1) / (maxMultiplier - 1)) * 100;
   }, [actualValue, maxMultiplier]);
 
-  console.log('slider percentage', getSliderPercentage());
-  console.log('maxMultiplier', maxMultiplier);
-  console.log('actual value', actualValue);
-  console.log('slider value', sliderValue);
-
   if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
   if (error) return <div className="error-message">Error loading multiplier data: {error.message}</div>;
 
   const style = {
-    '--thumb-image': `url(${thumbImage})`,
+    background: `linear - gradient(to right, rgba(0, 0, 0, 0) ${ getSliderPercentage() } %, black ${ getSliderPercentage() } %)`,
   };
 
   return (

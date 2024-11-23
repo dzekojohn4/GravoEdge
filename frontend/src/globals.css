@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Allerta+Stencil&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
+
 :root {
   --text-font: 'Rethink Sans', sans-serif;
   --font-family: 'Open Sans', sans-serif;
@@ -38,6 +39,15 @@
   --card-border: 0.5px solid #4e7787;
   --success-color: #4caf50;
   --error-color: #ff5a5f;
+  --thumb-image: url('./assets/icons/slider-thumb.svg');
+  --blue-pink-gradient: linear-gradient(90deg, #74d6fd 0%, #e01dee 100%);
+  --blue-pink-gradient-alt: linear-gradient(90deg, #49abd2 0%, #e01dee 100%);
+  --purple-border: 1px solid #201338;
+  --dark-gray: #393942;
+  --midnight-purple-border: 1px solid #36294e;
+  --stormy-gray: #83919f;
+  --deep-purple: #120721;
+  --dark-background: #130713;
 }
 
 body {
