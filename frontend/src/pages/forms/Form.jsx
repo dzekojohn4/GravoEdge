@@ -95,7 +95,7 @@ const Form = ({ walletId, setWalletId }) => {
 
   return (
     <div className="form-content-wrapper">
-      <div className="form-container container">
+        <BalanceCards walletId={walletId} />
         {successful && createPortal(<CongratulationsModal />, document.body)}
       <StyledPopup
         isOpen={showPopup}
@@ -103,9 +103,7 @@ const Form = ({ walletId, setWalletId }) => {
         onClosePosition={handleClosePosition}
         />
         {/* The rest of the UI stays largely unchanged */}
-        <BalanceCards walletId={walletId} />
-        <form onSubmit={handleSubmit}>
-          <div className="form-wrapper">
+        <form className='form-container' onSubmit={handleSubmit}>
             <div className="form-title">
               <h1>Please submit your leverage details</h1>
             </div>
@@ -140,10 +138,8 @@ const Form = ({ walletId, setWalletId }) => {
                 </button>
               </div>
             </div>
-          </div>
         </form>
         <Spinner loading={loading} />
-      </div>
     </div>
   );
 };
