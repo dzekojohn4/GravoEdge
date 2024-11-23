@@ -5,7 +5,13 @@ Module for handling vault deposit operations in the SPOTNET API.
 import logging
 from fastapi import APIRouter, HTTPException, Depends
 from web_app.db.crud import DepositDBConnector, UserDBConnector
-from web_app.schemas.vault import VaultDepositRequest, VaultDepositResponse
+from web_app.schemas.vault import (
+    VaultDepositRequest,
+    VaultDepositResponse,
+    VaultBalanceResponse,
+    UpdateVaultBalanceRequest,
+    UpdateVaultBalanceResponse
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/vault", tags=["vault"])
@@ -41,3 +47,42 @@ async def deposit_to_vault(
     except (ValueError, TypeError) as e:
         logger.error(f"Invalid input data: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/balance", response_model=VaultBalanceResponse)
+async def get_user_vault_balance(
+    wallet_id: str,
+    symbol: str,
+    deposit_connector: DepositDBConnector = Depends(DepositDBConnector)
+) -> VaultBalanceResponse:
+    """
+    Get the balance of a user's vault for a specific token.
+    """
+    balance = deposit_connector.get_vault_balance(wallet_id=wallet_id, symbol=symbol)
+    if balance is None:
+        raise HTTPException(status_code=404, detail="Vault not found or user does not exist")
+    return VaultBalanceResponse(wallet_id=wallet_id, symbol=symbol, amount=balance)
+
+
+@router.post("/add_balance", response_model=UpdateVaultBalanceResponse)
+async def add_vault_balance(
+    request: UpdateVaultBalanceRequest,
+    deposit_connector: DepositDBConnector = Depends(DepositDBConnector)
+) -> UpdateVaultBalanceResponse:
+    """
+    Add balance to a user's vault for a specific token.
+    """
+    try:
+        deposit_connector.add_vault_balance(
+            wallet_id=request.wallet_id,
+            symbol=request.symbol,
+            amount=request.amount
+        )
+        return UpdateVaultBalanceResponse(
+            wallet_id=request.wallet_id,
+            symbol=request.symbol,
+            amount=request.amount,
+            message="Vault balance updated successfully"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to update vault balance: {str(e)}")
