@@ -20,13 +20,6 @@
 }
 
 .notification-wrapper {
-  position: relative;
-  background-image: url('../../../public/background.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  border-radius: 48px;
-  padding: 30px 10px;
   display: flex;
   align-items: center;
   justify-content: center;
