@@ -1,6 +1,6 @@
-import './modal.css';
+import './ClosePositionModal.css';
 
-const PositionModal = ({ isOpen, onClose, closePosition, text, header, actionText }) => {
+const ClosePositionModal = ({ isOpen, onClose, closePosition, text, header, actionText }) => {
   if (!isOpen) return null;
   return (
     <div className="overlay">
@@ -28,4 +28,4 @@ const PositionModal = ({ isOpen, onClose, closePosition, text, header, actionTex
   );
 };
 
-export default PositionModal;
+export default ClosePositionModal;
