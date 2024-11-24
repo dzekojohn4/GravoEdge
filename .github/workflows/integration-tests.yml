@@ -1,0 +1,57 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  # Docker configuration
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  # Database configuration (for test container)
+  DB_HOST: localhost
+  DB_PORT: 5432
+  DB_NAME: test_db
+  DB_USER: postgres
+  DB_PASSWORD: postgres
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and start containers
+      run: |
+        docker-compose -f docker-compose.dev.yaml up -d --build
+
+    - name: Wait for containers to be ready
+      run: |
+        sleep 10  # Give containers time to fully start
+
+    - name: Generate and apply migrations
+      run: |
+        # Generate new migration
+        docker exec backend_dev alembic -c web_app/alembic.ini revision --autogenerate -m "CI automated migration"
+        
+        # Apply migrations
+        docker exec backend_dev alembic -c web_app/alembic.ini upgrade head
+
+    - name: Run integration tests
+      run: |
+        docker exec backend_dev pytest integration_tests/ -v --cov=web_app
+
+    - name: Display test coverage
+      run: |
+        docker exec backend_dev pytest --cov-report term-missing --cov=web_app integration_tests/
+
+    - name: Clean up
+      if: always()
+      run: |
+        docker-compose -f docker-compose.dev.yaml down -v
