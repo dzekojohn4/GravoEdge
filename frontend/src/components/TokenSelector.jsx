@@ -18,24 +18,25 @@ const TokenSelector = ({ setSelectedToken }) => {
     setSelectedToken(token);
   }
   return (
-  <div className="form-token">
-    {Tokens.map((token) => (
-      <div className="token-card flex" key={token.id}>
-        <input
-          type="radio"
-          id={token.id}
-          name="token-options"
-          value={token.label}
-          onChange={() => handleSelectedToken(token.label)}
-        />
-        <label htmlFor={token.id} className={token.label === tokenSelect ? 'strk-token' : ''}>
-          <h5>
-            {token.component} {token.label}
-          </h5>
-        </label>
-      </div>
-    ))}
-  </div>
-)};
+    <div className="form-token">
+      {Tokens.map((token) => (
+        <div className="token-card flex" key={token.id}>
+          <input
+            type="radio"
+            id={token.id}
+            name="token-options"
+            value={token.label}
+            onChange={() => handleSelectedToken(token.label)}
+          />
+          <label htmlFor={token.id} className={token.label === tokenSelect ? 'strk-token' : ''}>
+            <h5>
+              <span className='token'>{token.component}</span> {token.label}
+            </h5>
+          </label>
+        </div>
+      ))}
+    </div>
+  )
+};
 
 export default TokenSelector;
