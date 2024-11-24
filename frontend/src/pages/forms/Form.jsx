@@ -1,20 +1,20 @@
-import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
+import React, { useState } from 'react';
+import TokenSelector from 'components/TokenSelector';
 import BalanceCards from 'components/BalanceCards';
-import CardGradients from 'components/CardGradients';
-import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
-import ClosePositionModal from 'components/modals/ClosePositionModal';
 import MultiplierSelector from 'components/MultiplierSelector';
+import { connectWallet } from 'services/wallet';
+import { handleTransaction } from 'services/transaction';
 import Spinner from 'components/spinner/Spinner';
 import StarMaker from 'components/StarMaker';
-import TokenSelector from 'components/TokenSelector';
-import useLockBodyScroll from 'hooks/useLockBodyScroll';
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router-dom';
-import { handleTransaction } from 'services/transaction';
-import { connectWallet } from 'services/wallet';
+import CardGradients from 'components/CardGradients';
+import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
 import './form.css';
-import { useCheckPosition } from 'hooks/useClosePosition';
+import { createPortal } from 'react-dom';
+import useLockBodyScroll from 'hooks/useLockBodyScroll';
+import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
+import StyledPopup from 'components/openpositionpopup/StyledPopup';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 const Form = ({ walletId, setWalletId }) => {
   const starData = [
@@ -30,10 +30,21 @@ const Form = ({ walletId, setWalletId }) => {
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [successful, setSuccessful] = useState(false);
-  const [isPositionModalOpened, setIsPositionModalOpened] = useState(false);
-  const { data: positionData, refetch } = useCheckPosition(walletId);
-  const navigate = useNavigate();
   useLockBodyScroll(successful);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const { data: positionData, refetch: refetchPosition } = useQuery({
+    queryKey: ['hasOpenPosition', walletId],
+    queryFn: async () => {
+      if (!walletId) return { has_opened_position: false };
+      const { data } = await axios.get('/api/has-user-opened-position', {
+        params: { wallet_id: walletId },
+      });
+      return data;
+    },
+    enabled: !!walletId,
+  });
+
   const connectWalletHandler = async () => {
     try {
       setError(null);
@@ -52,45 +63,52 @@ const Form = ({ walletId, setWalletId }) => {
     }
     return null;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     let connectedWalletId = walletId;
     if (!connectedWalletId) {
       connectedWalletId = await connectWalletHandler();
+      if (!connectedWalletId) return;
     }
-
-    await refetch();
+    await refetchPosition();
     if (positionData?.has_opened_position) {
-      setIsPositionModalOpened(true);
+      setShowPopup(true);
       return;
     }
 
     if (tokenAmount === '' || selectedToken === '' || selectedMultiplier === '') {
       setAlertMessage('Please fill the form');
-    } else {
-      setAlertMessage('');
+      return;
     }
 
-    if (connectedWalletId) {
-      const formData = {
-        wallet_id: connectedWalletId,
-        token_symbol: selectedToken,
-        amount: tokenAmount,
-        multiplier: selectedMultiplier,
-      };
-      await handleTransaction(connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful);
-    }
+    setAlertMessage('');
+
+    const formData = {
+      wallet_id: connectedWalletId,
+      token_symbol: selectedToken,
+      amount: tokenAmount,
+      multiplier: selectedMultiplier,
+    };
+    await handleTransaction(connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful);
   };
 
-  const closePosition = () => {
-    setIsPositionModalOpened(false);
-    navigate('/dashboard');
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
+  const handleClosePosition = () => {
+    window.location.href = '/dashboard';
   };
 
   return (
     <div className="form-container container">
       {successful && createPortal(<CongratulationsModal />, document.body)}
+      <StyledPopup
+        isOpen={showPopup}
+        onClose={handleClosePopup}
+        onClosePosition={handleClosePosition}
+        />
       {/* The rest of the UI stays largely unchanged */}
       <BalanceCards walletId={walletId} />
       <form onSubmit={handleSubmit}>
@@ -129,16 +147,6 @@ const Form = ({ walletId, setWalletId }) => {
           </div>
           <CardGradients additionalClassName={'forms-gradient'} />
           <StarMaker starData={starData} />
-          <ClosePositionModal
-            text={
-              " You have already opened a position. Please close active position to open a new one. Click the 'Close Active Position' button to continue."
-            }
-            actionText={'  Do you want to open new a position?'}
-            header={'Open New Position'}
-            isOpen={isPositionModalOpened}
-            onClose={() => setIsPositionModalOpened(false)}
-            closePosition={closePosition}
-          />
         </div>
       </form>
       <Spinner loading={loading} />
