@@ -87,24 +87,28 @@ mod Vault {
 
     #[abi(embed_v0)]
     impl VaultImpl of IVault<ContractState> {
-        /// Store liquidity on the vault.
+        /// Stores liquidity in the vault by transferring tokens from the user.
+        ///
+        /// # Arguments
+        ///
+        /// * `amount` - The amount of tokens to deposit into the vault
         ///
         /// # Panics
         ///
-        /// `is_position_open` storage variable is set to true('Open position already exists')
-        /// the user holdings of `self.token` is leess than the `amount` field
+        /// * When the user's token allowance for the vault is less than the deposit amount
+        /// * When the user's token balance is less than the deposit amount
         ///
-        /// # Parameters
-        /// * `deposit_data`: DepositData - Object which stores main deposit information.
-        /// * `pool_key`: PoolKey - Ekubo type which represents data about pool.
-        /// * `ekubo_limits`: EkuboSlippageLimits - Represents upper and lower sqrt_ratio values on
-        /// Ekubo. Used to control slippage while swapping.
-        /// * `pool_price`: TokenPrice - Price of `deposit` token in terms of `debt` token.
+        /// # Events
+        ///
+        /// Emits a `LiquidityAdded` event with:
+        /// * `user` - The address of the depositor
+        /// * `token` - The address of the deposited token
+        /// * `amount` - The amount of tokens deposited
         fn store_liquidity(ref self: ContractState, amount: TokenAmount) {
             let user = get_caller_address();
             let vault_contract = get_contract_address();
             let current_amount = self.amounts.entry(user).read();
-
+    
             let token = self.token.read();
             let token_dispatcher = IERC20Dispatcher { contract_address: token };
             assert(
@@ -112,29 +116,45 @@ mod Vault {
                 'Approved amount insufficient'
             );
             assert(token_dispatcher.balance_of(user) >= amount, 'Insufficient balance');
-
+    
             // update new amount
             self.amounts.entry(user).write(current_amount + amount);
-
+    
             // transfer token to vault
             token_dispatcher.transfer_from(user, vault_contract, amount);
-
+    
             self.emit(LiquidityAdded { user, token, amount });
         }
-
+    
+        /// Withdraws liquidity from the vault by transferring tokens back to the user.
+        ///
+        /// # Arguments
+        ///
+        /// * `amount` - The amount of tokens to withdraw from the vault
+        ///
+        /// # Panics
+        ///
+        /// * When the user's deposited balance is less than the withdrawal amount
+        ///
+        /// # Events
+        ///
+        /// Emits a `LiquidityWithdrawn` event with:
+        /// * `user` - The address of the withdrawer
+        /// * `token` - The address of the withdrawn token
+        /// * `amount` - The amount of tokens withdrawn
         fn withdraw_liquidity(ref self: ContractState, amount: TokenAmount) {
             let user = get_caller_address();
             let token = self.token.read();
             let current_amount = self.amounts.entry(user).read();
             assert(current_amount >= amount, 'Not enough tokens to withdraw');
-
+    
             // update new amount
             self.amounts.entry(user).write(current_amount - amount);
-
+    
             // transfer token to user
             IERC20Dispatcher { contract_address: token }.transfer(user, amount);
-
+    
             self.emit(LiquidityWithdrawn { user, token, amount });
         }
-    }
+    }    
 }
