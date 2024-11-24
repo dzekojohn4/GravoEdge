@@ -250,7 +250,7 @@ async def get_stats() -> GetStatsResponse:
     response_description="List of user positions including status,created_at, \
                                 start_price, amount, and multiplier.",
 )
-async def get_user_history(user_id: int) -> List[dict]:
+async def get_user_history(user_id: int) -> list[dict]:
     """
     Retrieves the history of positions for a specified user.
 
