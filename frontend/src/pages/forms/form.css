@@ -1,7 +1,7 @@
 .form-container {
-  background: url('../../../public/background.png') no-repeat;
+  background: url('../../../public/Form-bg.png') no-repeat;
   background-size: cover;
-  background-position: center 39%;
+  /* background-position: center 39%; */
   padding-top: 10rem !important;
   padding-bottom: 12rem !important;
   min-height: 100vh;
@@ -172,7 +172,7 @@
 
 input[type='radio'] {
   display: none;
-  padding: 10px;
+  padding: 2px;
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 100%;
@@ -362,8 +362,8 @@ input[type='number'].error {
 .balance-item {
   display: flex;
   flex-direction: column;
-  height: 129px;
-  width: 250px;
+  height: 101px;
+  width: 198.5px;
   align-items: center;
   border-radius: 900px;
   border: var(--midnight-purple-border);
@@ -380,7 +380,7 @@ input[type='number'].error {
 }
 
 .balance-item label:nth-child(2) {
-  font-size: 32px;
+  font-size: 24px;
   color: var(--secondary);
 }
 
@@ -388,6 +388,10 @@ input[type='number'].error {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.balance-title span {
+  font-size: 14px;
 }
 
 .balance-title .balance-icon-wrapper {
@@ -449,4 +453,17 @@ input[type='number'].error {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     display: grid;
   }
+}
+
+
+.meter-marks.active {
+  background-color: var(--primary);
+}
+
+.meter-label.active {
+  color: white;
+}
+
+.meter-inner.active {
+  opacity: 1;
 }

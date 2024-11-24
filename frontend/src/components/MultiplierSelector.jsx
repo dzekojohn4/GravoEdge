@@ -10,9 +10,13 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
     return data?.[selectedToken] || 5.0;
   }, [data, selectedToken]);
 
-  const mapSliderToValue = (sliderValue) => {
-    return maxMultiplier - sliderValue + 1;
-  };
+  const TOTAL_MARKS = 11;
+  const STEP_SIZE = maxMultiplier / (TOTAL_MARKS - 1);
+
+  const mapSliderToValue = useCallback((sliderValue) => {
+    const stepValue = Math.round((maxMultiplier - sliderValue + 1) / STEP_SIZE) * STEP_SIZE;
+    return Math.min(maxMultiplier, Math.max(1, stepValue));
+  }, [maxMultiplier]);
 
   const handleMultiplierChange = useCallback(
     (e) => {
@@ -21,19 +25,29 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
       setActualValue(value);
       setSelectedMultiplier(value);
     },
-    [setSelectedMultiplier, maxMultiplier]
+    [setSelectedMultiplier, mapSliderToValue]
   );
 
   const getSliderPercentage = useCallback(() => {
     return ((maxMultiplier - actualValue + 1 - 1) / (maxMultiplier - 1)) * 100;
   }, [actualValue, maxMultiplier]);
 
+  const getCurrentMark = useCallback(() => {
+    const invertedValue = maxMultiplier - actualValue + 1;
+    const markIndex = Math.round((invertedValue - 1) * (TOTAL_MARKS - 1) / (maxMultiplier - 1));
+    return Math.min(Math.max(0, markIndex), TOTAL_MARKS - 1);
+}, [actualValue, maxMultiplier, TOTAL_MARKS]);
+
   if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
   if (error) return <div className="error-message">Error loading multiplier data: {error.message}</div>;
 
   const style = {
-    background: `linear - gradient(to right, rgba(0, 0, 0, 0) ${ getSliderPercentage() } %, black ${ getSliderPercentage() } %)`,
+    background: `linear-gradient(to right, 
+      var(--brand),
+      var(--pink) ${getSliderPercentage()}%, 
+      rgba(0, 0, 0, 0.1) ${getSliderPercentage()}%)`
   };
+  const currentMark = getCurrentMark();
 
   return (
     <div className="multiplier-card">
@@ -49,7 +63,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
                 type="range"
                 min="1"
                 max={maxMultiplier}
-                step="0.1"
+                step={STEP_SIZE}
                 value={maxMultiplier - actualValue + 1}
                 onChange={handleMultiplierChange}
                 style={style}
@@ -59,10 +73,15 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
           </div>
         </div>
         <div className="range-meter">
-          {Array.from({ length: 11 }).map((_, index) => (
-            <div key={index} className="meter-inner">
-              <div className="meter-marks"></div>
-              <div className="meter-label">{index}x</div>
+          {Array.from({ length: TOTAL_MARKS }).map((_, index) => (
+            <div 
+              key={index} 
+              className={`meter-inner ${index === currentMark ? 'active' : ''}`}
+            >
+              <div className={`meter-marks ${index === currentMark ? 'active' : ''}`}></div>
+              <div className={`meter-label ${index === currentMark ? 'active' : ''}`}>
+                {index}x
+              </div>
             </div>
           ))}
         </div>

@@ -18,6 +18,7 @@
   --primary-color: #0b0c10;
   --black: #000;
   --brand: #74d6fd;
+  --pink: #e01dee;
   --secondary: #e7ecf0;
   --secondary-color: #1a1c24;
   --collateral-color: #1d9259;
@@ -49,7 +50,7 @@
   --stormy-gray: #83919f;
   --deep-purple: #120721;
   --dark-background: #130713;
-  --light-dark-background: #120721;
+  --light-dark-background: #130713;
 }
 
 body {
