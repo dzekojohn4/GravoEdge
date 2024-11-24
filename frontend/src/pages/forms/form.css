@@ -1,7 +1,7 @@
 .form-container {
   background: url('../../../public/background.png') no-repeat;
   background-size: cover;
-  background-position: center 39%; 
+  background-position: center 39%;
   padding-top: 10rem !important;
   padding-bottom: 12rem !important;
   min-height: 100vh;
@@ -26,6 +26,10 @@
   color: var(--primary);
 }
 
+/* .token-card {
+  position: relative;
+} */
+
 .token-card label {
   border: var(--midnight-purple-border);
   border-radius: 48px;
@@ -37,26 +41,24 @@
 }
 
 .token-card label.strk-token {
-  border: 1px solid transparent;
   position: relative;
-  background-color: var(--secondary-color);
-  color: var(--primary);
-  background-clip: padding-box;
+  border-radius: 50px;
+  background: #0A0A1B;
 }
 
 .token-card label.strk-token::before {
   content: '';
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: -1;
-  margin: -1px;
-  /* !importanté */
-  border-radius: inherit;
-  /* !importanté */
+  inset: 0;
+  padding: 2px;
   background: var(--blue-pink-gradient);
+  border-radius: inherit;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .token-card label:hover {
@@ -64,11 +66,11 @@
 }
 
 .token-card:has(input[type='radio']:checked) h5 {
-  color: var(--black);
+  /* color: var(--black); */
 }
 
 .token-card:has(input[type='radio']:checked) h5 svg path {
-  fill: var(--black);
+  /* fill: var(--black); */
 }
 
 .token-card label svg {
@@ -178,7 +180,26 @@ input[type='radio'] {
 }
 
 .token-card input[type='radio']:checked+label {
-  background-color: var(--brand);
+  position: relative;
+  border-radius: 50px;
+  background: #0A0A1B;
+  color: var(--primary);
+}
+
+.token-card input[type='radio']:checked+label::before {
+  /* background-color: var(--brand); */
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: var(--blue-pink-gradient);
+  border-radius: inherit;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .multiplier-item input[type='radio']:checked+label {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReactComponent as ETH } from 'assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from 'assets/icons/borrow_usdc.svg';
 import { ReactComponent as STRK } from 'assets/icons/strk.svg';
@@ -11,7 +11,13 @@ const Tokens = [
   { id: 'daiOption', component: <DAI />, label: 'DAI' },
 ];
 
-const TokenSelector = ({ setSelectedToken }) => (
+const TokenSelector = ({ setSelectedToken }) => {
+  const [tokenSelect, setTokenSelect] = useState('STRK');
+  const handleSelectedToken = (token) => {
+    setTokenSelect(token);
+    setSelectedToken(token);
+  }
+  return (
   <div className="form-token">
     {Tokens.map((token) => (
       <div className="token-card flex" key={token.id}>
@@ -20,9 +26,9 @@ const TokenSelector = ({ setSelectedToken }) => (
           id={token.id}
           name="token-options"
           value={token.label}
-          onChange={() => setSelectedToken(token.label)}
+          onChange={() => handleSelectedToken(token.label)}
         />
-        <label htmlFor={token.id} className={token.label === 'STRK' ? 'strk-token' : ''}>
+        <label htmlFor={token.id} className={token.label === tokenSelect ? 'strk-token' : ''}>
           <h5>
             {token.component} {token.label}
           </h5>
@@ -30,6 +36,6 @@ const TokenSelector = ({ setSelectedToken }) => (
       </div>
     ))}
   </div>
-);
+)};
 
 export default TokenSelector;

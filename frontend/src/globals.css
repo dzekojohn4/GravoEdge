@@ -42,6 +42,7 @@
   --thumb-image: url('./assets/icons/slider-thumb.svg');
   --blue-pink-gradient: linear-gradient(90deg, #74d6fd 0%, #e01dee 100%);
   --blue-pink-gradient-alt: linear-gradient(90deg, #49abd2 0%, #e01dee 100%);
+  --blue-pink-gradient-alt2: linear-gradient(90deg, #49abd2 100%, #e01dee 100%);
   --purple-border: 1px solid #201338;
   --dark-gray: #393942;
   --midnight-purple-border: 1px solid #36294e;
