@@ -1,6 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
-import axios from 'axios';
 import BalanceCards from 'components/BalanceCards';
 import CardGradients from 'components/CardGradients';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
@@ -16,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { handleTransaction } from 'services/transaction';
 import { connectWallet } from 'services/wallet';
 import './form.css';
+import { useCheckPosition } from 'hooks/useClosePosition';
 
 const Form = ({ walletId, setWalletId }) => {
   const starData = [
@@ -31,23 +30,10 @@ const Form = ({ walletId, setWalletId }) => {
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [successful, setSuccessful] = useState(false);
-  const [positionModal, setPositionModal] = useState(false);
-
-  const { data: positionData, refetch: refetchPosition } = useQuery({
-    queryKey: ['hasOpenPosition', walletId],
-    queryFn: async () => {
-      if (!walletId) return { has_opened_position: false };
-      const { data } = await axios.get('/api/has-user-opened-position', {
-        params: { wallet_id: walletId },
-      });
-      return data;
-    },
-    enabled: !!walletId,
-  });
-
+  const [isPositionModalOpened, setIsPositionModalOpened] = useState(false);
+  const { data: positionData, refetch } = useCheckPosition(walletId);
   const navigate = useNavigate();
   useLockBodyScroll(successful);
-
   const connectWalletHandler = async () => {
     try {
       setError(null);
@@ -74,9 +60,9 @@ const Form = ({ walletId, setWalletId }) => {
       connectedWalletId = await connectWalletHandler();
     }
 
-    await refetchPosition();
+    await refetch();
     if (positionData?.has_opened_position) {
-      setPositionModal(true);
+      setIsPositionModalOpened(true);
       return;
     }
 
@@ -98,7 +84,7 @@ const Form = ({ walletId, setWalletId }) => {
   };
 
   const closePosition = () => {
-    setPositionModal(false);
+    setIsPositionModalOpened(false);
     navigate('/dashboard');
   };
 
@@ -149,8 +135,8 @@ const Form = ({ walletId, setWalletId }) => {
             }
             actionText={'  Do you want to open new a position?'}
             header={'Open New Position'}
-            isOpen={positionModal}
-            onClose={() => setPositionModal(false)}
+            isOpen={isPositionModalOpened}
+            onClose={() => setIsPositionModalOpened(false)}
             closePosition={closePosition}
           />
         </div>
