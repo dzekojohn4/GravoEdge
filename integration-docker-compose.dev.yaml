@@ -14,7 +14,6 @@ services:
       - DB_NAME=test_db
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      # Add other environment variables your app needs
     depends_on:
       - db
     command: >
