@@ -1,24 +1,26 @@
 #[starknet::contract]
 mod Vault {
-    use starknet::storage::{
-        StoragePointerReadAccess, StoragePointerWriteAccess, StoragePathEntry, Map
-    };
+    use core::num::traits::Zero;
+    use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
-
-        use starknet::ContractAddress;
-        use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::upgrades::UpgradeableComponent;
     use openzeppelin::upgrades::interface::IUpgradeable;
     use spotnet::interfaces::IVault;
+    use spotnet::types::{TokenAmount};
+
+    use starknet::ContractAddress;
+    use starknet::storage::{
+        StoragePointerReadAccess, StoragePointerWriteAccess, StoragePathEntry, Map
+    };
     use starknet::{ClassHash, get_caller_address, get_contract_address};
-    use spotnet::types::{ TokenAmount};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: UpgradeableComponent, storage: upgradeable, event: UpgradeableEvent);
 
     /// Ownable
     #[abi(embed_v0)]
-    impl OwnableTwoStepMixinImpl = OwnableComponent::OwnableTwoStepMixinImpl<ContractState>;
+    impl OwnableTwoStepMixinImpl =
+        OwnableComponent::OwnableTwoStepMixinImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
     /// Upgradeable
@@ -28,12 +30,10 @@ mod Vault {
     struct Storage {
         token: ContractAddress,
         amounts: Map<ContractAddress, u256>,
-
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
         upgradeable: UpgradeableComponent::Storage
-
     }
 
     #[event]
@@ -66,10 +66,11 @@ mod Vault {
     }
 
 
-
     #[constructor]
-    fn constructor(ref self: ContractState, owner: ContractAddress) {
+    fn constructor(ref self: ContractState, owner: ContractAddress, token: ContractAddress) {
+        assert(owner.is_non_zero(), 'Owner address is zero');
         self.ownable.initializer(owner);
+        self.token.write(token);
     }
 
     #[abi(embed_v0)]
@@ -84,39 +85,56 @@ mod Vault {
     }
 
 
-
-
     #[abi(embed_v0)]
     impl VaultImpl of IVault<ContractState> {
+        /// Store liquidity on the vault.
+        ///
+        /// # Panics
+        ///
+        /// `is_position_open` storage variable is set to true('Open position already exists')
+        /// the user holdings of `self.token` is leess than the `amount` field
+        ///
+        /// # Parameters
+        /// * `deposit_data`: DepositData - Object which stores main deposit information.
+        /// * `pool_key`: PoolKey - Ekubo type which represents data about pool.
+        /// * `ekubo_limits`: EkuboSlippageLimits - Represents upper and lower sqrt_ratio values on
+        /// Ekubo. Used to control slippage while swapping.
+        /// * `pool_price`: TokenPrice - Price of `deposit` token in terms of `debt` token.
         fn store_liquidity(ref self: ContractState, amount: TokenAmount) {
             let user = get_caller_address();
             let vault_contract = get_contract_address();
             let current_amount = self.amounts.entry(user).read();
 
             let token = self.token.read();
+            let token_dispatcher = IERC20Dispatcher { contract_address: token };
+            assert(
+                token_dispatcher.allowance(user, vault_contract) >= amount,
+                'Approved amount insufficient'
+            );
+            assert(token_dispatcher.balance_of(user) >= amount, 'Insufficient balance');
 
-            // update new amount 
+            // update new amount
             self.amounts.entry(user).write(current_amount + amount);
 
-             // transfer token to vault
-             IERC20Dispatcher{contract_address: token}.transfer_from(user, vault_contract, amount);
+            // transfer token to vault
+            token_dispatcher.transfer_from(user, vault_contract, amount);
 
-            self.emit(LiquidityAdded{user,token, amount});
+            self.emit(LiquidityAdded { user, token, amount });
         }
-        
+
         fn withdraw_liquidity(ref self: ContractState, amount: TokenAmount) {
             let user = get_caller_address();
             let token = self.token.read();
             let current_amount = self.amounts.entry(user).read();
             assert(current_amount >= amount, 'Not enough tokens to withdraw');
 
-            // update new amount 
+            // update new amount
             self.amounts.entry(user).write(current_amount - amount);
 
-              // transfer token to user
-              IERC20Dispatcher{contract_address: token}.transfer(user, amount);
+            // transfer token to user
+            IERC20Dispatcher { contract_address: token }.transfer(user, amount);
 
-            self.emit(LiquidityWithdrawn{user, token, amount});
+            self.emit(LiquidityWithdrawn { user, token, amount });
         }
     }
 }
