@@ -66,6 +66,20 @@ class TestCreateVault:
         assert vault.user_id == mock_user.id
         mock_db_connector.write_to_db.assert_called_once_with(vault)
 
+    def test_create_vault_failure_invalid_user(
+        self,
+        deposit_db_connector: DepositDBConnector,
+    ):
+        """
+        Test failure when creating a vault with an invalid user.
+        """
+        with pytest.raises(ValueError, match="Invalid user provided"):
+            deposit_db_connector.create_vault(
+                user=None,
+                symbol="BTC",
+                amount="50.00",
+            )
+
 
 # pylint: disable=too-few-public-methods
 class TestAddVaultBalance:
@@ -95,3 +109,20 @@ class TestAddVaultBalance:
         mock_db_connector.Session().query().filter_by().update.assert_called_once_with(
             {"amount": str(updated_amount)}
         )
+
+    def test_add_balance_failure_vault_not_found(
+        self,
+        deposit_db_connector: DepositDBConnector,
+        mock_db_connector,
+    ):
+        """
+        Test failure when adding to a vault balance that doesn't exist.
+        """
+        mock_db_connector.get_object_by_field = MagicMock(return_value=None)
+
+        with pytest.raises(ValueError, match="Vault not found"):
+            deposit_db_connector.add_vault_balance(
+                wallet_id="invalid_wallet",
+                symbol="ETH",
+                amount="50.00",
+            )
