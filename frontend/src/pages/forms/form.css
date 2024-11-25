@@ -16,7 +16,7 @@
 }
 
 .form-wrapper {
-  width: max-content;
+  max-width: 642px;
   margin: 0 auto;
 }
 
@@ -24,6 +24,8 @@
   text-align: center;
   font-weight: 400;
   color: var(--primary);
+  font-size: 24px;
+  /* border: 1px solid red; */
 }
 
 /* .token-card {
@@ -358,7 +360,7 @@ input[type='number'].error {
 
 .balance-container {
   display: flex;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
   justify-content: center;
   gap: 24px;
 }
