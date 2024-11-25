@@ -54,11 +54,11 @@ class EkuboFlashLoan:
     - Must repay within same transaction
     - Uses flash accounting for internal balance management
     """
-    
+
     def __init__(self, rpc_url: str, core_contract: str):
         self.rpc_url = rpc_url
         self.core_contract = core_contract
-        
+
     async def get_profitable_route(self, input_token: str, amount: Decimal) -> List[SwapRoute]:
         """
         Find profitable arbitrage route using Ekubo API
@@ -68,20 +68,20 @@ class EkuboFlashLoan:
         """
         base_url = "https://mainnet-api.ekubo.org/quote"
         amount_wei = int(amount * Decimal(10**18))
-        
+
         async with httpx.AsyncClient() as client:
             # Get quote for potential arbitrage route
             response = await client.get(
                 f"{base_url}/{amount_wei}/{input_token}/{input_token}"
             )
             quote_data = response.json()
-            
+
             # Parse route from response
             return self._parse_route(quote_data['route'])
-    
+
     def prepare_flash_loan_tx(
-        self, 
-        route: List[SwapRoute], 
+        self,
+        route: List[SwapRoute],
         borrow_amount: TokenAmount
     ) -> Dict:
         """
@@ -125,24 +125,24 @@ class EkuboFlashLoan:
             for node in route_data
         ]
 
-    @staticmethod 
+    @staticmethod
     def _encode_route(route: List[SwapRoute]) -> List[int]:
         """Encode route for transaction calldata"""
         calldata = []
 
 
         for node in route:
-                # Encode pool key
-                calldata.extend([
-                    int(node.pool_key.token0, 16),
-                    int(node.pool_key.token1, 16),
-                    node.pool_key.fee,
-                    node.pool_key.tick_spacing,
-                    int(node.pool_key.extension, 16),
-                    # Encode route parameters
-                    node.sqrt_ratio_limit,
-                    node.skip_ahead
-                ])
+            # Encode pool key
+            calldata.extend([
+                int(node.pool_key.token0, 16),
+                int(node.pool_key.token1, 16),
+                node.pool_key.fee,
+                node.pool_key.tick_spacing,
+                int(node.pool_key.extension, 16),
+                # Encode route parameters
+                node.sqrt_ratio_limit,
+                node.skip_ahead
+            ])
         return calldata
 
     @staticmethod
@@ -156,21 +156,13 @@ class EkuboFlashLoan:
 
 
 
-"""
-The existing get_transaction_data method should be modified to:
----------------------------------
-1. Use flash loan instead of requiring upfront tokens
-2. Calculate optimal arbitrage route
-3. Prepare flash loan transaction
 
-Example modified implementation:
-"""
-
+# get_transaction_data rework
 async def get_transaction_data(
-    cls,
+    _cls,
     deposit_token: str,
     amount: str,
-    wallet_id: str,
+    _wallet_id: str,
 ) -> dict:
     """
     Modified version using flash loans
@@ -182,59 +174,30 @@ async def get_transaction_data(
     """
     # Initialize flash loan handler
     ekubo = EkuboFlashLoan(
-        rpc_url="https://rpc.lokibuilder.xyz/wallet", # random rpc
-        core_contract="0x0444a09d96389aa7148f1aada508e30b71299ffe650d9c97fdaae38cb9a23384" # random address
+        rpc_url="",
+        core_contract=""
     )
-    
+
     # Convert amount to Decimal
     amount_decimal = Decimal(amount)
-    
+
     # Get profitable route
     route = await ekubo.get_profitable_route(
         input_token=deposit_token,
         amount=amount_decimal
     )
-    
+
     # Prepare borrow amount
     borrow_amount = TokenAmount(
         token=deposit_token,
         amount=int(amount_decimal * Decimal(10**18)),
         is_positive=True
     )
-    
+
     # Get transaction data
     tx_data = ekubo.prepare_flash_loan_tx(
         route=route,
         borrow_amount=borrow_amount
     )
-    
+
     return tx_data
-
-
-
-"""
-Integration Steps:
-----------------
-
-1. Deploy Flash Loan Contract:
-   - Use the contract
-   - Ensure owner controls are in place
-   - Test thoroughly on testnet
-
-2. Modify API Integration:
-   - Update quote fetching to include flash loan parameters
-   - Add profit calculation including flash loan costs
-   - Implement proper error handling
-
-3. Update Transaction Flow:
-   - Remove traditional deposit steps
-   - Add flash loan verification steps
-   - Implement proper profit checks
-
-4. Testing Requirements:
-   - Test with small amounts first
-   - Verify atomic execution
-   - Check profit calculations
-   - Test error cases
-
-"""
