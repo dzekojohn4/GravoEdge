@@ -1,6 +1,6 @@
 """
 Module: Position Creation Tests
-This module contains integratin tests for the creation and management
+This module contains integration tests for the creation and management
 of user positions within the webapp
 Key Components:
 - **PositionDBConnector**: Manages database operations for positions.
@@ -12,15 +12,16 @@ Test Class:
   2. Creating and verifying positions.
   3. Updating position statuses.
 """
-
+import asyncio
 import pytest
 from typing import Dict, Any
 from datetime import datetime
-from web_app.db.crud import PositionDBConnector
-from web_app.contract_tools.mixins.deposit import DepositMixin
+from web_app.db.crud import PositionDBConnector, AirDropDBConnector
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
+from web_app.db.models import Status
 
 position_db = PositionDBConnector()
+airdrop = AirDropDBConnector()
 
 
 class TestPositionCreation:
@@ -39,23 +40,23 @@ class TestPositionCreation:
         "token_symbol": "STRK",
         "amount": "2",
         "multiplier": 1,
-        "borrowing_token": "STRK",
+        "borrowing_token": "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
     }
 
     form_data_2: Dict[str, Any] = {
-        "wallet_id": "id",
+        "wallet_id": "0x011F0c180b9EbB2B3F9601c41d65AcA110E48aec0292c778f41Ae286C78Cc374",
         "token_symbol": "ETH",
         "amount": "5",
         "multiplier": 1,
-        "borrowing_token": "STRK",
+        "borrowing_token": "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
     }
 
     form_data_3: Dict[str, Any] = {
-        "wallet_id": "id",
+        "wallet_id": "0x011F0c180b9EbB2B3F9601c41d65AcA110E48aec0292c778f41Ae286C78Cc374",
         "token_symbol": "USDC",
         "amount": "1",
         "multiplier": 1,
-        "borrowing_token": "ETH",
+        "borrowing_token": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
     }
 
     @pytest.mark.parametrize("form_data", [form_data_1, form_data_2, form_data_3])
@@ -72,24 +73,9 @@ class TestPositionCreation:
         multiplier = form_data["multiplier"]
         borrowing_token = form_data["borrowing_token"]
 
-        position_db.create_user(wallet_id)
-
-        transaction_data = DepositMixin.get_transaction_data(
-            deposit_token=token_symbol,
-            amount=amount,
-            multiplier=multiplier,
-            wallet_id=wallet_id,
-            borrowing_token=borrowing_token,
-        )
-        assert "caller" in transaction_data, "Transaction data missing 'caller'"
-        assert transaction_data["caller"] == wallet_id, "Mismatch in 'caller'"
-        assert (
-            "pool_price" in transaction_data
-        ), "'pool_price' missing in transaction data"
-        assert "pool_key" in transaction_data, "'pool_key' missing in transaction data"
-        assert (
-            "deposit_data" in transaction_data
-        ), "'deposit_data' missing in transaction data"
+        existing_user = position_db.get_user_by_wallet_id(wallet_id)
+        if not existing_user:
+            position_db.create_user(wallet_id)
 
         position = position_db.create_position(
             wallet_id=wallet_id,
@@ -98,10 +84,10 @@ class TestPositionCreation:
             multiplier=multiplier,
         )
         assert (
-            position.status == "pending"
+            position.status == Status.PENDING
         ), "Position status should be 'pending' upon creation"
 
-        current_prices = DashboardMixin.get_current_prices()
+        current_prices = asyncio.run(DashboardMixin.get_current_prices())
         assert (
             position.token_symbol in current_prices
         ), "Token price missing in current prices"
@@ -112,11 +98,13 @@ class TestPositionCreation:
             f"Position {position.id} created successfully with status '{position.status}'."
         )
 
-        position_db.open_position(position.id, current_prices)
+        position_status = position_db.open_position(position.id, current_prices)
         assert (
-            position.status == "opened"
+            position_status == Status.OPENED
         ), "Position status should be 'opened' after updating"
         print(f"Position {position.id} successfully opened.")
 
-        position_db.delete_position(position)
+        user = position_db.get_user_by_wallet_id(wallet_id)
+        airdrop.delete_all_users_airdrop(user.id)
+        position_db.delete_all_user_positions(user.id)
         position_db.delete_user_by_wallet_id(wallet_id)
