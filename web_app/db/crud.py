@@ -501,6 +501,7 @@ class PositionDBConnector(UserDBConnector):
                 logger.error(f"Error liquidating position {position_id}: {str(e)}")
                 db.rollback()
                 return False
+
     def get_all_liquidated_positions(self) -> list[dict]:
         """
         Retrieves all positions where `is_liquidated` is True.
@@ -513,12 +514,11 @@ class PositionDBConnector(UserDBConnector):
                     db.query(Position)
                     .filter(Position.is_liquidated == True)
                     .all()
-                )
+                ).scalar()
 
                 # Convert ORM objects to dictionaries for return
                 return [
                     {
-                        "id": position.id,
                         "user_id": position.user_id,
                         "token_symbol": position.token_symbol,
                         "amount": position.amount,
@@ -526,8 +526,6 @@ class PositionDBConnector(UserDBConnector):
                         "created_at": position.created_at,
                         "status": position.status.value,
                         "start_price": position.start_price,
-                        "is_protection": position.is_protection,
-                        "liquidation_bonus": position.liquidation_bonus,
                         "is_liquidated": position.is_liquidated,
                         "datetime_liquidation": position.datetime_liquidation
                     }
