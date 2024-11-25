@@ -49,25 +49,16 @@ jobs:
           REDIS_PORT=${{ env.REDIS_PORT }}
           EOF
 
-      - name: Debug Environment
-        run: |
-          echo "Current directory contents:"
-          ls -la
-          echo "Docker Compose file contents:"
-          cat docker-compose.dev.yaml
-          echo "Environment file contents:"
-          cat .env.dev
-
       - name: Build and Start Containers
         run: |
           docker compose -f docker-compose.dev.yaml up -d --build
           echo "Waiting for containers to be ready..."
           sleep 30
 
-      - name: Check Docker Containers
+      - name: Install Test Dependencies in Container
         run: |
-          docker ps
-          docker compose -f docker-compose.dev.yaml logs
+          docker exec backend_dev pip install pytest pytest-cov
+          docker exec backend_dev pip freeze  # Debug: show installed packages
 
       - name: Wait for Backend Service
         timeout-minutes: 5
@@ -93,10 +84,10 @@ jobs:
 
       - name: Run Integration Tests with Coverage
         run: |
-          docker exec backend_dev pytest integration_tests/ -v \
+          docker exec backend_dev sh -c "cd /app && pytest integration_tests/ -v \
             --cov=web_app \
             --cov-report=term-missing \
-            --cov-report=xml:/app/coverage.xml
+            --cov-report=xml:coverage.xml"
           docker cp backend_dev:/app/coverage.xml ./coverage.xml
 
       - name: Upload Coverage Report
