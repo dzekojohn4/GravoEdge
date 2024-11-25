@@ -48,6 +48,15 @@
   background: #0A0A1B;
 }
 
+.select-multiplier{
+  padding-top: 20px;
+  font-size: 16px;
+}
+
+.token-amount{
+  padding-top: 20px;
+}
+
 .token-card label.strk-token::before {
   content: '';
   position: absolute;
