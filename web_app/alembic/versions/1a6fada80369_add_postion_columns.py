@@ -18,8 +18,8 @@ import sqlalchemy as sa
 
 
 # Revision identifiers, used by Alembic.
-revision = '1a6fada80369'
-down_revision = '0537a9a5e841'
+revision = "1a6fada80369"
+down_revision = "0537a9a5e841"
 branch_labels = None
 depends_on = None
 
@@ -34,10 +34,12 @@ def upgrade() -> None:
     - `is_liquidated`: A boolean field to indicate if the position has been liquidated.
     - `datetime_liquidation`: A datetime field to record when the liquidation occurred.
     """
-    op.add_column('position', sa.Column('is_protection', sa.Boolean(), nullable=True))
-    op.add_column('position', sa.Column('liquidation_bonus', sa.Float(), nullable=True))
-    op.add_column('position', sa.Column('is_liquidated', sa.Boolean(), nullable=True))
-    op.add_column('position', sa.Column('datetime_liquidation', sa.DateTime(), nullable=False))
+    op.add_column("position", sa.Column("is_protection", sa.Boolean(), nullable=True))
+    op.add_column("position", sa.Column("liquidation_bonus", sa.Float(), nullable=True))
+    op.add_column("position", sa.Column("is_liquidated", sa.Boolean(), nullable=True))
+    op.add_column(
+        "position", sa.Column("datetime_liquidation", sa.DateTime(), nullable=False)
+    )
 
 
 def downgrade() -> None:
@@ -50,7 +52,7 @@ def downgrade() -> None:
     - `is_liquidated`
     - `datetime_liquidation`
     """
-    op.drop_column('position', 'datetime_liquidation')
-    op.drop_column('position', 'is_liquidated')
-    op.drop_column('position', 'liquidation_bonus')
-    op.drop_column('position', 'is_protection')
+    op.drop_column("position", "datetime_liquidation")
+    op.drop_column("position", "is_liquidated")
+    op.drop_column("position", "liquidation_bonus")
+    op.drop_column("position", "is_protection")
