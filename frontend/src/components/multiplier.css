@@ -63,6 +63,7 @@ color: var(--slider-gray);
 
 .slider-with-tooltip {
     position: relative;
+    width: 100%;
 } 
 
 .error-message {
@@ -98,7 +99,7 @@ div.slider-skeleton {
     flex-direction: column;
     gap: 8px;
     align-items: center;
-    width: 21px;
+    width: 18px;
 }
 
 div.marker {
@@ -140,14 +141,16 @@ div.marker {
 /* Mobile */
 @media (max-width: 768px) {
     .multiplier-slider-container {
-        margin: 10px 4px -10px 9px;
-        width: 95%;
+        margin: 10px 0px -10px 0;
+        width: 100%;
+        padding: 0px 1.75%;
     }
     .slider-container {
         padding: 5px 20px;
         border-radius: 16px;
         border: 1px solid var(--light-purple);
         max-height: 85px;
+        width: 100%;
     }
     .slider {
         height: 4px;
