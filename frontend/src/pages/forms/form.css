@@ -1,7 +1,7 @@
 .form-content-wrapper {
   background: url('/public/background.png') no-repeat;
   background-size: cover;
-  background-position: center 39%; 
+  background-position: center 50%; 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -10,6 +10,7 @@
   align-items: center;
   padding-top: 1rem;
   padding-bottom: 1rem;
+  font-family: var(--font-family);
 }
 
 .form-container {
@@ -23,18 +24,24 @@
 .form-title h1 {
   text-align: center;
   font-weight: normal;
-  font-size: 24px;
+  font-size: 20px;
   margin-bottom: 10px;
+}
+
+.token-card{
+  width: 148px;
+  height: 64px;
 }
 
 .token-card label {
   border-radius: 100px;
-  padding: 9px 32px;
+  padding: 2px 24px;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: hsla(265, 65%, 8%, 1);
   cursor: pointer;
+  height: 100%;
 }
 
 .token-container {
@@ -42,6 +49,7 @@
   background: var(--light-purple);
   transition: background 1.3s ease;
   padding: 1px;
+  height: 100%;
 }
 
 .token-container:has(input[type='radio']:checked) {
@@ -83,7 +91,7 @@
 
 .token-card h5 {
   margin-top: 9px;
-  font-size: 20px;
+  font-size: 16px;
   color: var(--primary);
   display: flex;
   align-items: center;
@@ -92,8 +100,8 @@
 }
 
 .token-card svg {
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
 }
 
 .form-token {
@@ -110,6 +118,7 @@
   justify-content: space-around;
   position: relative;
   gap: 10px;
+  font-family: var(--font-family);
 }
 
 .recommended {
@@ -185,6 +194,7 @@ input[type='number'] {
   border-radius: 5px;
   background-color: red;
   font-size: 15px;
+  color: black;
   margin-bottom: 5px;
 }
 
@@ -195,7 +205,7 @@ input[type='number'].error {
 }
 
 .form-button {
-  width: 100%;
+  width: 642px;
   border: solid 5px transparent;
   height: 60px;
   border-radius: inherit;
@@ -249,7 +259,8 @@ input[type='number'].error {
 .balance-item {
   display: flex;
   flex-direction: column;
-  width: max-content;
+  width: 198px;
+  height: 101px;
   align-items: center;
   border-radius: 900px;
   border: 1px solid var(--light-purple);
@@ -259,7 +270,7 @@ input[type='number'].error {
 }
 
 .balance-item label:nth-child(1) {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--secondary);
   display: flex;
   gap: 4px;
@@ -268,7 +279,6 @@ input[type='number'].error {
 .balance-item label:nth-child(2) {
   font-size: 24px;
   color: var(--secondary);
-  font-weight: 600;
 }
 
 .balance-title {
@@ -277,9 +287,14 @@ input[type='number'].error {
 }
 
 .balance-title svg {
-  height: 20px;
-  width: 20px;
+  height: 18px;
+  width: 18px;
 }
+
+.balance-title.blend svg {
+  filter: grayscale(1);
+}
+
 
 /* Responsiveness */
 /* Mobile */
@@ -287,7 +302,7 @@ input[type='number'].error {
   .form-content-wrapper {
     background: url('/public/mobilebackground.png') no-repeat;
     background-size: cover;
-    background-position: center 40%; 
+    background-position: center -105px; 
     min-height: 100%;
     display: flex;
     flex-direction: column;
@@ -308,10 +323,17 @@ input[type='number'].error {
   .form-button-container {
     border-radius: 16px;
   }
+  .form-button {
+    font-size: 16px;
+  }
   .form-token{
     max-width: 100%;
     overflow-x: scroll;
+    gap: 16px;
     scrollbar-width: none;
+  }
+  .form-container label {
+    font-size: 12px;
   }
   .balance-container {
     flex-direction: row;
@@ -365,12 +387,12 @@ input[type='number'].error {
 
   .balance-item label:nth-child(2) {
     color: var(--secondary);
-    font-size: 1rem;
+    font-size: 14px;
   }
   .form-title h1 {
     text-align: center;
     font-weight: normal;
-    font-size: 1.25rem;
+    font-size: 1rem;
     margin-bottom: 20px;
   }
   .token-icon {
@@ -378,9 +400,13 @@ input[type='number'].error {
     position: relative;
     z-index: 1;
   }
+  .token-card{
+    width: auto;
+    height: auto;
+  }
   .token-card h5 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 14px;
     gap: 0;
   }
   .token-card svg {
@@ -389,6 +415,7 @@ input[type='number'].error {
   }
   .token-label input {
     border-radius: 16px;
+    font-size: 14px;
   }
   .token-card label {
     border-radius: 12px;
@@ -432,10 +459,9 @@ input[type='number'].error {
 
   .form-token label,
   .multiplier-card label {
-    width: 150px;
+    width: auto;
     height: 60px;
   }
-
   input[type='number'] {
     height: 60px;
   }

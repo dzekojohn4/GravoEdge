@@ -15,14 +15,14 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
 
   const mapSliderToValue = useCallback(
     (sliderPosition) => {
-      const value = sliderPosition + 1;
+      const value = sliderPosition ;
       return Math.max(1, Math.min(maxMultiplier, value));
     },
     [maxMultiplier]
   );
 
   const calculateSliderPercentage = useCallback(
-    (value) => ((value - 1) / (maxMultiplier - 1)) * 100,
+    (value) => Math.min(((value - 1) / (maxMultiplier - 1)) * 100, 100),
     [maxMultiplier]
   );
 
@@ -114,7 +114,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
             </div>
           </div>
           <div className="mark-container">
-            {Array.from({ length: maxMultiplier }, (_, i) => i + 1).map((mark) => (
+            {Array.from({ length: maxMultiplier}, (_, i) => i + 1).map((mark) => (
               <div
                 key={mark}
                 className={`mark-item ${mark === actualValue ? 'active' : ''}`}

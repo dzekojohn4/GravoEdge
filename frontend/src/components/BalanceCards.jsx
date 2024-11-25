@@ -50,7 +50,7 @@ const BalanceCards = ({ walletId }) => {
         ) : (
           <div className="balance-item" key={balance.title}>
             <label htmlFor={balance.title} className={'balance-title'}>
-            <span className="token-icon">{balance.icon}</span>
+            <span className="token-icon blend">{balance.icon}</span>
               {balance.title} Balance
             </label>
             <label htmlFor={balance.title}>{balance.balance}</label>
