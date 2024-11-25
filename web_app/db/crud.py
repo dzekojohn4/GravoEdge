@@ -89,7 +89,7 @@ class DBConnector:
         finally:
             db.close()
 
-    def delete_object(self, model: Type[Base] = None, obj_id: uuid = None) -> None:
+    def delete_object_by_id(self, model: Type[Base] = None, obj_id: uuid = None) -> None:
         """
         Delete an object by its ID from the database. Rolls back if the operation fails.
         :param model: type[Base] = None
@@ -113,6 +113,24 @@ class DBConnector:
 
         finally:
             db.close()
+
+    def delete_object(self, object: Base) -> None:
+        """
+        Deletes an object from the database.
+        :param object: Object to delete
+        """
+        db = self.Session()
+        try:
+            db.delete(object)
+            db.commit()
+
+        except SQLAlchemyError as e:
+            db.rollback()
+            logger.error(f"Error deleting object: {e}")
+
+        finally:
+            db.close()
+
 
     def create_empty_claim(self, user_id: uuid.UUID) -> AirDrop:
         """
@@ -222,6 +240,75 @@ class UserDBConnector(DBConnector):
                     logger.info(
                         f"User with wallet_id {wallet_id} deleted successfully."
                     )
+                else:
+                    logger.warning(f"No user found with wallet_id {wallet_id}.")
+            except SQLAlchemyError as e:
+                session.rollback()
+                logger.error(f"Failed to delete user with wallet_id {wallet_id}: {e}")
+                raise e
+
+    def fetch_user_history(self, user_id: int) -> List[dict]:
+        """
+        Fetches all positions for a user with the specified fields:
+        - status
+        - created_at
+        - start_price
+        - amount
+        - multiplier
+
+        ### Parameters:
+        - `user_id` (int): Unique identifier of the user.
+
+        ### Returns:
+        - A list of dictionaries containing position details.
+        """
+        with self.Session() as db:
+            try:
+                # Query positions matching the user_id
+                positions = (
+                    db.query(
+                        Position.status,
+                        Position.created_at,
+                        Position.start_price,
+                        Position.amount,
+                        Position.multiplier,
+                    )
+                    .filter(Position.user_id == user_id)
+                    .all()
+                ).scalar()
+
+                # Transform the query result into a list of dictionaries
+                return [
+                    {
+                        "status": position.status,
+                        "created_at": position.created_at,
+                        "start_price": position.start_price,
+                        "amount": position.amount,
+                        "multiplier": position.multiplier,
+                    }
+                    for position in positions
+                ]
+
+            except SQLAlchemyError as e:
+                logger.error(f"Failed to fetch user history for user_id={user_id}: {str(e)}")
+                return []
+
+    def delete_user_by_wallet_id(self, wallet_id: str) -> None:
+        """
+        Deletes a user from the database by their wallet ID.
+        Rolls back the transaction if the operation fails.
+
+        :param wallet_id: str
+        :return: None
+        :raises SQLAlchemyError: If the operation fails
+        """
+        with self.Session() as session:
+            try:
+                user = session.query(User).filter(User.wallet_id == wallet_id).first()
+                if user:
+                    session.delete(user)
+                    session.commit()
+                    logger.info(f"User with wallet_id {wallet_id} deleted successfully.")
                 else:
                     logger.warning(f"No user found with wallet_id {wallet_id}.")
             except SQLAlchemyError as e:
@@ -403,7 +490,7 @@ class PositionDBConnector(UserDBConnector):
         :param position: Position
         :return: None
         """
-        self.delete_object(Position, position.id)
+        self.delete_object_by_id(Position, position.id)
 
     def close_position(self, position_id: uuid) -> Position | None:
         """
@@ -472,7 +559,91 @@ class PositionDBConnector(UserDBConnector):
             self.write_to_db(position)
         except SQLAlchemyError as e:
             logger.error(f"Error while saving current_price for position: {e}")
+    
+    def liquidate_position(self, position_id: int) -> bool:
+        """
+        Marks a position as liquidated by setting `is_liquidated` to True
+        and updating `datetime_liquidation` to the current timestamp.
 
+        :param position_id: ID of the position to be liquidated.
+        :return: True if the update was successful, False otherwise.
+        """
+        with self.Session() as db:
+            try:
+                # Fetch the position by ID
+                position = db.query(Position).filter(Position.id == position_id).first()
+
+                if not position:
+                    logger.warning(f"Position with ID {position_id} not found.")
+                    return False
+
+                position.is_liquidated = True
+                position.datetime_liquidation = datetime.now()
+
+                self.write_to_db(position)
+                logger.info(f"Position {position_id} successfully liquidated.")
+                return True
+
+            except SQLAlchemyError as e:
+                logger.error(f"Error liquidating position {position_id}: {str(e)}")
+                db.rollback()
+                return False
+
+    def get_all_liquidated_positions(self) -> list[dict]:
+        """
+        Retrieves all positions where `is_liquidated` is True.
+
+        :return: A list of dictionaries containing the liquidated positions.
+        """
+        with self.Session() as db:
+            try:
+                liquidated_positions = (
+                    db.query(Position)
+                    .filter(Position.is_liquidated == True)
+                    .all()
+                ).scalar()
+
+                # Convert ORM objects to dictionaries for return
+                return [
+                    {
+                        "user_id": position.user_id,
+                        "token_symbol": position.token_symbol,
+                        "amount": position.amount,
+                        "multiplier": position.multiplier,
+                        "created_at": position.created_at,
+                        "status": position.status.value,
+                        "start_price": position.start_price,
+                        "is_liquidated": position.is_liquidated,
+                        "datetime_liquidation": position.datetime_liquidation
+                    }
+                    for position in liquidated_positions
+                ]
+
+            except SQLAlchemyError as e:
+                logger.error(f"Error retrieving liquidated positions: {str(e)}")
+                return []
+
+    def get_position_by_id(self, position_id: int) -> Position | None:
+        """
+        Retrieves a position by its ID.
+        :param position_id: Position ID
+        :return: Position | None
+        """
+        return self.get_object(Position, position_id)
+
+    def delete_all_user_positions(self, user_id: uuid.UUID) -> None:
+        """
+        Deletes all positions for a user.
+        :param user_id: User ID
+        """
+        with self.Session() as db:
+            try:
+                positions = db.query(Position).filter_by(user_id=user_id).all()
+                for position in positions:
+                    db.delete(position)
+                db.commit()
+            except SQLAlchemyError as e:
+                logger.error(f"Error deleting positions for user {user_id}: {str(e)}")
 
 class AirDropDBConnector(DBConnector):
     """
@@ -511,6 +682,20 @@ class AirDropDBConnector(DBConnector):
                     f"Failed to retrieve unclaimed AirDrop instances: {str(e)}"
                 )
                 return []
+
+    def delete_all_users_airdrop(self, user_id: uuid.UUID) -> None:
+        """
+        Delete all airdrops for a user.
+        :param user_id: User ID
+        """
+        with self.Session() as db:
+            try:
+                airdrops = db.query(AirDrop).filter_by(user_id=user_id).all()
+                for airdrop in airdrops:
+                    db.delete(airdrop)
+                db.commit()
+            except SQLAlchemyError as e:
+                logger.error(f"Error deleting airdrops for user {user_id}: {str(e)}")
 
 
 class TelegramUserDBConnector(DBConnector):
@@ -583,7 +768,7 @@ class TelegramUserDBConnector(DBConnector):
         """
         user = self.get_user_by_telegram_id(telegram_id)
         if user:
-            self.delete_object(user, user.id)
+            self.delete_object_by_id(user, user.id)
 
     def set_notification_allowed(
         self, telegram_id: str = None, wallet_id: str = None
