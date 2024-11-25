@@ -27,7 +27,7 @@ from web_app.contract_tools.mixins.dashboard import DashboardMixin
 position_db = PositionDBConnector()
 
 
-class PositionCreationTest:
+class TestPositionCreation:
     """
     Integration test for creating and managing positions.
 
