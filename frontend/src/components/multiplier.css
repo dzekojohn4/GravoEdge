@@ -192,6 +192,7 @@
   font-size: 14px;
   text-align: center;
   font-family: var(--text-font);
+  padding-top: 2px;
 }
 
 .step-multiplier.active {
