@@ -5,7 +5,7 @@ import MultiplierSelector from 'components/MultiplierSelector';
 import { connectWallet } from 'services/wallet';
 import { handleTransaction } from 'services/transaction';
 import Spinner from 'components/spinner/Spinner';
-import StarMaker from 'components/StarMaker';
+// import StarMaker from 'components/StarMaker';
 import CardGradients from 'components/CardGradients';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
 import './form.css';
@@ -17,14 +17,14 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 const Form = ({ walletId, setWalletId }) => {
-  const starData = [
-    { top: 35, left: 12, size: 12 },
-    { top: 90, left: 7, size: 7 },
-    { top: 40, left: 80, size: 7 },
-    { top: 75, left: 90, size: 9 },
-  ];
+  // const starData = [
+  //   { top: 35, left: 12, size: 12 },
+  //   { top: 90, left: 7, size: 7 },
+  //   { top: 40, left: 80, size: 7 },
+  //   { top: 75, left: 90, size: 9 },
+  // ];
   const [tokenAmount, setTokenAmount] = useState('');
-  const [selectedToken, setSelectedToken] = useState('');
+  const [selectedToken, setSelectedToken] = useState('STRK');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -102,7 +102,7 @@ const Form = ({ walletId, setWalletId }) => {
   };
 
   return (
-    <div className="form-container container">
+    <div className="form-container">
       {successful && createPortal(<CongratulationsModal />, document.body)}
       <StyledPopup
         isOpen={showPopup}
@@ -114,7 +114,7 @@ const Form = ({ walletId, setWalletId }) => {
       <form onSubmit={handleSubmit}>
         <div className="form-wrapper">
           <div className="form-title">
-            <h1>Submit your leverage details</h1>
+            <h1 className=''>Please submit your leverage details</h1>
           </div>
           {alertMessage && (
             <p className="error-message form-alert">
@@ -122,15 +122,11 @@ const Form = ({ walletId, setWalletId }) => {
             </p>
           )}
           <label>Select Token</label>
-          <TokenSelector setSelectedToken={setSelectedToken} />
-          <h5>Select Multiplier</h5>
-          <MultiplierSelector
-            setSelectedMultiplier={setSelectedMultiplier}
-            selectedToken={selectedToken}
-            sliderValue={selectedMultiplier}
-          />
+          <TokenSelector currentToken={selectedToken} setSelectedToken={setSelectedToken} />
+          <h5 className='select-multiplier'>Select Multiplier</h5>
+          <MultiplierSelector defaultValue={4} setSelectedMultiplier={setSelectedMultiplier} selectedToken={selectedToken} />
           <div className="token-label">
-            <label>Token Amount</label>
+            <label className='token-amount'>Token Amount</label>
             {error && <p className="error-message">{error}</p>}
             <input
               type="number"
@@ -146,7 +142,7 @@ const Form = ({ walletId, setWalletId }) => {
             </button>
           </div>
           <CardGradients additionalClassName={'forms-gradient'} />
-          <StarMaker starData={starData} />
+          {/* <StarMaker starData={starData} /> */}
         </div>
       </form>
       <Spinner loading={loading} />
