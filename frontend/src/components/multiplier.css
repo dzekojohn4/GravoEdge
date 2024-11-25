@@ -131,12 +131,11 @@
   appearance: none;
   width: 23px;
   height: 24px;
-  background: #88b4fa;
+  background: url('../../public/pinslide.svg'), no-repeat;
+  background-position: center;
   border-radius: 50%;
   margin-top: -10px;
   cursor: pointer;
-  border: 3px solid #88b4fa83;
-  outline: 6px solid #88b4fa5b;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
