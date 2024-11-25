@@ -14,7 +14,6 @@ import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
 import StyledPopup from 'components/openpositionpopup/StyledPopup';
 import { useCheckPosition } from 'hooks/useClosePosition';
-import ClosePositionModal from 'components/modals/ClosePositionModal';
 const Form = ({ walletId, setWalletId }) => {
   const starData = [
     { top: 35, left: 12, size: 12 },
@@ -30,7 +29,6 @@ const Form = ({ walletId, setWalletId }) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [successful, setSuccessful] = useState(false);
   useLockBodyScroll(successful);
-  const [showPopup, setShowPopup] = useState(false);
   const [isPositionModalOpened, setIsPositionModalOpened] = useState(false);
   const { data: positionData, refetch } = useCheckPosition(walletId);
 
@@ -82,9 +80,7 @@ const Form = ({ walletId, setWalletId }) => {
     await handleTransaction(connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful);
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
+
 
   const handleClosePosition = () => {
     setIsPositionModalOpened(false);
@@ -96,8 +92,8 @@ const Form = ({ walletId, setWalletId }) => {
     <div className="form-container container">
       {successful && createPortal(<CongratulationsModal />, document.body)}
       <StyledPopup
-        isOpen={showPopup}
-        onClose={handleClosePopup}
+        isOpen={isPositionModalOpened}
+        onClose={()=> setIsPositionModalOpened(false)}
         onClosePosition={handleClosePosition}
         />
       {/* The rest of the UI stays largely unchanged */}
@@ -140,16 +136,6 @@ const Form = ({ walletId, setWalletId }) => {
           <StarMaker starData={starData} />
         </div>
       </form>
-      <ClosePositionModal
-            text={
-              " You have already opened a position. Please close active position to open a new one. Click the 'Close Active Position' button to continue."
-            }
-            actionText={'  Do you want to open new a position?'}
-            header={'Open New Position'}
-            isOpen={isPositionModalOpened}
-            onClose={() => setIsPositionModalOpened(false)}
-            closePosition={handleClosePosition}
-          />
       <Spinner loading={loading} />
     </div>
   );
