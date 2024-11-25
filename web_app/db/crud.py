@@ -275,6 +275,29 @@ class UserDBConnector(DBConnector):
                 logger.error(f"Failed to fetch user history for user_id={user_id}: {str(e)}")
                 return []
 
+    def delete_user_by_wallet_id(self, wallet_id: str) -> None:
+        """
+        Deletes a user from the database by their wallet ID.
+        Rolls back the transaction if the operation fails.
+
+        :param wallet_id: str
+        :return: None
+        :raises SQLAlchemyError: If the operation fails
+        """
+        with self.Session() as session:
+            try:
+                user = session.query(User).filter(User.wallet_id == wallet_id).first()
+                if user:
+                    session.delete(user)
+                    session.commit()
+                    logger.info(f"User with wallet_id {wallet_id} deleted successfully.")
+                else:
+                    logger.warning(f"No user found with wallet_id {wallet_id}.")
+            except SQLAlchemyError as e:
+                session.rollback()
+                logger.error(f"Failed to delete user with wallet_id {wallet_id}: {e}")
+                raise e
+
 
 class PositionDBConnector(UserDBConnector):
     """
@@ -581,6 +604,14 @@ class PositionDBConnector(UserDBConnector):
             except SQLAlchemyError as e:
                 logger.error(f"Error retrieving liquidated positions: {str(e)}")
                 return []
+
+    def get_position_by_id(self, position_id: int) -> Position | None:
+        """
+        Retrieves a position by its ID.
+        :param position_id: Position ID
+        :return: Position | None
+        """
+        return self.get_object(Position, position_id)
 
 
 class AirDropDBConnector(DBConnector):
