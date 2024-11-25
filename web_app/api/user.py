@@ -13,6 +13,7 @@ from web_app.api.serializers.user import (
     GetUserContractAddressResponse,
     SubscribeToNotificationResponse,
     UpdateUserContractResponse,
+    UserHistoryResponse
 )
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
 from web_app.db.crud import (
@@ -247,6 +248,7 @@ async def get_stats() -> GetStatsResponse:
     "/api/get-user-history",
     tags=["User Operations"],
     summary="Get user position history",
+    response_model=UserHistoryResponse,
     response_description="List of user positions including status,created_at, \
                                 start_price, amount, and multiplier.",
 )
