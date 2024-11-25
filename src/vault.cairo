@@ -29,7 +29,7 @@ mod Vault {
     #[storage]
     struct Storage {
         token: ContractAddress,
-        amounts: Map<ContractAddress, u256>,
+        amounts: Map<ContractAddress, TokenAmount>,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
@@ -53,7 +53,7 @@ mod Vault {
         user: ContractAddress,
         #[key]
         token: ContractAddress,
-        amount: u256,
+        amount: TokenAmount,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -62,7 +62,7 @@ mod Vault {
         user: ContractAddress,
         #[key]
         token: ContractAddress,
-        amount: u256,
+        amount: TokenAmount,
     }
 
 
