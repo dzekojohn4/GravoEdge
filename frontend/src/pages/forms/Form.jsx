@@ -13,9 +13,8 @@ import { createPortal } from 'react-dom';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
 import StyledPopup from 'components/openpositionpopup/StyledPopup';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-
+import { useCheckPosition } from 'hooks/useClosePosition';
+import ClosePositionModal from 'components/modals/ClosePositionModal';
 const Form = ({ walletId, setWalletId }) => {
   const starData = [
     { top: 35, left: 12, size: 12 },
@@ -32,18 +31,8 @@ const Form = ({ walletId, setWalletId }) => {
   const [successful, setSuccessful] = useState(false);
   useLockBodyScroll(successful);
   const [showPopup, setShowPopup] = useState(false);
-
-  const { data: positionData, refetch: refetchPosition } = useQuery({
-    queryKey: ['hasOpenPosition', walletId],
-    queryFn: async () => {
-      if (!walletId) return { has_opened_position: false };
-      const { data } = await axios.get('/api/has-user-opened-position', {
-        params: { wallet_id: walletId },
-      });
-      return data;
-    },
-    enabled: !!walletId,
-  });
+  const [isPositionModalOpened, setIsPositionModalOpened] = useState(false);
+  const { data: positionData, refetch } = useCheckPosition(walletId);
 
   const connectWalletHandler = async () => {
     try {
@@ -71,9 +60,9 @@ const Form = ({ walletId, setWalletId }) => {
       connectedWalletId = await connectWalletHandler();
       if (!connectedWalletId) return;
     }
-    await refetchPosition();
+    await refetch();
     if (positionData?.has_opened_position) {
-      setShowPopup(true);
+      setIsPositionModalOpened(true);
       return;
     }
 
@@ -98,8 +87,10 @@ const Form = ({ walletId, setWalletId }) => {
   };
 
   const handleClosePosition = () => {
+    setIsPositionModalOpened(false);
     window.location.href = '/dashboard';
   };
+
 
   return (
     <div className="form-container container">
@@ -149,6 +140,16 @@ const Form = ({ walletId, setWalletId }) => {
           <StarMaker starData={starData} />
         </div>
       </form>
+      <ClosePositionModal
+            text={
+              " You have already opened a position. Please close active position to open a new one. Click the 'Close Active Position' button to continue."
+            }
+            actionText={'  Do you want to open new a position?'}
+            header={'Open New Position'}
+            isOpen={isPositionModalOpened}
+            onClose={() => setIsPositionModalOpened(false)}
+            closePosition={handleClosePosition}
+          />
       <Spinner loading={loading} />
     </div>
   );
