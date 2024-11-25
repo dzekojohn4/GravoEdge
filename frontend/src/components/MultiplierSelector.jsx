@@ -37,7 +37,6 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
       const newValue = mapSliderToValue(position);
 
       setActualValue(newValue);
-      console.log(newValue)
       setSelectedMultiplier(newValue.toFixed(1));
     },
     [mapSliderToValue, maxMultiplier, setSelectedMultiplier]
@@ -76,6 +75,15 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
       document.removeEventListener('touchend', handleDragEnd);
     };
   }, [handleDrag]);
+
+  useEffect(() => {
+    if (actualValue > maxMultiplier) {
+      setActualValue(maxMultiplier);
+      setSelectedMultiplier(maxMultiplier.toFixed(1));
+    } else {
+      setSelectedMultiplier(actualValue.toFixed(1));
+    }
+  }, [maxMultiplier, actualValue, setSelectedMultiplier]);
 
   if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
   if (error) return <div className="error-message">Error loading multiplier data: {error.message}</div>;
