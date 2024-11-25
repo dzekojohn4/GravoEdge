@@ -62,6 +62,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      # Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          DOCKER_COMPOSE_VERSION=v2.21.0
+          sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
       - name: Create .env file
         run: |
           cat << EOF > .env.dev
@@ -76,23 +84,24 @@ jobs:
           REDIS_PORT=${{ env.REDIS_PORT }}
           EOF
 
+      # Using docker compose with space (alternative approach)
       - name: Build and Start Containers
         run: |
-          docker-compose -f docker-compose.dev.yaml up -d --build
+          docker compose -f docker-compose.dev.yaml up -d --build
           echo "Waiting for containers to be ready..."
           sleep 30  # Give containers time to fully initialize
 
       - name: Check Docker Containers
         run: |
           docker ps
-          docker-compose -f docker-compose.dev.yaml logs
+          docker compose -f docker-compose.dev.yaml logs
 
       - name: Wait for Backend Service
         timeout-minutes: 5
         run: |
           while ! curl -s http://localhost:8000/health > /dev/null; do
             echo "Waiting for backend service..."
-            docker-compose -f docker-compose.dev.yaml logs backend_dev
+            docker compose -f docker-compose.dev.yaml logs backend_dev
             sleep 10
             if ! docker ps | grep -q backend_dev; then
               echo "Backend container is not running!"
@@ -104,7 +113,7 @@ jobs:
         run: |
           docker exec backend_dev alembic -c web_app/alembic.ini upgrade head || {
             echo "Migration failed. Showing backend logs:"
-            docker-compose -f docker-compose.dev.yaml logs backend_dev
+            docker compose -f docker-compose.dev.yaml logs backend_dev
             exit 1
           }
 
@@ -126,8 +135,8 @@ jobs:
       - name: Clean Up
         if: always()
         run: |
-          docker-compose -f docker-compose.dev.yaml logs > docker-logs.txt
-          docker-compose -f docker-compose.dev.yaml down -v
+          docker compose -f docker-compose.dev.yaml logs > docker-logs.txt
+          docker compose -f docker-compose.dev.yaml down -v
 
       - name: Upload Docker Logs on Failure
         if: failure()
