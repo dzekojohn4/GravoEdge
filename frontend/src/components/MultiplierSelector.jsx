@@ -25,7 +25,7 @@ const MultiplierSelector = ({ min = 0, max = 10, step = 1, defaultValue = 1, set
     const TOTAL_MARKS = 11;
 
     const getTrackPercentage = useCallback(() => {
-        return ((value - min) / (max - min)) * 100;
+        return ((value - min + 0.15) / (max - min + 0.25)) * 100;
     }, [value, min, max]);
 
     if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
