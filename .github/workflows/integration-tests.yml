@@ -9,46 +9,19 @@ on:
       - main
 
 env:
-  # Database configuration
   DB_PORT: 5432
   DB_NAME: spotnet
   DB_USER: postgres
   DB_PASSWORD: password
-  DB_HOST: localhost  # Changed from 'db' to 'localhost' for GitHub Actions
+  DB_HOST: db
   STARKNET_NODE_URL: http://178.32.172.148:6060
-  # Redis configuration
-  REDIS_HOST: localhost  # Changed from 'redis' to 'localhost' for GitHub Actions
+  REDIS_HOST: redis
   REDIS_PORT: 6379
   ENV_VERSION: DEV
 
 jobs:
   integration-tests:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: ${{ env.DB_NAME }}
-          POSTGRES_USER: ${{ env.DB_USER }}
-          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      redis:
-        image: redis:latest
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - name: Checkout repository
@@ -61,14 +34,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
-      # Install Docker Compose
-      - name: Install Docker Compose
-        run: |
-          DOCKER_COMPOSE_VERSION=v2.21.0
-          sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
 
       - name: Create .env file
         run: |
@@ -84,12 +49,20 @@ jobs:
           REDIS_PORT=${{ env.REDIS_PORT }}
           EOF
 
-      # Using docker compose with space (alternative approach)
+      - name: Debug Environment
+        run: |
+          echo "Current directory contents:"
+          ls -la
+          echo "Docker Compose file contents:"
+          cat docker-compose.dev.yaml
+          echo "Environment file contents:"
+          cat .env.dev
+
       - name: Build and Start Containers
         run: |
           docker compose -f docker-compose.dev.yaml up -d --build
           echo "Waiting for containers to be ready..."
-          sleep 30  # Give containers time to fully initialize
+          sleep 30
 
       - name: Check Docker Containers
         run: |
@@ -105,6 +78,7 @@ jobs:
             sleep 10
             if ! docker ps | grep -q backend_dev; then
               echo "Backend container is not running!"
+              docker compose -f docker-compose.dev.yaml logs
               exit 1
             fi
           done
