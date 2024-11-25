@@ -472,6 +472,71 @@ class PositionDBConnector(UserDBConnector):
             self.write_to_db(position)
         except SQLAlchemyError as e:
             logger.error(f"Error while saving current_price for position: {e}")
+    
+    def liquidate_position(self, position_id: int) -> bool:
+        """
+        Marks a position as liquidated by setting `is_liquidated` to True
+        and updating `datetime_liquidation` to the current timestamp.
+
+        :param position_id: ID of the position to be liquidated.
+        :return: True if the update was successful, False otherwise.
+        """
+        with self.Session() as db:
+            try:
+                # Fetch the position by ID
+                position = db.query(Position).filter(Position.id == position_id).first()
+
+                if not position:
+                    logger.warning(f"Position with ID {position_id} not found.")
+                    return False
+
+                position.is_liquidated = True
+                position.datetime_liquidation = datetime.now()
+
+                self.write_to_db(position)
+                logger.info(f"Position {position_id} successfully liquidated.")
+                return True
+
+            except SQLAlchemyError as e:
+                logger.error(f"Error liquidating position {position_id}: {str(e)}")
+                db.rollback()
+                return False
+    def get_all_liquidated_positions(self) -> list[dict]:
+        """
+        Retrieves all positions where `is_liquidated` is True.
+
+        :return: A list of dictionaries containing the liquidated positions.
+        """
+        with self.Session() as db:
+            try:
+                liquidated_positions = (
+                    db.query(Position)
+                    .filter(Position.is_liquidated == True)
+                    .all()
+                )
+
+                # Convert ORM objects to dictionaries for return
+                return [
+                    {
+                        "id": position.id,
+                        "user_id": position.user_id,
+                        "token_symbol": position.token_symbol,
+                        "amount": position.amount,
+                        "multiplier": position.multiplier,
+                        "created_at": position.created_at,
+                        "status": position.status.value,
+                        "start_price": position.start_price,
+                        "is_protection": position.is_protection,
+                        "liquidation_bonus": position.liquidation_bonus,
+                        "is_liquidated": position.is_liquidated,
+                        "datetime_liquidation": position.datetime_liquidation
+                    }
+                    for position in liquidated_positions
+                ]
+
+            except SQLAlchemyError as e:
+                logger.error(f"Error retrieving liquidated positions: {str(e)}")
+                return []
 
 
 class AirDropDBConnector(DBConnector):
