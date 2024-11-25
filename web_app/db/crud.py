@@ -229,6 +229,52 @@ class UserDBConnector(DBConnector):
                 logger.error(f"Failed to delete user with wallet_id {wallet_id}: {e}")
                 raise e
 
+    def fetch_user_history(self, user_id: int) -> List[dict]:
+        """
+        Fetches all positions for a user with the specified fields:
+        - status
+        - created_at
+        - start_price
+        - amount
+        - multiplier
+
+        ### Parameters:
+        - `user_id` (int): Unique identifier of the user.
+
+        ### Returns:
+        - A list of dictionaries containing position details.
+        """
+        with self.Session() as db:
+            try:
+                # Query positions matching the user_id
+                positions = (
+                    db.query(
+                        Position.status,
+                        Position.created_at,
+                        Position.start_price,
+                        Position.amount,
+                        Position.multiplier,
+                    )
+                    .filter(Position.user_id == user_id)
+                    .all()
+                ).scalar()
+
+                # Transform the query result into a list of dictionaries
+                return [
+                    {
+                        "status": position.status,
+                        "created_at": position.created_at,
+                        "start_price": position.start_price,
+                        "amount": position.amount,
+                        "multiplier": position.multiplier,
+                    }
+                    for position in positions
+                ]
+
+            except SQLAlchemyError as e:
+                logger.error(f"Failed to fetch user history for user_id={user_id}: {str(e)}")
+                return []
+
 
 class PositionDBConnector(UserDBConnector):
     """
