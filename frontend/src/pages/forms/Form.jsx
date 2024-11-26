@@ -29,7 +29,7 @@ const Form = ({ walletId, setWalletId }) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [successful, setSuccessful] = useState(false);
   useLockBodyScroll(successful);
-  const [isPositionModalOpened, setIsPositionModalOpened] = useState(true);
+  const [isPositionModalOpened, setIsPositionModalOpened] = useState(false);
   const { data: positionData, refetch } = useCheckPosition(walletId);
 
   const connectWalletHandler = async () => {
