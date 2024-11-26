@@ -12,7 +12,7 @@ const Tokens = [
 ];
 
 
-const TokenSelector = ({ setSelectedToken }) => {
+const TokenSelector = ({ selectedToken, setSelectedToken }) => {
   
   return <div className='form-token'>
     {Tokens.map((token) => (
@@ -21,6 +21,7 @@ const TokenSelector = ({ setSelectedToken }) => {
         <input
           type='radio'
           id={token.id}
+          checked={selectedToken === token.label}
           name='token-options'
           value={token.label}
           onChange={() => setSelectedToken(token?.label)}
