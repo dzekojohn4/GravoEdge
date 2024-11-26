@@ -16,7 +16,7 @@ import axios from 'axios';
 
 const Form = ({ walletId, setWalletId }) => {
   const [tokenAmount, setTokenAmount] = useState('');
-  const [selectedToken, setSelectedToken] = useState('STRK');
+  const [selectedToken, setSelectedToken] = useState('ETH');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -113,7 +113,7 @@ const Form = ({ walletId, setWalletId }) => {
               </p>
             )}
             <label>Select Token</label>
-            <TokenSelector setSelectedToken={setSelectedToken} />
+            <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
             <label>Select Multiplier</label>
             <MultiplierSelector
               setSelectedMultiplier={setSelectedMultiplier}
