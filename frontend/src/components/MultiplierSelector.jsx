@@ -10,8 +10,9 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   const isDragging = useRef(false);
 
   const maxMultiplier = useMemo(() => {
-    return data?.[selectedToken] || 5.0;
-  }, [data, selectedToken]);
+  return Math.round(parseFloat((data?.[selectedToken]))) || 5.0;
+}, [data, selectedToken]);
+
 
   const mapSliderToValue = useCallback(
     (sliderPosition) => {
@@ -37,6 +38,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
       const newValue = mapSliderToValue(position);
 
       setActualValue(newValue);
+      console.log(newValue)
       setSelectedMultiplier(newValue.toFixed(1));
     },
     [mapSliderToValue, maxMultiplier, setSelectedMultiplier]
@@ -79,10 +81,11 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   useEffect(() => {
     if (actualValue > maxMultiplier) {
       setActualValue(maxMultiplier);
-      setSelectedMultiplier(maxMultiplier.toFixed(1));
+      setSelectedMultiplier(maxMultiplier.toFixed(2));
     } else {
-      setSelectedMultiplier(actualValue.toFixed(1));
+      setSelectedMultiplier(actualValue.toFixed(2));
     }
+    console.log(actualValue)
   }, [maxMultiplier, actualValue, setSelectedMultiplier]);
 
   if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
