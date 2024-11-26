@@ -11,16 +11,11 @@ Key Concepts:
 2. Free Flash Loans: No fees for borrowing within same transaction.
 3. Atomic Execution: All operations must complete in single transaction.
 
-Contract References:
+Contract Reference:
 ------------------
-1. Ekubo Core (Sepolia): 
-   0x0444a09d96389aa7148f1aada508e30b71299ffe650d9c97fdaae38cb9a23384
-
-2. Ekubo Router (Sepolia):
-   0x0045f933adf0607292468ad1c1dedaa74d5ad166392590e72676a34d01d7b763
+https://docs.ekubo.org/integration-guides/reference/contract-addresses#governance-contracts
 
 Documentation: https://docs.ekubo.org/
-
 
 Implementation Flow:
 ------------------
@@ -218,7 +213,7 @@ async def get_transaction_data(deposit_token: str, scaled_amount: int,) -> Optio
     """
     # Initialize flash loan handler
     ekubo = EkuboFlashLoan(
-        core_contract="0x0444a09d96389aa7148f1aada508e30b71299ffe650d9c97fdaae38cb9a23384"
+        core_contract="0x00000005dd3D2F4429AF886cD1a3b08289DBcEa99A294197E9eB43b0e0325b4b"
     )
 
     # Find profitable route
