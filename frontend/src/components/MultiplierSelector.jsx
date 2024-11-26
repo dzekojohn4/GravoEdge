@@ -38,7 +38,6 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
       const newValue = mapSliderToValue(position);
 
       setActualValue(newValue);
-      console.log(newValue)
       setSelectedMultiplier(newValue.toFixed(1));
     },
     [mapSliderToValue, maxMultiplier, setSelectedMultiplier]
@@ -85,7 +84,6 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
     } else {
       setSelectedMultiplier(actualValue.toFixed(2));
     }
-    console.log(actualValue)
   }, [maxMultiplier, actualValue, setSelectedMultiplier]);
 
   if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
