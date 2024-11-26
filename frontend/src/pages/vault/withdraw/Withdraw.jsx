@@ -3,6 +3,7 @@ import './withdraw.css';
 import { ReactComponent as DiamondIcon } from 'assets/icons/diamond.svg';
 import { ReactComponent as TimeIcon } from 'assets/icons/time.svg';
 import { ReactComponent as SettingIcon } from 'assets/icons/settings.svg';
+import MetricCard from 'components/MetricCard/MetricCard';
 
 export default function Withdraw() {
   return (
@@ -10,23 +11,8 @@ export default function Withdraw() {
       <div className="withdraw-container">
         <div className="main-container">
           <div className="top-cards">
-            <div className="withdraw-card">
-              <div className="card-header">
-                <span className="label">Total Amount staked</span>
-              </div>
-              <div className="card-value">
-                <span className="top-card-value">324,909,894</span>
-              </div>
-            </div>
-
-            <div className="withdraw-card">
-              <div className="card-header">
-                <span className="label">Daily Boost Multiplier</span>
-              </div>
-              <div className="card-value">
-                <span className="top-card-value">0.5%</span>
-              </div>
-            </div>
+            <MetricCard title="Total Amount staked" value="324,909,894" />
+            <MetricCard title="Daily Boost Multiplier" value="0.5%" />
           </div>
         </div>
         <h1 className="withdraw-title">Staking withdrawal</h1>
