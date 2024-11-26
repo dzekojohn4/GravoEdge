@@ -67,13 +67,13 @@ color: var(--slider-gray);
 } 
 
 .error-message {
-    color: var(--borrow-color);
-    background-color: #ffe6e6;
-    padding: 10px;
-    border-radius: 4px;
-    margin: 10px 0;
-    text-align: center;
-    font-weight: bold;
+  color: var(--borrow-color);
+  background-color: #ffe6e6;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  text-align: center;
+  font-weight: bold;
 }
 
 div.slider-skeleton {
@@ -125,14 +125,15 @@ div.marker {
     font-size: 0.875rem;
 }
 
-@keyframes loading {
-    0% {
-        background-position: 200% 0;
-    }
 
-    100% {
-        background-position: -200% 0;
-    }
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 

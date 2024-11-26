@@ -33,6 +33,10 @@
   height: 64px;
 }
 
+/* .token-card {
+  position: relative;
+} */
+
 .token-card label {
   border-radius: 100px;
   padding: 2px 24px;
@@ -92,6 +96,7 @@
 .token-card h5 {
   margin-top: 9px;
   font-size: 16px;
+  font-size: 16px;
   color: var(--primary);
   display: flex;
   align-items: center;
@@ -100,6 +105,8 @@
 }
 
 .token-card svg {
+  width: 20px;
+  height: 20px;
   width: 20px;
   height: 20px;
 }
@@ -164,14 +171,14 @@
 
 input[type='radio'] {
   display: none;
-  padding: 10px;
+  padding: 2px;
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.multiplier-item input[type='radio']:checked + label {
+.multiplier-item input[type='radio']:checked+label {
   border-color: var(--brand);
   box-shadow: 0 4px 20px var(--brand);
 }
@@ -229,7 +236,7 @@ input[type='number'].error {
 
 .form-button-container:hover {
   background: var(--button-gradient-hover);
-}
+} */
 
 .form-button-container:active {
   background: var(--button-gradient-active);
@@ -278,15 +285,37 @@ input[type='number'].error {
 
 .balance-item label:nth-child(2) {
   font-size: 24px;
+  font-size: 24px;
   color: var(--secondary);
+  line-height: 32.68px;
 }
 
 .balance-title {
   display: flex;
   align-items: center;
+  justify-content: center;
+}
+
+.balance-title span {
+  font-size: 14px;
+}
+
+.balance-title .balance-icon-wrapper {
+  background-color: #201338;
+  border-radius: 12px;
+  display: block;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  margin-bottom: 0;
 }
 
 .balance-title svg {
+  height: 18px;
+  width: 18px;
   height: 18px;
   width: 18px;
 }
@@ -348,6 +377,7 @@ input[type='number'].error {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
+
   .balance-item {
     height: fit-content;
     padding: 16px 24px;
@@ -380,6 +410,7 @@ input[type='number'].error {
     justify-content: center;
     width: max-content;
   }
+
   .multiplier-card {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     display: grid;
