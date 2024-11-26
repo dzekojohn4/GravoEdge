@@ -13,6 +13,7 @@ import CongratulationsModal from 'components/congratulationsModal/Congratulation
 import StyledPopup from 'components/openpositionpopup/StyledPopup';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import Button from '../../components/Button/Button';
 
 const Form = ({ walletId, setWalletId }) => {
   const [tokenAmount, setTokenAmount] = useState('');
@@ -95,51 +96,47 @@ const Form = ({ walletId, setWalletId }) => {
 
   return (
     <div className="form-content-wrapper">
-        <BalanceCards walletId={walletId} />
-        {successful && createPortal(<CongratulationsModal />, document.body)}
-      <StyledPopup
-        isOpen={showPopup}
-        onClose={handleClosePopup}
-        onClosePosition={handleClosePosition}
+      <BalanceCards walletId={walletId} />
+      {successful && createPortal(<CongratulationsModal />, document.body)}
+      <StyledPopup isOpen={showPopup} onClose={handleClosePopup} onClosePosition={handleClosePosition} />
+      {/* The rest of the UI stays largely unchanged */}
+      <form className="form-container" onSubmit={handleSubmit}>
+        <div className="form-title">
+          <h1>Please submit your leverage details</h1>
+        </div>
+        {alertMessage && (
+          <p className="error-message form-alert">
+            {alertMessage} <AlertHexagon className="form-alert-hex" />
+          </p>
+        )}
+        <label>Select Token</label>
+        <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
+        <label>Select Multiplier</label>
+        <MultiplierSelector
+          setSelectedMultiplier={setSelectedMultiplier}
+          selectedToken={selectedToken}
+          sliderValue={selectedMultiplier}
         />
-        {/* The rest of the UI stays largely unchanged */}
-        <form className='form-container' onSubmit={handleSubmit}>
-            <div className="form-title">
-              <h1>Please submit your leverage details</h1>
-            </div>
-            {alertMessage && (
-              <p className="error-message form-alert">
-                {alertMessage} <AlertHexagon className="form-alert-hex" />
-              </p>
-            )}
-            <label>Select Token</label>
-            <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
-            <label>Select Multiplier</label>
-            <MultiplierSelector
-              setSelectedMultiplier={setSelectedMultiplier}
-              selectedToken={selectedToken}
-              sliderValue={selectedMultiplier}
-            />
-            <div className="token-label">
-              <label>Token Amount</label>
-              {error && <p className="error-message">{error}</p>}
-              <input
-                type="number"
-                placeholder="Enter Token Amount"
-                value={tokenAmount}
-                onChange={(e) => setTokenAmount(e.target.value)}
-                className={error ? 'error' : ''}
-              />
-            </div>
-            <div>
-              <div className="form-button-container">
-                <button type="submit" className="form-button">
-                  Submit
-                </button>
-              </div>
-            </div>
-        </form>
-        <Spinner loading={loading} />
+        <div className="token-label">
+          <label>Token Amount</label>
+          {error && <p className="error-message">{error}</p>}
+          <input
+            type="number"
+            placeholder="Enter Token Amount"
+            value={tokenAmount}
+            onChange={(e) => setTokenAmount(e.target.value)}
+            className={error ? 'error' : ''}
+          />
+        </div>
+        <div>
+          <div className="form-button-container">
+            <Button variant="secondary" size="lg" className="form-button" type="submit">
+              Submit
+            </Button>
+          </div>
+        </div>
+      </form>
+      <Spinner loading={loading} />
     </div>
   );
 };
