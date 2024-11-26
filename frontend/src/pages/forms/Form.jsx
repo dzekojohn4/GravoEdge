@@ -16,7 +16,7 @@ import axios from 'axios';
 
 const Form = ({ walletId, setWalletId }) => {
   const [tokenAmount, setTokenAmount] = useState('');
-  const [selectedToken, setSelectedToken] = useState('');
+  const [selectedToken, setSelectedToken] = useState('STRK');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
