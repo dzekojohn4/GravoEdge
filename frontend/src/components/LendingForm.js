@@ -3,17 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { getTokenBalances, sendTransaction } from 'services/wallet';
 import { notifyError } from 'utils/notification';
 import { axiosInstance } from 'utils/axios';
-
+import Button from 'components/ui/Button/Button';
 import { useWalletStore } from 'stores /useWalletStore';
 
 
 const LendingForm = () => {
-    const { walletId } = useWalletStore();
-
-import Button from 'components/ui/Button/Button';
-
-
-  const navigate = useNavigate();
+const { walletId } = useWalletStore();
+const navigate = useNavigate();
   const [balances, setBalances] = useState({});
   const [formData, setFormData] = useState({
     token: '',

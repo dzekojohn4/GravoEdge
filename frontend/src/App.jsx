@@ -15,7 +15,8 @@ import Documentation from 'pages/spotnet/documentation/Documentation';
 import Withdraw from 'pages/vault/withdraw/Withdraw';
 import { useWalletStore } from 'stores/useWalletStore'; 
 import { Notifier } from 'components/Notifier/Notifier';
-import { useConnectWallet } from 'hooks/useConnectWallet ';
+import { useConnectWallet } from 'hooks/useConnectWallet';
+
 
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore(); 

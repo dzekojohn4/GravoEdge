@@ -10,8 +10,7 @@ import { useWalletStore } from 'stores/useWalletStore';
 const DontMiss = () => {
   const { walletId } = useWalletStore(); 
   const navigate = useNavigate();
-
-  const handleLaunchApp = async () => {
+ const handleLaunchApp = async () => {
     if (walletId) {
       navigate('/form');
     } else {

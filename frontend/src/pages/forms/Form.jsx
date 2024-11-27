@@ -13,15 +13,13 @@ import StyledPopup from 'components/openpositionpopup/StyledPopup';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Button from 'components/ui/Button/Button';
-import { useConnectWallet } from 'hooks/useConnectWallet';
-
 import { useWalletStore } from 'stores/useWalletStore';
+import { useConnectWallet } from 'hooks/useConnectWallet';
 
 
 const Form = () => {
     const { walletId, setWalletId } = useWalletStore();
-
-  const [tokenAmount, setTokenAmount] = useState('');
+ const [tokenAmount, setTokenAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState('ETH');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
   const [error, setError] = useState('');
@@ -30,10 +28,8 @@ const Form = () => {
   const [successful, setSuccessful] = useState(false);
   useLockBodyScroll(successful);
   const [showPopup, setShowPopup] = useState(false);
-
-  const connectWalletMutation = useConnectWallet(setWalletId);
-
-  const { data: positionData, refetch: refetchPosition } = useQuery({
+ const connectWalletMutation = useConnectWallet(setWalletId);
+ const { data: positionData, refetch: refetchPosition } = useQuery({
     queryKey: ['hasOpenPosition', walletId],
     queryFn: async () => {
       if (!walletId) return { has_opened_position: false };

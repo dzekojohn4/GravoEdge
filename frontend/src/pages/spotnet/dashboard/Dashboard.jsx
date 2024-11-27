@@ -13,16 +13,14 @@ import TelegramNotificationModal from 'components/TelegramNotificationModal/Tele
 import { ZETH_ADDRESS } from 'utils/constants';
 import useDashboardData from 'hooks/useDashboardData';
 import { useClosePosition } from 'hooks/useClosePosition';
+import Button from 'components/ui/Button/Button';
 
 import { useWalletStore } from 'stores/useWalletStore';
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
-import Button from 'components/ui/Button/Button';
-
-  const [isCollateralActive, setIsCollateralActive] = useState(true);
+const [isCollateralActive, setIsCollateralActive] = useState(true);
   const [showModal, setShowModal] = useState(false);
-
-  const handleOpen = () => {
+ const handleOpen = () => {
     setShowModal(true);
   };
 
