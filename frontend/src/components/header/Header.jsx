@@ -8,7 +8,7 @@ import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import MobDropdownMenu from '../mobDropdownMenu/MobDropdownMenu';
 import './header.css';
 import '../../globals.css';
-import useWalletStore from 'stores /useWalletStore';
+import useWalletStore from 'stores/useWalletStore';
 
 
 function Header({ onConnectWallet, onLogout }) {
