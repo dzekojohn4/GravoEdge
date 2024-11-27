@@ -41,6 +41,10 @@
   --card-border: 0.5px solid #4e7787;
   --success-color: #4caf50;
   --error-color: #ff5a5f;
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --bg: #120721;
+  --border-color: #201338;
+  --closePosition: linear-gradient(to right, #49abd2, #e01dee);
   --light-purple: #36294E;
   --gray: #83919F;
   --dark-purple: #120721;
