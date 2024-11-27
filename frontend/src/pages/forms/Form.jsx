@@ -25,7 +25,7 @@ const Form = ({ walletId, setWalletId }) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [successful, setSuccessful] = useState(false);
   useLockBodyScroll(successful);
-  const [isPositionModalOpened, setIsPositionModalOpened] = useState(false);
+  const [isPositionModalOpened, setIsPositionModalOpened] = useState(true);
   const { data: positionData, refetch } = useCheckPosition(walletId);
 
   const connectWalletHandler = async () => {
@@ -134,55 +134,6 @@ const Form = ({ walletId, setWalletId }) => {
         closePosition={handleClosePosition}
       />
       <Spinner loading={loading} />
-
-      <div className="form-content-wrapper">
-        <BalanceCards walletId={walletId} />
-        {successful && createPortal(<CongratulationsModal />, document.body)}
-        <StyledPopup
-          isOpen={isPositionModalOpened}
-          onClose={() => setIsPositionModalOpened(false)}
-          onClosePosition={handleClosePosition}
-        />
-
-        {/* The rest of the UI stays largely unchanged */}
-        <form className="form-container" onSubmit={handleSubmit}>
-          <div className="form-title">
-            <h1>Please submit your leverage details</h1>
-          </div>
-          {alertMessage && (
-            <p className="error-message form-alert">
-              {alertMessage} <AlertHexagon className="form-alert-hex" />
-            </p>
-          )}
-          <label>Select Token</label>
-          <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
-          <label>Select Multiplier</label>
-          <MultiplierSelector
-            setSelectedMultiplier={setSelectedMultiplier}
-            selectedToken={selectedToken}
-            sliderValue={selectedMultiplier}
-          />
-          <div className="token-label">
-            <label>Token Amount</label>
-            {error && <p className="error-message">{error}</p>}
-            <input
-              type="number"
-              placeholder="Enter Token Amount"
-              value={tokenAmount}
-              onChange={(e) => setTokenAmount(e.target.value)}
-              className={error ? 'error' : ''}
-            />
-          </div>
-          <div>
-            <div className="form-button-container">
-              <button type="submit" className="form-button">
-                Submit
-              </button>
-            </div>
-          </div>
-        </form>
-        <Spinner loading={loading} />
-      </div>
     </div>
   );
 };
