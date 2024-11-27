@@ -5,9 +5,11 @@ import MultiplierSelector from 'components/MultiplierSelector';
 import { connectWallet } from 'services/wallet';
 import { handleTransaction } from 'services/transaction';
 import Spinner from 'components/spinner/Spinner';
+
 // import StarMaker from 'components/StarMaker';
 import ClosePositionModal from 'components/modals/ClosePositionModal';
 import CardGradients from 'components/CardGradients';
+
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
 import './form.css';
 import { createPortal } from 'react-dom';
@@ -15,14 +17,8 @@ import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
 import { useCheckPosition } from 'hooks/useClosePosition';
 const Form = ({ walletId, setWalletId }) => {
-  // const starData = [
-  //   { top: 35, left: 12, size: 12 },
-  //   { top: 90, left: 7, size: 7 },
-  //   { top: 40, left: 80, size: 7 },
-  //   { top: 75, left: 90, size: 9 },
-  // ];
   const [tokenAmount, setTokenAmount] = useState('');
-  const [selectedToken, setSelectedToken] = useState('STRK');
+  const [selectedToken, setSelectedToken] = useState('ETH');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -84,6 +80,7 @@ const Form = ({ walletId, setWalletId }) => {
     window.location.href = '/dashboard';
   };
   return (
+<<<<<<< HEAD
     <div className="form-container">
       {successful && createPortal(<CongratulationsModal />, document.body)}
      
@@ -134,6 +131,54 @@ const Form = ({ walletId, setWalletId }) => {
             closePosition={handleClosePosition}
           />
       <Spinner loading={loading} />
+=======
+    <div className="form-content-wrapper">
+        <BalanceCards walletId={walletId} />
+        {successful && createPortal(<CongratulationsModal />, document.body)}
+      <StyledPopup
+        isOpen={isPositionModalOpened}
+        onClose={()=> setIsPositionModalOpened(false)}
+        onClosePosition={handleClosePosition}
+        />
+        {/* The rest of the UI stays largely unchanged */}
+        <form className='form-container' onSubmit={handleSubmit}>
+            <div className="form-title">
+              <h1>Please submit your leverage details</h1>
+            </div>
+            {alertMessage && (
+              <p className="error-message form-alert">
+                {alertMessage} <AlertHexagon className="form-alert-hex" />
+              </p>
+            )}
+            <label>Select Token</label>
+            <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
+            <label>Select Multiplier</label>
+            <MultiplierSelector
+              setSelectedMultiplier={setSelectedMultiplier}
+              selectedToken={selectedToken}
+              sliderValue={selectedMultiplier}
+            />
+            <div className="token-label">
+              <label>Token Amount</label>
+              {error && <p className="error-message">{error}</p>}
+              <input
+                type="number"
+                placeholder="Enter Token Amount"
+                value={tokenAmount}
+                onChange={(e) => setTokenAmount(e.target.value)}
+                className={error ? 'error' : ''}
+              />
+            </div>
+            <div>
+              <div className="form-button-container">
+                <button type="submit" className="form-button">
+                  Submit
+                </button>
+              </div>
+            </div>
+        </form>
+        <Spinner loading={loading} />
+>>>>>>> fb52c808566df81c7ac01d023f45d2a772f9a0ce
     </div>
   );
 };
