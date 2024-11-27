@@ -8,8 +8,12 @@ import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import MobDropdownMenu from '../mobDropdownMenu/MobDropdownMenu';
 import './header.css';
 import '../../globals.css';
+import useWalletStore from 'stores /useWalletStore';
 
-function Header({ walletId, onConnectWallet, onLogout }) {
+
+function Header({ onConnectWallet, onLogout }) {
+      const { walletId } = useWalletStore();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation(); // Getting object of currant route
 

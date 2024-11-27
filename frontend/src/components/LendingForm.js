@@ -4,8 +4,12 @@ import { getTokenBalances, sendTransaction } from 'services/wallet';
 import { Notifier } from 'components/Notifier/Notifier';
 import { notifyError } from 'utils/notification';
 import { axiosInstance } from 'utils/axios';
+import useWalletStore from 'stores /useWalletStore';
 
-const LendingForm = ({ walletId }) => {
+
+const LendingForm = () => {
+    const { walletId } = useWalletStore();
+
   const navigate = useNavigate();
   const [balances, setBalances] = useState({});
   const [formData, setFormData] = useState({
