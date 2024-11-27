@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Button from 'components/ui/Button/Button';
+import { useWalletStore } from 'stores/useWalletStore';
 
-const WalletSection = ({ walletId, onConnectWallet, onLogout }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+const WalletSection = ({ onConnectWallet, onLogout }) => {
+      const { walletId } = useWalletStore();
+ const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1025);
   const menuRef = useRef(null);
 
