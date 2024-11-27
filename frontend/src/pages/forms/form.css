@@ -224,14 +224,6 @@ input[type='number'].error {
   padding: 1px;
 }
 
-.form-button-container:hover {
-  background: var(--button-gradient-hover);
-}
-
-.form-button-container:active {
-  background: var(--button-gradient-active);
-}
-
 .balance-card {
   max-width: 100%;
   margin-top: 20px;
@@ -340,10 +332,6 @@ input[type='number'].error {
 
   .form-container>form {
     padding: 0 1rem;
-  }
-
-  .form-button-container {
-    border-radius: 16px;
   }
 
   .form-button {
