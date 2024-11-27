@@ -80,7 +80,6 @@ const Form = ({ walletId, setWalletId }) => {
     window.location.href = '/dashboard';
   };
   return (
-<<<<<<< HEAD
     <div className="form-container">
       {successful && createPortal(<CongratulationsModal />, document.body)}
      
@@ -131,7 +130,7 @@ const Form = ({ walletId, setWalletId }) => {
             closePosition={handleClosePosition}
           />
       <Spinner loading={loading} />
-=======
+
     <div className="form-content-wrapper">
         <BalanceCards walletId={walletId} />
         {successful && createPortal(<CongratulationsModal />, document.body)}
@@ -140,6 +139,7 @@ const Form = ({ walletId, setWalletId }) => {
         onClose={()=> setIsPositionModalOpened(false)}
         onClosePosition={handleClosePosition}
         />
+        
         {/* The rest of the UI stays largely unchanged */}
         <form className='form-container' onSubmit={handleSubmit}>
             <div className="form-title">
@@ -178,7 +178,7 @@ const Form = ({ walletId, setWalletId }) => {
             </div>
         </form>
         <Spinner loading={loading} />
->>>>>>> fb52c808566df81c7ac01d023f45d2a772f9a0ce
+
     </div>
   );
 };
