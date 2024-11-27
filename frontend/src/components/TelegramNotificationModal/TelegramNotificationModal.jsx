@@ -1,16 +1,16 @@
 import React from 'react';
 import './telegramNotificationModal.css';
 import useTelegramNotification from 'hooks/useTelegramNotification';
+import { useWalletStore } from 'stores/useWalletStore';
 import Button from 'components/ui/Button/Button';
 
-const TelegramNotificationModal = ({ onClose, telegramId, walletId }) => {
-  const { subscribe, isLoading } = useTelegramNotification();
-
-  const handleSubscribe = () => {
+const TelegramNotificationModal = ({ onClose, telegramId }) => {
+        const { walletId } = useWalletStore();
+const { subscribe, isLoading } = useTelegramNotification();
+const handleSubscribe = () => {
     subscribe({ telegramId, walletId });
   };
-
-  return (
+ return (
     <div className="notification-overlay">
       <div className="notification-backdrop" onClick={onClose} />
       <div className="notification-wrapper">
