@@ -7,8 +7,12 @@ import { ReactComponent as Starknet } from 'assets/particles/starknet.svg';
 import { ReactComponent as Rocket } from 'assets/icons/rocket.svg';
 import { notifyWarning } from 'utils/notification';
 import './home.css';
+import { useWalletStore } from 'stores/useWalletStore';
 
-function Home({ walletId }) {
+
+function Home() {
+      const { walletId } = useWalletStore();
+
   const navigate = useNavigate();
 
   const handleLaunchApp = async () => {
