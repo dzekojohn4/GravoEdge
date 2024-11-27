@@ -13,7 +13,7 @@ import CongratulationsModal from 'components/congratulationsModal/Congratulation
 import StyledPopup from 'components/openpositionpopup/StyledPopup';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import Button from '../../components/Button/Button';
+import Button from 'components/ui/Button/Button';
 
 const Form = ({ walletId, setWalletId }) => {
   const [tokenAmount, setTokenAmount] = useState('');
@@ -130,7 +130,7 @@ const Form = ({ walletId, setWalletId }) => {
         </div>
         <div>
           <div className="form-button-container">
-            <Button variant="secondary" size="lg" className="form-button" type="submit">
+            <Button variant="secondary" size="lg" type="submit">
               Submit
             </Button>
           </div>
