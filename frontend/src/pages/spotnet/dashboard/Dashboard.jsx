@@ -15,11 +15,12 @@ import useDashboardData from 'hooks/useDashboardData';
 import { useClosePosition } from 'hooks/useClosePosition';
 import Button from 'components/ui/Button/Button';
 
-export default function Component({ walletId, telegramId }) {
-  const [isCollateralActive, setIsCollateralActive] = useState(true);
+import { useWalletStore } from 'stores/useWalletStore';
+export default function Component({ telegramId }) {
+  const { walletId } = useWalletStore();
+const [isCollateralActive, setIsCollateralActive] = useState(true);
   const [showModal, setShowModal] = useState(false);
-
-  const handleOpen = () => {
+ const handleOpen = () => {
     setShowModal(true);
   };
 
@@ -228,7 +229,7 @@ export default function Component({ walletId, telegramId }) {
             Enable telegram notification bot
           </Button>
           {showModal && (
-            <TelegramNotificationModal telegramId={telegramId?.id} walletId={walletId} onClose={handleClose} />
+            <TelegramNotificationModal telegramId={telegramId?.id}  onClose={handleClose} />
           )}
         </div>
       </div>
