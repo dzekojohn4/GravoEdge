@@ -12,12 +12,25 @@ import ClosePositionModal from 'components/modals/ClosePositionModal';
 
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
+
 import { useCheckPosition } from 'hooks/useClosePosition';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import { createPortal } from 'react-dom';
 import './form.css';
 const Form = ({ walletId, setWalletId }) => {
-  const [tokenAmount, setTokenAmount] = useState('');
+  const [tokenAmount, setTokenAmount] = useState('')
+import StyledPopup from 'components/openpositionpopup/StyledPopup';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import Button from 'components/ui/Button/Button';
+import { useWalletStore } from 'stores/useWalletStore';
+import { useConnectWallet } from 'hooks/useConnectWallet';
+
+
+const Form = () => {
+    const { walletId, setWalletId } = useWalletStore();
+ const [tokenAmount, setTokenAmount] = useState('');
+
   const [selectedToken, setSelectedToken] = useState('ETH');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
   const [error, setError] = useState('');
@@ -45,6 +58,23 @@ const Form = ({ walletId, setWalletId }) => {
       setError('Failed to connect wallet. Please try again.');
     }
     return null;
+  const [showPopup, setShowPopup] = useState(false);
+ const connectWalletMutation = useConnectWallet(setWalletId);
+ const { data: positionData, refetch: refetchPosition } = useQuery({
+    queryKey: ['hasOpenPosition', walletId],
+    queryFn: async () => {
+      if (!walletId) return { has_opened_position: false };
+      const { data } = await axios.get('/api/has-user-opened-position', {
+        params: { wallet_id: walletId },
+      });
+      return data;
+    },
+    enabled: !!walletId,
+  });
+
+  const connectWalletHandler = () => {
+    connectWalletMutation.mutate();
+
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
