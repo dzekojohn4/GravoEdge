@@ -6,13 +6,13 @@ import { connectWallet } from 'services/wallet';
 import { handleTransaction } from 'services/transaction';
 import Spinner from 'components/spinner/Spinner';
 // import StarMaker from 'components/StarMaker';
+import ClosePositionModal from 'components/modals/ClosePositionModal';
 import CardGradients from 'components/CardGradients';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
 import './form.css';
 import { createPortal } from 'react-dom';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
-import StyledPopup from 'components/openpositionpopup/StyledPopup';
 import { useCheckPosition } from 'hooks/useClosePosition';
 const Form = ({ walletId, setWalletId }) => {
   // const starData = [
@@ -79,23 +79,14 @@ const Form = ({ walletId, setWalletId }) => {
     };
     await handleTransaction(connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful);
   };
-
-
-
   const handleClosePosition = () => {
     setIsPositionModalOpened(false);
     window.location.href = '/dashboard';
   };
-
-
   return (
     <div className="form-container">
       {successful && createPortal(<CongratulationsModal />, document.body)}
-      <StyledPopup
-        isOpen={isPositionModalOpened}
-        onClose={()=> setIsPositionModalOpened(false)}
-        onClosePosition={handleClosePosition}
-        />
+     
       {/* The rest of the UI stays largely unchanged */}
       <BalanceCards walletId={walletId} />
       <form onSubmit={handleSubmit}>
@@ -132,6 +123,16 @@ const Form = ({ walletId, setWalletId }) => {
           {/* <StarMaker starData={starData} /> */}
         </div>
       </form>
+      <ClosePositionModal
+            text={
+              " You have already opened a position. Please close active position to open a new one. Click the 'Close Active Position' button to continue."
+            }
+            actionText={'  Do you want to open new a position?'}
+            header={'Open New Position'}
+            isOpen={isPositionModalOpened}
+            onClose={() => setIsPositionModalOpened(false)}
+            closePosition={handleClosePosition}
+          />
       <Spinner loading={loading} />
     </div>
   );
