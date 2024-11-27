@@ -4,7 +4,7 @@ Seed data for initializing the database with predefined values.
 import logging
 from decimal import Decimal
 from faker import Faker
-from web_app.db.models import Status, User, Position, AirDrop, TelegramUser
+from web_app.db.models import Status, User, Position, AirDrop, TelegramUser, Vault
 from web_app.db.database import SessionLocal
 from web_app.contract_tools.constants import TokenParams
 
@@ -116,6 +116,33 @@ def create_telegram_users(session: SessionLocal, users: list[User]) -> None:
     logger.info(f"Created {len(telegram_users)} Telegram users.")
 
 
+def create_vaults(session: SessionLocal, users: list[User]) -> None:
+    """
+    Create and save fake vault records for each user.
+    Args:
+        session (Session): SQLAlchemy session object.
+        users (list): List of User objects to associate with vaults.
+    """
+    vaults = []
+    for user in users:
+        for _ in range(2): 
+            vault = Vault(
+                user_id=user.id,
+                symbol=fake.random_choices(
+                    elements=[token.name for token in TokenParams.tokens()]
+                ),
+                amount=str(fake.random_number(digits=5)),  # Amount stored as string in model
+            )
+            vaults.append(vault)
+    
+    if vaults:
+        session.bulk_save_objects(vaults)
+        session.commit()
+        logger.info(f"Created {len(vaults)} vaults for {len(users)} users.")
+    else:
+        logger.info("No vaults created.")
+
+
 if __name__ == "__main__":
     # Start a new session for seeding data
     with SessionLocal() as session:
@@ -124,5 +151,6 @@ if __name__ == "__main__":
         create_positions(session, users)
         create_airdrops(session, users)
         create_telegram_users(session, users)
+        create_vaults(session, users)
 
     logger.info("Database populated with fake data.")
