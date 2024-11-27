@@ -4,7 +4,6 @@ import { ReactComponent as Rocket } from 'assets/icons/rocket.svg';
 import { ReactComponent as Hand } from 'assets/images/hand.svg';
 import { ReactComponent as Star } from 'assets/particles/star.svg';
 import { useNavigate } from 'react-router-dom';
-import { Notifier, notify } from 'components/Notifier/Notifier';
 
 const DontMiss = ({ walletId }) => {
   const navigate = useNavigate();
@@ -47,7 +46,6 @@ const DontMiss = ({ walletId }) => {
           </div>
         </button>
         <Hand className="hand-icon" />
-        <Notifier />
       </div>
     </div>
   );
