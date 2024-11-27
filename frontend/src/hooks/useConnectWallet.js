@@ -19,7 +19,6 @@ export const useConnectWallet = (setWalletId) => {
     },
     onSuccess: (walletAddress) => {
       setWalletId(walletAddress);
-      // notifySuccess('Wallet successfully connected');
     },
     onError: (error) => {
       console.error('Wallet connection failed:', error);
