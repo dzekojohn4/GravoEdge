@@ -13,7 +13,7 @@ import { connectWallet, logout, checkForCRMToken } from 'services/wallet';
 import { saveTelegramUser, getTelegramUserWalletId } from 'services/telegram';
 import Documentation from 'pages/spotnet/documentation/Documentation';
 import Withdraw from 'pages/vault/withdraw/Withdraw';
-import useWalletStore from 'stores /useWalletStore';
+import useWalletStore from 'stores/useWalletStore'
 function App() {
   const { walletId, setWalletId } = useWalletStore();
   const [tgUser, setTgUser] = useState(JSON.parse(localStorage.getItem('tg_user')));

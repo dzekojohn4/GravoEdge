@@ -4,7 +4,7 @@ import Partnership from '../partnership/Partnership';
 import Information from '../information/Information';
 import DontMiss from '../dont_miss/DontMiss';
 import Home from '../home/Home';
-import useWalletStore from 'stores /useWalletStore';
+import useWalletStore from 'stores/useWalletStore';
 
 const SpotnetApp = ({ onConnectWallet, onLogout }) => {
       const { walletId } = useWalletStore();
