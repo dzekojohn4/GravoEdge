@@ -1,12 +1,14 @@
 import React from 'react';
 import './telegramNotificationModal.css';
 import useTelegramNotification from 'hooks/useTelegramNotification';
+
 import { useWalletStore } from 'stores/useWalletStore';
 
 
 const TelegramNotificationModal = ({ onClose, telegramId }) => {
         const { walletId } = useWalletStore();
 
+import Button from 'components/ui/Button/Button';
 
   const { subscribe, isLoading } = useTelegramNotification();
 
@@ -31,16 +33,12 @@ const TelegramNotificationModal = ({ onClose, telegramId }) => {
             </p>
           </div>
           <div className="notification-actions">
-            <button onClick={onClose} className="notification-btn notification-cancel-btn" disabled={isLoading}>
+            <Button variant="secondary" size="md" className="notification-btn" onClick={onClose} disabled={isLoading}>
               Cancel
-            </button>
-            <button
-              onClick={handleSubscribe}
-              className="notification-btn notification-confirm-btn"
-              disabled={isLoading}
-            >
+            </Button>
+            <Button variant="primary" size="md" onClick={handleSubscribe} disabled={isLoading}>
               {isLoading ? 'Subscribing...' : 'Yes, Sure'}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

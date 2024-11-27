@@ -12,6 +12,7 @@ import CongratulationsModal from 'components/congratulationsModal/Congratulation
 import StyledPopup from 'components/openpositionpopup/StyledPopup';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import Button from 'components/ui/Button/Button';
 import { useConnectWallet } from 'hooks/useConnectWallet';
 
 import { useWalletStore } from 'stores/useWalletStore';
@@ -122,9 +123,9 @@ const Form = () => {
         </div>
         <div>
           <div className="form-button-container">
-            <button type="submit" className="form-button">
+            <Button variant="secondary" size="lg" type="submit">
               Submit
-            </button>
+            </Button>
           </div>
         </div>
       </form>

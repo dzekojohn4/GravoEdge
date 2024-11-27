@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+
 import { useWalletStore } from 'stores/useWalletStore';
 
 
 const WalletSection = ({ onConnectWallet, onLogout }) => {
       const { walletId } = useWalletStore();
+
+import Button from 'components/ui/Button/Button';
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1025);
@@ -57,9 +60,9 @@ const WalletSection = ({ onConnectWallet, onLogout }) => {
             <div className="menu-dropdown">
               {/* Connect Wallet button for mob screens */}
               {isMobile && !walletId && (
-                <button className="connect-wallet" onClick={onConnectWallet}>
+                <Button variant="primary" size="sm" onClick={onConnectWallet}>
                   <span>Connect Wallet</span>
-                </button>
+                </Button>
               )}
 
               {/* Logout is available only if walletId connected */}
@@ -86,9 +89,9 @@ const WalletSection = ({ onConnectWallet, onLogout }) => {
 
       {/* Connect Wallet button for big screens (outside menu) */}
       {!isMobile && !walletId && (
-        <button className="connect-wallet" onClick={onConnectWallet}>
+        <Button variant="primary" size="md" onClick={onConnectWallet}>
           <span>Connect Wallet</span>
-        </button>
+        </Button>
       )}
     </div>
   );
