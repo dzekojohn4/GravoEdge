@@ -7,8 +7,11 @@ import { useMatchMedia } from 'hooks/useMatchMedia';
 import { getBalances } from '../services/wallet';
 import useScrollTracker from 'hooks/useScrollTracker';
 import PaginationDots from './PaginationDots';
+import useWalletStore from 'stores /useWalletStore';
 
-const BalanceCards = ({ walletId }) => {
+const BalanceCards = () => {
+    const { walletId } = useWalletStore();
+
   const [balances, setBalances] = useState([
     { icon: <ETH />, title: 'ETH', balance: '0.00' },
     { icon: <USDC />, title: 'USDC', balance: '0.00' },

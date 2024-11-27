@@ -13,8 +13,12 @@ import CongratulationsModal from 'components/congratulationsModal/Congratulation
 import StyledPopup from 'components/openpositionpopup/StyledPopup';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import useWalletStore from 'stores /useWalletStore';
 
-const Form = ({ walletId, setWalletId }) => {
+
+const Form = () => {
+    const { walletId, setWalletId } = useWalletStore();
+
   const [tokenAmount, setTokenAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState('ETH');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
