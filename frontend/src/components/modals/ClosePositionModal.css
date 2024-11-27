@@ -51,17 +51,6 @@
 /* mdeium screens */
 
 @media only screen and (min-width: 769px) {
-  .background {
-    height: 390px;
-    width: 528px;
-    background-image: url('/public/positionBg.svg');
-    background-color: transparent;
-    background-size: center;
-    background-position: 27%;
-    background-repeat: no-repeat;
-    border-radius: 24px;
-  }
-
   .container {
     position: relative;
     width: 100%;
@@ -114,16 +103,6 @@
 }
 /* mobile screens */
 @media only screen and (max-width: 768px) {
-  .background {
-    height: 390px;
-    width: 368px;
-    background-image: url('/public/positionBg.svg');
-    background-color: transparent;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 24px;
-  }
   .container {
     max-width: 100%;
     display: flex;
@@ -179,17 +158,6 @@
 
 /* Large screens */
 @media only screen and (min-width: 1024px) {
-  .background {
-    height: 500px; /* Increased size for large screens */
-    width: 700px; /* Increased size for large screens */
-    background-image: url('/public/positionBg.svg');
-    background-color: transparent;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 24px;
-  }
-
   .container {
     position: relative;
     width: 80%; /* Adjusted width */
