@@ -1,7 +1,6 @@
 import React from 'react';
 import './telegramNotificationModal.css';
 import useTelegramNotification from 'hooks/useTelegramNotification';
-import { Notifier } from 'components/Notifier/Notifier';
 import Button from 'components/ui/Button/Button';
 
 const TelegramNotificationModal = ({ onClose, telegramId, walletId }) => {
@@ -13,7 +12,6 @@ const TelegramNotificationModal = ({ onClose, telegramId, walletId }) => {
 
   return (
     <div className="notification-overlay">
-      <Notifier />
       <div className="notification-backdrop" onClick={onClose} />
       <div className="notification-wrapper">
         <div className="notification-box">

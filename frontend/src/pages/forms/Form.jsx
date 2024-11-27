@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import TokenSelector from 'components/TokenSelector';
 import BalanceCards from 'components/BalanceCards';
 import MultiplierSelector from 'components/MultiplierSelector';
-import { connectWallet } from 'services/wallet';
 import { handleTransaction } from 'services/transaction';
 import Spinner from 'components/spinner/Spinner';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
@@ -14,6 +13,7 @@ import StyledPopup from 'components/openpositionpopup/StyledPopup';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Button from 'components/ui/Button/Button';
+import { useConnectWallet } from 'hooks/useConnectWallet';
 
 const Form = ({ walletId, setWalletId }) => {
   const [tokenAmount, setTokenAmount] = useState('');
@@ -25,6 +25,8 @@ const Form = ({ walletId, setWalletId }) => {
   const [successful, setSuccessful] = useState(false);
   useLockBodyScroll(successful);
   const [showPopup, setShowPopup] = useState(false);
+
+  const connectWalletMutation = useConnectWallet(setWalletId);
 
   const { data: positionData, refetch: refetchPosition } = useQuery({
     queryKey: ['hasOpenPosition', walletId],
@@ -38,32 +40,19 @@ const Form = ({ walletId, setWalletId }) => {
     enabled: !!walletId,
   });
 
-  const connectWalletHandler = async () => {
-    try {
-      setError(null);
-      const address = await connectWallet();
-      if (address) {
-        setWalletId(address);
-        console.log('Wallet successfully connected. Address:', address);
-        return address;
-      } else {
-        setError('Failed to connect wallet. Please try again.');
-        console.error('Wallet connection flag is false after enabling');
-      }
-    } catch (error) {
-      console.error('Wallet connection failed:', error);
-      setError('Failed to connect wallet. Please try again.');
-    }
-    return null;
+  const connectWalletHandler = () => {
+    connectWalletMutation.mutate();
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     let connectedWalletId = walletId;
     if (!connectedWalletId) {
-      connectedWalletId = await connectWalletHandler();
-      if (!connectedWalletId) return;
+      connectWalletHandler();
+      return;
     }
+
     await refetchPosition();
     if (positionData?.has_opened_position) {
       setShowPopup(true);
@@ -99,7 +88,6 @@ const Form = ({ walletId, setWalletId }) => {
       <BalanceCards walletId={walletId} />
       {successful && createPortal(<CongratulationsModal />, document.body)}
       <StyledPopup isOpen={showPopup} onClose={handleClosePopup} onClosePosition={handleClosePosition} />
-      {/* The rest of the UI stays largely unchanged */}
       <form className="form-container" onSubmit={handleSubmit}>
         <div className="form-title">
           <h1>Please submit your leverage details</h1>

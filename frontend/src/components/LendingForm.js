@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getTokenBalances, sendTransaction } from 'services/wallet';
-import { Notifier } from 'components/Notifier/Notifier';
 import { notifyError } from 'utils/notification';
 import { axiosInstance } from 'utils/axios';
 import Button from 'components/ui/Button/Button';
