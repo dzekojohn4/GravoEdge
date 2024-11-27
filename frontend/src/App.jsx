@@ -13,29 +13,25 @@ import { logout } from 'services/wallet';
 import { saveTelegramUser, getTelegramUserWalletId } from 'services/telegram';
 import Documentation from 'pages/spotnet/documentation/Documentation';
 import Withdraw from 'pages/vault/withdraw/Withdraw';
+import { useWalletStore } from 'stores/useWalletStore'; 
+import { Notifier } from 'components/Notifier/Notifier';
 import { useConnectWallet } from 'hooks/useConnectWallet';
 import { Notifier } from 'components/Notifier/Notifier';
 import Stake from 'pages/vault/stake/Stake';
 
 function App() {
-  const [walletId, setWalletId] = useState(localStorage.getItem('wallet_id'));
+  const { walletId, setWalletId, removeWalletId } = useWalletStore(); 
   const [tgUser, setTgUser] = useState(JSON.parse(localStorage.getItem('tg_user')));
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-  const connectWalletMutation = useConnectWallet(setWalletId);
-
+  const connectWalletMutation = useConnectWallet(setWalletId); 
   useEffect(() => {
     if (tgUser) {
       saveTelegramUser(tgUser, walletId)
         .then(() => console.log('Telegram user saved successfully'))
         .catch((error) => console.error('Error saving Telegram user:', error));
     }
-    if (!walletId) {
-      localStorage.removeItem('wallet_id');
-      return;
-    }
-    localStorage.setItem('wallet_id', walletId);
   }, [walletId, tgUser]);
 
   useEffect(() => {
@@ -53,15 +49,15 @@ function App() {
         .catch((error) => console.error('Error fetching wallet ID:', error));
       localStorage.setItem('tg_user', JSON.stringify(tgUser));
     }
-  }, [tgUser, walletId]);
+  }, [tgUser, walletId, setWalletId]);
 
   const handleConnectWallet = () => {
-    connectWalletMutation.mutate();
+    connectWalletMutation.mutate(); 
   };
 
   const handleLogout = () => {
     logout();
-    setWalletId(null);
+    removeWalletId();
     closeModal();
     navigate('/');
   };
@@ -81,23 +77,19 @@ function App() {
       <Header
         tgUser={tgUser}
         setTgUser={setTgUser}
-        walletId={walletId}
         onConnectWallet={handleConnectWallet}
         onLogout={handleLogoutModal}
       />
       <main>
         <Routes>
-          <Route
-            index
-            element={<SpotnetApp walletId={walletId} onConnectWallet={handleConnectWallet} onLogout={handleLogout} />}
-          />
+          <Route index element={<SpotnetApp onConnectWallet={handleConnectWallet} onLogout={handleLogout} />} />
           <Route
             path="/login"
             element={walletId ? <Navigate to="/" /> : <Login onConnectWallet={handleConnectWallet} />}
           />
-          <Route path="/dashboard" element={<Dashboard walletId={walletId} telegramId={tgUser} />} />
+          <Route path="/dashboard" element={<Dashboard telegramId={tgUser} />} />
           <Route path="/withdraw" element={<Withdraw />} />
-          <Route path="/form" element={<Form walletId={walletId} setWalletId={setWalletId} />} />
+          <Route path="/form" element={<Form />} />
           <Route path="/documentation" element={<Documentation />} />
 
             <Route path="/stake" element={<Stake />} />

@@ -1,8 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from 'utils/axios';
 import { closePosition } from 'services/transaction';
+import { useWalletStore } from 'stores/useWalletStore';
 
-export const useClosePosition = (walletId) => {
+export const useClosePosition = () => {
+        const { walletId } = useWalletStore();
+
   return useMutation({
     mutationFn: async () => {
       if (!walletId) {
