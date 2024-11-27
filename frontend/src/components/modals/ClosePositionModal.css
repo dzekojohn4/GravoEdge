@@ -54,7 +54,7 @@
   .background {
     height: 390px;
     width: 528px;
-    background-image: url('../../assets/images/positionBg.svg');
+    background-image: url('/public/positionBg.svg');
     background-color: transparent;
     background-size: center;
     background-position: 27%;
@@ -117,7 +117,7 @@
   .background {
     height: 390px;
     width: 368px;
-    background-image: url('../../assets/images/positionBg.svg');
+    background-image: url('/public/positionBg.svg');
     background-color: transparent;
     background-size: cover;
     background-position: center;
@@ -182,7 +182,7 @@
   .background {
     height: 500px; /* Increased size for large screens */
     width: 700px; /* Increased size for large screens */
-    background-image: url('../../assets/images/positionBg.svg');
+    background-image: url('/public/positionBg.svg');
     background-color: transparent;
     background-size: cover;
     background-position: center;
