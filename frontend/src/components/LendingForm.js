@@ -4,7 +4,7 @@ import { getTokenBalances, sendTransaction } from 'services/wallet';
 import { Notifier } from 'components/Notifier/Notifier';
 import { notifyError } from 'utils/notification';
 import { axiosInstance } from 'utils/axios';
-import Button from './Button/Button';
+import Button from 'components/ui/Button/Button';
 
 const LendingForm = ({ walletId }) => {
   const navigate = useNavigate();
@@ -167,7 +167,7 @@ const LendingForm = ({ walletId }) => {
           </select>
         </div>
 
-        <Button variant="primary" size="lg" className="" disabled={isLoading}>
+        <Button variant="primary" size="lg" disabled={isLoading}>
           {isLoading ? 'Processing...' : 'Submit'}
         </Button>
         <Notifier />

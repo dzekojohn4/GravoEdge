@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Button from './Button/Button';
+import Button from 'components/ui/Button/Button';
 
 const WalletSection = ({ walletId, onConnectWallet, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -54,7 +54,7 @@ const WalletSection = ({ walletId, onConnectWallet, onLogout }) => {
             <div className="menu-dropdown">
               {/* Connect Wallet button for mob screens */}
               {isMobile && !walletId && (
-                <Button variant="primary" size="sm" className="" onClick={onConnectWallet}>
+                <Button variant="primary" size="sm" onClick={onConnectWallet}>
                   <span>Connect Wallet</span>
                 </Button>
               )}
@@ -83,7 +83,7 @@ const WalletSection = ({ walletId, onConnectWallet, onLogout }) => {
 
       {/* Connect Wallet button for big screens (outside menu) */}
       {!isMobile && !walletId && (
-        <Button variant="primary" size="md" className="" onClick={onConnectWallet}>
+        <Button variant="primary" size="md" onClick={onConnectWallet}>
           <span>Connect Wallet</span>
         </Button>
       )}

@@ -2,7 +2,7 @@ import React from 'react';
 import './telegramNotificationModal.css';
 import useTelegramNotification from 'hooks/useTelegramNotification';
 import { Notifier } from 'components/Notifier/Notifier';
-import Button from '../Button/Button';
+import Button from 'components/ui/Button/Button';
 
 const TelegramNotificationModal = ({ onClose, telegramId, walletId }) => {
   const { subscribe, isLoading } = useTelegramNotification();
@@ -32,7 +32,7 @@ const TelegramNotificationModal = ({ onClose, telegramId, walletId }) => {
             <Button variant="secondary" size="md" className="notification-btn" onClick={onClose} disabled={isLoading}>
               Cancel
             </Button>
-            <Button variant="primary" size="md" className="" onClick={handleSubscribe} disabled={isLoading}>
+            <Button variant="primary" size="md" onClick={handleSubscribe} disabled={isLoading}>
               {isLoading ? 'Subscribing...' : 'Yes, Sure'}
             </Button>
           </div>

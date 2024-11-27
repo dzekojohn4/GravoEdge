@@ -24,14 +24,19 @@
 }
 
 .button--md {
-  width: 342px;
+  width: 309px;
   padding: 18px 24px;
   font-size: 16px;
 }
 
-@media (min-width: 640px) {
+@media (max-width: 640px) {
+  .button--lg {
+    /* width: 324px; */
+    width: 100%;
+  }
+
   .button--md {
-    width: 309px;
+    width: 167px;
   }
 }
 
