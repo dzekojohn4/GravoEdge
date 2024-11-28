@@ -12,19 +12,18 @@ import { logout } from 'services/wallet';
 import { saveTelegramUser, getTelegramUserWalletId } from 'services/telegram';
 import Documentation from 'pages/spotnet/documentation/Documentation';
 import Withdraw from 'pages/vault/withdraw/Withdraw';
-import { useWalletStore } from 'stores/useWalletStore'; 
+import { useWalletStore } from 'stores/useWalletStore';
 import { Notifier } from 'components/Notifier/Notifier';
 import { useConnectWallet } from 'hooks/useConnectWallet';
 import { ActionModal } from 'components/ui/ActionModal';
 
-
 function App() {
-  const { walletId, setWalletId, removeWalletId } = useWalletStore(); 
+  const { walletId, setWalletId, removeWalletId } = useWalletStore();
   const [tgUser, setTgUser] = useState(JSON.parse(localStorage.getItem('tg_user')));
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-  const connectWalletMutation = useConnectWallet(setWalletId); 
+  const connectWalletMutation = useConnectWallet(setWalletId);
   useEffect(() => {
     if (tgUser) {
       saveTelegramUser(tgUser, walletId)
@@ -51,7 +50,7 @@ function App() {
   }, [tgUser, walletId, setWalletId]);
 
   const handleConnectWallet = () => {
-    connectWalletMutation.mutate(); 
+    connectWalletMutation.mutate();
   };
 
   const handleLogout = () => {
@@ -72,7 +71,18 @@ function App() {
   return (
     <div className="App">
       <Notifier />
-      {showModal && createPortal(<ActionModal title="Logout" subTitle={"Do you want to disconnect your wallet and logout of this account?"}  cancelLabel='Cancel' submitLabel="Yes, logout" submitAction={handleLogout} cancelAction={closeModal}/>, document.body)}
+      {showModal &&
+        createPortal(
+          <ActionModal
+            title="Logout"
+            subTitle={'Do you want to disconnect your wallet and logout of this account?'}
+            cancelLabel="Cancel"
+            submitLabel="Yes, logout"
+            submitAction={handleLogout}
+            cancelAction={closeModal}
+          />,
+          document.body
+        )}
       <Header
         tgUser={tgUser}
         setTgUser={setTgUser}

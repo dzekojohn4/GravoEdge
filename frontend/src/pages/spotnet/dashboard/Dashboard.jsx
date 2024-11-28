@@ -236,7 +236,17 @@ export default function Component({ telegramId }) {
             Enable telegram notification bot
           </Button>
           {showModal && (
-            <ActionModal title="Telegram Notification" subTitle="Do you want to enable telegram notification bot?" content={["This will allow you to receive quick notifications on your telegram line in realtime. You can disable this setting anytime."]} cancelLabel='Cancel' submitLabel="Yes, Sure" submitAction={handleSubscribe} cancelAction={handleClose}/>
+            <ActionModal
+              title="Telegram Notification"
+              subTitle="Do you want to enable telegram notification bot?"
+              content={[
+                'This will allow you to receive quick notifications on your telegram line in realtime. You can disable this setting anytime.',
+              ]}
+              cancelLabel="Cancel"
+              submitLabel="Yes, Sure"
+              submitAction={handleSubscribe}
+              cancelAction={handleClose}
+            />
           )}
         </div>
       </div>
