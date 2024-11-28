@@ -5,7 +5,7 @@ import './stake.css';
 import { VaultLayout } from '../VaultLayout';
 import { Button } from 'components/ui/Button';
 import MetricCard from 'components/StakeCard/MetricCard';
-import GasFee from 'components/StakeCard/GasFee';
+import GasFee from 'components/GasFee/GasFee';
 
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
@@ -27,8 +27,8 @@ function Stake() {
 
   return (
     <VaultLayout>
-      <div className="withdraw-wrapper">
-        <div className="withdraw-container">
+      <div className="stake-wrapper">
+        <div className="stake-container">
           <div className='main-container'>
             <div className="top-cards">
               <MetricCard title="STRK Balance" value="0.046731" icon={STRK} />
@@ -36,7 +36,7 @@ function Stake() {
             </div>
           </div>
 
-          <h1 className="withdraw-title">Please submit your leverage details</h1>
+          <h1 className="stake-title">Please submit your leverage details</h1>
 
           <div className="main-card">
             <div className="network-selector-container">

@@ -4,13 +4,14 @@
   background: url('../../../public/background.png') no-repeat;
   background-size: cover;
   background-position: center 39%;
+  background-repeat: no-repeat;
   position: relative;
 }
 
 .sidebar {
   width: 280px;
   background-color: #00000F;
-  border-right: 1px solid rgba(139, 92, 246, 0.1);
+  border-right: 1px solid #300734;
   display: flex;
   flex-direction: column;
   padding: 1.5rem 2.5rem 1.5rem;
@@ -24,7 +25,7 @@
   font-weight: 500;
   margin-bottom: 1rem;
   padding-bottom: 8px;
-  border-bottom: 1px solid #36294E;
+  border-bottom: 1px solid var(--light-purple);
 }
 
 .sidebar-nav {
@@ -37,7 +38,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: white;
   text-decoration: none;
   font-size: 0.875rem;
   transition: color 0.2s;
@@ -70,80 +71,18 @@
 
 
 .nav-item.active .nav-bullet {
-  color: #49ABD2;
+  color: var(--nav-button-hover);
 }
 
 .main-content {
   flex: 1;
-  padding: 0;
+  padding: 2rem 0;
   position: relative;
-  padding-bottom: 4rem;
-}
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  width: calc(100% - 240px);
-  border-top: 1px solid rgba(139, 92, 246, 0.2);
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.footer-links {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.footer-link {
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: none;
-  font-size: 0.875rem;
-  transition: color 0.2s;
-}
-
-.footer-link:hover {
-  color: white;
-}
-
-.footer-social {
-  display: flex;
-  gap: 1rem;
-}
-
-.social-button {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  padding: 0.25rem;
-  transition: color 0.2s;
-}
-
-.social-button:hover {
-  color: white;
 }
 
 @media (max-width: 768px) {
   .sidebar {
     width: 200px;
-  }
-
-  .footer {
-    width: calc(100% - 200px);
-  }
-
-  .footer-links {
-    display: none;
   }
 }
 
@@ -152,7 +91,4 @@
     width: 160px;
   }
 
-  .footer {
-    width: calc(100% - 160px);
-  }
 }
