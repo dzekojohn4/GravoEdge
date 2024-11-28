@@ -44,7 +44,7 @@
 
 .tooltip {
     position: absolute;
-    bottom: 34px;
+    bottom: 42px;
     left: 50%;
     transform: translateX(-50%);
     background-color: #2C5475;
