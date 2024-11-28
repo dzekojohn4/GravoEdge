@@ -67,7 +67,11 @@ const OverviewPage = () => {
     return (
         <div className="overview-container">
             <div className="sidebar">
-                <TableOfContents items={tableOfContents} />
+                <TableOfContents
+                    items={tableOfContents}
+                    defaultActiveId="welcome"
+                    headerHeight={80}
+                />
             </div>
 
             <div className='content'>
