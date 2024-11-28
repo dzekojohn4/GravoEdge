@@ -16,6 +16,8 @@ import { useWalletStore } from 'stores/useWalletStore';
 import { Notifier } from 'components/Notifier/Notifier';
 import { useConnectWallet } from 'hooks/useConnectWallet';
 import { ActionModal } from 'components/ui/ActionModal';
+import Stake from 'pages/vault/stake/Stake';
+
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore();
   const [tgUser, setTgUser] = useState(JSON.parse(localStorage.getItem('tg_user')));
@@ -100,6 +102,8 @@ function App() {
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/form" element={<Form />} />
           <Route path="/documentation" element={<Documentation />} />
+
+            <Route path="/stake" element={<Stake />} />
         </Routes>
       </main>
       <Footer />
