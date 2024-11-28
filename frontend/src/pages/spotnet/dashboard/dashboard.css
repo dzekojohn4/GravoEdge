@@ -473,11 +473,6 @@ body {
     gap: 32px;
   }
 
-  .top-cards {
-    width: 100%;
-    gap: 8px;
-  }
-
   .dashboard-info-card {
     max-width: 342px;
   }
@@ -495,13 +490,19 @@ body {
   }
 
   .top-cards {
-    flex-direction: column;
+    width: 100%;
+    flex-direction: row;
     gap: 8px;
   }
 
   .card {
     flex: 1;
-    padding: 8px 8px 12px 8px;
+    padding: 16px 24px;
+  }
+
+  .card-header {
+    width: 120%;
+    gap: 4px;
   }
 
   .tab {
