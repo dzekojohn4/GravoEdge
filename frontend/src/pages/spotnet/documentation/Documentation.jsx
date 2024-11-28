@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './documentation.css';
-import Section from './Section';
-import TableOfContents from './TableOfContents';
+import Section from '../../../components/Section';
+import TableOfContents from '../../../components/TableOfContents';
 import ScrollButton from '../../../components/scrollButton/ScrollButton';
 
 const Documentation = () => {
