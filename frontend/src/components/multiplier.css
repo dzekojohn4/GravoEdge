@@ -1,7 +1,7 @@
 .slider-container {
     width: 100%;
     border: none;
-    padding: 15px 48px;
+    padding: 38px 20px;
 }
 
 .slider {
@@ -162,7 +162,7 @@ div.marker {
     }
 
     .tooltip {
-        padding-left: 6px;
+        bottom: 38px;
     }
 
     .mark-item {
