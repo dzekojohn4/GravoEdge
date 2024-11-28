@@ -8,7 +8,10 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   const [actualValue, setActualValue] = useState(0.0);
   const sliderRef = useRef(null);
   const isDragging = useRef(false);
-  const maxMultiplier = useMemo(() => 10, [data, selectedToken]);
+
+  const maxMultiplier = useMemo(() => {
+    return Math.round(parseFloat((data?.[selectedToken]))) || 5.0;
+  }, [data, selectedToken]);
 
 
   const mapSliderToValue = useCallback(
