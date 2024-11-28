@@ -13,9 +13,21 @@ Key Concepts:
 
 Contract Reference:
 ------------------
-https://docs.ekubo.org/integration-guides/reference/contract-addresses#governance-contracts
+https://docs.ekubo.org/integration-guides/reference/contract-addresses#immutable-contracts
 
-Documentation: https://docs.ekubo.org/
+
+Documentation: 
+------------------
+https://docs.ekubo.org/
+
+
+Additional: 
+------------------
+https://github.com/EkuboProtocol/abis/blob/main/src/interfaces/router.cairo
+https://mainnet-api.ekubo.org/openapi.json
+https://petstore3.swagger.io/?url=https://mainnet-api.ekubo.org/openapi.json
+https://petstore3.swagger.io/?url=https://mainnet-api.ekubo.org/openapi.json#/Swap/get_Na
+
 
 Implementation Flow:
 ------------------
@@ -38,9 +50,9 @@ class PoolKey:
     extension: str
 
 @dataclass
-class SwapRoute:
+class RouteNode:
     """Structure for defining swap path"""
-    pool_key: PoolKey #Dict[str, str] - Contains token0, token1, fee, tick_spacing, extension
+    pool_key: PoolKey
     sqrt_ratio_limit: int
     skip_ahead: int
 
@@ -51,16 +63,23 @@ class TokenAmount:
     amount: int
     is_positive: bool
 
-class RouteQuote(BaseModel):
-    """Single route quote from API"""
+
+class Split(BaseModel):
+    """
+    Represents a single split in a quote response.
+    """
+    specifiedAmount: str
     amount: str
-    priceImpact: str
-    route: List[Dict]
+    route: List[RouteNode]
 
 class QuoteResponse(BaseModel):
-    """Full API response structure"""
-    specifiedAmount: str
-    routes: List[RouteQuote]
+    """
+    Represents the response for a quote, 
+    containing details about the total result and individual splits.
+    """
+    total: str
+    splits: List[Split]
+
 
 class EkuboFlashLoan:
     """
@@ -72,14 +91,13 @@ class EkuboFlashLoan:
     - Uses flash accounting for internal balance management
     """
 
-    def __init__(self, core_contract:str):
-        # Core contract - handles actual swaps and flash accounting
-        self.core_contract = core_contract
+    def __init__(self, router_contract:str):
+        self.router_contract = router_contract
         self.api_url = "https://mainnet-api.ekubo.org"
 
     async def get_profitable_route(self, input_token: str, amount: int,
                                    min_profit_bps: int = 50
-                                   ) -> Optional[Tuple[List[SwapRoute], int]]:
+                                   ) -> Optional[Tuple[List[RouteNode], int]]:
         """
         Find profitable arbitrage route using Ekubo API
         
@@ -95,10 +113,6 @@ class EkuboFlashLoan:
             Tuple of (route, expected_output_amount) if profitable route found,
             None otherwise
         """
-
-        # Convert amount to integer, handling any number of decimals
-        # decimal_places = 18  # Default decimal places for most tokens
-        # amount_int = int(amount * Decimal(10**decimal_places))
 
         try:
             async with httpx.AsyncClient() as client:
@@ -116,7 +130,7 @@ class EkuboFlashLoan:
             return None
 
     def _find_best_route(self, quote_data: QuoteResponse, input_amount: int,
-                         min_profit_bps: int) -> Optional[Tuple[List[SwapRoute], int]]:
+                         min_profit_bps: int) -> Optional[Tuple[List[RouteNode], int]]:
         """
         Select most profitable route from quote response
         """
@@ -141,9 +155,9 @@ class EkuboFlashLoan:
             return best_route, best_output
         return None
 
-    def _parse_route_node(self, node: Dict) -> SwapRoute:
+    def _parse_route_node(self, node: Dict) -> RouteNode:
         """Parse single route node from API response"""
-        return SwapRoute(
+        return RouteNode(
             pool_key=PoolKey(
                 token0=node['pool_key']['token0'],
                 token1=node['pool_key']['token1'],
@@ -155,8 +169,8 @@ class EkuboFlashLoan:
             skip_ahead=int(node['skip_ahead'], 16)
         )
 
-    def prepare_flash_loan_tx(self, route: List[SwapRoute],
-            borrow_amount: TokenAmount) -> Dict:
+    def prepare_flash_loan_tx(self, route: List[RouteNode],
+            token_amount: TokenAmount) -> Dict:
         """
         Prepare transaction for flash loan arbitrage
             
@@ -167,12 +181,12 @@ class EkuboFlashLoan:
         4. Repay loan automatically from swap proceeds
         """
         return {
-                'contract_address': self.core_contract,
-                'entry_point_selector': 'multi_route_swap',
-                'calldata': self._encode_multi_route_swap(route, borrow_amount)
+                'contract_address': self.router_contract,
+                'entry_point_selector': 'multihop_swap',
+                'calldata': self._encode_multihop_swap(route, token_amount)
             }
 
-    def _encode_multi_route_swap(self, route: List[SwapRoute],
+    def _encode_multihop_swap(self, route: List[RouteNode],
             token_amount: TokenAmount) -> List[int]:
         """Encode parameters for multihop_swap"""
         calldata = [len(route)]  # Route length
@@ -213,7 +227,7 @@ async def get_transaction_data(deposit_token: str, scaled_amount: int,) -> Optio
     """
     # Initialize flash loan handler
     ekubo = EkuboFlashLoan(
-        core_contract="0x00000005dd3D2F4429AF886cD1a3b08289DBcEa99A294197E9eB43b0e0325b4b"
+        router_contract="0x0199741822c2dc722f6f605204f35e56dbc23bceed54818168c4c49e4fb8737e"
     )
 
     # Find profitable route
@@ -229,10 +243,10 @@ async def get_transaction_data(deposit_token: str, scaled_amount: int,) -> Optio
     route, _output_amount = route_result
 
     # Prepare borrow amount
-    borrow_amount = TokenAmount(
+    token_amount = TokenAmount(
         token=deposit_token,
         amount=scaled_amount,
         is_positive=True
     )
 
-    return ekubo.prepare_flash_loan_tx(route, borrow_amount)
+    return ekubo.prepare_flash_loan_tx(route, token_amount)
