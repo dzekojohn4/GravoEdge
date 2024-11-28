@@ -120,7 +120,7 @@ export default function Component({ telegramId }) {
       <div className="dashboard-container">
         {loading && <Spinner loading={loading} />}
         <h1 className="dashboard-title">zkLend Position</h1>
-        <div className="main-container">
+        <div className="dashboard-content">
           <div className="top-cards">
             <div className="card">
               <div className="card-header">
@@ -143,7 +143,7 @@ export default function Component({ telegramId }) {
               </div>
             </div>
           </div>
-          <div className="main-card">
+          <div className="dashboard-info-card">
             <div className="tabs">
               <button
                 onClick={() => setIsCollateralActive(true)}
