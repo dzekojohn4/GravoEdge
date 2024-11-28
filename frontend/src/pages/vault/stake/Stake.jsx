@@ -4,6 +4,7 @@ import USDC from '../../../assets/icons/borrow_usdc.svg';
 import './stake.css';
 import { VaultLayout } from '../VaultLayout';
 import { CogIcon } from 'lucide-react';
+import { Button } from 'components/ui/Button';
 
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
@@ -92,7 +93,7 @@ function Stake() {
           </div>
         </div>
 
-        <button className="stake-button">Stake</button>
+        <Button variant='secondary' size='lg' className='stake-button'>Stake</Button>
 
       </div>
     </VaultLayout>
