@@ -45,7 +45,7 @@ const Form = () => {
     }
 
     await refetchPosition();
-    if (!positionData?.has_opened_position) {
+    if (positionData?.has_opened_position) {
       setClosePositionOpen(true);
       return;
     }
