@@ -1,15 +1,21 @@
 .header-nav {
-  position: relative;
+  position: fixed; 
+  top: 0; 
+  left: 0;
+  z-index: 1000; 
   display: flex;
   align-items: center;
-  width: 100%;
-  justify-content: center;
-  height: 90px;
+  width: 100%; 
   white-space: nowrap;
   background: var(--header-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #300734;
 }
+
+body {
+  padding-top: 90px;
+}
+
 
 .list-items {
   display: flex;
@@ -18,7 +24,7 @@
   background-color: transparent;
   width: 100%;
   padding: 0 30px;
-  position: relative;
+  position: absolute;
 }
 
 .nav-divider {
