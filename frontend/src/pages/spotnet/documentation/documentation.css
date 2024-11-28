@@ -1,11 +1,11 @@
 .documentation-container {
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0B0B14 0%, #1A1A2E 100%);
   color: var(--primary);
   position: relative;
   padding-top: 80px;
 }
+
 
 .documentation-container::before {
   content: '';
@@ -14,10 +14,10 @@
   right: 0;
   width: 100%;
   height: 100%;
-  background-image: 
-    radial-gradient(circle at 85% 15%, rgba(255,255,255,0.25) 1px, transparent 1px),
-    radial-gradient(circle at 15% 85%, rgba(255,255,255,0.25) 1px, transparent 1px),
-    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.25) 1px, transparent 1px);
+  background-image:
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.25) 1px, transparent 1px),
+    radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.25) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.25) 1px, transparent 1px);
   background-size: 100px 100px;
   pointer-events: none;
   z-index: 0;
@@ -27,6 +27,9 @@
   margin-left: 280px;
   flex: 1;
   padding: 2rem 3rem;
+  background: url('../../../../public/background.png') no-repeat;
+  background-size: cover;
+  background-position: center 39%;
   position: relative;
 }
 
@@ -34,8 +37,8 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 3rem;
-  color: #74D6FD;
-  background: linear-gradient(73deg, #74D6FD 1.13%, #E01DEE 103.45%);
+  color: white !important;
+  background: white;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
