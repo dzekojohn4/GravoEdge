@@ -16,7 +16,6 @@ import Withdraw from 'pages/vault/withdraw/Withdraw';
 import { useWalletStore } from 'stores/useWalletStore'; 
 import { Notifier } from 'components/Notifier/Notifier';
 import { useConnectWallet } from 'hooks/useConnectWallet';
-import { Notifier } from 'components/Notifier/Notifier';
 import Stake from 'pages/vault/stake/Stake';
 
 function App() {
