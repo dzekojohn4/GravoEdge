@@ -8,7 +8,6 @@ import SpotnetApp from 'pages/spotnet/spotnet_app/SpotnetApp';
 import Login from 'pages/Login';
 import Form from 'pages/forms/Form';
 import { createPortal } from 'react-dom';
-import LogoutModal from './components/Logout/LogoutModal';
 import { logout } from 'services/wallet';
 import { saveTelegramUser, getTelegramUserWalletId } from 'services/telegram';
 import Documentation from 'pages/spotnet/documentation/Documentation';
@@ -16,6 +15,7 @@ import Withdraw from 'pages/vault/withdraw/Withdraw';
 import { useWalletStore } from 'stores/useWalletStore'; 
 import { Notifier } from 'components/Notifier/Notifier';
 import { useConnectWallet } from 'hooks/useConnectWallet';
+import { ActionModal } from 'components/ui/ActionModal';
 
 
 function App() {
@@ -72,7 +72,7 @@ function App() {
   return (
     <div className="App">
       <Notifier />
-      {showModal && createPortal(<LogoutModal onClose={closeModal} onLogout={handleLogout} />, document.body)}
+      {showModal && createPortal(<ActionModal title="Logout" content={["Do you want to disconnect your wallet and logout of this account?"]} cancelLabel='Cancel' submitLabel="Yes, logout" submitAction={handleLogout} cancelAction={closeModal}/>, document.body)}
       <Header
         tgUser={tgUser}
         setTgUser={setTgUser}
