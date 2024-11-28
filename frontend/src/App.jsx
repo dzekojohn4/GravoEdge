@@ -16,6 +16,7 @@ import Withdraw from 'pages/vault/withdraw/Withdraw';
 import { useWalletStore } from 'stores/useWalletStore'; 
 import { Notifier } from 'components/Notifier/Notifier';
 import { useConnectWallet } from 'hooks/useConnectWallet';
+import OverviewPage from 'pages/spotnet/overview/Overview';
 
 
 function App() {
@@ -88,6 +89,7 @@ function App() {
           />
           <Route path="/dashboard" element={<Dashboard telegramId={tgUser} />} />
           <Route path="/withdraw" element={<Withdraw />} />
+          <Route path="/overview" element={<OverviewPage />} />
           <Route path="/form" element={<Form />} />
           <Route path="/documentation" element={<Documentation />} />
         </Routes>
