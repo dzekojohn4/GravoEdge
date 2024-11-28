@@ -2,10 +2,14 @@ import React from "react";
 import ArrowDownDouble from "../../../assets/icons/arrow-down-double.svg"
 import "./overview.css";
 import { Button, Image } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom';
+
 
 const OverviewPage = () => {
+    const location = useLocation();
+    const activeHash = location.hash
 
+    console.log(activeHash)
 
     const handleScrollDown = () => {
         const scrollAmount = document.documentElement.scrollHeight * 0.3;
@@ -20,45 +24,54 @@ const OverviewPage = () => {
         <div className="overview-container">
             <nav className="sidebar">
                 <h2 className="sidebar-title">Content</h2>
-                <ul className="sidebar-list">
-                    <li>
-                        <Link to="/overview" className="active-link">
-                            • Welcome
-                        </Link>
-                    </li>
-                    <li style={{ width: "100%" }}>
-                        <div className="list-label-container">
+                <div>
 
-                        <a href="#how-it-works" className="list-label">• How It Works</a>
-                        </div>
-                        <ul className="sidebar-sublist">
-                            <li>
-                                <a href="#connect-wallet">◦ Connect Your Wallet</a>
-                            </li>
-                            <li>
-                                <a href="#choose-service">◦ Choose a Service</a>
-                            </li>
-                            <li>
-                                <a href="#transact-seamlessly">◦ Transact Seamlessly</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#supported-chains">• Supported Chains</a>
-                    </li>
-                </ul>
+                    <ul className="sidebar-list">
+                        <li>
+                            <Link
+                                to="/overview"
+                                className={`sidebar-link ${!location.hash && location.pathname ==="/overview" ? 'active' : ''}`}
+                            >
+                                • Welcome
+                            </Link>
+                        </li>
+                        <li>
+                            <div className="list-label-container">
+                                <a href="#how-it-works" className={`sidebar-link ${activeHash === '#how-it-works' ? 'active' : ''} list-label`}>
+                                    • How It Works
+                                </a>
+                            </div>
+                            <ul className="sidebar-sublist">
+                                <li>
+                                    <a href="#connect-wallet">◦ Connect Your Wallet</a>
+                                </li>
+                                <li>
+                                    <a href="#choose-service">◦ Choose a Service</a>
+                                </li>
+                                <li>
+                                    <a href="#transact-seamlessly">◦ Transact Seamlessly</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a
+                                href="#supported-chains"
+                                className={`sidebar-link ${activeHash === '#supported-chains' ? 'active' : ''}`}
+                            >
+                                • Supported Chains
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
             </nav>
-
 
             <div className="scroll-button-container">
                 <Button onClick={handleScrollDown} className="scroll-button">Sroll down <Image src={ArrowDownDouble} /> </Button>
             </div>
 
-            {/* Main Content */}
             <main className="content">
                 <h1 className="content-title">Overview</h1>
-
-                {/* Welcome Section */}
                 <section id="welcome" className="section">
                     <h2 className="section-title">• Welcome</h2>
                     <p className="section-text">
