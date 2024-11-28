@@ -59,6 +59,10 @@ def create_positions(session: SessionLocal, users: list[User]) -> None:
                 status=fake.random_element(
                     elements=[status.value for status in Status]
                 ),
+                is_protection=fake.boolean(),
+                liquidation_bonus=fake.pyfloat(min_value=0.0, max_value=1.0),
+                is_liquidated=fake.boolean(),
+                datetime_liquidation=fake.date_time_this_decade(),
             )
             positions.append(position)
     if positions:
@@ -109,6 +113,7 @@ def create_telegram_users(session: SessionLocal, users: list[User]) -> None:
                 last_name=fake.last_name(),
                 wallet_id=user.wallet_id,
                 photo_url=fake.image_url(),
+                is_allowed_notification=fake.boolean(),
             )
             telegram_users.append(telegram_user)
     session.bulk_save_objects(telegram_users)
