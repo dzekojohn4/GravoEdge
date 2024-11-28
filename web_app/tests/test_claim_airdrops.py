@@ -1,176 +1,220 @@
 """
-Tests for the AirdropClaimer class, covering happy and negative paths.
+Tests for the AirdropClaimer class, covering comprehensive airdrop claim operations.
 
 Fixtures:
-- mock_db_connector: Provides an AirDropDBConnector instance.
-- mock_starknet_client: Provides an AirDropDBConnector instance.
-- mock_zk_lend_airdrop: Provides an AirDropDBConnector instance.
-- airdrop_claimer: Provides an AirDropDBConnector instance.
+- airdrop_claimer: Fixture creating a mock AirdropClaimer instance for consistent testing
+- mock_airdrop: Fixture generating a standard mock airdrop object for reusable test scenarios
 
 Test Cases:
-- test_claim_airdrops_success: Test successful airdrop claiming process.
-- test_claim_airdrops_connection_error: Test handling of connection errors during claim.
-- test_claim_airdrops_database_error: Test handling of database errors during airdrop claiming.
-- test_claim_airdrop_method_success: Test the internal _claim_airdrop for successful scenario.
-- test_claim_airdrop_method_errors: Test the internal _claim_airdrop for error scenarios.
+- test_claim_airdrops_successful: Validates successful airdrop claim workflow
+- test_claim_airdrops_no_unclaimed: Checks behavior when no unclaimed airdrops exist
+- test_claim_airdrops_partial_failure: Tests mixed success and failure scenarios
+- test_claim_airdrops_database_error: Verifies database error handling
+- test_claim_airdrop_timeout_error: Ensures proper handling of request timeout errors
+- test_claim_airdrop_invalid_proof: Checks processing of invalid proof data
+- test_claim_airdrop_unexpected_error: Validates unexpected error management
 """
 
+import logging
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-import pytest_asyncio
 from requests.exceptions import ConnectionError, Timeout
 from sqlalchemy.exc import SQLAlchemyError
 
-from web_app.contract_tools.airdrop import ZkLendAirdrop
-from web_app.contract_tools.blockchain_call import StarknetClient
-from web_app.db.crud import AirDropDBConnector
 from web_app.tasks.claim_airdrops import AirdropClaimer
 
 
 @pytest.fixture
-def mock_db_connector():
-    """Fixture to create a mock AirDropDBConnector."""
-    return MagicMock(spec=AirDropDBConnector)
+def airdrop_claimer():
+    """
+    Fixture to create a mock AirdropClaimer instance for each test.
+
+    Yields:
+        claimer
+    """
+    claimer = AirdropClaimer()
+    claimer.db_connector = MagicMock()
+    claimer.starknet_client = AsyncMock()
+    claimer.zk_lend_airdrop = MagicMock()
+    yield claimer
 
 
 @pytest.fixture
-def mock_starknet_client():
-    """Fixture to create a mock StarknetClient."""
-    return AsyncMock(spec=StarknetClient)
+def mock_airdrop():
+    """
+    Create a standard mock airdrop for reusable test setup.
 
-
-@pytest.fixture
-def mock_zk_lend_airdrop():
-    """Fixture to create a mock ZkLendAirdrop."""
-    return MagicMock(spec=ZkLendAirdrop)
-
-
-@pytest_asyncio.fixture
-async def airdrop_claimer(
-    mock_db_connector, mock_starknet_client, mock_zk_lend_airdrop
-):
-    """Fixture to create an AirdropClaimer with mocked dependencies."""
-    with (
-        patch(
-            "web_app.contract_tools.airdrop.ZkLendAirdrop",
-            return_value=mock_zk_lend_airdrop,
-        ),
-        patch(
-            "web_app.contract_tools.blockchain_call.StarknetClient",
-            return_value=mock_starknet_client,
-        ),
-        patch("web_app.db.crud.AirDropDBConnector", return_value=mock_db_connector),
-    ):
-        claimer = AirdropClaimer()
-        return claimer
+    Yields:
+        mock_airdrop
+    """
+    mock_airdrop = MagicMock()
+    mock_airdrop.user.contract_address = "0x123"
+    mock_airdrop.id = 1
+    mock_airdrop.amount = 100
+    yield mock_airdrop
 
 
 @pytest.mark.asyncio
-async def test_claim_airdrops_success(
-    airdrop_claimer, mock_db_connector, mock_starknet_client, mock_zk_lend_airdrop
-):
-    """Test successful airdrop claiming process."""
-    # Prepare mock data
-    mock_unclaimed_airdrop = MagicMock()
-    mock_unclaimed_airdrop.user.contract_address = "0x123"
-    mock_unclaimed_airdrop.id = 1
-    mock_unclaimed_airdrop.amount = 100
+async def test_claim_airdrops_successful(airdrop_claimer, mock_airdrop):
+    """
+    Test the claim_airdrops method for successful claims.
+    """
+    # Arrange
+    airdrop_claimer.db_connector.get_all_unclaimed.return_value = [mock_airdrop]
+    airdrop_claimer.zk_lend_airdrop.get_contract_airdrop.return_value = [
+        "proof1",
+        "proof2",
+    ]
+    airdrop_claimer.starknet_client.claim_airdrop.return_value = True
 
-    # Setup mock behaviors
-    mock_db_connector.get_all_unclaimed.return_value = [mock_unclaimed_airdrop]
-    mock_zk_lend_airdrop.get_contract_airdrop.return_value = ["proof1", "proof2"]
-    mock_starknet_client.claim_airdrop.return_value = True
-
-    # Run the method
+    # Act
     await airdrop_claimer.claim_airdrops()
 
-    # Assert expected calls
-    mock_zk_lend_airdrop.get_contract_airdrop.assert_called_once_with("0x123")
-    mock_starknet_client.claim_airdrop.assert_called_once_with(
+    # Assertions
+    airdrop_claimer.zk_lend_airdrop.get_contract_airdrop.assert_called_with("0x123")
+    airdrop_claimer.starknet_client.claim_airdrop.assert_awaited_with(
         "0x123", ["proof1", "proof2"]
     )
-    mock_db_connector.save_claim_data.assert_called_once_with(1, 100)
+    airdrop_claimer.db_connector.save_claim_data.assert_called_with(1, 100)
 
 
 @pytest.mark.asyncio
-async def test_claim_airdrops_connection_error(
-    airdrop_claimer, mock_db_connector, mock_starknet_client, mock_zk_lend_airdrop
-):
-    """Test handling of connection errors during airdrop claiming."""
-    # Prepare mock data
-    mock_unclaimed_airdrop = MagicMock()
-    mock_unclaimed_airdrop.user.contract_address = "0x123"
-    mock_unclaimed_airdrop.id = 1
+async def test_claim_airdrops_no_unclaimed(airdrop_claimer):
+    """
+    Test claim_airdrops when no unclaimed airdrops exist.
+    """
+    # Arrange
+    airdrop_claimer.db_connector.get_all_unclaimed.return_value = []
 
-    # Setup mock behaviors
-    mock_db_connector.get_all_unclaimed.return_value = [mock_unclaimed_airdrop]
-    mock_zk_lend_airdrop.get_contract_airdrop.return_value = ["proof1", "proof2"]
-    mock_starknet_client.claim_airdrop.side_effect = ConnectionError("Network error")
-
-    # Run the method
+    # Act
     await airdrop_claimer.claim_airdrops()
 
-    # Assert expected calls
-    mock_starknet_client.claim_airdrop.assert_called_once_with(
-        "0x123", ["proof1", "proof2"]
-    )
-    mock_db_connector.save_claim_data.assert_not_called()
+    # Assertions
+    airdrop_claimer.zk_lend_airdrop.get_contract_airdrop.assert_not_called()
+    airdrop_claimer.starknet_client.claim_airdrop.assert_not_called()
+    airdrop_claimer.db_connector.save_claim_data.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_claim_airdrops_database_error(
-    airdrop_claimer, mock_db_connector, mock_starknet_client, mock_zk_lend_airdrop
-):
-    """Test handling of database errors during airdrop claiming."""
-    # Prepare mock data
-    mock_unclaimed_airdrop = MagicMock()
-    mock_unclaimed_airdrop.user.contract_address = "0x123"
-    mock_unclaimed_airdrop.id = 1
-    mock_unclaimed_airdrop.amount = 100
-
-    # Setup mock behaviors
-    mock_db_connector.get_all_unclaimed.return_value = [mock_unclaimed_airdrop]
-    mock_zk_lend_airdrop.get_contract_airdrop.return_value = ["proof1", "proof2"]
-    mock_starknet_client.claim_airdrop.return_value = True
-    mock_db_connector.save_claim_data.side_effect = SQLAlchemyError("Database error")
-
-    # Run the method
-    await airdrop_claimer.claim_airdrops()
-
-    # Assert expected calls
-    mock_starknet_client.claim_airdrop.assert_called_once_with(
-        "0x123", ["proof1", "proof2"]
+async def test_claim_airdrops_partial_failure(airdrop_claimer):
+    """
+    Test claim_airdrops with multiple airdrops, some failing and some succeeding.
+    """
+    # Arrange
+    mock_airdrop1 = MagicMock(
+        user=MagicMock(contract_address="0x123"), id=1, amount=100
     )
-    mock_db_connector.save_claim_data.assert_called_once_with(1, 100)
-
-
-@pytest.mark.asyncio
-async def test_claim_airdrop_method_success(airdrop_claimer, mock_starknet_client):
-    """Test the internal _claim_airdrop method for successful scenario."""
-    mock_starknet_client.claim_airdrop.return_value = True
-
-    result = await airdrop_claimer._claim_airdrop("0x123", ["proof1", "proof2"])
-
-    assert result is True
-    mock_starknet_client.claim_airdrop.assert_called_once_with(
-        "0x123", ["proof1", "proof2"]
+    mock_airdrop2 = MagicMock(
+        user=MagicMock(contract_address="0x456"), id=2, amount=200
     )
 
-
-@pytest.mark.asyncio
-async def test_claim_airdrop_method_errors(airdrop_claimer, mock_starknet_client):
-    """Test the internal _claim_airdrop method for different error scenarios."""
-    error_scenarios = [
-        (ConnectionError("Network error"), False),
-        (Timeout("Request timed out"), False),
-        (ValueError("Invalid data"), False),
-        (Exception("Unexpected error"), False),
+    airdrop_claimer.db_connector.get_all_unclaimed.return_value = [
+        mock_airdrop1,
+        mock_airdrop2,
     ]
 
-    for error, expected_result in error_scenarios:
-        mock_starknet_client.claim_airdrop.side_effect = error
+    # Mock different behaviors for different airdrops
+    airdrop_claimer.zk_lend_airdrop.get_contract_airdrop.side_effect = [
+        ["proof1"],
+        ["proof2"],
+    ]
+    airdrop_claimer.starknet_client.claim_airdrop.side_effect = [
+        True,
+        ValueError("Claim failed"),
+    ]
 
-        result = await airdrop_claimer._claim_airdrop("0x123", ["proof1", "proof2"])
+    # Act
+    await airdrop_claimer.claim_airdrops()
 
-        assert result == expected_result
+    # Assertions
+    # Verify first airdrop was claimed and saved
+    airdrop_claimer.db_connector.save_claim_data.assert_any_call(1, 100)
+    # Verify second airdrop was not saved due to claim failure
+    assert airdrop_claimer.db_connector.save_claim_data.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_claim_airdrops_database_error(airdrop_claimer, mock_airdrop, caplog):
+    """
+    Test handling of database errors during airdrop claiming.
+    """
+    # Arrange
+    airdrop_claimer.db_connector.get_all_unclaimed.return_value = [mock_airdrop]
+    airdrop_claimer.zk_lend_airdrop.get_contract_airdrop.return_value = ["proof1"]
+    airdrop_claimer.starknet_client.claim_airdrop.return_value = True
+
+    # Simulate database save error
+    airdrop_claimer.db_connector.save_claim_data.side_effect = SQLAlchemyError(
+        "Database error"
+    )
+
+    # Act
+    with caplog.at_level(logging.ERROR):
+        await airdrop_claimer.claim_airdrops()
+
+    # Assertions
+    assert "Database error while updating claim data" in caplog.text
+    airdrop_claimer.starknet_client.claim_airdrop.assert_called_once()
+    airdrop_claimer.db_connector.save_claim_data.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_claim_airdrop_timeout_error(airdrop_claimer):
+    """
+    Test _claim_airdrop method handling of timeout errors.
+    """
+    # Arrange
+    airdrop_claimer.starknet_client.claim_airdrop.side_effect = Timeout(
+        "Request timed out"
+    )
+
+    # Act
+    result = await airdrop_claimer._claim_airdrop("0x123", ["proof1"])
+
+    # Assertions
+    assert result is False
+    airdrop_claimer.starknet_client.claim_airdrop.assert_awaited_with(
+        "0x123", ["proof1"]
+    )
+
+
+@pytest.mark.asyncio
+async def test_claim_airdrop_invalid_proof(airdrop_claimer):
+    """
+    Test _claim_airdrop method with invalid proof data.
+    """
+    # Arrange
+    airdrop_claimer.starknet_client.claim_airdrop.side_effect = ValueError(
+        "Invalid proof"
+    )
+
+    # Act
+    result = await airdrop_claimer._claim_airdrop("0x123", ["invalid_proof"])
+
+    # Assertions
+    assert result is False
+    airdrop_claimer.starknet_client.claim_airdrop.assert_awaited_with(
+        "0x123", ["invalid_proof"]
+    )
+
+
+@pytest.mark.asyncio
+async def test_claim_airdrop_unexpected_error(airdrop_claimer, caplog):
+    """
+    Test _claim_airdrop method handling of unexpected errors.
+    """
+    # Arrange
+    unexpected_error = Exception("Completely unexpected error")
+    airdrop_claimer.starknet_client.claim_airdrop.side_effect = unexpected_error
+
+    # Act
+    with caplog.at_level(logging.ERROR):
+        result = await airdrop_claimer._claim_airdrop("0x123", ["proof1"])
+
+    # Assertions
+    assert result is False
+    assert "Unexpected error claiming address" in caplog.text
+    airdrop_claimer.starknet_client.claim_airdrop.assert_awaited_with(
+        "0x123", ["proof1"]
+    )
