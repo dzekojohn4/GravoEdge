@@ -89,7 +89,7 @@ const Documentation = () => {
 
   return (
     <div className="documentation-page">
-      <TableOfContents items={tableOfContents} />
+      <TableOfContents defaultActiveId={"introduction"} headerHeight={80} items={tableOfContents} />
 
       <div className="main-content">
         <h1 className="main-title">zkLend Documentation</h1>
