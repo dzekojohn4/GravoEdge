@@ -80,6 +80,7 @@ const Form = () => {
       {successful && createPortal(<CongratulationsModal />, document.body)}
       {isClosePositionOpen && (
         <ActionModal
+          isOpen={isClosePositionOpen}
           title="Open New Position"
           subTitle="Do you want to open new a position?"
           content={[

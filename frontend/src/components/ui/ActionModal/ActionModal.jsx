@@ -1,35 +1,30 @@
 import React from 'react';
 import './actionModal.css';
 import { Button } from '../Button';
-import { useEffect } from 'react';
+import useLockBodyScroll from 'hooks/useLockBodyScroll';
 const ActionModal = ({
+  isOpen,
   title,
   subTitle,
-  content,
+  content = [],
   cancelLabel = 'Cancel',
   cancelAction,
   submitLabel,
   submitAction,
   isLoading = false,
 }) => {
-  useEffect(() => {
-    // Lock scrolling when component is rendered
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+  useLockBodyScroll(isOpen);
 
-    // Cleanup to restore scrolling when component is unmounted
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, []);
-
+  if (!isOpen) {
+    return null;
+  }
   return (
     <div className="modal-overlay" onClick={cancelAction}>
       <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
         <div className="modal-box">
           <div className="modal-content">
             <div className="modal-title">{title}</div>
-            <h2>{subTitle}</h2>
+            <h2 className={`${!content.length && 'no-content'}`}>{subTitle}</h2>
             {content.map((content, i) => (
               <p key={i}>{content}</p>
             ))}

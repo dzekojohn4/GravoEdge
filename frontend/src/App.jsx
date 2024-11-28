@@ -16,7 +16,6 @@ import { useWalletStore } from 'stores/useWalletStore';
 import { Notifier } from 'components/Notifier/Notifier';
 import { useConnectWallet } from 'hooks/useConnectWallet';
 import { ActionModal } from 'components/ui/ActionModal';
-
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore();
   const [tgUser, setTgUser] = useState(JSON.parse(localStorage.getItem('tg_user')));
@@ -74,6 +73,7 @@ function App() {
       {showModal &&
         createPortal(
           <ActionModal
+            isOpen={showModal}
             title="Logout"
             subTitle={'Do you want to disconnect your wallet and logout of this account?'}
             cancelLabel="Cancel"

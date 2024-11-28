@@ -237,6 +237,7 @@ export default function Component({ telegramId }) {
           </Button>
           {showModal && (
             <ActionModal
+              isOpen={showModal}
               title="Telegram Notification"
               subTitle="Do you want to enable telegram notification bot?"
               content={[
