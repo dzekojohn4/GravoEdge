@@ -8,12 +8,22 @@ import { Button } from 'components/ui/Button';
 
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
+  const [amount, setAmount] = useState('0');
 
   const networks = [{ name: 'Starknet', image: STRK }];
 
   const handleChange = (e) => {
     setSelectedNetwork(e.target.value);
   };
+
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    const regex = /^\d*\.?\d*$/; 
+    if (regex.test(value)) {
+      setAmount(value);
+    }
+  };
+
   return (
     <VaultLayout>
       <div className="staking-container">
@@ -75,9 +85,18 @@ function Stake() {
             </div>
           </div>
 
-          <div className="amount-input">
-            <input type="text" defaultValue="0.00" className="amount-field" />
-            <span className="currency">STRK</span>
+          <div className="amount-input" aria-labelledby="amount-input-label">
+            <input
+              type="text"
+              id="amount-field"
+              value={amount} 
+              onChange={handleAmountChange}
+              pattern="^\d*\.?\d*$"
+              className="amount-field"
+              aria-describedby="currency-symbol"
+              placeholder="0.00"
+            />
+            <span id="currency-symbol" className="currency">STRK</span>
           </div>
 
           <div className="apy-rate">$0.00 APY / year</div>
@@ -93,8 +112,9 @@ function Stake() {
           </div>
         </div>
 
-        <Button variant='secondary' size='lg' className='stake-button'>Stake</Button>
-
+        <Button variant="secondary" size="lg" className="stake-button">
+          Stake
+        </Button>
       </div>
     </VaultLayout>
   );

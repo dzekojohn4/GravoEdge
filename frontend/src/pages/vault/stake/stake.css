@@ -144,10 +144,11 @@
 
 .amount-input {
   position: relative;
-  width: 140px;
-  max-width: 140px;
-  margin: 2rem auto 1rem;
+  width: 100%;
+  max-width: 400px;
+  margin: 2rem auto;
   text-align: center;
+  /* overflow: hidden; */
 }
 
 .amount-field {
@@ -157,16 +158,19 @@
   font-size: 64px;
   font-weight: 600;
   outline: none;
+  text-align: center;
+  width: 100%;
 }
 
 .currency {
   position: absolute;
   color: #393942;
-  right: -35%;
+  right: -5%;
   top: 10%;
   transform: translateY(-50%);
   opacity: 0.5;
   font-size: 1.5rem;
+  z-index: 999999;
 }
 
 .apy-rate {
@@ -176,9 +180,6 @@
   text-align: center;
 }
 
-/* .gas-fee-info {
-
-  } */
 .gas-fee {
   display: flex;
   justify-content: space-between;
