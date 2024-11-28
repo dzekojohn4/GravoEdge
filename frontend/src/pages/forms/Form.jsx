@@ -9,17 +9,17 @@ import './form.css';
 import { createPortal } from 'react-dom';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
 import CongratulationsModal from 'components/congratulationsModal/CongratulationsModal';
-import StyledPopup from 'components/openpositionpopup/StyledPopup';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import Button from 'components/ui/Button/Button';
+import { ClosePositionModal } from 'components/ClosePositionModal/ClosePositionModal';
 import { useWalletStore } from 'stores/useWalletStore';
 import { useConnectWallet } from 'hooks/useConnectWallet';
-
+import { useCheckPosition } from 'hooks/useClosePosition';
+import { useNavigate } from 'react-router-dom';
 
 const Form = () => {
-    const { walletId, setWalletId } = useWalletStore();
- const [tokenAmount, setTokenAmount] = useState('');
+  const navigate = useNavigate();
+  const { walletId, setWalletId } = useWalletStore();
+  const [tokenAmount, setTokenAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState('ETH');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
   const [error, setError] = useState('');
@@ -27,19 +27,9 @@ const Form = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [successful, setSuccessful] = useState(false);
   useLockBodyScroll(successful);
-  const [showPopup, setShowPopup] = useState(false);
- const connectWalletMutation = useConnectWallet(setWalletId);
- const { data: positionData, refetch: refetchPosition } = useQuery({
-    queryKey: ['hasOpenPosition', walletId],
-    queryFn: async () => {
-      if (!walletId) return { has_opened_position: false };
-      const { data } = await axios.get('/api/has-user-opened-position', {
-        params: { wallet_id: walletId },
-      });
-      return data;
-    },
-    enabled: !!walletId,
-  });
+  const [isClosePositionOpen, setClosePositionOpen] = useState(false);
+  const connectWalletMutation = useConnectWallet(setWalletId);
+  const { data: positionData, refetch: refetchPosition } = useCheckPosition();
 
   const connectWalletHandler = () => {
     connectWalletMutation.mutate();
@@ -55,8 +45,8 @@ const Form = () => {
     }
 
     await refetchPosition();
-    if (positionData?.has_opened_position) {
-      setShowPopup(true);
+    if (!positionData?.has_opened_position) {
+      setClosePositionOpen(true);
       return;
     }
 
@@ -76,19 +66,23 @@ const Form = () => {
     await handleTransaction(connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful);
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
+  const handleCloseModal = () => {
+    setClosePositionOpen(false);
   };
 
-  const handleClosePosition = () => {
-    window.location.href = '/dashboard';
+  const onClosePositionAction = () => {
+    navigate('/dashboard');
   };
 
   return (
     <div className="form-content-wrapper">
       <BalanceCards walletId={walletId} />
       {successful && createPortal(<CongratulationsModal />, document.body)}
-      <StyledPopup isOpen={showPopup} onClose={handleClosePopup} onClosePosition={handleClosePosition} />
+      <ClosePositionModal
+        isOpen={isClosePositionOpen}
+        onClose={handleCloseModal}
+        handleSubmit={onClosePositionAction}
+      />
       <form className="form-container" onSubmit={handleSubmit}>
         <div className="form-title">
           <h1>Please submit your leverage details</h1>
