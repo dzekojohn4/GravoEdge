@@ -72,7 +72,7 @@ function App() {
   return (
     <div className="App">
       <Notifier />
-      {showModal && createPortal(<ActionModal title="Logout" content={["Do you want to disconnect your wallet and logout of this account?"]} cancelLabel='Cancel' submitLabel="Yes, logout" submitAction={handleLogout} cancelAction={closeModal}/>, document.body)}
+      {showModal && createPortal(<ActionModal title="Logout" subTitle={"Do you want to disconnect your wallet and logout of this account?"}  cancelLabel='Cancel' submitLabel="Yes, logout" submitAction={handleLogout} cancelAction={closeModal}/>, document.body)}
       <Header
         tgUser={tgUser}
         setTgUser={setTgUser}
