@@ -1,5 +1,5 @@
 import React from 'react';
-import './documentation.css';
+import '../pages/spotnet/documentation/documentation.css';
 
 const Section = ({ id, title, content }) => {
   const renderContent = (item, index) => {
