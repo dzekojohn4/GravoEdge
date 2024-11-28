@@ -1,118 +1,83 @@
-import React from "react";
-import ArrowDownDouble from "../../../assets/icons/arrow-down-double.svg"
-import "./overview.css";
-import { Button, Image } from "react-bootstrap";
-import { Link, useLocation } from 'react-router-dom';
-
+import React, { useEffect } from 'react';
+import './overview.css';
+import TableOfContents from 'components/TableOfContent/TableOfContents';
+import ScrollButton from 'components/scrollButton/ScrollButton';
+import Sections from 'components/Sections';
 
 const OverviewPage = () => {
-    const location = useLocation();
-    const activeHash = location.hash
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
-    console.log(activeHash)
+    const tableOfContents = [
+        { title: 'Welcome', link: '#welcome' },
+        {
+            title: 'How it works',
+            link: '#how-it-works',
+            subItems: [
+                { title: 'Connect Your Wallet', link: '#connect-wallet' },
+                { title: 'Choose A Service', link: '#choose-service' },
+                { title: 'Transact Seamlessly', link: '#transact-seamlessly' },
+            ],
+        },
+        { title: 'Supported Chains', link: '#supported-chains' },
+    ];
 
-    const handleScrollDown = () => {
-        const scrollAmount = document.documentElement.scrollHeight * 0.3;
-
-        window.scrollBy({
-            top: scrollAmount,
-            behavior: "smooth"
-        });
-    }
+    const sectionsData = [
+        {
+            id: 'welcome',
+            title: 'Welcome',
+            content: [
+                {
+                    type: 'text',
+                    value:
+                        'Welcome to [Product Name], the decentralized platform designed to empower you with seamless access to the Web3 ecosystem. Built on blockchain technology, [Product Name] provides a secure, transparent, and user-friendly experience for managing your digital assets, accessing decentralized finance (DeFi) services, and engaging with the broader Web3 community.',
+                },
+                {
+                    type: 'text',
+                    value: 'Key Features:',
+                },
+                {
+                    type: 'list',
+                    items: [
+                        'Secure Asset Management: Store, track, and manage your digital assets with a security-first approach, utilizing smart contracts to protect your funds.',
+                        'DeFi Integration: Access a suite of decentralized finance tools, including staking, lending, and borrowing, all from one intuitive interface.',
+                        'Cross-Chain Compatibility: Interact with assets across multiple blockchain networks without needing to switch platforms.',
+                        'Personalized Notifications: Enable real-time notifications for essential updates, such as changes in your health factor, to stay informed on your account status.',
+                    ],
+                },
+            ],
+        },
+        {
+            id: 'how-it-works',
+            title: 'How It Works',
+            content: [
+                {
+                    type: 'orderedList',
+                    items: [
+                        'Connect Your Wallet: Use any Web3-compatible wallet, such as MetaMask, to connect to [Product Name] securely and begin exploring the platform.',
+                        'Choose A Service: Select from the various DeFi services, asset management tools, and community engagement features.',
+                        'Transact Seamlessly: Every transaction is processed transparently on-chain, giving you control and visibility over your digital activities.',
+                    ],
+                },
+            ],
+        },
+    ];
 
     return (
         <div className="overview-container">
-            <nav className="sidebar">
-                <h2 className="sidebar-title">Content</h2>
-                <div>
-
-                    <ul className="sidebar-list">
-                        <li>
-                            <Link
-                                to="/overview"
-                                className={`sidebar-link ${!location.hash && location.pathname ==="/overview" ? 'active' : ''}`}
-                            >
-                                • Welcome
-                            </Link>
-                        </li>
-                        <li>
-                            <div className="list-label-container">
-                                <a href="#how-it-works" className={`sidebar-link ${activeHash === '#how-it-works' ? 'active' : ''} list-label`}>
-                                    • How It Works
-                                </a>
-                            </div>
-                            <ul className="sidebar-sublist">
-                                <li>
-                                    <a href="#connect-wallet">◦ Connect Your Wallet</a>
-                                </li>
-                                <li>
-                                    <a href="#choose-service">◦ Choose a Service</a>
-                                </li>
-                                <li>
-                                    <a href="#transact-seamlessly">◦ Transact Seamlessly</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a
-                                href="#supported-chains"
-                                className={`sidebar-link ${activeHash === '#supported-chains' ? 'active' : ''}`}
-                            >
-                                • Supported Chains
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-            </nav>
-
-            <div className="scroll-button-container">
-                <Button onClick={handleScrollDown} className="scroll-button">Sroll down <Image src={ArrowDownDouble} /> </Button>
+            <div className="sidebar">
+                <TableOfContents items={tableOfContents} />
             </div>
 
-            <main className="content">
+            <div className='content'>
                 <h1 className="content-title">Overview</h1>
-                <section id="welcome" className="section">
-                    <h2 className="section-title">• Welcome</h2>
-                    <p className="section-text">
-                        Welcome to [Product Name], the decentralized platform designed to empower you with seamless access to the Web3 ecosystem. Built on blockchain technology, [Product Name] provides a secure, transparent, and user-friendly experience for managing your digital assets, accessing decentralized finance (DeFi) services, and engaging with the broader Web3 community.
-                    </p>
-                    <p className="key-features-title">Key Features</p>
-                    <ul className="key-features-list">
-                        <li>
-                            Secure Asset Management: Store, track, and manage your digital assets with a security-first approach, utilizing smart contracts to protect your funds.
-                        </li>
-                        <li>
-                            DeFi Integration: Access a suite of decentralized finance tools, including staking, lending, and borrowing, all from one intuitive interface.
-                        </li>
-                        <li>
-                            Cross-Chain Compatibility: Interact with assets across multiple blockchain networks without needing to switch platforms.
-                        </li>
-                        <li>
-                            Personalized Notifications: Enable real-time notifications for essential updates, such as changes in your health factor, to stay informed on your account status.
-                        </li>
-                    </ul>
-                </section>
+                <div className='section'>
+                    <Sections sections={sectionsData} />
+                </div>
+            </div>
 
-                {/* How It Works Section */}
-                <section id="how-it-works" className="section">
-                    <h2 className="section-title">• How It Works</h2>
-                    <ol className="how-it-works-list">
-                        <li id="connect-wallet">
-                            <span className="highlight">Connect Your Wallet:</span> Use any Web3-compatible wallet, such as MetaMask,
-                            to connect to [Product Name] securely and begin exploring the platform.
-                        </li>
-                        <li id="choose-service">
-                            <span className="highlight">Choose a Service:</span> Select from the various DeFi services, asset
-                            management tools, and community engagement features.
-                        </li>
-                        <li id="#transact-seamlessly">
-                            <span className="highlight">Transact Seamlessly:</span> Every transaction is processed transparently
-                            on-chain, giving you control and visibility over your digital activities.
-                        </li>
-                    </ol>
-                </section>
-            </main>
+            <ScrollButton />
         </div>
     );
 };
