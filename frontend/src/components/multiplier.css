@@ -44,22 +44,16 @@
 
 .tooltip {
     position: absolute;
-    bottom: 36px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #ffffff;
-    font-size: 12px;
-    border-radius: 4px;
-    opacity: 0.9;
-    transition: opacity 0.2s ease-in-out;
-}
-
-.tooltip:before {
-    content: "";
-    position: absolute;
-    bottom: -6px;
+    bottom: 34px;
     left: 50%;
     transform: translateX(-50%);
+    background-color: #2C5475;
+    color: #ffffff;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 7.17px;
+    opacity: 0.9;
+    transition: opacity 0.2s ease-in-out;
 }
 
 .multiplier-slider-container {
@@ -155,7 +149,8 @@ div.marker {
     }
 
     .slider-container {
-        padding: 5px 20px;
+        height: 112px;
+        padding: 32px 20px;
         border-radius: 16px;
         border: none;
         max-height: 85px;
@@ -167,14 +162,7 @@ div.marker {
     }
 
     .tooltip {
-        bottom: 23px;
-        font-size: 8px;
-        padding: 4px 6px;
-    }
-
-    .tooltip:before {
-        bottom: -4px;
-        border-width: 4px;
+        padding-left: 6px;
     }
 
     .mark-item {
