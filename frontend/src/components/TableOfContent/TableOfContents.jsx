@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import "./table_of_content_styles.css"
 
 const TableOfContents = ({ items }) => {
   const location = useLocation();
