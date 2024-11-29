@@ -171,3 +171,136 @@
   mask-composite: exclude;
   z-index: -1;
 }
+
+
+/* responsiveness  */
+/* General mobile styles */
+@media (max-width: 768px) {
+  .withdraw-wrapper.mobile {
+    padding: 16px;
+  }
+
+  .mobile-withdraw-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+ 
+  
+
+  .main-card {
+    padding: 1rem;
+    gap: 16px;
+  }
+
+ 
+
+  .withdraw-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .withdraw-button {
+    width: 342px;
+    height: 60px;
+    margin: 0 auto; 
+    align-self: center; 
+  }
+  
+  .withdraw-input{
+    width: 342px;
+    height: 60px;
+    margin: 0 auto; 
+    align-self: center; 
+  }
+  .amount-stack-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .amount-stack-card-title-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 10px;
+    gap: 8px;
+  }
+  
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .card-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .card-value {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .top-card-value {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .label {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .withdraw-title {
+    font-family:Open Sans;
+       font-size: 16px;
+       font-weight: 400;
+       color: var(--primary);
+       text-align: center;
+       line-height:  21.79px;
+    
+   }
+   .withdraw-input-title {
+    font-size: 12px;
+    color: var(--stormy-gray);
+    margin-bottom: 5px;
+  }
+  .withdraw-input-container{
+    margin-bottom: 32px;
+  }
+  
+  .top-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .metric-card {
+    width: 86px;
+    background: var(--header-button-bg);
+    border: var(--midnight-purple-border);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 24px;
+  }
+  
+  .card-header {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .card-value {
+    font-size: 18px;
+    font-weight: bold;
+  }
+}

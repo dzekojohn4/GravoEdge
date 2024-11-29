@@ -89,6 +89,13 @@
 @media (max-width: 640px) {
   .sidebar {
     width: 160px;
+    
   }
+  
 
+}
+@media (max-width: 1024px) {
+  .layout {
+    display: none;
+  }
 }

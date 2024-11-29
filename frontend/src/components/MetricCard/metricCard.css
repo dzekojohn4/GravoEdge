@@ -8,3 +8,10 @@
     justify-content: center;
     align-items: center;
   }
+
+  @media (max-width: 768px) {
+    .metric-card {
+      width: 100%; /* Full width on mobile */
+      border-radius: 16px; /* Optional: adjust border radius for mobile */
+    }
+  }
