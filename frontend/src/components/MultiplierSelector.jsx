@@ -116,7 +116,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
                 }}
               >
                 <div className="tooltip">{actualValue.toFixed(1)}</div>
-                <img src={sliderThumb} alt="slider thumb" draggable="false" />
+                <img src={sliderThumb} className="cursor" alt="slider thumb" draggable="false" />
               </div>
             </div>
           </div>
