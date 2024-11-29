@@ -9,6 +9,7 @@
   background: var(--header-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #300734;
+  z-index: 9999;
 }
 
 .header-nav-sticky {
