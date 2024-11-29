@@ -8,3 +8,11 @@
     justify-content: center;
     align-items: center;
   }
+
+  @media screen and (max-width: 768px) {
+    .metric-card {
+      width: 167px;
+      border-radius: 16px;
+      padding: 21px;
+    }
+  }
