@@ -3,7 +3,7 @@
   min-height: 100vh;
   color: var(--primary);
   position: relative;
-  padding-top: 80px;
+  padding-top: 70px;
 }
 
 
@@ -24,7 +24,7 @@
 }
 
 .main-content {
-  margin-left: 374px;
+  margin-left: 398px;
   flex: 1;
   padding: 2rem 3rem;
   background: url('../../../../public/background.png') no-repeat;

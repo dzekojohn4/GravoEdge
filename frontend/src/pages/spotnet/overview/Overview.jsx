@@ -66,7 +66,7 @@ const OverviewPage = () => {
 
     return (
         <div className="overview-container">
-            <div className="sidebar">
+            <div>
                 <TableOfContents
                     tabelTitle={"Content"}
                     items={tableOfContents}

@@ -17,8 +17,6 @@
     width: 374px;
     height: 912px;
     min-height: 100vh;
-    background-color: #00000F;
-    border-right: 1px solid #1F0B20;
     position: fixed;
     left: 0;
 }

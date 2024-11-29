@@ -1,8 +1,8 @@
 .table-of-contents {
     width: 374px;
     padding: 2rem;
-    margin-top: 94px;
-    background: rgba(0, 0, 0, 0.3);
+    margin-top: 90px;
+    background: #00000F;
     height: calc(100vh);
     position: fixed;
     overflow-y: auto;
