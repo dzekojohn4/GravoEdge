@@ -93,9 +93,7 @@ const Documentation = () => {
 
       <div className="main-content">
         <h1 className="main-title">zkLend Documentation</h1>
-        {/* <div className='sections-container'> */}
           <Sections sections={sectionsData} />
-        {/* </div> */}
       </div>
 
       <ScrollButton />
