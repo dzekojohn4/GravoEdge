@@ -337,9 +337,9 @@
 
 /* 
 } */
-/* Specific media query for NestHub and iPad Pro */
-@media screen and (width: 1024px) and (height: 600px) 
-{  .mobile-vault-container {
+/* NestHub (1024x600) Specific Styling */
+@media screen and (width: 1024px) and (height: 600px) {
+  .mobile-vault-container {
     display: block !important;
   }
 
@@ -348,33 +348,62 @@
   }
 
 
-  /* Additional specific styling for these screen sizes if needed */
-  .mobile-border-container {
-    width: 100%; /* Make it full width */
-    max-width: 342px; /* Or your preferred maximum width */
-    margin: 10px auto;
-  }
-}
 
-@media        screen and (width: 1024px) and (height: 1336px) {
-
-.vault-container{
-  display: block !important;
-}
-
-.mobile-vault-container {
-  display: none !important;
-}
-}
-
-
-@media screen and (width: 1280px) and (height: 800px) 
-{  .mobile-vault-container {
-    display: none !important;
-  }
 
   .vault-container {
     display: block !important;
   }
 
+  .stake-container {
+    max-width: 500px; /* Limit container width if needed */
+    margin: 0 auto;
+  }
+}
+
+/* Default fallback for other screens */
+/* Tablet and Larger Screens */
+@media (min-width: 768px) {
+  .stake-wrapper {
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .stake-card {
+    width: 50%; /* Scales with available space */
+    padding: 2rem;
+  }
+}
+
+/* Desktop Screens */
+@media (min-width: 1024px) {
+  .stake-wrapper {
+    justify-content: space-around;
+    padding: 3rem;
+  }
+
+  .stake-card {
+    width: 30%; /* Focus on limiting width for larger displays */
+    max-width: 600px;
+    padding: 3rem;
+  }
+}
+
+@media (max-width: 740px) {
+  .mobile-vault-container {
+    display: block !important;
+  }
+
+  .vault-container {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1020px){
+  .vault-container{
+    display: block !important;
+  }
+
+  .mobile-vault-container {
+    display: none !important;
+  }
 }
