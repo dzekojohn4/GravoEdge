@@ -8,7 +8,6 @@
   align-items: flex-start;
   width: 100%;
   padding: 0 24px;
- 
 }
 
 .withdraw-card {
@@ -180,9 +179,8 @@
   z-index: -1;
 }
 
-
 @media screen and (max-width: 768px) {
-  .main-container{
+  .main-container {
     width: 100%;
   }
 
@@ -191,7 +189,7 @@
     width: 100%;
   }
 
-  .top-cards{
+  .top-cards {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -226,7 +224,7 @@
     font-size: 14px;
   }
 
-  .divider{
+  .divider {
     display: none;
   }
 
