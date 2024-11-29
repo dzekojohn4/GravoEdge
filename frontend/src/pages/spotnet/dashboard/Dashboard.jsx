@@ -9,18 +9,19 @@ import { ReactComponent as BorrowIcon } from 'assets/icons/borrow_dynamic.svg';
 import { ReactComponent as TelegramIcon } from 'assets/icons/telegram_dashboard.svg';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import Spinner from 'components/spinner/Spinner';
-import TelegramNotificationModal from 'components/TelegramNotificationModal/TelegramNotificationModal';
 import { ZETH_ADDRESS } from 'utils/constants';
 import useDashboardData from 'hooks/useDashboardData';
 import { useClosePosition } from 'hooks/useClosePosition';
 import Button from 'components/ui/Button/Button';
 
 import { useWalletStore } from 'stores/useWalletStore';
+import { ActionModal } from 'components/ui/ActionModal';
+import useTelegramNotification from 'hooks/useTelegramNotification';
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
-const [isCollateralActive, setIsCollateralActive] = useState(true);
+  const [isCollateralActive, setIsCollateralActive] = useState(true);
   const [showModal, setShowModal] = useState(false);
- const handleOpen = () => {
+  const handleOpen = () => {
     setShowModal(true);
   };
 
@@ -30,6 +31,12 @@ const [isCollateralActive, setIsCollateralActive] = useState(true);
 
   const { data, isLoading } = useDashboardData(walletId);
   const { mutate: closePositionEvent, isLoading: isClosing, error: closePositionError } = useClosePosition(walletId);
+
+  const { subscribe } = useTelegramNotification();
+
+  const handleSubscribe = () => {
+    subscribe({ telegramId, walletId });
+  };
 
   const [cardData, setCardData] = useState([
     {
@@ -120,7 +127,7 @@ const [isCollateralActive, setIsCollateralActive] = useState(true);
       <div className="dashboard-container">
         {loading && <Spinner loading={loading} />}
         <h1 className="dashboard-title">zkLend Position</h1>
-        <div className="main-container">
+        <div className="dashboard-content">
           <div className="top-cards">
             <div className="card">
               <div className="card-header">
@@ -143,7 +150,7 @@ const [isCollateralActive, setIsCollateralActive] = useState(true);
               </div>
             </div>
           </div>
-          <div className="main-card">
+          <div className="dashboard-info-card">
             <div className="tabs">
               <button
                 onClick={() => setIsCollateralActive(true)}
@@ -229,7 +236,18 @@ const [isCollateralActive, setIsCollateralActive] = useState(true);
             Enable telegram notification bot
           </Button>
           {showModal && (
-            <TelegramNotificationModal telegramId={telegramId?.id}  onClose={handleClose} />
+            <ActionModal
+              isOpen={showModal}
+              title="Telegram Notification"
+              subTitle="Do you want to enable telegram notification bot?"
+              content={[
+                'This will allow you to receive quick notifications on your telegram line in realtime. You can disable this setting anytime.',
+              ]}
+              cancelLabel="Cancel"
+              submitLabel="Yes, Sure"
+              submitAction={handleSubscribe}
+              cancelAction={handleClose}
+            />
           )}
         </div>
       </div>
