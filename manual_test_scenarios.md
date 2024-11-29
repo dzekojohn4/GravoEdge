@@ -17,7 +17,7 @@
 
 **Bugs:**
 
-- There’s an error message (Error: Network Error) showing on the TVL and Users section of the app.
+- Error: Network Error occurs in the TVL and Users sections when a wallet connection persists from the last login; disconnecting and reconnecting the wallet resolves the issue.
 
 ### **Scenario 2: Open Position with Different Wallets**
 
