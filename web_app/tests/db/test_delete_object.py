@@ -1,3 +1,7 @@
+"""
+Test cases for delete object
+"""
+
 import pytest
 from unittest.mock import MagicMock, patch
 from web_app.db.models import User
@@ -17,7 +21,8 @@ def user_db(mock_db_connector):
     """
     Fixture to create a UserDBConnector instance with mocked dependencies.
     """
-    with patch('web_app.db.crud.UserDBConnector.get_object_by_field', new_callable=MagicMock) as mock_get:
+    with patch('web_app.db.crud.UserDBConnector.get_object_by_field', 
+               new_callable=MagicMock) as mock_get:
         mock_get.side_effect = mock_db_connector.get_object_by_field
         connector = UserDBConnector(mock_db_connector)
         yield connector
