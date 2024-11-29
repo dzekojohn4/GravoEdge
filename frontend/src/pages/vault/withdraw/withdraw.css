@@ -6,6 +6,8 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  width: 100%;
+  padding: 0 24px;
  
 }
 
@@ -61,6 +63,8 @@
   padding: 3rem 1.5rem;
   height: auto;
   gap: 24px;
+  display: flex;
+  flex-direction: column;
 }
 
 .amount-stack-card {
@@ -76,6 +80,9 @@
 
 .amount-stack-card-title-container {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .withdraw-input-title {
@@ -108,6 +115,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 12px 8px;
 }
 
 .fee-title {
@@ -170,4 +178,66 @@
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   z-index: -1;
+}
+
+
+@media screen and (max-width: 768px) {
+  .main-container{
+    width: 100%;
+  }
+
+  .withdraw-container {
+    gap: 26px;
+    width: 100%;
+  }
+
+  .top-cards{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-bottom: 26px;
+    border-bottom: 1px #201338 solid;
+  }
+
+  .withdraw-title {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .main-card {
+    padding: 0rem;
+    gap: 26px;
+  }
+
+  .amount-stack-card {
+    padding: 25px 16px;
+    border-radius: 16px;
+  }
+
+  .withdraw-input-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .withdraw-input {
+    border-radius: 16px;
+    padding: 22px 32px;
+    color: var(--primary);
+    font-size: 14px;
+  }
+
+  .divider{
+    display: none;
+  }
+
+  .withdraw-button {
+    width: 100%;
+    font-size: 14px;
+    padding: 18px 24px 18px 24px;
+  }
+
+  .withdraw-button::before {
+    border-radius: 16px;
+    padding: 1px;
+  }
 }
