@@ -1,5 +1,5 @@
 .metric-card {
-  width: 309px;
+  width: 100%;
   background: var(--header-button-bg);
   border: var(--midnight-purple-border);
   border-radius: 900px;
@@ -11,8 +11,20 @@
 
 @media screen and (max-width: 768px) {
   .metric-card {
-    width: 167px;
     border-radius: 16px;
-    padding: 21px;
+    padding: 20.5px 22.5px;
+
+    .card-header {
+      .label{
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+
+@media (max-width: 640px) {
+  .label{
+    font-size: 12px;
   }
 }
