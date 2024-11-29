@@ -49,8 +49,7 @@ const TableOfContents = ({ items, defaultActiveId, tabelTitle, headerHeight = 80
   return (
     <div className={"table-of-contents"}>
       <div className="toc-title-container">
-
-      <h3 className={"toc-title"}>{tabelTitle}</h3>
+        <h3 className={"toc-title"}>{tabelTitle}</h3>
       </div>
       <nav className={"toc-nav"}>
         {items.map((item, index) => (
