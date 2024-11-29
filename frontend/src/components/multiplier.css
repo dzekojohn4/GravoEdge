@@ -44,17 +44,18 @@
 
 .tooltip {
     position: absolute;
+    height: 35.6px;
+    width: 46px;
     bottom: 42px;
     left: 50%;
     transform: translateX(-50%);
     background-color: #2C5475;
     color: #ffffff;
-    font-size: 12px;
+    font-size: 14px;
     padding: 6px 8px;
     border-radius: 7.17px;
     opacity: 0.9;
     transition: opacity 0.2s ease-in-out;
-    max-width: 100%;
     text-align: center;
 }
 
@@ -179,9 +180,10 @@ div.marker {
     }
 
     .tooltip {
+        font-size: 12px;
         padding: 3px;
-        height: 26px;
-        width: 32px;
+        height: 25.41px;
+        width: 36px;
         bottom: 32px;
     }
 
