@@ -164,27 +164,6 @@
 
 #### **Bugs Identified**
 
-1.  **320px Viewport**:
-
-    - Content overflows horizontally on several pages.
-    - Navigation bar is partially hidden.
-
-2.  **375px Viewport**:
-
-    - Footer elements are misaligned.
-    - Text in the header overlaps with the logo.
-
-3.  **iPhone SE**:
-
-    - Buttons are not clickable due to overlapping elements.
-    - Images are improperly scaled, causing visual distortion.
-
-4.  **iPhone 12 Pro**:
-
-    - Navigation menu does not fully expand, cutting off items.
-    - Dropdowns appear outside the viewport.
-
-5.  **Samsung Galaxy S8**:
-
-    - Page sections have inconsistent padding, leading to uneven alignment.
-    - Content at the bottom of the page is clipped.
+1. Content overflows horizontally on several pages.
+2. Page sections have inconsistent padding, leading to uneven alignment.
+3. Content at the form section of the page is clipped.
