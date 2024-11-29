@@ -1,21 +1,29 @@
 .header-nav {
-  position: fixed; 
-  top: 0; 
-  left: 0;
-  z-index: 1000; 
+  position: relative;
   display: flex;
   align-items: center;
-  width: 100%; 
+  width: 100%;
+  justify-content: center;
+  height: 90px;
   white-space: nowrap;
   background: var(--header-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #300734;
 }
 
-body {
-  padding-top: 90px;
+.header-nav-sticky {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  height: 90px;
+  white-space: nowrap;
+  background: var(--header-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #300734;
+  z-index: 100;
 }
-
 
 .list-items {
   display: flex;
@@ -24,7 +32,7 @@ body {
   background-color: transparent;
   width: 100%;
   padding: 0 30px;
-  position: absolute;
+  position: relative;
 }
 
 .nav-divider {
