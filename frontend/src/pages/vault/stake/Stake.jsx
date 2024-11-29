@@ -9,14 +9,12 @@ import { Button } from 'components/ui/Button';
 import MetricCard from 'components/StakeCard/MetricCard';
 import GasFee from 'components/GasFee/GasFee';
 import BalanceCards from 'components/BalanceCards';
-import { useMatchMedia } from 'hooks/useMatchMedia';
 
 
 
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
   const [amount, setAmount] = useState('0');
-  const isMobile = useMatchMedia('(max-width: 768px)');
 
   const [balances, setBalances] = useState([
     { icon: <STRK />, title: 'STRK', balance: '0.046731' },
