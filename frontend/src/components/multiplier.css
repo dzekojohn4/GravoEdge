@@ -56,6 +56,17 @@
     transition: opacity 0.2s ease-in-out;
 }
 
+.tooltip:after {
+    content: "";
+    position: absolute;
+    bottom: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 7px;
+    border-style: solid;
+    border-color: #2C5475 transparent transparent transparent;
+}
+
 .multiplier-slider-container {
     margin: 15px 1px -10px 8px;
     width: 97%;
@@ -166,9 +177,15 @@ div.marker {
     }
 
     .tooltip {
-        height: 32px;
+        padding-top: 4px;
+        height: 26px;
         width: 32px;
         bottom: 32px;
+    }
+
+    .tooltip:after {
+        border-width: 6px;
+        bottom: -11px;
     }
 
     .mark-item {
