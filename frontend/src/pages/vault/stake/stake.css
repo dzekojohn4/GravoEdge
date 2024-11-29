@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  
+
 }
 
 .network-icon {
@@ -109,7 +109,6 @@
   position: relative;
   width: 100%;
   max-width: 400px;
-  margin: 2rem auto;
   text-align: center;
 }
 
@@ -117,7 +116,7 @@
   background: transparent;
   border: none;
   color: var(--gray);
-  font-size: 64px;
+  font-size: 40px;
   font-weight: 600;
   outline: none;
   text-align: center;
@@ -135,10 +134,14 @@
   z-index: 999999;
 }
 
+.currency-container {
+  margin: 43px 0px;
+}
+
 .apy-rate {
   color: var(--dark-gray);
   font-size: 0.875rem;
-  margin-bottom: 2rem;
+
   text-align: center;
 }
 
@@ -158,13 +161,14 @@
   visibility: none;
 }
 
-.mobile-border-container{
-  border: 1px solid #83919F;
+.mobile-border-container {
+  border: 1px solid #36294E;
+  background-color: #120721;
   border-radius: 16px;
   margin-top: 10px;
-  margin-bottom: 32px;
-  min-height: 305px; 
- width: 342px;
+  /* margin-bottom: 32px; */
+  min-height: 305px;
+  width: 342px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -200,13 +204,13 @@
 }
 
 .mobile-stake-title {
- font-family:Open Sans;
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--primary);
-    text-align: center;
-    line-height:  21.79px;
- 
+  font-family: Open Sans;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--primary);
+  text-align: center;
+  line-height: 21.79px;
+
 }
 
 .mobile-stake-card {
@@ -267,16 +271,21 @@
 .mobile-stake-button {
   width: 342px;
   height: 60px;
-  margin: 0 auto; /* This centers horizontally */
-  align-self: center; /* For flex containers, this centers vertically */
+  margin: 0 auto;
+  /* This centers horizontally */
+  align-self: center;
+  /* For flex containers, this centers vertically */
 }
 
 
 .parent-btn-container {
   display: flex;
-  flex-direction: column; /* Or row, depending on the layout */
-  align-items: center; /* Horizontally centers children */
-  justify-content: center; /* Vertically centers children */
+  flex-direction: column;
+  /* Or row, depending on the layout */
+  align-items: center;
+  /* Horizontally centers children */
+  justify-content: center;
+  /* Vertically centers children */
 }
 
 
@@ -285,7 +294,7 @@
 }
 
 
-.mobile-amount-field{
+.mobile-amount-field {
   background: transparent;
   border: none;
   color: var(--gray);
@@ -295,6 +304,7 @@
   text-align: center;
   width: 100%;
 }
+
 .mobile-currency {
   position: absolute;
   color: var(--dark-gray);
@@ -325,53 +335,46 @@
 
 
 
-@media (max-width: 1024px) {
-  .mobile-content-wrapper {
-    display: block;
+/* 
+} */
+/* Specific media query for NestHub and iPad Pro */
+@media screen and (width: 1024px) and (height: 600px) 
+{  .mobile-vault-container {
+    display: block !important;
+  }
+
+  .vault-container {
+    display: none !important;
+  }
+
+
+  /* Additional specific styling for these screen sizes if needed */
+  .mobile-border-container {
+    width: 100%; /* Make it full width */
+    max-width: 342px; /* Or your preferred maximum width */
+    margin: 10px auto;
   }
 }
 
-/* Tablet devices */
-@media screen and (min-width: 600px) and (max-width: 1024px) {
-  .mobile-content-wrapper {
-    display: block; 
-  }
-}
+@media        screen and (width: 1024px) and (height: 1336px) {
 
-/* Large screens */
-@media (min-width: 1800px) {
-  .mobile-content-wrapper {
-    display: block; 
-  }
-}
-
-
-/* Hide  mobile-vault-container on large screens */
-@media (min-width: 1023px) {
-  .mobile-vault-container {
-    display: block;
-  }
-}
-
-/* Adjusted layout for smaller screens */
-@media (max-width: 768px) {
-  .mobile-vault-container {
-    display: block;
-    padding: 16px;
-  }
+.vault-container{
+  display: block !important;
 }
 
 .mobile-vault-container {
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  
+  display: none !important;
+}
 }
 
-/*  larger screens */
-@media (min-width: 1024px) {
-  .mobile-vault-container {
-    display: none; 
+
+@media screen and (width: 1280px) and (height: 800px) 
+{  .mobile-vault-container {
+    display: none !important;
   }
- 
+
+  .vault-container {
+    display: block !important;
+  }
+
 }
