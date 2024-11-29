@@ -57,7 +57,6 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-
 }
 
 .network-icon {
@@ -109,6 +108,7 @@
   position: relative;
   width: 100%;
   max-width: 400px;
+  margin: 2rem auto;
   text-align: center;
 }
 
@@ -116,7 +116,7 @@
   background: transparent;
   border: none;
   color: var(--gray);
-  font-size: 40px;
+  font-size: 64px;
   font-weight: 600;
   outline: none;
   text-align: center;
@@ -134,14 +134,10 @@
   z-index: 999999;
 }
 
-.currency-container {
-  margin: 43px 0px;
-}
-
 .apy-rate {
   color: var(--dark-gray);
   font-size: 0.875rem;
-
+  margin-bottom: 2rem;
   text-align: center;
 }
 
@@ -150,174 +146,162 @@
 }
 
 
-
-
-/* Responsiveness */
-/* Mobile */
-
-.mobile-vault-container {
-  color: #fff;
-  padding: 10px;
-  visibility: none;
+/* here */
+.desktop-layout {
+  display: none;
 }
 
-.mobile-border-container {
-  border: 1px solid #36294E;
-  background-color: #120721;
-  border-radius: 16px;
-  margin-top: 10px;
-  /* margin-bottom: 32px; */
-  min-height: 305px;
-  width: 342px;
-  margin-left: auto;
-  margin-right: auto;
+.mobile-layout {
+  display: block;
 }
 
-.mobile-balance-cards {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.mobile-balance-card {
-  flex: 1;
-  text-align: center;
-  background-color: #1c1538;
-  border-radius: 12px;
-  padding: 15px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-}
-
-.mobile-balance-title {
-  font-size: 14px;
-  color: #9b86c8;
-}
-
-.mobile-balance-value {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.mobile-staking-section {
-  text-align: center;
-}
-
-.mobile-stake-title {
-  font-family: Open Sans;
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--primary);
-  text-align: center;
-  line-height: 21.79px;
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .desktop-layout {
+    display: none;
+  }
+  
+  .mobile-layout {
+    display: block;
+  }
+  .stake-button {
+    width: 642px;    height: 60px;
+    margin: 20px auto 0;
+    display: block;
+  }
+  .main-card {
+    background-color:#120721;
+    border:1px solid #36294E;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  }
+  .stake-container {
+    width: 100%;
+    max-width:642px;
+    margin: 0 auto;
+    padding: 10px;
+  }
 
 }
 
-.mobile-stake-card {
-  background-color: #1c1538;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-  margin-bottom: 20px;
-}
-
-.mobile-stake-network {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.mobile-network-icon {
-  width: 30px;
-  height: 30px;
-}
-
-.mobile-stake-input h2 {
-  font-size: 36px;
-  margin: 10px 0;
-}
-
-.mobile-currency {
-  font-size: 16px;
-  margin-left: 10px;
-}
-
-.mobile-apy-text {
-  color: #9b86c8;
-  font-size: 14px;
-}
-
-.mobile-stake-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.mobile-settings-button {
-  background: none;
-  border: none;
-  color: #9b86c8;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-.mobile-gas-fee {
-  font-size: 14px;
-  color: #9b86c8;
-}
-
-.mobile-stake-button {
-  width: 342px;
-  height: 60px;
-  margin: 0 auto;
-  /* This centers horizontally */
-  align-self: center;
-  /* For flex containers, this centers vertically */
+/* Desktop styles */
+@media (min-width: 1025px) {
+  .desktop-layout {
+    display: block;
+  }
+  
+  .mobile-layout {
+    display: none;
+  }
 }
 
 
-.parent-btn-container {
-  display: flex;
-  flex-direction: column;
-  /* Or row, depending on the layout */
-  align-items: center;
-  /* Horizontally centers children */
-  justify-content: center;
-  /* Vertically centers children */
-}
+/* Existing styles remain the same */
+
+/* Mobile Responsiveness */
+@media (max-width: 767px) {
+  .stake-wrapper {
+   display: block;
+   
+   
+  }
+
+  .stake-container {
+    width: 100%;
+    max-width: 342px;
+    margin: 0 auto;
+    padding: 10px;
+  }
+
+  .top-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .main-card {
+    background-color:#120721;
+    border:1px solid #36294E;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  }
+
+  .stake-title {
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .amount-field {
+    font-size: 64px;
+  }
+
+  .stake-button {
+    width: 342px;
+    height: 60px;
+    margin: 20px auto 0;
+    display: block;
+  }
 
 
-.mobile-stake-button:hover {
-  opacity: 0.8;
-}
+  
+  .network-selector {
+    padding: 15px;
+  }
 
+  .currency {
+    right: 10%;
+    font-size: 14px;
+  }
 
-.mobile-amount-field {
-  background: transparent;
-  border: none;
-  color: var(--gray);
-  font-size: 64px;
-  font-weight: 600;
-  outline: none;
-  text-align: center;
-  width: 100%;
-}
-
-.mobile-currency {
-  position: absolute;
-  color: var(--dark-gray);
-  right: 15%;
-  top: 10%;
-  transform: translateY(-50%);
-  opacity: 0.5;
-  font-size: 14px;
-  z-index: 999999;
-}
-
-
-/* Container for the balances */
+  .apy-rate {
+    color: #9b86c8;
+    font-size: 14px;
+    text-align: center;
+  }
+  /* balance card side */
+  .mobile-border-container {
+    border: 1px solid #36294E;
+    background-color: #120721;
+    border-radius: 16px;
+    margin-top: 10px;
+    /* margin-bottom: 32px; */
+    min-height: 305px;
+    width: 342px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .mobile-balance-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .mobile-balance-card {
+    flex: 1;
+    text-align: center;
+    background-color: #1c1538;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  }
+  
+  .mobile-balance-title {
+    font-size: 14px;
+    color: #9b86c8;
+  }
+  
+  .mobile-balance-value {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Container for the balances */
 .mobile-balances-container {
   width: 100vw;
   overflow-x: hidden;
@@ -333,77 +317,4 @@
   padding: 16px;
 }
 
-
-
-/* 
-} */
-/* NestHub (1024x600) Specific Styling */
-@media screen and (width: 1024px) and (height: 600px) {
-  .mobile-vault-container {
-    display: block !important;
-  }
-
-  .vault-container {
-    display: none !important;
-  }
-
-
-
-
-  .vault-container {
-    display: block !important;
-  }
-
-  .stake-container {
-    max-width: 500px; /* Limit container width if needed */
-    margin: 0 auto;
-  }
-}
-
-/* Default fallback for other screens */
-/* Tablet and Larger Screens */
-@media (min-width: 768px) {
-  .stake-wrapper {
-    align-items: center;
-    padding: 2rem;
-  }
-
-  .stake-card {
-    width: 50%; /* Scales with available space */
-    padding: 2rem;
-  }
-}
-
-/* Desktop Screens */
-@media (min-width: 1024px) {
-  .stake-wrapper {
-    justify-content: space-around;
-    padding: 3rem;
-  }
-
-  .stake-card {
-    width: 30%; /* Focus on limiting width for larger displays */
-    max-width: 600px;
-    padding: 3rem;
-  }
-}
-
-@media (max-width: 740px) {
-  .mobile-vault-container {
-    display: block !important;
-  }
-
-  .vault-container {
-    display: none !important;
-  }
-}
-
-@media (min-width: 1020px){
-  .vault-container{
-    display: block !important;
-  }
-
-  .mobile-vault-container {
-    display: none !important;
-  }
 }
