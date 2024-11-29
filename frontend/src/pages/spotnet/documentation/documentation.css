@@ -24,13 +24,17 @@
 }
 
 .main-content {
-  margin-left: 398px;
+  margin-left: 370px;
   flex: 1;
-  padding: 2rem 3rem;
   background: url('../../../../public/background.png') no-repeat;
   background-size: cover;
   background-position: center 39%;
   position: relative;
+  min-height: 100vh;
+}
+
+.sections-container{
+ margin-left: 20px;
 }
 
 .main-title {
@@ -38,6 +42,7 @@
   font-weight: 700;
   margin-top: 94px;
   margin-bottom: 3rem;
+  margin-left: 40px;
   color: white !important;
   background: white;
   -webkit-background-clip: text;
