@@ -17,7 +17,7 @@
 
 **Bugs:**
 
-- None identified.
+- There’s an error message (Error: Network Error) showing on the TVL and Users section of the app.
 
 ### **Scenario 2: Open Position with Different Wallets**
 
@@ -88,3 +88,52 @@
 1.  **Internal Server Error (500)**: Occurs when creating a position.
 2.  Failure message text does not appear.
 3.  Open positions do not show in the dashboard.
+
+### **Scenario 5: Validate Footer Links Functionality**
+
+#### **Steps to Reproduce**
+
+1.  **Connect Wallet**:
+
+    - Use the Argent X wallet to connect to the application.
+
+2.  **Navigate to Footer**:
+
+    - Scroll down to the **Footer** section on the home page.
+
+3.  **Click All Links**:
+
+    - Individually click each link in the footer.
+
+4.  **Verify Resources**:
+
+    - Confirm that each link redirects to the intended resource or page.
+
+#### **Expected Results**
+
+- All links in the footer should:
+
+  - Be functional (not broken).
+  - Redirect to the correct resources as intended.
+
+#### **Bugs Identified**
+
+1.  **GitHub Link:**
+
+    - Redirects to the general [github.com](https://github.com) instead of the Spotnet repository.
+
+2.  **Overview Link:**
+
+    - Does not navigate to the Overview resource as expected.
+
+3.  **Terms and Conditions Link:**
+
+    - Fails to point to the Terms and Conditions resource.
+
+4.  **DeFi Link:**
+
+    - Not linked to any resource (broken or inactive).
+
+5.  **Twitter Link:**
+
+    - Does not redirect to the associated Twitter profile.
