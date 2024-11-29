@@ -241,6 +241,16 @@
     gap: 0;
     font-weight: 400;
   }
+  .label {
+    font-size: 12px;
+    color: #83919F;
+    line-height:16.34px;
+    font-family:  Open Sans;
+    gap: 0;
+    font-weight: 600;
+    align-items: center;
+    
+  }
   
   
   .withdraw-title {
@@ -275,6 +285,7 @@
     border: var(--midnight-purple-border);
     border-radius: 16px;
     display: flex;
+    gap: 4px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -282,12 +293,12 @@
   }
   
   .card-header {
-    font-size: 14px;
+    font-size: 12px;
     color: #666;
   }
   
   .card-value {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 20px;
+    font-weight: 600;
   }
 }
