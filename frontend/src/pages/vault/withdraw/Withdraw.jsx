@@ -16,8 +16,7 @@ export default function Withdraw() {
       <div className="withdraw-wrapper ">
         <div className="form-content-wrapper">
         <div className="main-container">
-            <div className="top-cards">
-            <div class="top-cards">
+        <div className="top-cards">
   <div class="metric-card">
     <div class="card-header">
       <span class="label">Total Amount Staked</span>
@@ -35,7 +34,6 @@ export default function Withdraw() {
     </div>
   </div>
 </div>
-            </div>
           </div>
           <h1 className="withdraw-title">Staking Withdrawal</h1>
           <div className="main-card">
@@ -43,7 +41,7 @@ export default function Withdraw() {
               <div className="amount-stack-card-title-container">
                 <div className="card-header">
                   <DiamondIcon className="card-icon" />
-                  <span className="label">Your Stack</span>
+                  <span className="stack-card-label">Your Stack</span>
                 </div>
                 <div className="card-value">
                   <span className="top-card-value">13.89</span>
@@ -52,7 +50,7 @@ export default function Withdraw() {
               <div className="amount-stack-card-title-container">
                 <div className="card-header">
                   <TimeIcon className="card-icon" />
-                  <span className="label">Your Boost</span>
+                  <span className="stack-card-label">Your Boost</span>
                 </div>
                 <div className="card-value">
                   <span className="top-card-value">132.43%</span>

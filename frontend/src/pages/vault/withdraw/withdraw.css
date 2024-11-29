@@ -214,48 +214,34 @@
     align-self: center; 
   }
   .amount-stack-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    width: 100%;
+    width: 342px;
+    height: 97px;
     border-radius: 16px;
     margin-bottom: 24px;
-  }
+ }
   
-  .amount-stack-card-title-container {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: 10px;
-    gap: 8px;
-  }
-  
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
   
   .card-icon {
-    width: 24px;
-    height: 24px;
+    width: 10px;
+    height: 10px;
   }
   
-  .card-value {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  }
+ 
   
   .top-card-value {
-    font-size: 18px;
-    font-weight: bold;
+    font-size:20px;
+    font-weight:600;
+    line-height: 27.24px;
   }
   
-  .label {
-    font-size: 14px;
+  .stack-card-label {
+    font-size: 12px;
     color: #666;
+    line-height:16.34px;
+    gap: 0;
+    font-weight: 400;
   }
+  
   
   .withdraw-title {
     font-family:Open Sans;
@@ -277,13 +263,14 @@
   
   .top-cards {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     gap: 12px;
-    width: 100%;
+    width:342px ;
   }
   
   .metric-card {
-    width: 86px;
+    width: 167px;
+    height: 88px;
     background: var(--header-button-bg);
     border: var(--midnight-purple-border);
     border-radius: 16px;
