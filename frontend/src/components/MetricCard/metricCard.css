@@ -1,18 +1,18 @@
 .metric-card {
-    width: 309px;
-    background: var(--header-button-bg);
-    border: var(--midnight-purple-border);
-    border-radius: 900px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+  width: 309px;
+  background: var(--header-button-bg);
+  border: var(--midnight-purple-border);
+  border-radius: 900px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-  @media screen and (max-width: 768px) {
-    .metric-card {
-      width: 167px;
-      border-radius: 16px;
-      padding: 21px;
-    }
+@media screen and (max-width: 768px) {
+  .metric-card {
+    width: 167px;
+    border-radius: 16px;
+    padding: 21px;
   }
+}
