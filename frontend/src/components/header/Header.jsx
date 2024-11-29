@@ -15,6 +15,8 @@ function Header({ onConnectWallet, onLogout }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation(); // Getting object of currant route
 
+  const makeNavStick = location.pathname === "/overview" || location.pathname === "/documentation"
+
   // Blocking screen scroll if menu is open
   useLockBodyScroll(isMenuOpen);
 
@@ -46,7 +48,7 @@ function Header({ onConnectWallet, onLogout }) {
   };
 
   return (
-    <nav className="header-nav">
+    <nav className={makeNavStick ? "header-nav-sticky" : "header-nav"}>
       <div className="list-items">
         <div className="logo">
           <NavLink to="/">
@@ -59,7 +61,7 @@ function Header({ onConnectWallet, onLogout }) {
           <div className="dropdown">
             <MobDropdownMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
           </div>
-          <WalletSection  onConnectWallet={onConnectWallet} onLogout={onLogout} />
+          <WalletSection onConnectWallet={onConnectWallet} onLogout={onLogout} />
         </div>
       </div>
     </nav>
