@@ -54,6 +54,8 @@
     border-radius: 7.17px;
     opacity: 0.9;
     transition: opacity 0.2s ease-in-out;
+    max-width: 100%;
+    text-align: center;
 }
 
 .tooltip:after {
@@ -177,7 +179,8 @@ div.marker {
     }
 
     .tooltip {
-        padding-top: 4px;
+        /* padding-top: 4px; */
+        padding: 3px;
         height: 26px;
         width: 32px;
         bottom: 32px;
