@@ -137,3 +137,54 @@
 5.  **Twitter Link:**
 
     - Does not redirect to the associated Twitter profile.
+
+#### **Scenario 6: Validate Application Display on Mobile Devices**
+
+#### **Steps to Reproduce**
+
+1.  **Test Device and Viewports**:
+
+    - Devices: iPhone SE, iPhone 12 Pro, Samsung Galaxy S8
+    - Viewports: 320px, 375px
+
+2.  **Navigate to the Application**:
+
+    - Open the application on the specified devices or adjust the viewport size in the browser's developer tools.
+
+3.  **Inspect Layout and Responsiveness**:
+
+    - Verify that the application displays properly and adapts to the screen size.
+    - Check for layout issues, alignment problems, content overflow, and UI functionality.
+
+#### **Expected Results**
+
+- The application should display consistently and adapt to all screen sizes tested.
+- Layout should be responsive without content overlap, overflow, or misaligned UI elements.
+- Interactive elements should remain accessible and functional.
+
+#### **Bugs Identified**
+
+1.  **320px Viewport**:
+
+    - Content overflows horizontally on several pages.
+    - Navigation bar is partially hidden.
+
+2.  **375px Viewport**:
+
+    - Footer elements are misaligned.
+    - Text in the header overlaps with the logo.
+
+3.  **iPhone SE**:
+
+    - Buttons are not clickable due to overlapping elements.
+    - Images are improperly scaled, causing visual distortion.
+
+4.  **iPhone 12 Pro**:
+
+    - Navigation menu does not fully expand, cutting off items.
+    - Dropdowns appear outside the viewport.
+
+5.  **Samsung Galaxy S8**:
+
+    - Page sections have inconsistent padding, leading to uneven alignment.
+    - Content at the bottom of the page is clipped.
