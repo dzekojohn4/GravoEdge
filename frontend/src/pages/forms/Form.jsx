@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { ReactComponent as ETH } from '../../assets/icons/ethereum.svg';
+import { ReactComponent as USDC } from '../../assets/icons/borrow_usdc.svg';
+import { ReactComponent as STRK } from '../../assets/icons/strk.svg';
+import { ReactComponent as DAI } from '../../assets/icons/dai.svg';
 import TokenSelector from 'components/TokenSelector';
 import BalanceCards from 'components/BalanceCards';
 import MultiplierSelector from 'components/MultiplierSelector';
@@ -32,8 +36,18 @@ const Form = () => {
   const { data: positionData, refetch: refetchPosition } = useCheckPosition();
 
   const connectWalletHandler = () => {
+
+    
     connectWalletMutation.mutate();
   };
+
+  const [balances, setBalances] = useState([
+    { icon: <ETH />, title: 'ETH', balance: '0.00' },
+    { icon: <USDC />, title: 'USDC', balance: '0.00' },
+    { icon: <STRK />, title: 'STRK', balance: '0.00' },
+    { icon: <DAI />, title: 'DAI', balance: '0.00' },
+  ]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,7 +90,7 @@ const Form = () => {
 
   return (
     <div className="form-content-wrapper">
-      <BalanceCards walletId={walletId} />
+      <BalanceCards balances={balances} setBalances={setBalances} walletId={walletId} />
       {successful && createPortal(<CongratulationsModal />, document.body)}
       {isClosePositionOpen && (
         <ActionModal
