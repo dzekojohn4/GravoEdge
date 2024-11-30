@@ -290,9 +290,9 @@ padding-left: 450px;
     padding: 0 16px;
     margin-right: -20px;
     min-height: 83vh;
-    background: url('/public/mobilebackground.png') no-repeat;
+    background: url('/public/Windowbackground Vault.png') no-repeat;
     background-size: cover;
-    background-position: center;
+    background-position: -200px center;
   }
   .layout{
     display: none;
