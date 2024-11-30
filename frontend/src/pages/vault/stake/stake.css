@@ -12,6 +12,19 @@
   font-family: var(--font-family);
 }
 
+.token-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 2000px;
+  background-color: hsla(261, 49%, 15%, 1);
+}
+
+.stake-wrapper:first-child {
+  margin-left: -24px;
+}
+
 .stake-card {
   width: 309px;
   background: var(--header-button-bg);
@@ -42,9 +55,10 @@
   position: relative;
   width: 100%;
 }
-.main-card{
-  border:1px solid #36294E;
-  border-radius:24px;
+
+.main-card {
+  border: 1px solid #36294E;
+  border-radius: 24px;
   padding: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 }
@@ -138,12 +152,12 @@
 .currency {
   position: absolute;
   color: var(--dark-gray);
-  right:31%;
+  right: 31%;
   top: 18%;
   transform: translateY(-50%);
   opacity: 0.5;
-  font-size:16px;
-  line-height:20.83px ;
+  font-size: 16px;
+  line-height: 20.83px;
   z-index: 999999;
 }
 
@@ -173,42 +187,62 @@
   .desktop-layout {
     display: none;
   }
-  
+
   .mobile-layout {
     display: block;
   }
+
   .stake-wrapper {
     display: block;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-     padding: 0 16px; /* Add some side padding */
-     min-height: 100vh;
-     background: url('/public/background.png') no-repeat;
-     background-size: cover;
-     background-position: center 50%;
-    
-    
-   }
+    padding: 0 16px;
+    /* Add some side padding */
+    min-height: 100vh;
+    background: url('/public/background.png') no-repeat;
+    background-size: cover;
+    background-position: center 50%;
+  }
+
+  .token-icon {
+    margin-right: 5px;
+    position: relative;
+    z-index: 1;
+  }
   
   .stake-button {
-    width: 642px;    height: 60px;
+    width: 642px;
+    height: 60px;
     margin: 20px auto 0;
     display: block;
   }
+
   .main-card {
-    background-color:#120721;
-    border:1px solid #36294E;
+    background-color: #120721;
+    border: 1px solid #36294E;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
   }
+
   .stake-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 32px;
-  } 
+  }
+  .network-dropdown .network-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .network-selector-container:hover .network-dropdown {
+    display: block;
+  }
+  
+  .network-selector-container:hover .chevron {
+    transform: rotate(180deg);
+  }
 
 }
 
@@ -217,7 +251,7 @@
   .desktop-layout {
     display: block;
   }
-  
+
   .mobile-layout {
     display: none;
   }
@@ -237,13 +271,52 @@
     background: url('/public/mobilebackground.png') no-repeat;
     background-size: cover;
     background-position: center;
- }
-  /* .stake-container {
-    width: 100%;
-    max-width: 342px;
-    margin: 0 auto;
-    padding: 10px;
-  } */
+  }
+
+  .token-icon {
+    margin-right: 5px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    z-index: 1;
+  }
+
+
+  .balance-container {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+    max-width: 100%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .balance-item {
+    height: fit-content;
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 0;
+    border-radius: 16px;
+    background: none;
+  }
+
+  .balance-item .balance-title {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .balance-item .title-container + label:nth-of-type(1) {
+    font-size: 20px;
+    font-weight: 600;
+  }
 
   .top-cards {
     display: flex;
@@ -253,13 +326,12 @@
   }
 
   .main-card {
-    background-color:#120721;
-    border:1px solid #36294E;
+    background-color: #120721;
+    border: 1px solid #36294E;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
   }
-
   .stake-title {
     font-size: 16px;
     text-align: center;
@@ -278,7 +350,7 @@
   }
 
 
-  
+
   .network-selector {
     padding: 15px;
   }
@@ -293,6 +365,18 @@
     font-size: 14px;
     text-align: center;
   }
+  .network-dropdown .network-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .network-selector-container:hover .network-dropdown {
+    display: block;
+  }
+  
+  .network-selector-container:hover .chevron {
+    transform: rotate(180deg);
+  }
+
   /* balance card side */
   .mobile-border-container {
     border: 1px solid #36294E;
@@ -305,16 +389,16 @@
     margin-left: auto;
     margin-right: auto;
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
 
 
 }
