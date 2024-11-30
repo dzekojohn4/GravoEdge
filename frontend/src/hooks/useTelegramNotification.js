@@ -1,11 +1,18 @@
 import { useMutation } from "@tanstack/react-query";
-import { subscribeToNotification } from "services/telegram";
+import { subscribeToNotification, generateTelegramLink } from "services/telegram";
 import { notifyError, notifySuccess } from "utils/notification";
 
 const useTelegramNotification = () => {
     const mutation = useMutation({
-        mutationFn: ({ telegramId, walletId }) =>
-            subscribeToNotification(telegramId, walletId),
+        mutationFn: async ({ telegramId, walletId }) => {
+            if (!telegramId) {
+                // Get subscription link from backend
+                const { subscription_link } = await generateTelegramLink(walletId);
+                window.open(subscription_link, '_blank');
+                return;
+            }
+            return await subscribeToNotification(telegramId, walletId);
+        },
         onSuccess: () => {
             notifySuccess("Subscribed to notifications successfully!");
         },
