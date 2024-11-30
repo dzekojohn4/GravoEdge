@@ -10,7 +10,7 @@
 
 .sidebar {
   width: 280px;
-  background-color: #00000F;
+  background-color: #00000f;
   border-right: 1px solid #300734;
   display: flex;
   flex-direction: column;
@@ -66,9 +66,8 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(to right, #49ABD2, #36294E);
+  background: linear-gradient(to right, #49abd2, #36294e);
 }
-
 
 .nav-item.active .nav-bullet {
   color: var(--nav-button-hover);
@@ -76,7 +75,7 @@
 
 .main-content {
   flex: 1;
-  padding: 2rem 0;
+  padding: 0;
   position: relative;
 }
 
@@ -90,5 +89,4 @@
   .sidebar {
     width: 160px;
   }
-
 }
