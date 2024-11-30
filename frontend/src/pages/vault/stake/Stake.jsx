@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { ReactComponent as ETH } from '../../../assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from '../../../assets/icons/borrow_usdc.svg';
-import { ReactComponent as STRK } from '../../../assets/icons/strk.svg';
+import {ReactComponent as STRK} from '../../../assets/icons/strk.svg'
 import  STRKIMG from '../../../assets/icons/strk.svg';
 import { ReactComponent as DAI } from '../../../assets/icons/dai.svg';
 import './stake.css';
 import { VaultLayout } from '../VaultLayout';
 import { Button } from 'components/ui/Button';
-//import MetricCard from 'components/StakeCard/MetricCard';
 import GasFee from 'components/GasFee/GasFee';
 import BalanceCards from 'components/BalanceCards';
 import { Image } from 'react-bootstrap';
@@ -15,6 +14,7 @@ import { Image } from 'react-bootstrap';
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
   const [amount, setAmount] = useState('0');
+  
   const [balances, setBalances] = useState([
     { icon: <STRK />, title: 'STRK', balance: '0.046731' },
     { icon: <USDC />, title: 'APY', balance: '0.046731' },
@@ -75,24 +75,13 @@ function StakeWrapper({
 }) {
   return (
     <div className="stake-wrapper">
-        <div className="stake-container">
-        <div className='mobile-balances-container '>
-             <div className='mobile-balances-scroller '>
-               <BalanceCards 
+       <BalanceCards 
                  balances={balances} 
                 setBalances={setBalances} 
                  walletId={null} 
               />
-             </div>
-          </div>
-          {/* <div className='main-container'>
-            <div className="top-cards">
-              <MetricCard title="STRK Balance" value="0.046731" icon={STRK} />
-              <MetricCard title="APY Balance" value="0.046731" icon={USDC} />
-            </div>
-          </div> */}
-
-          <h1 className="stake-title">Please submit your leverage details</h1>
+        <div className="stake-container">
+        <h1 className="stake-title">Please submit your leverage details</h1>
           <div className="main-card">
             <div className="network-selector-container">
               <div className="network-selector">
