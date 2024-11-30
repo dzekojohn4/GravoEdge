@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { ReactComponent as ETH } from '../../../assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from '../../../assets/icons/borrow_usdc.svg';
-import {ReactComponent as STRK} from '../../../assets/icons/strk.svg'
-import  STRKIMG from '../../../assets/icons/strk.svg';
 import { ReactComponent as DAI } from '../../../assets/icons/dai.svg';
+import STRKIMG from '../../../assets/icons/strk.svg';
 import './stake.css';
 import { VaultLayout } from '../VaultLayout';
 import { Button } from 'components/ui/Button';
@@ -14,9 +13,9 @@ import { Image } from 'react-bootstrap';
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
   const [amount, setAmount] = useState('0');
-  
+
   const [balances, setBalances] = useState([
-    { icon: <STRK />, title: 'STRK', balance: '0.046731' },
+    { icon: <Image src={STRKIMG} />, title: 'STRK', balance: '0.046731' },
     { icon: <USDC />, title: 'APY', balance: '0.046731' },
     { icon: <ETH />, title: 'ETH', balance: '0.046731' },
     { icon: <DAI />, title: 'DAI', balance: '0.046731' },
@@ -38,7 +37,7 @@ function Stake() {
   return (
     <div className="stake-page">
       <VaultLayout className="desktop-layout">
-        <StakeWrapper 
+        <StakeWrapper
           selectedNetwork={selectedNetwork}
           networks={networks}
           amount={amount}
@@ -48,9 +47,9 @@ function Stake() {
           handleAmountChange={handleAmountChange}
         />
       </VaultLayout>
-      
+
       <div className="mobile-layout">
-        <StakeWrapper 
+        <StakeWrapper
           selectedNetwork={selectedNetwork}
           networks={networks}
           amount={amount}
@@ -64,87 +63,87 @@ function Stake() {
   );
 }
 
-function StakeWrapper({ 
-  selectedNetwork, 
-  networks, 
-  amount, 
+function StakeWrapper({
+  selectedNetwork,
+  networks,
+  amount,
   balances,
   setBalances,
-  handleChange, 
-  handleAmountChange 
+  handleChange,
+  handleAmountChange
 }) {
   return (
     <div className="stake-wrapper">
-       <BalanceCards 
-                 balances={balances} 
-                setBalances={setBalances} 
-                 walletId={null} 
-              />
-        <div className="stake-container">
+      <BalanceCards
+        balances={balances}
+        setBalances={setBalances}
+        walletId={null}
+      />
+      <div className="stake-container">
         <h1 className="stake-title">Please submit your leverage details</h1>
-          <div className="main-card">
-            <div className="network-selector-container">
-              <div className="network-selector">
-                <div className="selected-network">
-                  <Image
-                    src={networks.find((network) => network.name === selectedNetwork)?.image}
-                    alt={selectedNetwork}
-                    className="network-icon"
-                  />
-                  <span>{selectedNetwork}</span>
+        <div className="main-card">network-selector-container
+          <div className="">
+            <div className="network-selector">
+              <div className="selected-network">
+                <Image
+                  src={networks.find((network) => network.name === selectedNetwork)?.image}
+                  alt={selectedNetwork}
+                  className="network-icon"
+                />
+                <span>{selectedNetwork}</span>
+              </div>
+              <svg
+                className="chevron"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 9L12 15L18 9"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div className="network-dropdown">
+              {networks.map((network) => (
+                <div key={network.name} className="network-option" onClick={() => handleChange(network)}>
+                  <img src={network.image} alt={network.name} className="network-icon" />
+                  <span>{network.name}</span>
                 </div>
-                <svg
-                  className="chevron"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M6 9L12 15L18 9"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-
-              <div className="network-dropdown">
-                {networks.map((network) => (
-                  <div key={network.name} className="network-option" onClick={() => handleChange(network)}>
-                    <img src={network.image} alt={network.name} className="network-icon" />
-                    <span>{network.name}</span>
-                  </div>
-                ))}
-              </div>
+              ))}
             </div>
-
-            <div className="amount-input" aria-labelledby="amount-input-label">
-              <input
-                type="text"
-                id="amount-field"
-                value={amount}
-                onChange={handleAmountChange}
-                pattern="^\d*\.?\d*$"
-                className="amount-field"
-                aria-describedby="currency-symbol"
-                placeholder="0.00"
-              />
-              <span id="currency-symbol" className="currency">STRK</span>
-            </div>
-
-            <div className="apy-rate">$0.00 APY / year</div>
-            <GasFee />
           </div>
 
-          <Button variant="secondary" size="lg" className="stake-button">
-            Stake
-          </Button>
+          <div className="amount-input" aria-labelledby="amount-input-label">
+            <input
+              type="text"
+              id="amount-field"
+              value={amount}
+              onChange={handleAmountChange}
+              pattern="^\d*\.?\d*$"
+              className="amount-field"
+              aria-describedby="currency-symbol"
+              placeholder="0.00"
+            />
+            <span id="currency-symbol" className="currency">STRK</span>
+          </div>
+
+          <div className="apy-rate">$0.00 APY / year</div>
+          <GasFee />
         </div>
+
+        <Button variant="secondary" size="lg" className="stake-button">
+          Stake
+        </Button>
       </div>
-   
+    </div>
+
   );
 }
 
