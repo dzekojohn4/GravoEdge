@@ -243,6 +243,22 @@
   .network-selector-container:hover .chevron {
     transform: rotate(180deg);
   }
+  .chevron {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+  }
+  .network-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--gray);
+    border-radius: 2rem;
+    z-index: 1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
 
 }
 
@@ -376,6 +392,22 @@
   .network-selector-container:hover .chevron {
     transform: rotate(180deg);
   }
+  .chevron {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+  }
+  .network-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--gray);
+    border-radius: 2rem;
+    z-index: 1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
 
   /* balance card side */
   .mobile-border-container {
