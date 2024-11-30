@@ -1,10 +1,15 @@
 .stake-wrapper {
   background-size: cover;
-  background-position: center 39%;
+  background-position: center 50%;
   min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-family: var(--font-family);
 }
 
 .stake-card {
@@ -27,9 +32,10 @@
 
 .stake-container {
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  gap: 32px;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 60px;
 }
 
 .network-selector-container {
@@ -137,7 +143,7 @@
   transform: translateY(-50%);
   opacity: 0.5;
   font-size:16px;
-  line-Hieght:20.83px;
+  line-height:20.83px ;
   z-index: 999999;
 }
 
@@ -171,6 +177,20 @@
   .mobile-layout {
     display: block;
   }
+  .stake-wrapper {
+    display: block;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+     padding: 0 16px; /* Add some side padding */
+     min-height: 100vh;
+     background: url('/public/background.png') no-repeat;
+     background-size: cover;
+     background-position: center 50%;
+    
+    
+   }
+  
   .stake-button {
     width: 642px;    height: 60px;
     margin: 20px auto 0;
@@ -184,11 +204,11 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
   }
   .stake-container {
-    width: 100%;
-    max-width:642px;
-    margin: 0 auto;
-    padding: 10px;
-  }
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+  } 
 
 }
 
@@ -209,25 +229,21 @@
 /* Mobile Responsiveness */
 @media (max-width: 767px) {
   .stake-wrapper {
-   display: block;
-   display: flex;
+    display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 16px; /* Add some side padding */
-    min-height: 100vh;
-    background: url('/public/background.png') no-repeat;
+    padding: 0 16px;
+    min-height: 83vh;
+    background: url('/public/mobilebackground.png') no-repeat;
     background-size: cover;
-    background-position: center 50%;
-   
-   
-  }
-
-  .stake-container {
+    background-position: center;
+ }
+  /* .stake-container {
     width: 100%;
     max-width: 342px;
     margin: 0 auto;
     padding: 10px;
-  }
+  } */
 
   .top-cards {
     display: flex;
@@ -290,46 +306,15 @@
     margin-right: auto;
   }
   
-  .mobile-balance-cards {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
   
-  .mobile-balance-card {
-    flex: 1;
-    text-align: center;
-    background-color: #1c1538;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-  }
   
-  .mobile-balance-title {
-    font-size: 14px;
-    color: #9b86c8;
-  }
   
-  .mobile-balance-value {
-    font-size: 24px;
-    font-weight: bold;
-  }
   
-  /* Container for the balances */
-.mobile-balances-container {
-  width: 100vw;
-  overflow-x: hidden;
-  position: relative;
-}
+  
+  
+  
+  
+  
 
-/* Horizontal scrolling for the balances */
-.mobile-balances-scroller {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 16px;
-}
 
 }
