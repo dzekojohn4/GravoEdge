@@ -74,7 +74,7 @@ function StakeWrapper({
   handleAmountChange 
 }) {
   return (
-    <div className="form-content-wrapper">
+    <div className="stake-wrapper">
         <div className="stake-container">
         <div className='mobile-balances-container '>
              <div className='mobile-balances-scroller '>
