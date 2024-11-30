@@ -91,7 +91,10 @@ class TelegramUserDBConnector(DBConnector):
         """
         Set wallet_id and is_allowed_notification to True for a user by their telegram ID.
         """
-        return self.update_telegram_user(telegram_id, {"is_allowed_notification": True, "wallet_id": wallet_id})
+        return self.update_telegram_user(
+            telegram_id,
+            dict(is_allowed_notification=True, wallet_id=wallet_id)
+        )
 
     def allow_notification(self, telegram_id: int) -> bool:
         """
