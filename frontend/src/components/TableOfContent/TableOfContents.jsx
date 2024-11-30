@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import "./table_of_content_styles.css";
 
-const TableOfContents = ({ items }) => {
-  const location = useLocation();
-  const [activeId, setActiveId] = useState('introduction');
+const TableOfContents = ({ items, defaultActiveId, tabelTitle, headerHeight = 80 }) => {
+  const [activeId, setActiveId] = useState(defaultActiveId);
 
   useEffect(() => {
-    if (location.pathname === '/documentation') {
-      setActiveId('introduction');
+    if (defaultActiveId) {
+      setActiveId(defaultActiveId);
     }
 
     const handleScroll = () => {
@@ -15,7 +14,7 @@ const TableOfContents = ({ items }) => {
       const scrollPosition = window.scrollY;
 
       sections.forEach((section) => {
-        const sectionTop = section.offsetTop - 100;
+        const sectionTop = section.offsetTop - headerHeight;
         const sectionHeight = section.offsetHeight;
 
         if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
@@ -27,21 +26,20 @@ const TableOfContents = ({ items }) => {
     window.addEventListener('scroll', handleScroll);
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [location]);
+  }, [defaultActiveId, headerHeight]);
 
   const handleClick = (e, link) => {
     e.preventDefault();
     const targetId = link.replace('#', '');
     const element = document.getElementById(targetId);
-    
+
     if (element) {
-      const headerHeight = 80;
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
       const offsetPosition = elementPosition - headerHeight;
 
       window.scrollTo({
-        top: targetId === 'introduction' ? 0 : offsetPosition,
-        behavior: 'smooth'
+        top: targetId === defaultActiveId ? 0 : offsetPosition,
+        behavior: 'smooth',
       });
 
       setActiveId(targetId);
@@ -49,26 +47,28 @@ const TableOfContents = ({ items }) => {
   };
 
   return (
-    <div className="table-of-contents">
-      <h3 className="toc-title">Table of Content</h3>
-      <nav className="toc-nav">
+    <div className={"table-of-contents"}>
+      <div className="toc-title-container">
+        <h3 className={"toc-title"}>{tabelTitle}</h3>
+      </div>
+      <nav className={"toc-nav"}>
         {items.map((item, index) => (
-          <div key={index} className="toc-item">
-            <a 
+          <div key={index} className={"toc-item"}>
+            <a
               href={item.link}
               onClick={(e) => handleClick(e, item.link)}
-              className={`toc-link ${activeId === item.link.replace('#', '') ? 'active' : ''}`}
+              className={`${"toc-link"} ${activeId === item.link.replace('#', '') ? 'active' : ''}`}
             >
               • {item.title}
             </a>
             {item.subItems && (
-              <div className="toc-subitems">
+              <div className={"toc-subitems"}>
                 {item.subItems.map((subItem, subIndex) => (
-                  <a 
+                  <a
                     key={subIndex}
                     href={subItem.link}
                     onClick={(e) => handleClick(e, subItem.link)}
-                    className={`toc-sublink ${activeId === subItem.link.replace('#', '') ? 'active' : ''}`}
+                    className={`${"toc-sublink"} ${activeId === subItem.link.replace('#', '') ? 'active' : ''}`}
                   >
                     {subItem.title}
                   </a>

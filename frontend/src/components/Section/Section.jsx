@@ -1,5 +1,5 @@
 import React from 'react';
-import './documentation.css';
+import './section.css';
 
 const Section = ({ id, title, content }) => {
   const renderContent = (item, index) => {

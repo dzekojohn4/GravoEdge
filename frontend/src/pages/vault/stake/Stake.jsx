@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ReactComponent as ETH } from '../../../assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from '../../../assets/icons/borrow_usdc.svg';
+// import { ReactComponent as STRK } from '../../../assets/icons/strk.svg
 import { ReactComponent as DAI } from '../../../assets/icons/dai.svg';
 import STRKIMG from '../../../assets/icons/strk.svg';
 import './stake.css';
@@ -81,8 +82,8 @@ function StakeWrapper({
       />
       <div className="stake-container">
         <h1 className="stake-title">Please submit your leverage details</h1>
-        <div className="main-card">network-selector-container
-          <div className="">
+        <div className="main-card">
+          <div className="network-selector-container">
             <div className="network-selector">
               <div className="selected-network">
                 <Image
