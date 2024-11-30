@@ -46,7 +46,18 @@ function Footer() {
         >
           Documentation
         </NavLink>
-        <Link to="/overview">Overview</Link>
+        <NavLink
+          to="/overview"
+          className={({ isActive }) => (isActive ? 'footer-link-active' : '')}
+          onClick={(e) => {
+            if (window.location.pathname === '/overview') {
+              e.preventDefault();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        >
+          Overview
+        </NavLink>
         <Link to="/terms">Terms & Conditions</Link>
         <Link to="/defi">Defi Spring Rewards</Link>
       </nav>
