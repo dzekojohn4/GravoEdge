@@ -13,7 +13,6 @@ This document provides instructions on how to set up and run the Telegram bot, a
    TELEGRAM_WEBAPP_URL=<your-webapp-url>
 
    REACT_APP_BOT_ID=<your-telegram-bot-id>
-   REACT_APP_TELEGRAM_BOT_USERNAME=<your-telegram-bot-username>
    ```
    Note: You can obtain the bot ID directly from your Telegram bot token in the format `bot_id:secret`.
 
