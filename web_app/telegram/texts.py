@@ -18,6 +18,7 @@ HEALTH_RATIO_WARNING_MESSAGE = (
 )
 
 NOTIFICATION_ALLOWED_MESSAGE = (
-    "You have successfully allowed notifications! You will now receive updates and alerts regarding your account. "
+    "You have successfully allowed notifications! "
+    "You will now receive updates and alerts regarding your account. "
     "Thank you for staying connected with us! 🎉"
 )
