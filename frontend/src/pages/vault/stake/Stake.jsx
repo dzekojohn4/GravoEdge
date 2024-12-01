@@ -23,18 +23,11 @@ function Stake() {
     { icon: <ETH />, title: 'ETH', balance: '0.046731' },
     { icon: <DAI />, title: 'DAI', balance: '0.046731' },
   ]);
-
   const networks = [{ name: 'Starknet', image: STRK }];
-
-  // const handleChange = (e) => {
-  //   setSelectedNetwork(e.target.value);
-  // };
   const handleChange = (network) => {
     setSelectedNetwork(network.name);
 
   };
-
-
 
   const handleAmountChange = (e) => {
     const value = e.target.value;
