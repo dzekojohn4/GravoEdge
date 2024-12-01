@@ -161,6 +161,29 @@ def test_get_total_amounts_for_open_positions(mock_position_db_connector):
     assert result == Decimal(1000.0)
 
 
+def test_delete_all_user_positions_success(mock_session):
+    """Test successfully deleting all positions for a user."""
+    user_id = uuid.uuid4()
+    mock_positions = [
+        Position(id=uuid.uuid4(), user_id=user_id, token_symbol="BTC", amount="10"),
+        Position(id=uuid.uuid4(), user_id=user_id, token_symbol="ETH", amount="5"),
+    ]
+    mock_session.query.return_value.filter_by.return_value.all.return_value = (
+        mock_positions
+    )
+
+    position_connector = PositionDBConnector()
+    with patch.object(position_connector, "Session", return_value=mock_session):
+        position_connector.delete_all_user_positions(user_id)
+
+        mock_session.query.assert_called_once_with(Position)
+        mock_session.query.return_value.filter_by.assert_called_once_with(
+            user_id=user_id
+        )
+        assert mock_session.delete.call_count == len(mock_positions)
+        mock_session.commit.assert_called_once()
+
+
 ### Negative Test Cases ###
 
 
@@ -224,29 +247,6 @@ def test_get_position_id_by_wallet_id_no_positions(mock_position_db_connector):
     result = mock_position_db_connector.get_position_id_by_wallet_id("test_wallet_id")
 
     assert result is None
-
-
-def test_delete_all_user_positions_success(mock_session):
-    """Test successfully deleting all positions for a user."""
-    user_id = uuid.uuid4()
-    mock_positions = [
-        Position(id=uuid.uuid4(), user_id=user_id, token_symbol="BTC", amount="10"),
-        Position(id=uuid.uuid4(), user_id=user_id, token_symbol="ETH", amount="5"),
-    ]
-    mock_session.query.return_value.filter_by.return_value.all.return_value = (
-        mock_positions
-    )
-
-    position_connector = PositionDBConnector()
-    with patch.object(position_connector, "Session", return_value=mock_session):
-        position_connector.delete_all_user_positions(user_id)
-
-        mock_session.query.assert_called_once_with(Position)
-        mock_session.query.return_value.filter_by.assert_called_once_with(
-            user_id=user_id
-        )
-        assert mock_session.delete.call_count == len(mock_positions)
-        mock_session.commit.assert_called_once()
 
 
 def test_delete_all_user_positions_failure(mock_session):

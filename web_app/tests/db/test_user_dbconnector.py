@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 from web_app.db.crud import UserDBConnector
-from web_app.db.models import AirDrop, Position, User
+from web_app.db.models import AirDrop, User
 
 
 @pytest.fixture
