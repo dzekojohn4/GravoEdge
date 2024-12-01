@@ -10,13 +10,11 @@ services:
     container_name: backend_dev
     volumes:
       - ./entrypoint.sh:/app/entrypoint.sh
-      - .:/app # Mount the entire project for easy code updates
+      - .:/app
     env_file:
-      - .env.dev # Use a different environment file for local development
-    expose:
-      - "8000"
+      - .env.dev
     ports:
-      - "8000:8000" # Expose backend to localhost
+      - "8000:8000"
     networks:
       - app_network
     depends_on:
@@ -41,9 +39,9 @@ services:
     networks:
       - app_network
     ports:
-      - "${DB_PORT:-5432}:5432"  # Use environment variable for port mapping
+      - "5432:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
