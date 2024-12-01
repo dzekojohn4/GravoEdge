@@ -1,16 +1,16 @@
 .stake-wrapper {
+  background: url('../../../../public/background.png') no-repeat;
   background-size: cover;
-  background-position: center 50%;
+  background-position: center 39%;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  justify-content: flex-start;
-  align-items: center;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+   display: flex; 
+  justify-content: center;
+  align-items: flex-start;
+  margin-left: 200px;
+  padding: 0 24px;
+  width: 100vw;
+  padding: 0 24px;
   font-family: var(--font-family);
-padding-left: 450px;
 }
 
 .token-icon {
@@ -22,9 +22,7 @@ padding-left: 450px;
   background-color: hsla(261, 49%, 15%, 1);
 }
 
-.stake-wrapper:first-child {
-  margin-left: -24px;
-}
+
 
 .stake-card {
   width: 309px;
@@ -48,9 +46,29 @@ padding-left: 450px;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  gap: 10px;
-  padding-bottom: 60px;
-  width: 642px
+  gap: 20px;
+}
+
+.main-container {
+  width: 642px;
+  gap: 24px;
+  padding-top: 37px;
+  border-radius: 20px;
+  color: var(--primary);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.top-cards {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
 }
 
 .network-selector-container {
@@ -59,10 +77,13 @@ padding-left: 450px;
 }
 
 .main-card {
-  border: 1px solid #36294E;
+  padding: 3rem 1.5rem;
+  height: auto;
+  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  border: var(--midnight-purple-border);
   border-radius: 24px;
-  padding: 20px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 }
 
 .network-selector {
@@ -174,220 +195,60 @@ padding-left: 450px;
   width: 100%;
 }
 
-
-/* here */
-.desktop-layout {
-  display: none;
-}
-
-.mobile-layout {
+.balance-display-container .large-screen-balance {
   display: block;
 }
 
-/* Tablet styles */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .desktop-layout {
-    display: none;
-  }
+.balance-display-container .mobile-screen-balance {
+  display: none;
+}
 
-  .mobile-layout {
-    display: block;
-  }
 
+
+/* Tablet and Mobile Responsiveness */
+@media screen and (max-width: 1024px) {
   .stake-wrapper {
     display: block;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 0 16px;
-    margin-left: 16px;
-    /* Add some side padding */
-    min-height: 100vh;
-    background: url('/public/background.png') no-repeat;
-    background-size: cover;
-    background-position: center 50%;
-
-  }
-
-  .token-icon {
-    margin-right: 5px;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .stake-button {
-    width: 642px;
-    height: 60px;
-    margin: 20px auto 0;
-    display: block;
-  }
-
-  .main-card {
-    background-color: #120721;
-    border: 1px solid #36294E;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-  }
-
-  .stake-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 32px;
-
-  }
-  .network-dropdown .network-option:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-  
-  .network-selector-container:hover .network-dropdown {
-    display: block;
-  }
-  
-  .network-selector-container:hover .chevron {
-    transform: rotate(180deg);
-  }
-  .chevron {
-    margin-left: auto;
-    transition: transform 0.3s ease;
-  }
-  .network-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
     width: 100%;
-    background: var(--gray);
-    border-radius: 2rem;
-    z-index: 1;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-
-}
-
-/* Desktop styles */
-@media (min-width: 1025px) {
-  /* .desktop-layout {
-    display: block;
-  } */
-
-  .mobile-layout {
-    display: none;
-  }
-}
-
-
-/* Existing styles remain the same */
-
-/* Mobile Responsiveness */
-@media (max-width: 767px) {
-  .stake-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin-right: 374px;
+    margin-left: 0px;
     padding: 0 16px;
-    margin-right: -20px;
-    min-height: 83vh;
     background: url('/public/Windowbackground Vault.png') no-repeat;
     background-size: cover;
     background-position: -200px center;
   }
-  .layout{
-    display: none;
-  }
+
   .stake-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 32px;
-    width: 90%;
+    gap: 26px;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
-
-  }
-  .n
-  .token-icon {
-    margin-right: 5px;
-    width: 30px;
-    height: 30px;
-    position: relative;
-    z-index: 1;
   }
 
-
-  .balance-container {
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 20px;
-    max-width: 100%;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .balance-item {
-    height: fit-content;
-    padding: 16px 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 0;
-    border-radius: 16px;
-    background: none;
-  }
-
-  .balance-item .balance-title {
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-  }
-
-  .balance-item .title-container + label:nth-of-type(1) {
-    font-size: 20px;
-    font-weight: 600;
-  }
-
-  .top-cards {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 20px;
+  .stake-title {
+    font-size: 16px;
+    font-weight: 400;
+    
   }
 
   .main-card {
-    background-color: #120721;
-    border: 1px solid #36294E;
-    border-radius: 12px;
     padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-  }
-  .stake-title {
-    font-size: 16px;
-    text-align: center;
-    margin-bottom: 15px;
+    gap: 26px;
+    flex-direction: column;
+   border-radius:12px;
   }
 
-  .amount-field {
-    font-size: 64px;
+  .top-cards {
+    gap: 8px;
   }
-
-  .stake-button {
-    width: 342px;
-    height: 60px;
-    margin: 20px auto 0;
-    display: block;
-  }
-
-
 
   .network-selector {
     padding: 15px;
+  }
+
+  .amount-field {
+    font-size: 32px;
+    padding: 12px;
   }
 
   .currency {
@@ -396,36 +257,31 @@ padding-left: 450px;
   }
 
   .apy-rate {
-    color: #9b86c8;
     font-size: 14px;
-    text-align: center;
   }
-  .network-dropdown .network-option:hover {
-    background: rgba(255, 255, 255, 0.2);
+
+  .stake-button {
+    width: 100%;
+    font-size: 14px;
+    padding: 18px 24px;
   }
-  
-  .network-selector-container:hover .network-dropdown {
+
+  .stake-button::before {
+    border-radius: 16px;
+  }
+  .balance-display-container .large-screen-balance {
+    display: none;
+  }
+
+  .balance-display-container .mobile-screen-balance {
     display: block;
   }
-  
-  .network-selector-container:hover .chevron {
-    transform: rotate(180deg);
-  }
-  .chevron {
-    margin-left: auto;
-    transition: transform 0.3s ease;
-  }
-  .network-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: var(--gray);
-    border-radius: 2rem;
-    z-index: 1;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  
+}
 
+@media (min-width: 768px) and (max-width: 1024px) {
+  .stake-container {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }

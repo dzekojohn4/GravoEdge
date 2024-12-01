@@ -1,32 +1,38 @@
 import React, { useState } from 'react';
 import { ReactComponent as ETH } from '../../../assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from '../../../assets/icons/borrow_usdc.svg';
-// import { ReactComponent as STRK } from '../../../assets/icons/strk.svg
 import { ReactComponent as DAI } from '../../../assets/icons/dai.svg';
-import STRKIMG from '../../../assets/icons/strk.svg';
+import {ReactComponent as STTRK}from '../../../assets/icons/strk.svg'
+import MetricCard from 'components/StakeCard/MetricCard';
+import STRK from '../../../assets/icons/strk.svg';
+import USDCc from '../../../assets/icons/apy_icon.svg';
 import './stake.css';
 import { VaultLayout } from '../VaultLayout';
 import { Button } from 'components/ui/Button';
 import GasFee from 'components/GasFee/GasFee';
 import BalanceCards from 'components/BalanceCards';
-import { Image } from 'react-bootstrap';
 
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
   const [amount, setAmount] = useState('0');
 
   const [balances, setBalances] = useState([
-    { icon: <Image src={STRKIMG} />, title: 'STRK', balance: '0.046731' },
+    { icon: <STTRK />, title: 'STRK', balance: '0.046731' },
     { icon: <USDC />, title: 'APY', balance: '0.046731' },
     { icon: <ETH />, title: 'ETH', balance: '0.046731' },
     { icon: <DAI />, title: 'DAI', balance: '0.046731' },
   ]);
 
-  const networks = [{ name: 'Starknet', image: STRKIMG }];
+  const networks = [{ name: 'Starknet', image: STRK }];
 
-  const handleChange = (e) => {
-    setSelectedNetwork(e.target.value);
+  // const handleChange = (e) => {
+  //   setSelectedNetwork(e.target.value);
+  // };
+  const handleChange = (network) => {
+    setSelectedNetwork(network.name);
+    
   };
+
   
 
   const handleAmountChange = (e) => {
@@ -38,20 +44,31 @@ function Stake() {
   };
   return (
     <VaultLayout >
-
-      <div className="stake-wrapper">
-        <BalanceCards
-          balances={balances}
-          setBalances={setBalances}
-          walletId={null}
-        />
-        <div className="stake-container">
+   <div className="stake-wrapper">
+   <div className="stake-container">
+   <div className="balance-display-container">
+            <div className="large-screen-balance">
+              <div className='main-container'>
+                <div className='top-cards'>
+                  <MetricCard title="STRK Balance" value="0.046731" icon={STRK} />
+                  <MetricCard title="APY Balance" value="0.046731" icon={USDCc} /> 
+                </div>
+              </div>
+            </div>
+            <div className="mobile-screen-balance">
+              <BalanceCards
+                balances={balances}
+                setBalances={setBalances}
+                walletId={null}
+              />
+            </div>
+          </div>
           <h1 className="stake-title">Please submit your leverage details</h1>
           <div className="main-card">
             <div className="network-selector-container">
               <div className="network-selector">
                 <div className="selected-network">
-                  <Image
+                <img
                     src={networks.find((network) => network.name === selectedNetwork)?.image}
                     alt={selectedNetwork}
                     className="network-icon"
