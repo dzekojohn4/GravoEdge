@@ -214,9 +214,9 @@
     margin-right: 374px;
     margin-left: 0px;
     padding: 0 16px;
-    background: url('/public/Windowbackground Vault.png') no-repeat;
+    background: url('../../../../public/background.png') no-repeat;
     background-size: cover;
-    background-position: -200px center;
+    background-position: -250px center;
   }
 
   .stake-container {
@@ -238,7 +238,7 @@
     gap: 26px;
     flex-direction: column;
     border-radius: 12px;
-    width:342px ;
+   
   }
 
   .clicked-network-selector-container .network-dropdown {
@@ -268,7 +268,6 @@
   }
 
   .stake-button {
-    max-width:342px;
 
     font-size: 14px;
     padding: 18px 24px;
@@ -294,14 +293,14 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     gap: 20px;
-    max-width:342px;
+    max-width:100%;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
   .balance-item {
     display: flex;
     flex-direction: column;
-    width: 152px;
+    width: 167px;
     height: 101px;
     align-items: center;
     border: 1px solid var(--light-purple);
@@ -310,7 +309,7 @@
     padding: 16px 30px;
   }
   .balance-item:first-child {
-    margin-left: 2px;
+    margin-left:1px;
   }
   .balance-item:last-child {
     margin-right: 2px;
@@ -326,7 +325,7 @@
   .balance-container {
     display: flex;
     justify-content: space-between;
-    max-width:342px;
+    max-width:100%;
     gap: 8px;
   }
 }
