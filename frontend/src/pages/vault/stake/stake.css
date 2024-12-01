@@ -3,7 +3,7 @@
   background-size: cover;
   background-position: center 39%;
   min-height: 100vh;
-   display: flex; 
+  display: flex;
   justify-content: center;
   align-items: flex-start;
   margin-left: 200px;
@@ -228,14 +228,18 @@
   .stake-title {
     font-size: 16px;
     font-weight: 400;
-    
+
   }
 
   .main-card {
     padding: 20px;
     gap: 26px;
     flex-direction: column;
-   border-radius:12px;
+    border-radius: 12px;
+  }
+
+  .clicked-network-selector-container .network-dropdown {
+    display: block;
   }
 
   .top-cards {
@@ -269,6 +273,7 @@
   .stake-button::before {
     border-radius: 16px;
   }
+
   .balance-display-container .large-screen-balance {
     display: none;
   }

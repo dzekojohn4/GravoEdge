@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ReactComponent as ETH } from '../../../assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from '../../../assets/icons/borrow_usdc.svg';
 import { ReactComponent as DAI } from '../../../assets/icons/dai.svg';
-import {ReactComponent as STTRK}from '../../../assets/icons/strk.svg'
+import { ReactComponent as STTRK } from '../../../assets/icons/strk.svg'
 import MetricCard from 'components/StakeCard/MetricCard';
 import STRK from '../../../assets/icons/strk.svg';
 import USDCc from '../../../assets/icons/apy_icon.svg';
@@ -15,6 +15,7 @@ import BalanceCards from 'components/BalanceCards';
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
   const [amount, setAmount] = useState('0');
+  const [showDrop, setShowDrop] = useState(false)
 
   const [balances, setBalances] = useState([
     { icon: <STTRK />, title: 'STRK', balance: '0.046731' },
@@ -30,10 +31,10 @@ function Stake() {
   // };
   const handleChange = (network) => {
     setSelectedNetwork(network.name);
-    
+
   };
 
-  
+
 
   const handleAmountChange = (e) => {
     const value = e.target.value;
@@ -44,14 +45,14 @@ function Stake() {
   };
   return (
     <VaultLayout >
-   <div className="stake-wrapper">
-   <div className="stake-container">
-   <div className="balance-display-container">
+      <div className="stake-wrapper">
+        <div className="stake-container">
+          <div className="balance-display-container">
             <div className="large-screen-balance">
               <div className='main-container'>
                 <div className='top-cards'>
                   <MetricCard title="STRK Balance" value="0.046731" icon={STRK} />
-                  <MetricCard title="APY Balance" value="0.046731" icon={USDCc} /> 
+                  <MetricCard title="APY Balance" value="0.046731" icon={USDCc} />
                 </div>
               </div>
             </div>
@@ -65,10 +66,10 @@ function Stake() {
           </div>
           <h1 className="stake-title">Please submit your leverage details</h1>
           <div className="main-card">
-            <div className="network-selector-container">
+            <div onClick={() => setShowDrop(!showDrop)} className={showDrop ? "clicked-network-selector-container" : "network-selector-container"}>
               <div className="network-selector">
                 <div className="selected-network">
-                <img
+                  <img
                     src={networks.find((network) => network.name === selectedNetwork)?.image}
                     alt={selectedNetwork}
                     className="network-icon"
