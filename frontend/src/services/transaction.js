@@ -21,7 +21,7 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
       entrypoint: 'approve',
       calldata: approveCalldata.compile('approve', [contractAddress, loopLiquidityData.deposit_data.amount]),
     };
-
+    console.log(loopLiquidityData)
     const callData = new CallData(abi);
     const compiled = callData.compile('loop_liquidity', loopLiquidityData);
     const depositTransaction = {
@@ -29,6 +29,7 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
       entrypoint: 'loop_liquidity',
       calldata: compiled,
     };
+    console.log(depositTransaction);
     let result = await starknet.account.execute([approveTransaction, depositTransaction]);
     console.log('Resp: ');
     console.log(result);

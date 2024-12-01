@@ -187,17 +187,18 @@ class StarknetClient:
         deposit_data = {
             "token": deposit_token,
             "amount": amount,
-            "multiplier": multiplier,
+            "multiplier": int(float(multiplier)),
+            "borrow_portion_percent": 80
         }
 
         pool_price = floor(
             await self._get_pool_price(pool_key, deposit_token == pool_key["token1"])
         )
         return {
-            "caller": wallet_id,
             "pool_price": pool_price,
             "pool_key": pool_key,
             "deposit_data": deposit_data,
+            "ekubo_limits": {"lower": "18446748437148339061", "upper": "6277100250585753475930931601400621808602321654880405518632"}
         }
 
     async def get_repay_data(self, deposit_token: str, borrowing_token: str) -> dict:
