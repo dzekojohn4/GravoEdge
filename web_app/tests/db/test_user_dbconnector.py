@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
-from web_app.db.crud import UserDBConnector
+from web_app.db.crud import AirDropDBConnector, UserDBConnector
 from web_app.db.models import AirDrop, User
 
 
@@ -100,12 +100,15 @@ def test_delete_all_users_airdrop_success(user_db):
         AirDrop(id=1, user_id=user_id),
         AirDrop(id=2, user_id=user_id),
     ]
-    with patch.object(user_db, "Session", return_value=mock_session):
+    with patch.object(
+        "web_app.db.crud.AirDropDBConnector.Session", return_value=mock_session
+    ):
         mock_session.query.return_value.filter_by.return_value.all.return_value = (
             mock_airdrops
         )
 
-        user_db.delete_all_users_airdrop(user_id)
+        air_drop_connector = AirDropDBConnector()
+        air_drop_connector.delete_all_users_airdrop(user_id)
 
         mock_session.query.assert_called_once_with(AirDrop)
         mock_session.query.return_value.filter_by.assert_called_once_with(
@@ -122,9 +125,13 @@ def test_delete_all_users_airdrop_failure(user_db):
     user_id = "123e4567-e89b-12d3-a456-426614174000"
     mock_session = MagicMock()
     mock_session.query.side_effect = SQLAlchemyError("Database error")
-    with patch.object(user_db, "Session", return_value=mock_session):
+    with patch.object(
+        "web_app.db.crud.AirDropDBConnector.Session", return_value=mock_session
+    ):
+        air_drop_connector = AirDropDBConnector()
+
         with pytest.raises(SQLAlchemyError):
-            user_db.delete_all_users_airdrop(user_id)
+            air_drop_connector.delete_all_users_airdrop(user_id)
 
         mock_session.query.assert_called_once_with(AirDrop)
         mock_session.rollback.assert_called_once()

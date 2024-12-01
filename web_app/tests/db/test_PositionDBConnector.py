@@ -161,27 +161,26 @@ def test_get_total_amounts_for_open_positions(mock_position_db_connector):
     assert result == Decimal(1000.0)
 
 
-def test_delete_all_user_positions_success(mock_session):
+@patch("web_app.db.connectors.PositionDBConnector")
+def test_delete_all_user_positions_success(mock_position_db_connector):
     """Test successfully deleting all positions for a user."""
     user_id = uuid.uuid4()
     mock_positions = [
         Position(id=uuid.uuid4(), user_id=user_id, token_symbol="BTC", amount="10"),
         Position(id=uuid.uuid4(), user_id=user_id, token_symbol="ETH", amount="5"),
     ]
+    mock_session = mock_position_db_connector.Session.return_value
     mock_session.query.return_value.filter_by.return_value.all.return_value = (
         mock_positions
     )
 
     position_connector = PositionDBConnector()
-    with patch.object(position_connector, "Session", return_value=mock_session):
-        position_connector.delete_all_user_positions(user_id)
+    position_connector.delete_all_user_positions(user_id)
 
-        mock_session.query.assert_called_once_with(Position)
-        mock_session.query.return_value.filter_by.assert_called_once_with(
-            user_id=user_id
-        )
-        assert mock_session.delete.call_count == len(mock_positions)
-        mock_session.commit.assert_called_once()
+    mock_session.query.assert_called_once_with(Position)
+    mock_session.query.return_value.filter_by.assert_called_once_with(user_id=user_id)
+    assert mock_session.delete.call_count == len(mock_positions)
+    mock_session.commit.assert_called_once()
 
 
 ### Negative Test Cases ###
@@ -249,15 +248,16 @@ def test_get_position_id_by_wallet_id_no_positions(mock_position_db_connector):
     assert result is None
 
 
-def test_delete_all_user_positions_failure(mock_session):
+@patch("web_app.db.connectors.PositionDBConnector")
+def test_delete_all_user_positions_failure(mock_position_db_connector):
     """Test failure during deletion of all positions for a user."""
     user_id = uuid.uuid4()
+    mock_session = mock_position_db_connector.Session.return_value
     mock_session.query.side_effect = SQLAlchemyError("Database error")
 
     position_connector = PositionDBConnector()
-    with patch.object(position_connector, "Session", return_value=mock_session):
-        with pytest.raises(SQLAlchemyError):
-            position_connector.delete_all_user_positions(user_id)
 
-        mock_session.query.assert_called_once_with(Position)
-        mock_session.rollback.assert_called_once()
+    with pytest.raises(SQLAlchemyError):
+        position_connector.delete_all_user_positions(user_id)
+
+    mock_session.rollback.assert_called_once()
