@@ -1,5 +1,10 @@
 body {
-  font-family: 'Rethink Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-family:
+    'Rethink Sans',
+    -apple-system,
+    Roboto,
+    Helvetica,
+    sans-serif;
 }
 
 .dashboard-wrapper {
@@ -13,7 +18,6 @@ body {
   padding: 1rem;
   padding-top: 1rem;
 }
-
 
 .dashboard-container {
   display: flex;
@@ -38,11 +42,11 @@ body {
 .dashboard-title {
   font-size: 32px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
 }
 
-.top-cards {
+.dashboard-top-cards {
   display: flex;
   gap: 1.8rem;
   width: 642px;
@@ -217,7 +221,7 @@ body {
 }
 
 .balance-label {
-  color: #9AA7B4;
+  color: #9aa7b4;
   font-size: 16px;
   font-weight: 400;
 }
@@ -279,7 +283,7 @@ body {
   bottom: 0;
   border-radius: 50px;
   padding: 2px;
-  background: linear-gradient(90deg, #74D6FD 0%, #E01DEE 100%);
+  background: linear-gradient(90deg, #74d6fd 0%, #e01dee 100%);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -292,15 +296,14 @@ body {
 }
 
 .current-sum-green {
-  color: #60AF77;
+  color: #60af77;
   font-weight: 600;
 }
 
 .current-sum-red {
-  color: #F42222;
+  color: #f42222;
   font-weight: 600;
 }
-
 
 @media (max-width: 768px) {
   .dashboard-wrapper {
@@ -323,7 +326,7 @@ body {
     gap: 16px;
   }
 
-  .top-cards {
+  .dashboard-top-cards {
     flex-direction: row;
     gap: 12px;
     width: 100%;
@@ -489,7 +492,7 @@ body {
     width: fit-content;
   }
 
-  .top-cards {
+  .dashboard-top-cards {
     width: 100%;
     flex-direction: row;
     gap: 8px;
