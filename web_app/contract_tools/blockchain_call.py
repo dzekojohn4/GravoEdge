@@ -5,6 +5,7 @@ This module handles the blockchain calls.
 import logging
 import os
 import time
+from decimal import Decimal
 from math import floor
 from typing import Any, List
 
@@ -125,8 +126,7 @@ class StarknetClient:
 
         token_0_decimals = TokenParams.get_token_decimals(underlying_token_0_address)
         token_1_decimals = TokenParams.get_token_decimals(underlying_token_1_address)
-
-        price = ((price_data[0]["sqrt_ratio"] / 2**128) ** 2) * (
+        price = Decimal(((price_data[0]["sqrt_ratio"] / 2**128) ** 2)) * (
             10 ** abs(token_0_decimals - token_1_decimals)
         )
         return (
@@ -215,7 +215,7 @@ class StarknetClient:
         supply_price = floor(await self._get_pool_price(pool_key, is_token1))
 
         try:
-            debt_price = floor((1 / supply_price) * 10**decimals_sum)
+            debt_price = floor(Decimal((1 / supply_price)) * 10**decimals_sum)
         except ZeroDivisionError:
             logger.error(
                 f"Error while getting repay data: {deposit_token=}, {borrowing_token=}"
