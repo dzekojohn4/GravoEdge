@@ -2,7 +2,7 @@
 This module contains constants for the contract tools.
 """
 
-import os
+from decimal import Decimal
 from dataclasses import dataclass
 from enum import Enum
 from typing import Iterator
@@ -23,8 +23,10 @@ class TokenConfig:
     """
 
     address: str
-    decimals: int
     name: str
+    decimals: Decimal
+    collateral_factor: Decimal = Decimal("0.0")
+    debt_factor: Decimal = Decimal("0.0")
 
 
 @dataclass(frozen=True)
@@ -46,17 +48,23 @@ class TokenParams:
     ETH = TokenConfig(
         name="ETH",
         address="0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-        decimals=18,
+        decimals=Decimal("18"),
+        collateral_factor=Decimal("0.80"),
+        debt_factor=Decimal("1"),
     )
     STRK = TokenConfig(
         name="STRK",
         address="0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-        decimals=18,
+        decimals=Decimal("18"),
+        collateral_factor=Decimal("0.50"),
+        debt_factor=Decimal("1")
     )
     USDC = TokenConfig(
         name="USDC",
         address="0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
-        decimals=6,
+        decimals=Decimal("6"),
+        collateral_factor=Decimal("0.80"),
+        debt_factor=Decimal("1"),
     )
 
     @classmethod
