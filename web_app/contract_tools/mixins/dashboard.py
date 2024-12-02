@@ -85,7 +85,11 @@ class DashboardMixin:
         return wallet_balances
 
     @classmethod
-    async def get_zklend_position(cls, contract_address: str, position: "Position") -> DashboardResponse:
+    async def get_zklend_position(
+            cls,
+            contract_address: str,
+            position: "Position"
+    ) -> DashboardResponse:
         """
         Get the zkLend position for the given wallet ID.
         :param contract_address: contract address

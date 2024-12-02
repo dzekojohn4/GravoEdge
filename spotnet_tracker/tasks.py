@@ -60,9 +60,9 @@ def claim_airdrop_task() -> None:
     """
     try:
         logger.info("Running claim_airdrop_task.")
-        logger.info(f"Task started at: {time.strftime("%a, %d %b %Y %H:%M:%S")}")
+        logger.info("Task started at: ",time.strftime("%a, %d %b %Y %H:%M:%S"))
         airdrop_claimer = AirdropClaimer()
         asyncio.run(airdrop_claimer.claim_airdrops())
-        logger.info(f"Task started at: {time.strftime("%a, %d %b %Y %H:%M:%S")}")
+        logger.info("Task started at: ", time.strftime("%a, %d %b %Y %H:%M:%S"))
     except Exception as e:
         logger.error(f"Error in claiming airdrop task: {e}")
