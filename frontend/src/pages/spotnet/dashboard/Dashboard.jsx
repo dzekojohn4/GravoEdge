@@ -128,7 +128,7 @@ export default function Component({ telegramId }) {
         {loading && <Spinner loading={loading} />}
         <h1 className="dashboard-title">zkLend Position</h1>
         <div className="dashboard-content">
-          <div className="top-cards">
+          <div className="dashboard-top-cards">
             <div className="card">
               <div className="card-header">
                 <HealthIcon className="icon" />
