@@ -61,55 +61,83 @@ export default function Component({ telegramId }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('Fetching data for walletId:', walletId);
+  }, [walletId]);
+
+  useEffect(() => {
     const getData = async () => {
+      console.log('Data:', data);
       if (!walletId) {
         console.error('getData: walletId is undefined');
         setLoading(false);
         return;
       }
 
-      if (!data || !data.zklend_position) {
+      if (!data || !data.zklend_position || !Array.isArray(data.zklend_position.products)) {
         console.error('Data is missing or incorrectly formatted');
         setLoading(false);
         return;
       }
 
-      if (data && data.zklend_position && data.zklend_position.products) {
-        const positions = data.zklend_position.products[0].positions || [];
-        const healthRatio = data.zklend_position.products[0].health_ratio;
+      const products = data.zklend_position.products;
 
-        const cardData = positions.map((position, index) => {
-          const isFirstCard = index === 0;
-          const tokenAddress = position.tokenAddress;
-
-          if (isFirstCard) {
-            const isEthereum = tokenAddress === ZETH_ADDRESS;
-            const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
-            setCurrentSum(data.current_sum);
-            setStartSum(data.start_sum);
-            return {
-              title: 'Collateral & Earnings',
-              icon: CollateralIcon,
-              balance: balance,
-              currencyName: isEthereum ? 'Ethereum' : 'STRK',
-              currencyIcon: isEthereum ? EthIcon : StrkIcon,
-            };
-          }
-
-          return {
+      if (products.length === 0) {
+        console.warn('No products found in zklend_position');
+        setCardData([
+          {
+            title: 'Collateral & Earnings',
+            icon: CollateralIcon,
+            balance: '0.00',
+            currencyName: 'Ethereum',
+            currencyIcon: EthIcon,
+          },
+          {
             title: 'Borrow',
             icon: BorrowIcon,
-            balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+            balance: '0.0',
             currencyName: 'USD Coin',
             currencyIcon: UsdIcon,
-          };
-        });
-
-        setCardData(cardData);
-        setHealthFactor(healthRatio);
-      } else {
-        console.error('Data is missing or incorrectly formatted');
+          },
+        ]);
+        setHealthFactor('0.00');
+        setCurrentSum(data.current_sum || 0);
+        setStartSum(data.start_sum || 0);
+        setLoading(false);
+        return;
       }
+
+      const positions = products[0].positions || [];
+      const healthRatio = products[0].health_ratio;
+
+      const updatedCardData = positions.map((position, index) => {
+        const isFirstCard = index === 0;
+        const tokenAddress = position.tokenAddress;
+
+        if (isFirstCard) {
+          const isEthereum = tokenAddress === ZETH_ADDRESS;
+          const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
+          setCurrentSum(data.current_sum);
+          setStartSum(data.start_sum);
+          return {
+            title: 'Collateral & Earnings',
+            icon: CollateralIcon,
+            balance: balance,
+            currencyName: isEthereum ? 'Ethereum' : 'STRK',
+            currencyIcon: isEthereum ? EthIcon : StrkIcon,
+          };
+        }
+
+        return {
+          title: 'Borrow',
+          icon: BorrowIcon,
+          balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+          currencyName: 'USD Coin',
+          currencyIcon: UsdIcon,
+        };
+      });
+
+      setCardData(updatedCardData);
+      setHealthFactor(healthRatio || '0.00');
       setLoading(false);
     };
 
