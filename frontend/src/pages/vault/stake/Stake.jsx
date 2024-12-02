@@ -1,20 +1,32 @@
 import React, { useState } from 'react';
+import { ReactComponent as ETH } from '../../../assets/icons/ethereum.svg';
+import { ReactComponent as USDC } from '../../../assets/icons/borrow_usdc.svg';
+import { ReactComponent as DAI } from '../../../assets/icons/dai.svg';
+import { ReactComponent as STTRK } from '../../../assets/icons/strk.svg'
+import MetricCard from 'components/StakeCard/MetricCard';
 import STRK from '../../../assets/icons/strk.svg';
-import USDC from '../../../assets/icons/apy_icon.svg';
+import USDCc from '../../../assets/icons/apy_icon.svg';
 import './stake.css';
 import { VaultLayout } from '../VaultLayout';
 import { Button } from 'components/ui/Button';
-import MetricCard from 'components/StakeCard/MetricCard';
 import GasFee from 'components/GasFee/GasFee';
+import BalanceCards from 'components/BalanceCards';
 
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
   const [amount, setAmount] = useState('0');
+  const [showDrop, setShowDrop] = useState(false)
 
+  const [balances, setBalances] = useState([
+    { icon: <STTRK />, title: 'STRK', balance: '0.046731' },
+    { icon: <USDC />, title: 'APY', balance: '0.046731' },
+    { icon: <ETH />, title: 'ETH', balance: '0.046731' },
+    { icon: <DAI />, title: 'DAI', balance: '0.046731' },
+  ]);
   const networks = [{ name: 'Starknet', image: STRK }];
+  const handleChange = (network) => {
+    setSelectedNetwork(network.name);
 
-  const handleChange = (e) => {
-    setSelectedNetwork(e.target.value);
   };
 
   const handleAmountChange = (e) => {
@@ -24,22 +36,31 @@ function Stake() {
       setAmount(value);
     }
   };
-
   return (
-    <VaultLayout>
+    <VaultLayout >
       <div className="stake-wrapper">
         <div className="stake-container">
-          <div className='main-container'>
-            <div className="top-cards">
-              <MetricCard title="STRK Balance" value="0.046731" icon={STRK} />
-              <MetricCard title="APY Balance" value="0.046731" icon={USDC} />
+          <div className="balance-display-container">
+            <div className="large-screen-balance">
+              <div className='main-container'>
+                <div className='top-cards'>
+                  <MetricCard title="STRK Balance" value="0.046731" icon={STRK} />
+                  <MetricCard title="APY Balance" value="0.046731" icon={USDCc} />
+                </div>
+              </div>
+            </div>
+            <div className="mobile-screen-balance">
+              <BalanceCards
+                balances={balances}
+                setBalances={setBalances}
+                walletId={null}
+              />
             </div>
           </div>
-
-          <h1 className="stake-title">Please submit your leverage details</h1>
-
+         <div className=''>
+         <h1 className="stake-title">Please submit your leverage details</h1>
           <div className="main-card">
-            <div className="network-selector-container">
+            <div onClick={() => setShowDrop(!showDrop)} className={showDrop ? "clicked-network-selector-container" : "network-selector-container"}>
               <div className="network-selector">
                 <div className="selected-network">
                   <img
@@ -95,6 +116,7 @@ function Stake() {
             <GasFee />
           </div>
 
+         </div>
           <Button variant="secondary" size="lg" className="stake-button">
             Stake
           </Button>
@@ -103,5 +125,7 @@ function Stake() {
     </VaultLayout>
   );
 }
+
+
 
 export default Stake;
