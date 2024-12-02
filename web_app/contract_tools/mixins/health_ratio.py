@@ -1,3 +1,6 @@
+"""
+HealthRatioMixin is a mixin class to calculate the health ratio of a deposit contract.
+"""
 import asyncio
 from decimal import Decimal
 
@@ -37,9 +40,11 @@ class HealthRatioMixin:
         """
         Get the balances of tokens in a deposit contract.
 
-        :param reserves: A dictionary of token reserves with token symbols as keys and tuples of (decimals, address) as values.
+        :param reserves: A dictionary of token reserves with token symbols as keys
+         and tuples of (decimals, address) as values.
         :param deposit_contract_address: The address of the deposit contract.
-        :return: A dictionary of token balances with token symbols as keys and balances as Decimal values.
+        :return: A dictionary of token balances with token symbols as keys
+         and balances as Decimal values.
         """
         tasks = [
             CLIENT.get_balance(z_data[1], deposit_contract_address, z_data[0])
@@ -59,7 +64,8 @@ class HealthRatioMixin:
         Get the deposited tokens and their amounts in a deposit contract.
 
         :param deposit_contract_address: The address of the deposit contract.
-        :return: A dictionary of deposited tokens with token symbols as keys and amounts as Decimal values.
+        :return: A dictionary of deposited tokens with token symbols as keys
+         and amounts as Decimal values.
         """
         reserves = await CLIENT.get_z_addresses()
         deposits = await cls._get_z_balances(reserves, deposit_contract_address)
@@ -75,7 +81,8 @@ class HealthRatioMixin:
         Get the prices of multiple tokens from the Pragma API.
 
         :param tokens: A set of token symbols.
-        :return: A dictionary of token prices with token symbols as keys and prices as Decimal values.
+        :return: A dictionary of token prices with token symbols as
+         keys and prices as Decimal values.
         """
         tasks = [cls._get_pragma_price(token) for token in tokens]
         return {
