@@ -26,7 +26,6 @@ class RepayDataException(Exception):
     """
     Custom RepayDataException for handling errors while repaying data
     """
-
     pass
 
 
@@ -111,8 +110,13 @@ class StarknetClient:
         }
 
     async def _get_pool_price(self, pool_key, is_token1: bool):
-        """Calculate Ekubo pool price"""
+        """
+        Calculate Ekubo pool price.
 
+        :param pool_key: The pool key dictionary.
+        :param is_token1: Boolean indicating if the token is token1.
+        :return: The calculated pool price.
+        """
         ekubo_contract = await Contract.from_address(
             EKUBO_MAINNET_ADDRESS, provider=self.client
         )
@@ -137,6 +141,12 @@ class StarknetClient:
         )
 
     async def _get_zklend_reserve(self, token_address: str) -> list[int]:
+        """
+        Get ZkLend reserve data for a specific token.
+
+        :param token_address: The address of the token.
+        :return: A list of reserve data.
+        """
         return await self._func_call(
             self._convert_address(ZKLEND_MARKET_ADDRESS),
             "get_reserve_data",
@@ -144,6 +154,11 @@ class StarknetClient:
         )
 
     async def get_available_zklend_reserves(self) -> dict[str, list[int]]:
+        """
+        Get available ZkLend reserves for all tokens.
+
+        :return: A dictionary with token names as keys and reserve data as values.
+        """
         tasks = [
             self._get_zklend_reserve(token.address) for token in TokenParams.tokens()
         ]
@@ -155,10 +170,22 @@ class StarknetClient:
         }
 
     async def get_z_addresses(self) -> dict[str, tuple[int, int]]:
+        """
+        Get ZkLend addresses.
+
+        :return: A dictionary with token names as keys and tuples of addresses as values.
+        """
         reserves = await self.get_available_zklend_reserves()
         return {token: (reserve[1], reserve[2]) for token, reserve in reserves.items()}
 
     async def get_zklend_debt(self, user: str, token: str) -> list[int]:
+        """
+        Get ZkLend debt for a specific user and token.
+
+        :param user: The address of the user.
+        :param token: The address of the token.
+        :return: A list of debt data.
+        """
         return await self._func_call(
             self._convert_address(ZKLEND_MARKET_ADDRESS),
             "get_user_debt_for_token",
@@ -208,6 +235,12 @@ class StarknetClient:
         """
         Get data for Spotnet liquidity looping call.
 
+        :param deposit_token: The address of the deposit token.
+        :param amount: The amount to deposit.
+        :param multiplier: The multiplier for the deposit.
+        :param wallet_id: The wallet ID.
+        :param borrowing_token: The address of the borrowing token.
+        :return: A dictionary with liquidity data.
         """
         # Get pool key
         pool_key = self._build_ekubo_pool_key(deposit_token, borrowing_token)
@@ -242,7 +275,13 @@ class StarknetClient:
         }
 
     async def get_repay_data(self, deposit_token: str, borrowing_token: str) -> dict:
-        """Get data for Spotnet position closing."""
+        """
+        Get data for Spotnet position closing.
+
+        :param deposit_token: The address of the deposit token.
+        :param borrowing_token: The address of the borrowing token.
+        :return: A dictionary with repay data.
+        """
         pool_key = self._build_ekubo_pool_key(deposit_token, borrowing_token)
         decimals_sum = TokenParams.get_token_decimals(
             deposit_token
@@ -280,9 +319,10 @@ class StarknetClient:
     async def claim_airdrop(self, contract_address: str, proofs: list[str]) -> None:
         """
         Claims an airdrop on the Starknet blockchain.
-        :param contract_address: airdrop contract address
-        :param proofs: list of proof strings
-        :return: True if the claim was successful, False otherwise
+
+        :param contract_address: The airdrop contract address.
+        :param proofs: A list of proof strings.
+        :return: None
         """
         return await self._func_call(
             addr=self._convert_address(contract_address),
