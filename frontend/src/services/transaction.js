@@ -3,6 +3,7 @@ import { CallData } from 'starknet';
 import { erc20abi } from '../abis/erc20';
 import { abi } from '../abis/abi';
 import { axiosInstance } from '../utils/axios';
+import {checkAndDeployContract} from './contract';
 
 export async function sendTransaction(loopLiquidityData, contractAddress) {
   try {
@@ -71,7 +72,15 @@ export const handleTransaction = async (connectedWalletId, formData, setError, s
 
   setLoading(true);
   setError('');
-
+  try{
+    await checkAndDeployContract(connectedWalletId);
+  } catch (error) {
+    console.error('Error deploying contract:', error);
+    setError('Error deploying contract. Please try again.');
+    setSuccessful(false)
+    setLoading(false);
+    return;
+  }
   try {
     const response = await axiosInstance.post(`/api/create-position`, formData);
 
