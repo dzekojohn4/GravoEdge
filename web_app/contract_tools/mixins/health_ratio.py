@@ -16,15 +16,15 @@ PRAGMA = PragmaOnChainClient(
 class HealthRatioMixin:
 
     @classmethod
-    async def _get_pragma_price(cls, token: str):
+    async def _get_pragma_price(cls, token: str) -> Decimal:
         decimals = 10**8 if token not in ("USDC", "USDT") else 10**6
         data = await PRAGMA.get_spot(f"{token}/USD", AggregationMode.MEDIAN)
-        return data.price / decimals
+        return Decimal(data.price / decimals)
 
     @classmethod
     async def _get_z_balances(
         cls, reserves: dict[str, tuple[int, int]], deposit_contract_address: str
-    ):
+    ) -> dict[str, Decimal]:
         tasks = [
             CLIENT.get_balance(z_data[1], deposit_contract_address, z_data[0])
             for z_data in reserves.values()
@@ -33,20 +33,22 @@ class HealthRatioMixin:
             token: Decimal(balance)
             for token, balance in zip(reserves.keys(), await asyncio.gather(*tasks))
         }
-        print(balances)
         return balances
 
     @classmethod
-    async def _get_deposited_tokens(cls, deposit_contract_address: str):
+    async def _get_deposited_tokens(
+        cls, deposit_contract_address: str
+    ) -> dict[str, Decimal]:
         reserves = await CLIENT.get_z_addresses()
         deposits = await cls._get_z_balances(reserves, deposit_contract_address)
-        for token in deposits.keys():
-            if deposits[token] != 0:
-                deposits[token] *= TokenParams.get_token_collateral_factor(token)
-        return deposits
+        return {
+            token: amount * TokenParams.get_token_collateral_factor(token)
+            for token, amount in deposits.items()
+            if amount != 0
+        }
 
     @classmethod
-    async def _get_pragma_prices(cls, tokens: set):
+    async def _get_pragma_prices(cls, tokens: set) -> dict[str, Decimal]:
         tasks = [cls._get_pragma_price(token) for token in tokens]
         return {
             token: price for token, price in zip(tokens, await asyncio.gather(*tasks))
@@ -63,16 +65,20 @@ class HealthRatioMixin:
         prices = await cls._get_pragma_prices(set(deposits.keys()) | {borrowed_token})
 
         deposit_usdc = sum(
-            amount * prices[token] for token, amount in deposits.items() if amount != 0
+            amount * Decimal(prices[token])
+            for token, amount in deposits.items()
+            if amount != 0
         )
         borrowed_address = TokenParams.get_token_address(borrowed_token)
         debt_usdc = (
             debt_raw[0]
             * prices[borrowed_token]
-            / 10 ** TokenParams.get_token_decimals(borrowed_address)
+            / 10 ** int(TokenParams.get_token_decimals(borrowed_address))
         )
 
-        return f"{round(deposit_usdc / debt_usdc, 2)}" if debt_usdc != 0 else "0"
+        return (
+            f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0"
+        )
 
 
 if __name__ == "__main__":
