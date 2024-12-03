@@ -26,7 +26,7 @@ class TokenConfig:
     name: str
     decimals: Decimal
     collateral_factor: Decimal = Decimal("0.0")
-    debt_factor: Decimal = Decimal("0.0")
+    borrow_factor: Decimal = Decimal("0.0")
 
 
 @dataclass(frozen=True)
@@ -50,21 +50,21 @@ class TokenParams:
         address="0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
         decimals=Decimal("18"),
         collateral_factor=Decimal("0.80"),
-        debt_factor=Decimal("1"),
+        borrow_factor=Decimal("1"),
     )
     STRK = TokenConfig(
         name="STRK",
         address="0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
         decimals=Decimal("18"),
         collateral_factor=Decimal("0.50"),
-        debt_factor=Decimal("1"),
+        borrow_factor=Decimal("1"),
     )
     USDC = TokenConfig(
         name="USDC",
         address="0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
         decimals=Decimal("6"),
         collateral_factor=Decimal("0.80"),
-        debt_factor=Decimal("1"),
+        borrow_factor=Decimal("1"),
     )
 
     @classmethod
@@ -85,6 +85,18 @@ class TokenParams:
             if token.name == token_name:
                 return token.address
         raise ValueError(f"Token {token_name} not found")
+
+    @classmethod
+    def get_borrow_factor(cls, token_identifier):
+        """
+        Get the borrow factor for a given token.
+        :param token_identifier: Token identifier: symbol or address
+        :return: Token borrow factor
+        """
+        for token in cls.tokens():
+            if token.address == token_identifier or token.name == token_identifier:
+                return token.borrow_factor
+        raise ValueError(f"Token {token_identifier} not found")
 
     @classmethod
     def get_token_decimals(cls, token_address: str) -> int:
@@ -113,9 +125,9 @@ class TokenParams:
     @classmethod
     def get_token_collateral_factor(cls, token_identifier: str) -> Decimal:
         """
-        Get the token collateral factor for a given token.
+        Get the collateral factor for a given token.
         :param token_identifier: Token identifier: symbol or address
-        :return: Token symbol
+        :return: Token collateral factor
         """
         for token in cls.tokens():
             if token.address == token_identifier or token.name == token_identifier:
