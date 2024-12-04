@@ -51,15 +51,12 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         contract_address
     )
 
-    # Fetch balances (assuming you have a method for this)
-    wallet_balances = await DashboardMixin.get_wallet_balances(wallet_id)
     current_sum = await DashboardMixin.get_current_position_sum(first_opened_position)
     start_sum = await DashboardMixin.get_start_position_sum(
         first_opened_position["start_price"],
         first_opened_position["amount"],
     )
     return DashboardResponse(
-        balances=wallet_balances,
         health_ratio=health_ratio,
         multipliers={"ETH": first_opened_position["multiplier"]},
         start_dates={"ETH": first_opened_position["created_at"]},

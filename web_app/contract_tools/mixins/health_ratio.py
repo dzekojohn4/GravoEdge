@@ -112,7 +112,7 @@ class HealthRatioMixin:
     @classmethod
     async def get_health_ratio(
         cls, deposit_contract_address: str
-    ) -> dict[str, str]:
+    ) -> str:
         """
         Calculate the health ratio of a deposit contract.
 
@@ -137,10 +137,11 @@ class HealthRatioMixin:
             * prices[borrowed_token]
             / 10 ** int(TokenParams.get_token_decimals(borrowed_address))
         )
-        return {
-            "health_factor": f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0",
-            "ltv": f"{round((debt_usdc / TokenParams.get_borrow_factor(borrowed_token)) / deposit_usdc, 2)}"
-        }
+        # return {
+        #     "health_factor": f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0",
+        #     "ltv": f"{round((debt_usdc / TokenParams.get_borrow_factor(borrowed_token)) / deposit_usdc, 2)}"
+        # }
+        return f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0"
 
 
 if __name__ == "__main__":
