@@ -13,9 +13,6 @@ class DashboardResponse(BaseModel):
     """
     DashboardResponse class for dashboard details.
     """
-    # health_ratio: dict[str, str] = Field(
-    #     ..., example={"health_factor": "2.0", "ltv": "0.5"}, description="The health ratio of the user."
-    # )
     health_ratio: str = Field(
         ..., example="2.0", description="The health ratio of the user."
     )
@@ -36,4 +33,9 @@ class DashboardResponse(BaseModel):
         ...,
         example=1000.0,
         description="The starting sum of the position.",
+    )
+    borrowed: str = Field(
+        ...,
+        example="12",
+        description="The borrowed token.",
     )

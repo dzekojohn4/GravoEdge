@@ -47,7 +47,7 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         else collections.defaultdict(lambda: None)
     )
     # Fetch zkLend position for the wallet ID
-    health_ratio = await HealthRatioMixin.get_health_ratio(
+    health_ratio, tvl = await HealthRatioMixin.get_health_ratio_and_tvl(
         contract_address
     )
 
@@ -62,4 +62,5 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         start_dates={"ETH": first_opened_position["created_at"]},
         current_sum=current_sum,
         start_sum=start_sum,
+        borrowed=str(start_sum * tvl),
     )

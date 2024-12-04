@@ -110,14 +110,13 @@ class HealthRatioMixin:
         return non_zero_debt[0]
 
     @classmethod
-    async def get_health_ratio(
+    async def get_health_ratio_and_tvl(
         cls, deposit_contract_address: str
-    ) -> str:
+    ) -> tuple:
         """
         Calculate the health ratio of a deposit contract.
 
         :param deposit_contract_address: The address of the deposit contract.
-        :param borrowed_token: The symbol of the borrowed token. Defaults to USDC.
         :return: The health ratio as a string.
         """
         borrowed_token_address, debt_raw = await cls._get_borrowed_token(deposit_contract_address)
@@ -141,7 +140,9 @@ class HealthRatioMixin:
         #     "health_factor": f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0",
         #     "ltv": f"{round((debt_usdc / TokenParams.get_borrow_factor(borrowed_token)) / deposit_usdc, 2)}"
         # }
-        return f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0"
+        health_factor = f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0"
+        ltv = Decimal(f"{round((debt_usdc / TokenParams.get_borrow_factor(borrowed_token)) / deposit_usdc, 2)}")
+        return health_factor, ltv
 
 
 if __name__ == "__main__":
