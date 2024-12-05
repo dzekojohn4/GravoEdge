@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
+
 from web_app.db.crud import PositionDBConnector
 from web_app.db.models import Position, Status, User
 

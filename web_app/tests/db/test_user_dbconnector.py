@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
+
 from web_app.db.crud import AirDropDBConnector, UserDBConnector
 from web_app.db.models import AirDrop, User
 
@@ -102,11 +103,11 @@ def test_delete_all_users_airdrop_success(user_db):
     ]
 
     air_drop_connector = AirDropDBConnector()
-    with patch.object(
-        air_drop_connector,"Session"
-    ) as mock_session_factory:
+    with patch.object(air_drop_connector, "Session") as mock_session_factory:
         mock_session_factory.return_value.__enter__.return_value = mock_session
-        mock_session.query.return_value.filter_by.return_value.all.return_value = mock_airdrops
+        mock_session.query.return_value.filter_by.return_value.all.return_value = (
+            mock_airdrops
+        )
 
         air_drop_connector.delete_all_users_airdrop(user_id)
 
@@ -128,7 +129,7 @@ def test_delete_all_users_airdrop_failure(user_db):
 
     air_drop_connector = AirDropDBConnector()
     with patch.object(
-        air_drop_connector, "Session",  return_value=mock_session
+        air_drop_connector, "Session", return_value=mock_session
     ) as mock_session_factory:
         mock_session_factory.return_value.__enter__.return_value = mock_session
 

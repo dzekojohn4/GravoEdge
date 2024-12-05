@@ -8,8 +8,8 @@ IDs and service failures, to confirm that the dashboard endpoint behaves reliabl
 under various conditions.
 """
 
-from decimal import Decimal
 from datetime import datetime
+from decimal import Decimal
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -17,6 +17,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
+
 from web_app.api.dashboard import get_dashboard, position_db_connector, router
 from web_app.api.serializers.dashboard import DashboardResponse
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
@@ -61,6 +62,7 @@ MOCK_POSITION = {"multiplier": 2, "created_at": datetime(2024, 1, 1).isoformat()
 
 
 MOCK_WALLET_BALANCES = {"ETH": "10.5", "USDC": "1000.0"}
+
 
 @pytest.mark.asyncio
 async def test_get_dashboard_success():
