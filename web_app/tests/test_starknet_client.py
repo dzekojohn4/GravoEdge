@@ -1,13 +1,13 @@
 """Test cases for StarknetClient"""
 
-import pytest
-
 from decimal import Decimal
-from starknet_py.contract import Contract
-from starknet_py.net.full_node_client import FullNodeClient
 from unittest.mock import AsyncMock, patch
 
-from web_app.contract_tools.blockchain_call import StarknetClient, RepayDataException
+import pytest
+from starknet_py.contract import Contract
+from starknet_py.net.full_node_client import FullNodeClient
+
+from web_app.contract_tools.blockchain_call import RepayDataException, StarknetClient
 from web_app.contract_tools.constants import TokenParams
 
 CLIENT = StarknetClient()

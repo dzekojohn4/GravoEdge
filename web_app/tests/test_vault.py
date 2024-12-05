@@ -4,12 +4,13 @@ This module contains unit tests for the vault functionality within the web_app.
 It verifies deposit operations, balance retrieval, and balance updates.
 """
 
+import uuid
+from unittest.mock import MagicMock, patch
+
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
-from unittest.mock import patch, MagicMock
-import uuid
 
 from web_app.api.main import app
 from web_app.db.crud import DepositDBConnector, UserDBConnector

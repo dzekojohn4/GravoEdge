@@ -14,6 +14,7 @@ import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
+
 from web_app.api.main import app
 from web_app.contract_tools.mixins.deposit import DepositMixin
 
