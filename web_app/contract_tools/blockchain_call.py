@@ -272,6 +272,7 @@ class StarknetClient:
                 "lower": "18446748437148339061",
                 "upper": "6277100250585753475930931601400621808602321654880405518632",
             },
+            "caller": wallet_id,
         }
 
     async def get_repay_data(self, deposit_token: str, borrowing_token: str) -> dict:
