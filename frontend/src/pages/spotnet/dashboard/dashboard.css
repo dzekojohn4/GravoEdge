@@ -46,7 +46,7 @@ body {
   text-align: center;
 }
 
-.dashboard-top-cards {
+.top-cards-dashboard {
   display: flex;
   gap: 1.8rem;
   width: 642px;
@@ -239,6 +239,20 @@ body {
   color: white;
 }
 
+.lucide-up-icon {
+  color: #60af77;
+  width: 23px;
+  height: 23px;
+  margin-left: 8px;
+}
+
+.lucide-down-icon {
+  color: #f42222;
+  width: 22px;
+  height: 22px;
+  margin-left: 8px;
+}
+
 .currency-symbol {
   margin-right: 4px;
   font-size: inherit;
@@ -305,6 +319,12 @@ body {
   font-weight: 600;
 }
 
+@media (max-width: 950px) {
+  .top-card-value {
+    font-size: 22px;
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-wrapper {
     padding: 1rem;
@@ -326,14 +346,13 @@ body {
     gap: 16px;
   }
 
-  .dashboard-top-cards {
+  .top-cards-dashboard {
     flex-direction: row;
-    gap: 12px;
-    width: 100%;
     height: auto;
     margin: 0 auto;
     align-items: center;
     justify-content: center;
+    width: 500px;
   }
 
   .card {
@@ -367,23 +386,13 @@ body {
     white-space: nowrap;
   }
 
-  .redeem-button {
+  .dashboard-btn {
     border-radius: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  .telegram-button {
-    margin-top: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 18px 24px 18px 24px;
-  }
-
-  .telegram-button::before {
-    border-radius: 16px;
+    width: 500px;
+    height: 55px;
   }
 
   .tab {
@@ -391,12 +400,12 @@ body {
   }
 
   .dashboard-info-card {
-    width: 100% !important;
     height: auto;
     min-height: 280px;
-    border-radius: 14px !important;
+    border-radius: 16px !important;
     padding: 16px 24px !important;
     margin: 20px auto;
+    width: 500px;
   }
 
   .tab-content {
@@ -410,12 +419,6 @@ body {
     height: auto;
   }
 
-  .redeem-button,
-  .telegram-button {
-    width: 100%;
-    height: 48px;
-  }
-
   .dashboard-title {
     font-size: 24px;
   }
@@ -425,17 +428,22 @@ body {
     font-weight: 600;
   }
 
+  .currency-symbol {
+    font-size: 18px;
+  }
+
   .currency-name {
     font-size: 18px;
   }
 
   .balance-label,
-  .balance-value {
+  .balance-value,
+  .current-sum-red {
     font-size: 14px;
   }
 
   .top-card-value {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .tabs {
@@ -465,19 +473,71 @@ body {
     bottom: -12px;
     width: calc(100% - 16px);
   }
+
+  .lucide-up-icon {
+    width: 22px;
+    height: 22px;
+    margin-left: 6px;
+  }
+
+  .lucide-down-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 6px;
+  }
+
+  .current-sum-green {
+    font-size: 14px;
+  }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 550px) {
+  .dashboard-info-card {
+    height: auto;
+    min-height: 280px;
+    padding: 14px 22px !important;
+    margin: 15px auto;
+    width: 450px;
+  }
+
+  .dashboard-btn {
+    width: 450px;
+  }
+
+  .top-cards-dashboard {
+    width: 450px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-info-card {
+    height: auto;
+    min-height: 280px;
+    padding: 14px 22px !important;
+    margin: 15px auto;
+    width: 380px;
+  }
+
+  .top-card-value {
+    font-size: 16px;
+  }
+
+  .dashboard-btn {
+    width: 380px;
+    font-size: 14px;
+    height: 50px;
+  }
+
+  .top-cards-dashboard {
+    width: 380px;
+    gap: 8px;
+  }
   .dashboard-wrapper {
     padding: 0.75rem;
   }
 
   .dashboard-content {
-    gap: 32px;
-  }
-
-  .dashboard-info-card {
-    max-width: 342px;
+    gap: 20px;
   }
 
   .tab-title {
@@ -486,16 +546,24 @@ body {
 
   .tab-content {
     width: fit-content;
+    font-size: 14px;
+  }
+
+  .currency-symbol {
+    font-size: 16px;
+  }
+
+  .currency-name {
+    font-size: 16px;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
   }
 
   .balance-info {
     width: fit-content;
-  }
-
-  .dashboard-top-cards {
-    width: 100%;
-    flex-direction: row;
-    gap: 8px;
   }
 
   .card {
@@ -504,12 +572,64 @@ body {
   }
 
   .card-header {
-    width: 120%;
     gap: 4px;
   }
 
   .tab {
     padding: 6px 8px;
     font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .dashboard-info-card {
+    height: auto;
+    min-height: 280px;
+    padding: 14px 22px !important;
+    margin: 15px auto;
+    width: 300px;
+  }
+
+  .top-cards-dashboard {
+    width: 300px;
+  }
+
+  .dashboard-btn {
+    width: 300px;
+    height: 45px;
+  }
+
+  .top-card-value {
+    font-size: 14px;
+  }
+
+  .tab-title {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 320px) {
+  .dashboard-info-card {
+    height: auto;
+    padding: 10px 10px !important;
+    margin: 15px auto;
+    width: 280px;
+  }
+
+  .top-cards-dashboard {
+    width: 280px;
+  }
+
+  .dashboard-btn {
+    width: 300px;
+    height: 45px;
+  }
+
+  .card {
+    padding: 10px 16px;
+  }
+
+  .tabs {
+    padding: 0;
   }
 }
