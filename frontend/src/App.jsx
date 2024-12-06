@@ -105,7 +105,7 @@ function App() {
           <Route path="/form" element={<Form />} />
           <Route path="/documentation" element={<Documentation />} />
 
-            <Route path="/stake" element={<Stake />} />
+          <Route path="/stake" element={<Stake />} />
         </Routes>
       </main>
       <Footer />

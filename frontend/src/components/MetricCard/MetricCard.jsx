@@ -8,7 +8,7 @@ export default function MetricCard({ title, value }) {
         <span className="label">{title}</span>
       </div>
       <div className="card-value">
-        <span className="top-card-value">{value}</span>
+        <span className="metric-card-value">{value}</span>
       </div>
     </div>
   );

@@ -68,7 +68,7 @@ function Footer() {
           </a>
         ))}
       </div>
-      <div className="footer-mob-nav px">
+      <div className="footer-mob-nav">
         <NavLink
           to="/dashboard"
           className={({ isActive }) => (isActive ? 'active-link footer-link-dashboard' : 'footer-link-dashboard')}
@@ -88,9 +88,8 @@ function Footer() {
             <span>Form</span>
           </div>
         </NavLink>
-        <div className="footer-mob-divider"></div>
-
-        <NavLink
+        {/* <div className="footer-mob-divider"></div> */}
+        {/* <NavLink
           to="/stake"
           className={({ isActive }) => (isActive ? 'active-link footer-link-form' : 'footer-link-form')}
         >
@@ -98,8 +97,8 @@ function Footer() {
             <FormIcon className="footer-icon" />
             <span>Vault</span>
           </div>
-        </NavLink>
-        
+        </NavLink> */}
+        {/* <div className="footer-line"></div> */}
       </div>
     </footer>
   );
