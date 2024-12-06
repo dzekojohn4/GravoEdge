@@ -38,6 +38,16 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
     contract_address = position_db_connector.get_contract_address_by_wallet_id(
         wallet_id
     )
+    if not contract_address:
+        return DashboardResponse(
+            health_ratio="0",
+            multipliers={},
+            start_dates={},
+            current_sum=0,
+            start_sum=0,
+            borrowed="0",
+        )
+
     opened_positions = position_db_connector.get_positions_by_wallet_id(wallet_id)
 
     # At the moment, we only support one position per wallet
@@ -47,22 +57,20 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         else collections.defaultdict(lambda: None)
     )
     # Fetch zkLend position for the wallet ID
-    health_ratio = await HealthRatioMixin.get_health_ratio(
-        contract_address, first_opened_position["token_symbol"]
+    health_ratio, tvl = await HealthRatioMixin.get_health_ratio_and_tvl(
+        contract_address
     )
 
-    # Fetch balances (assuming you have a method for this)
-    wallet_balances = await DashboardMixin.get_wallet_balances(wallet_id)
     current_sum = await DashboardMixin.get_current_position_sum(first_opened_position)
     start_sum = await DashboardMixin.get_start_position_sum(
         first_opened_position["start_price"],
         first_opened_position["amount"],
     )
     return DashboardResponse(
-        balances=wallet_balances,
         health_ratio=health_ratio,
         multipliers={"ETH": first_opened_position["multiplier"]},
         start_dates={"ETH": first_opened_position["created_at"]},
         current_sum=current_sum,
         start_sum=start_sum,
+        borrowed=str(start_sum * tvl),
     )

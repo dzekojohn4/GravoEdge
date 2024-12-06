@@ -14,12 +14,7 @@ class DashboardResponse(BaseModel):
     DashboardResponse class for dashboard details.
     """
     health_ratio: str = Field(
-        ..., example="0.5", description="The health ratio of the user."
-    )
-    balances: Dict[str, Any] = Field(
-        ...,
-        example={"ETH": 5.0, "USDC": 1000.0},
-        description="The wallet balances for the user.",
+        ..., example="2.0", description="The health ratio of the user."
     )
     multipliers: Dict[str, int | None] = Field(
         ..., example={"ETH": 1.5}, description="The multipliers applied to each asset."
@@ -38,4 +33,9 @@ class DashboardResponse(BaseModel):
         ...,
         example=1000.0,
         description="The starting sum of the position.",
+    )
+    borrowed: str = Field(
+        ...,
+        example="12",
+        description="The borrowed token.",
     )
