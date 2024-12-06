@@ -36,9 +36,7 @@ def mock_vault_fixture():
     """
     Mocked Vault instance.
     """
-    return Vault(
-        id="vault123", user_id="user123", symbol="ETH", amount="100.00"
-    )
+    return Vault(id="vault123", user_id="user123", symbol="ETH", amount="100.00")
 
 
 # pylint: disable=too-few-public-methods
@@ -56,9 +54,7 @@ class TestCreateVault:
         """
         Test successful creation of a vault using fixtures.
         """
-        mock_db_connector.write_to_db = (
-            MagicMock()
-        )  # Use mock_db_connector's method
+        mock_db_connector.write_to_db = MagicMock()  # Use mock_db_connector's method
 
         vault = deposit_db_connector.create_vault(
             user=mock_user,
@@ -101,12 +97,8 @@ class TestAddVaultBalance:
         """
         Test successfully adding to a vault's balance using fixtures.
         """
-        mock_db_connector.get_object_by_field = MagicMock(
-            return_value=mock_vault
-        )
-        mock_db_connector.Session().query().filter_by().update = (
-            MagicMock()
-        )
+        mock_db_connector.get_object_by_field = MagicMock(return_value=mock_vault)
+        mock_db_connector.Session().query().filter_by().update = MagicMock()
 
         deposit_db_connector.add_vault_balance(
             wallet_id="wallet123",
@@ -127,9 +119,7 @@ class TestAddVaultBalance:
         """
         Test failure when adding to a vault balance that doesn't exist.
         """
-        mock_db_connector.get_object_by_field = MagicMock(
-            return_value=None
-        )
+        mock_db_connector.get_object_by_field = MagicMock(return_value=None)
 
         with pytest.raises(ValueError, match="Vault not found"):
             deposit_db_connector.add_vault_balance(

@@ -36,9 +36,7 @@ async def test_open_position_success(client: AsyncClient) -> None:
         "web_app.db.crud.PositionDBConnector.open_position"
     ) as mock_open_position:
         mock_open_position.return_value = "Position successfully opened"
-        response = client.get(
-            f"/api/open-position?position_id={position_id}"
-        )
+        response = client.get(f"/api/open-position?position_id={position_id}")
         assert response.is_success
         assert response.json() == "Position successfully opened"
 
@@ -73,9 +71,7 @@ async def test_close_position_success(client: AsyncClient) -> None:
         "web_app.db.crud.PositionDBConnector.close_position"
     ) as mock_close_position:
         mock_close_position.return_value = "Position successfully closed"
-        response = client.get(
-            f"/api/close-position?position_id={position_id}"
-        )
+        response = client.get(f"/api/close-position?position_id={position_id}")
         assert response.is_success
         assert response.json() == "Position successfully closed"
 
@@ -99,9 +95,7 @@ async def test_close_position_invalid_position_id(
         mock_close_position.side_effect = HTTPException(
             status_code=404, detail="Position not Found"
         )
-        response = client.get(
-            f"/api/close-position?position_id={invalid_position_id}"
-        )
+        response = client.get(f"/api/close-position?position_id={invalid_position_id}")
         assert response.status_code == 404
         assert response.json() == {"detail": "Position not Found"}
 
@@ -375,9 +369,7 @@ async def test_create_position_success(
         mock_get_transaction_data.return_value = mock_deposit_data
         mock_get_contract_address.return_value = "mock_contract_address"
 
-        async with AsyncClient(
-            app=app, base_url="http://test"
-        ) as async_client:
+        async with AsyncClient(app=app, base_url="http://test") as async_client:
             response = await async_client.post(
                 "/api/create-position",
                 json={
