@@ -97,9 +97,7 @@ async def test_get_dashboard_success():
         new_callable=AsyncMock,
     ) as mock_get_start_position_sum:
 
-        mock_get_contract_address_by_wallet_id.return_value = (
-            "0xabcdef1234567890"
-        )
+        mock_get_contract_address_by_wallet_id.return_value = "0xabcdef1234567890"
         mock_get_positions_by_wallet_id.return_value = [
             {
                 "multiplier": 1,
@@ -129,9 +127,7 @@ async def test_get_dashboard_success():
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url=BASE_URL
         ) as ac:
-            response = await ac.get(
-                f"/api/dashboard?wallet_id={wallet_id}"
-            )
+            response = await ac.get(f"/api/dashboard?wallet_id={wallet_id}")
 
         assert response.is_success
         data = response.json()
@@ -165,9 +161,7 @@ async def test_get_dashboard_no_positions():
         "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_zklend_position",
         new_callable=AsyncMock,
     ) as mock_get_zklend_position:
-        mock_get_contract_address_by_wallet_id.return_value = (
-            "0xabcdef1234567890"
-        )
+        mock_get_contract_address_by_wallet_id.return_value = "0xabcdef1234567890"
         mock_get_positions_by_wallet_id.return_value = []
         mock_get_wallet_balances.return_value = {
             "ETH": 5.0,
@@ -178,9 +172,7 @@ async def test_get_dashboard_no_positions():
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url=BASE_URL
         ) as ac:
-            response = await ac.get(
-                f"/api/dashboard?wallet_id={wallet_id}"
-            )
+            response = await ac.get(f"/api/dashboard?wallet_id={wallet_id}")
 
         assert response.is_success
         data = response.json()
@@ -219,9 +211,7 @@ async def test_get_dashboard_no_contract_address():
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url=BASE_URL
         ) as ac:
-            response = await ac.get(
-                f"/api/dashboard?wallet_id={wallet_id}"
-            )
+            response = await ac.get(f"/api/dashboard?wallet_id={wallet_id}")
 
         assert response.is_success
         data = response.json()
@@ -250,9 +240,7 @@ def mock_dashboard_mixin():
     without relying on real API calls, enabling the simulation of various
     responses and error conditions.
     """
-    with patch(
-        "web_app.contract_tools.mixins.dashboard.DashboardMixin"
-    ) as mock:
+    with patch("web_app.contract_tools.mixins.dashboard.DashboardMixin") as mock:
         mock.get_wallet_balances = AsyncMock()
         mock.get_zklend_position = AsyncMock()
         yield mock
@@ -267,9 +255,7 @@ def mock_health_ratio_mixin():
     relying on real API calls, enabling the simulation of various responses
     and error conditions.
     """
-    with patch(
-        "web_app.contract_tools.mixins.health_ratio.HealthRatioMixin"
-    ) as mock:
+    with patch("web_app.contract_tools.mixins.health_ratio.HealthRatioMixin") as mock:
         mock.get_health_ratio_and_tvl = AsyncMock()
         yield mock
 
@@ -278,8 +264,8 @@ def mock_health_ratio_mixin():
 async def test_invalid_wallet_id(mock_db_connector):
     """Test handling of invalid wallet ID."""
 
-    mock_db_connector.get_contract_address_by_wallet_id.side_effect = (
-        ValueError("Invalid wallet ID")
+    mock_db_connector.get_contract_address_by_wallet_id.side_effect = ValueError(
+        "Invalid wallet ID"
     )
     with pytest.raises(ValueError) as exc_info:
         await get_dashboard(INVALID_WALLET_ID)
@@ -296,12 +282,8 @@ async def test_empty_positions(
         MOCK_CONTRACT_ADDRESS
     )
     mock_db_connector.get_positions_by_wallet_id.return_value = []
-    DashboardMixin.get_wallet_balances = AsyncMock(
-        return_value=MOCK_WALLET_BALANCES
-    )
-    DashboardMixin.get_zklend_position = AsyncMock(
-        return_value={"products": []}
-    )
+    DashboardMixin.get_wallet_balances = AsyncMock(return_value=MOCK_WALLET_BALANCES)
+    DashboardMixin.get_zklend_position = AsyncMock(return_value={"products": []})
     HealthRatioMixin.get_health_ratio_and_tvl = AsyncMock(
         return_value=("1.2", "1000.0")
     )
@@ -324,9 +306,7 @@ async def test_external_service_errors(mock_db_connector):
     mock_db_connector.get_contract_address_by_wallet_id.return_value = (
         MOCK_CONTRACT_ADDRESS
     )
-    mock_db_connector.get_positions_by_wallet_id.return_value = [
-        MOCK_POSITION
-    ]
+    mock_db_connector.get_positions_by_wallet_id.return_value = [MOCK_POSITION]
     with patch(
         "web_app.contract_tools.mixins.health_ratio.HealthRatioMixin.get_health_ratio_and_tvl",
         side_effect=Exception("External API error"),

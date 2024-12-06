@@ -83,9 +83,7 @@ def test_write_to_db_invalid_object(mock_db_connector):
     """
     Test writing an invalid object to the database, expecting SQLAlchemyError.
     """
-    mock_db_connector.write_to_db.side_effect = SQLAlchemyError(
-        "Invalid object"
-    )
+    mock_db_connector.write_to_db.side_effect = SQLAlchemyError("Invalid object")
     with pytest.raises(SQLAlchemyError):
         mock_db_connector.write_to_db(None)
 
