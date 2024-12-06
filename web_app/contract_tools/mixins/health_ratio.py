@@ -33,7 +33,9 @@ class HealthRatioMixin:
         :return: The price of the token as a Decimal.
         """
         decimals = 10**8 if token not in ("USDC", "USDT") else 10**6
-        data = await PRAGMA.get_spot(f"{token}/USD", AggregationMode.MEDIAN)
+        data = await PRAGMA.get_spot(
+            f"{token}/USD", AggregationMode.MEDIAN
+        )
         return Decimal(data.price / decimals)
 
     @classmethod
@@ -106,20 +108,31 @@ class HealthRatioMixin:
         }
 
     @classmethod
-    def _get_ltv(cls, borrowed_token: str, debt_usdc: Decimal, collateral_value_usdc: Decimal):
+    def _get_ltv(
+        cls,
+        borrowed_token: str,
+        debt_usdc: Decimal,
+        collateral_value_usdc: Decimal,
+    ):
         borrow_factor = TokenParams.get_borrow_factor(borrowed_token)
         return (debt_usdc / borrow_factor) / collateral_value_usdc
 
     @classmethod
     async def _get_borrowed_token(
-            cls, deposit_contract_address: str
+        cls, deposit_contract_address: str
     ) -> tuple[str, int]:
         """
         :return: Tuple with borrowed token and current debt on ZkLend
         """
-        tasks = [CLIENT.get_zklend_debt(deposit_contract_address, token.address) for token in TokenParams.tokens()]
+        tasks = [
+            CLIENT.get_zklend_debt(deposit_contract_address, token.address)
+            for token in TokenParams.tokens()
+        ]
         non_zero_debt = [
-            (token.address, debt[0]) for token, debt in (zip(TokenParams.tokens(), await asyncio.gather(*tasks)))
+            (token.address, debt[0])
+            for token, debt in (
+                zip(TokenParams.tokens(), await asyncio.gather(*tasks))
+            )
             if debt[0] != 0
         ]
         return non_zero_debt[0]
@@ -134,10 +147,18 @@ class HealthRatioMixin:
         :param deposit_contract_address: The address of the deposit contract.
         :return: The health ratio as a string.
         """
-        borrowed_token_address, debt_raw = await cls._get_borrowed_token(deposit_contract_address)
-        borrowed_token = TokenParams.get_token_symbol(borrowed_token_address)
-        deposits = await cls._get_deposited_tokens(deposit_contract_address)
-        prices = await cls._get_pragma_prices(set(deposits.keys()) | {borrowed_token})
+        borrowed_token_address, debt_raw = await cls._get_borrowed_token(
+            deposit_contract_address
+        )
+        borrowed_token = TokenParams.get_token_symbol(
+            borrowed_token_address
+        )
+        deposits = await cls._get_deposited_tokens(
+            deposit_contract_address
+        )
+        prices = await cls._get_pragma_prices(
+            set(deposits.keys()) | {borrowed_token}
+        )
 
         deposit_usdc = sum(
             amount * Decimal(prices[token])
@@ -155,8 +176,14 @@ class HealthRatioMixin:
         #     "health_factor": f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0",
         #     "ltv": f"{round((debt_usdc / TokenParams.get_borrow_factor(borrowed_token)) / deposit_usdc, 2)}"
         # }
-        health_factor = f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0"
-        ltv = Decimal(f"{round((debt_usdc / TokenParams.get_borrow_factor(borrowed_token)) / deposit_usdc, 2)}")
+        health_factor = (
+            f"{round(deposit_usdc / Decimal(debt_usdc), 2)}"
+            if debt_usdc != 0
+            else "0"
+        )
+        ltv = Decimal(
+            f"{round((debt_usdc / TokenParams.get_borrow_factor(borrowed_token)) / deposit_usdc, 2)}"
+        )
         return health_factor, ltv
 
 
