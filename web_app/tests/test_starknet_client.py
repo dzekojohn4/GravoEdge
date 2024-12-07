@@ -1,13 +1,16 @@
 """Test cases for StarknetClient"""
 
-import pytest
-
 from decimal import Decimal
-from starknet_py.contract import Contract
-from starknet_py.net.full_node_client import FullNodeClient
 from unittest.mock import AsyncMock, patch
 
-from web_app.contract_tools.blockchain_call import StarknetClient, RepayDataException
+import pytest
+from starknet_py.contract import Contract
+from starknet_py.net.full_node_client import FullNodeClient
+
+from web_app.contract_tools.blockchain_call import (
+    RepayDataException,
+    StarknetClient,
+)
 from web_app.contract_tools.constants import TokenParams
 
 CLIENT = StarknetClient()
@@ -298,7 +301,11 @@ class TestStarknetClient:
         mock_contract_from_address.return_value = mock_contract
 
         liquidity_data = await CLIENT.get_loop_liquidity_data(
-            deposit_token_addr, amount, multiplier, wallet_id, borrowing_token_addr
+            deposit_token_addr,
+            amount,
+            multiplier,
+            wallet_id,
+            borrowing_token_addr,
         )
 
         mock_contract_from_address.assert_called_once()
