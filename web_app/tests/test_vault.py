@@ -4,12 +4,13 @@ This module contains unit tests for the vault functionality within the web_app.
 It verifies deposit operations, balance retrieval, and balance updates.
 """
 
+import uuid
+from unittest.mock import MagicMock, patch
+
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
-from unittest.mock import patch, MagicMock
-import uuid
 
 from web_app.api.main import app
 from web_app.db.crud import DepositDBConnector, UserDBConnector
@@ -39,14 +40,22 @@ async def async_client():
             },
         ),
         (
-            {"wallet_id": "invalid_wallet", "symbol": "ETH", "amount": "1.0"},
+            {
+                "wallet_id": "invalid_wallet",
+                "symbol": "ETH",
+                "amount": "1.0",
+            },
             404,
             {"detail": "User not found"},
         ),
     ],
 )
 async def test_deposit_to_vault(
-    test_data, expected_status, expected_response, mock_user_db_connector, async_client
+    test_data,
+    expected_status,
+    expected_response,
+    mock_user_db_connector,
+    async_client,
 ):
     """Test vault deposit with different scenarios."""
     mock_user = MagicMock()
@@ -98,11 +107,17 @@ async def test_deposit_to_vault(
     ],
 )
 async def test_get_vault_balance(
-    wallet_id, symbol, balance, expected_status, expected_response, async_client
+    wallet_id,
+    symbol,
+    balance,
+    expected_status,
+    expected_response,
+    async_client,
 ):
     """Test vault balance retrieval with different scenarios."""
     with patch(
-        "web_app.db.crud.DepositDBConnector.get_vault_balance", return_value=balance
+        "web_app.db.crud.DepositDBConnector.get_vault_balance",
+        return_value=balance,
     ):
         url = f"/api/vault/balance?wallet_id={wallet_id}&symbol={symbol}"
         response = await async_client.get(url)
@@ -130,7 +145,11 @@ async def test_get_vault_balance(
             },
         ),
         (
-            {"wallet_id": "test_wallet", "symbol": "ETH", "amount": "-1.0"},
+            {
+                "wallet_id": "test_wallet",
+                "symbol": "ETH",
+                "amount": "-1.0",
+            },
             400,
             {"detail": "Failed to update vault balance: Amount must be positive"},
         ),
@@ -148,7 +167,10 @@ async def test_add_vault_balance(
     else:
         patch_kwargs = {"return_value": mock_vault}
 
-    with patch("web_app.db.crud.DepositDBConnector.add_vault_balance", **patch_kwargs):
+    with patch(
+        "web_app.db.crud.DepositDBConnector.add_vault_balance",
+        **patch_kwargs,
+    ):
         response = await async_client.post("/api/vault/add_balance", json=test_data)
 
         assert response.status_code == expected_status

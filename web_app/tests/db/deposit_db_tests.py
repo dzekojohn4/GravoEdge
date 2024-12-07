@@ -2,8 +2,9 @@
 Test cases for DepositDBConnector functionality in web_app.
 """
 
-from unittest.mock import MagicMock
 from decimal import Decimal
+from unittest.mock import MagicMock
+
 import pytest
 
 from web_app.db.crud import DepositDBConnector
