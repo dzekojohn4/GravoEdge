@@ -54,7 +54,6 @@ class HealthRatioMixin:
             token: Decimal(balance)
             for token, balance in zip(reserves.keys(), await asyncio.gather(*tasks))
         }
-        print(balances)
         return balances
 
     @classmethod
@@ -154,7 +153,3 @@ if __name__ == "__main__":
             )
         )
     )
-    # print(asyncio.run(CLIENT.get_balance(
-    #     "0x01b5bd713e72fdc5d63ffd83762f81297f6175a5e0a4771cdadbc1dd5fe72cb1",
-    #     "0x43523d3d7eb62a882efff9dc1664d7ceae8fe154866f3385d9c0bf0697a2c21", 18 )
-    # ))

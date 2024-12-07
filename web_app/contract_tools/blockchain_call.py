@@ -214,7 +214,6 @@ class StarknetClient:
                 token_address_int, "balanceOf", [holder_address_int]
             )
         except Exception as exc:
-            print(exc)
             logger.info(
                 f"Failed to get balance for {token_addr} due to an error: {exc}"
             )
@@ -228,7 +227,7 @@ class StarknetClient:
         self,
         deposit_token: str,
         amount: int,
-        multiplier: int,
+        multiplier: Decimal,
         wallet_id: str,
         borrowing_token: str,
     ) -> dict:
@@ -251,13 +250,11 @@ class StarknetClient:
         # Set pool key
         pool_key["token0"], pool_key["token1"] = deposit_token, borrowing_token
         # Set wallet id
-        wallet_id = self._convert_address(wallet_id)
         deposit_data = {
             "token": deposit_token,
             "amount": amount,
-            "multiplier": int(
-                float(multiplier) * 10
-            ),  # Moves for one decimal place, from 2.5 to 25
+            "multiplier": int(multiplier * 10),
+            # Moves for one decimal place, from 2.5 to 25
             "borrow_portion_percent": 80,
         }
 

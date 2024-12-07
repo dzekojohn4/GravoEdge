@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './dashboard.css';
 import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
-import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
+// import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
 import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
 import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynamic.svg';
@@ -9,7 +9,7 @@ import { ReactComponent as BorrowIcon } from 'assets/icons/borrow_dynamic.svg';
 import { ReactComponent as TelegramIcon } from 'assets/icons/telegram_dashboard.svg';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import Spinner from 'components/spinner/Spinner';
-import { ZETH_ADDRESS } from 'utils/constants';
+// import { ZETH_ADDRESS } from 'utils/constants';
 import useDashboardData from 'hooks/useDashboardData';
 import { useClosePosition } from 'hooks/useClosePosition';
 import Button from 'components/ui/Button/Button';
@@ -21,22 +21,17 @@ export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
   const [isCollateralActive, setIsCollateralActive] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const handleOpen = () => {
-    setShowModal(true);
-  };
+  const handleOpen = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
 
-  const handleClose = () => {
-    setShowModal(false);
+  const { data, isLoading } = useDashboardData(walletId) || {
+    data: { health_ratio: '1.5', current_sum: '0.05', start_sum: '0.04', borrowed: '10.0' },
+    isLoading: false,
   };
-
-  const { data, isLoading } = useDashboardData(walletId);
   const { mutate: closePositionEvent, isLoading: isClosing, error: closePositionError } = useClosePosition(walletId);
-
   const { subscribe } = useTelegramNotification();
 
-  const handleSubscribe = () => {
-    subscribe({ telegramId, walletId });
-  };
+  const handleSubscribe = () => subscribe({ telegramId, walletId });
 
   const [cardData, setCardData] = useState([
     {
@@ -73,71 +68,36 @@ export default function Component({ telegramId }) {
         return;
       }
 
-      if (!data || !data.zklend_position || !Array.isArray(data.zklend_position.products)) {
-        console.error('Data is missing or incorrectly formatted');
+      if (!data) {
+        console.error('Data is missing');
         setLoading(false);
         return;
       }
 
-      const products = data.zklend_position.products;
+      const { health_ratio, current_sum, start_sum, borrowed } = data;
 
-      if (products.length === 0) {
-        console.warn('No products found in zklend_position');
-        setCardData([
-          {
-            title: 'Collateral & Earnings',
-            icon: CollateralIcon,
-            balance: '0.00',
-            currencyName: 'Ethereum',
-            currencyIcon: EthIcon,
-          },
-          {
-            title: 'Borrow',
-            icon: BorrowIcon,
-            balance: '0.0',
-            currencyName: 'USD Coin',
-            currencyIcon: UsdIcon,
-          },
-        ]);
-        setHealthFactor('0.00');
-        setCurrentSum(data.current_sum || 0);
-        setStartSum(data.start_sum || 0);
-        setLoading(false);
-        return;
-      }
-
-      const positions = products[0].positions || [];
-      const healthRatio = products[0].health_ratio;
-
-      const updatedCardData = positions.map((position, index) => {
-        const isFirstCard = index === 0;
-        const tokenAddress = position.tokenAddress;
-
-        if (isFirstCard) {
-          const isEthereum = tokenAddress === ZETH_ADDRESS;
-          const balance = parseFloat(position.totalBalances[Object.keys(position.totalBalances)[0]]);
-          setCurrentSum(data.current_sum);
-          setStartSum(data.start_sum);
-          return {
-            title: 'Collateral & Earnings',
-            icon: CollateralIcon,
-            balance: balance,
-            currencyName: isEthereum ? 'Ethereum' : 'STRK',
-            currencyIcon: isEthereum ? EthIcon : StrkIcon,
-          };
-        }
-
-        return {
+      // Update card data using the new data structure
+      const updatedCardData = [
+        {
+          title: 'Collateral & Earnings',
+          icon: CollateralIcon,
+          balance: current_sum,
+          currencyName: 'Ethereum',
+          currencyIcon: EthIcon,
+        },
+        {
           title: 'Borrow',
           icon: BorrowIcon,
-          balance: position.totalBalances[Object.keys(position.totalBalances)[0]],
+          balance: borrowed,
           currencyName: 'USD Coin',
           currencyIcon: UsdIcon,
-        };
-      });
+        },
+      ];
 
       setCardData(updatedCardData);
-      setHealthFactor(healthRatio || '0.00');
+      setHealthFactor(health_ratio || '0.00');
+      setCurrentSum(current_sum || 0);
+      setStartSum(start_sum || 0);
       setLoading(false);
     };
 
@@ -156,7 +116,7 @@ export default function Component({ telegramId }) {
         {loading && <Spinner loading={loading} />}
         <h1 className="dashboard-title">zkLend Position</h1>
         <div className="dashboard-content">
-          <div className="dashboard-top-cards">
+          <div className="top-cards-dashboard">
             <div className="card">
               <div className="card-header">
                 <HealthIcon className="icon" />
@@ -174,7 +134,10 @@ export default function Component({ telegramId }) {
               </div>
               <div className="card-value">
                 <span className="currency-symbol">$</span>
-                <span className="top-card-value">{cardData[1]?.balance || '0.00'}</span>
+                <span className="top-card-value">
+                  {' '}
+                  {cardData[1]?.balance ? Number(cardData[1].balance).toFixed(8) : '0.00'}
+                </span>
               </div>
             </div>
           </div>
@@ -227,12 +190,8 @@ export default function Component({ telegramId }) {
                     <span className={currentSum === 0 ? 'current-sum-white' : getCurrentSumColor()}>
                       <span className="currency-symbol">$</span>
                       {currentSum}
-                      {currentSum > startSum && currentSum !== 0 && (
-                        <TrendingUp color="#60AF77" size={23} style={{ marginLeft: '8px' }} />
-                      )}
-                      {currentSum < startSum && currentSum !== 0 && (
-                        <TrendingDown color="#F42222" size={22} style={{ marginLeft: '8px' }} />
-                      )}
+                      {currentSum > startSum && currentSum !== 0 && <TrendingUp className="lucide-up-icon" />}
+                      {currentSum < startSum && currentSum !== 0 && <TrendingDown className="lucide-down-icon" />}
                     </span>
                   </span>
                 </div>
@@ -254,12 +213,18 @@ export default function Component({ telegramId }) {
               </div>
             )}
           </div>
-          <Button variant="primary" size="lg" onClick={() => closePositionEvent()} disabled={isClosing}>
+          <Button
+            variant="primary"
+            size="lg"
+            className="dashboard-btn"
+            onClick={() => closePositionEvent()}
+            disabled={isClosing}
+          >
             {isClosing ? 'Closing...' : 'Redeem'}
           </Button>
 
           {closePositionError && <div>Error: {closePositionError.message}</div>}
-          <Button variant="secondary" size="lg" onClick={handleOpen}>
+          <Button variant="secondary" size="lg" className="dashboard-btn" onClick={handleOpen}>
             <TelegramIcon className="tab-icon" />
             Enable telegram notification bot
           </Button>

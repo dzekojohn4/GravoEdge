@@ -15,7 +15,7 @@ from sqlalchemy import (
     DateTime,
     Enum,
     ForeignKey,
-    Integer,
+    NUMERIC,
     String,
     Float,
 )
@@ -68,7 +68,7 @@ class Position(Base):
     )
     token_symbol = Column(String, nullable=False)
     amount = Column(String, nullable=False)
-    multiplier = Column(Integer, nullable=False)
+    multiplier = Column(NUMERIC, nullable=False)
     created_at = Column(DateTime, nullable=False, default=func.now())
     status = Column(
         Enum(
@@ -81,7 +81,7 @@ class Position(Base):
     is_protection = Column(Boolean, default=False)
     liquidation_bonus = Column(Float, default=0.0)
     is_liquidated = Column(Boolean, default=False)
-    datetime_liquidation = Column(DateTime, nullable=False)
+    datetime_liquidation = Column(DateTime, nullable=True)
 
 
 class AirDrop(Base):

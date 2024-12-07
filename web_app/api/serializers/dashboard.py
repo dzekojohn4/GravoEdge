@@ -16,7 +16,7 @@ class DashboardResponse(BaseModel):
     health_ratio: str = Field(
         ..., example="2.0", description="The health ratio of the user."
     )
-    multipliers: Dict[str, int | None] = Field(
+    multipliers: Dict[str, str | None] = Field(
         ..., example={"ETH": 1.5}, description="The multipliers applied to each asset."
     )
     start_dates: Dict[str, datetime | None] = Field(
