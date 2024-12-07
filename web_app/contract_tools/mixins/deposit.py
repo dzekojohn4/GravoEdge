@@ -22,7 +22,7 @@ class DepositMixin:
         cls,
         deposit_token: str,
         amount: str,
-        multiplier: int,
+        multiplier: Decimal,
         wallet_id: str,
         borrowing_token: str,
     ) -> dict:

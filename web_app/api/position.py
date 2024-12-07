@@ -70,7 +70,6 @@ async def create_position_with_transaction_data(
         form_data.amount,
         form_data.multiplier,
     )
-
     # Get the transaction data for the deposit
     deposit_data = await DepositMixin.get_transaction_data(
         form_data.token_symbol,
