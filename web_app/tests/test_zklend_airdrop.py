@@ -1,9 +1,11 @@
 """Test module for ZkLendAirdrop class"""
 
+from unittest.mock import AsyncMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, AsyncMock
-from web_app.contract_tools.airdrop import ZkLendAirdrop
+
 from web_app.api.serializers.airdrop import AirdropResponseModel
+from web_app.contract_tools.airdrop import ZkLendAirdrop
 
 
 @pytest.fixture

@@ -1,9 +1,9 @@
 """Test cases for DepositMixin"""
 
-import pytest
-
 from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 from web_app.contract_tools.mixins.deposit import DepositMixin
 
