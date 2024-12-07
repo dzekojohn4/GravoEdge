@@ -331,8 +331,6 @@ body {
   }
 
   .dashboard-container {
-    padding-left: 6px;
-    padding-right: 6px;
     width: 100%;
     max-width: 100%;
     margin: 0 auto;

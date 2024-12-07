@@ -110,7 +110,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 80px;
   margin-bottom: 20px;
 }
 
@@ -330,7 +330,7 @@ input[type='number'].error {
   .form-token {
     max-width: 100%;
     overflow-x: scroll;
-    gap: 16px;
+    gap: 40px;
     scrollbar-width: none;
   }
 
@@ -462,6 +462,15 @@ input[type='number'].error {
 
   .dot.active {
     background-color: var(--light-blue);
+  }
+}
+
+@media (max-width: 480px) {
+  .form-token {
+    max-width: 100%;
+    overflow-x: scroll;
+    gap: 16px;
+    scrollbar-width: none;
   }
 }
 

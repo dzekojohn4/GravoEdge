@@ -5,27 +5,26 @@ import './multiplier.css';
 
 const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   const { data, isLoading, error } = useMaxMultiplier();
-  const [actualValue, setActualValue] = useState(0.0);
+  const [actualValue, setActualValue] = useState(1.0);
   const sliderRef = useRef(null);
   const isDragging = useRef(false);
 
   const maxMultiplier = useMemo(() => {
-    return Math.round(parseFloat((data?.[selectedToken]))) || 5.0;
+    return Math.round(parseFloat(data?.[selectedToken])) || 5.0;
   }, [data, selectedToken]);
-
 
   const mapSliderToValue = useCallback(
     (sliderPosition) => {
       const rect = sliderRef.current.getBoundingClientRect();
       const percentage = sliderPosition / rect.width;
-      const value = percentage * maxMultiplier;
-      return Math.max(0, Math.min(maxMultiplier, parseFloat(value.toFixed(1))));
+      const value = percentage * (maxMultiplier - 1) + 1;
+      return Math.max(1, Math.min(maxMultiplier, parseFloat(value.toFixed(1))));
     },
     [maxMultiplier]
   );
 
   const calculateSliderPercentage = useCallback(
-    (value) => Math.min(((value) / (maxMultiplier)) * 100, 100),
+    (value) => Math.min(((value - 1) / (maxMultiplier - 1)) * 100, 100),
     [maxMultiplier]
   );
 
@@ -95,12 +94,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
       <div className="slider-container">
         <div className="slider-with-tooltip">
           <div className="multiplier-slider-container">
-            <div
-              className="slider"
-              ref={sliderRef}
-              onMouseDown={handleMouseDown}
-              onTouchStart={handleTouchStart}
-            >
+            <div className="slider" ref={sliderRef} onMouseDown={handleMouseDown} onTouchStart={handleTouchStart}>
               <div className="slider-track">
                 <div
                   className="slider-range"
@@ -121,11 +115,8 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
             </div>
           </div>
           <div className="mark-container">
-            {Array.from({ length: maxMultiplier + 1 }, (_, i) => i).map((mark) => (
-              <div
-                key={mark}
-                className={`mark-item ${actualValue >= mark && actualValue < mark + 1 ? 'active' : ''}`}
-              >
+            {Array.from({ length: maxMultiplier }, (_, i) => i + 1).map((mark) => (
+              <div key={mark} className={`mark-item ${actualValue >= mark && actualValue < mark + 1 ? 'active' : ''}`}>
                 <div className="marker" />
                 <span className="mark-label">{`x${mark}`}</span>
               </div>

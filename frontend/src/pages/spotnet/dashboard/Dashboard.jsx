@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './dashboard.css';
 import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
-// import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
+import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
 import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
 import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynamic.svg';
@@ -13,10 +13,10 @@ import Spinner from 'components/spinner/Spinner';
 import useDashboardData from 'hooks/useDashboardData';
 import { useClosePosition } from 'hooks/useClosePosition';
 import Button from 'components/ui/Button/Button';
-
 import { useWalletStore } from 'stores/useWalletStore';
 import { ActionModal } from 'components/ui/ActionModal';
 import useTelegramNotification from 'hooks/useTelegramNotification';
+
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
   const [isCollateralActive, setIsCollateralActive] = useState(true);
@@ -74,7 +74,18 @@ export default function Component({ telegramId }) {
         return;
       }
 
-      const { health_ratio, current_sum, start_sum, borrowed } = data;
+      const { health_ratio, current_sum, start_sum, borrowed, start_dates } = data;
+
+      let currencyName = 'Ethereum';
+      let currencyIcon = EthIcon;
+
+      if (start_dates && start_dates.STRK) {
+        currencyName = 'STRK';
+        currencyIcon = StrkIcon;
+      } else if (start_dates && start_dates.ETH) {
+        currencyName = 'Ethereum';
+        currencyIcon = EthIcon;
+      }
 
       // Update card data using the new data structure
       const updatedCardData = [
@@ -82,8 +93,8 @@ export default function Component({ telegramId }) {
           title: 'Collateral & Earnings',
           icon: CollateralIcon,
           balance: current_sum,
-          currencyName: 'Ethereum',
-          currencyIcon: EthIcon,
+          currencyName: currencyName,
+          currencyIcon: currencyIcon,
         },
         {
           title: 'Borrow',
@@ -176,20 +187,22 @@ export default function Component({ telegramId }) {
                   </div>
                   <span>
                     <span className="balance-label">Balance: </span>
-                    <span className="balance-value">{cardData[0]?.balance || '0.00'}</span>
+                    <span className="balance-value">
+                      {cardData[0]?.balance ? Number(cardData[0].balance).toFixed(8) : '0.00'}
+                    </span>
                   </span>
                   <span>
                     <span className="balance-label">Start sum: </span>
                     <span className="balance-value">
                       <span className="currency-symbol">$</span>
-                      {startSum}
+                      {startSum ? Number(startSum).toFixed(8) : '0.00'}
                     </span>
                   </span>
                   <span>
                     <span className="balance-label">Current sum: </span>
                     <span className={currentSum === 0 ? 'current-sum-white' : getCurrentSumColor()}>
                       <span className="currency-symbol">$</span>
-                      {currentSum}
+                      {currentSum ? Number(currentSum).toFixed(8) : '0.00'}
                       {currentSum > startSum && currentSum !== 0 && <TrendingUp className="lucide-up-icon" />}
                       {currentSum < startSum && currentSum !== 0 && <TrendingDown className="lucide-down-icon" />}
                     </span>
@@ -207,7 +220,9 @@ export default function Component({ telegramId }) {
                   </div>
                   <span>
                     <span className="balance-label">Balance: </span>
-                    <span className="balance-value">{cardData[1]?.balance || '0.00'}</span>
+                    <span className="balance-value">
+                      {cardData[1]?.balance ? Number(cardData[1].balance).toFixed(8) : '0.00'}
+                    </span>
                   </span>
                 </div>
               </div>
