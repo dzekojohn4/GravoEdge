@@ -19,6 +19,7 @@ from decimal import Decimal
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
+
 from web_app.db.crud import AirDropDBConnector
 from web_app.db.models import AirDrop, User
 

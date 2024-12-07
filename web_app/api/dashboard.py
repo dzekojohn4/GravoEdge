@@ -8,6 +8,7 @@ from fastapi import APIRouter
 from web_app.api.serializers.dashboard import DashboardResponse
 from web_app.contract_tools.mixins import DashboardMixin, HealthRatioMixin
 from web_app.db.crud import PositionDBConnector
+from decimal import Decimal
 
 router = APIRouter()
 position_db_connector = PositionDBConnector()
@@ -73,5 +74,5 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         start_dates={token_symbol: first_opened_position["created_at"]},
         current_sum=current_sum,
         start_sum=start_sum,
-        borrowed=str(start_sum * tvl),
+        borrowed=str(start_sum * Decimal(tvl)),
     )

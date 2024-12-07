@@ -2,10 +2,12 @@
 Test suite for the DashboardMixin class in the web_app.contract_tools.mixins.dashboard module.
 """
 
+from unittest.mock import AsyncMock, patch
+
 import pytest
-from unittest.mock import patch, AsyncMock
-from web_app.contract_tools.mixins.dashboard import DashboardMixin
+
 from web_app.contract_tools.constants import TokenParams
+from web_app.contract_tools.mixins.dashboard import DashboardMixin
 
 
 @pytest.fixture
