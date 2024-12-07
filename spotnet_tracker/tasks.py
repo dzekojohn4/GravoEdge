@@ -31,10 +31,6 @@ def check_users_health_ratio() -> None:
     try:
         alert_mixin = AlertMixin()
         alert_mixin.check_users_health_ratio_level()
-    except HealthRatioLevelLowException as e:
-        logger.error(
-            f"Low health ratio detected: User ID {e.user_id}, Health Ratio {e.health_ratio_level}"
-        )
     except Exception as e:
         logger.error(f"Error in check_users_health_ratio task: {e}")
 
