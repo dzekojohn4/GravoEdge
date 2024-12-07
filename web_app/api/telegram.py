@@ -87,9 +87,9 @@ async def telegram_webhook(update: Update):
         StreamingResponse: A streaming response containing the result of the update processing.
     """
     result = await dp.feed_webhook_update(bot, update, db=db_connector)
-    return StreamingResponse(
-        build_response_writer(bot, result), media_type="multipart/form-data"
-    )
+    if isinstance(result, TelegramMethod):
+        await dp.silent_call_request(bot, result)
+    return StreamingResponse("", status_code=200)
 
 
 @router.post(
