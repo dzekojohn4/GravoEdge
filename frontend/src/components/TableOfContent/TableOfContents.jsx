@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import "./table_of_content_styles.css";
+import './table_of_content_styles.css';
 
 const TableOfContents = ({ items, defaultActiveId, tabelTitle, headerHeight = 80 }) => {
   const [activeId, setActiveId] = useState(defaultActiveId);
@@ -47,28 +47,28 @@ const TableOfContents = ({ items, defaultActiveId, tabelTitle, headerHeight = 80
   };
 
   return (
-    <div className={"table-of-contents"}>
+    <div className={'table-of-contents'}>
       <div className="toc-title-container">
-        <h3 className={"toc-title"}>{tabelTitle}</h3>
+        <h3 className={'toc-title'}>{tabelTitle}</h3>
       </div>
-      <nav className={"toc-nav"}>
+      <nav className={'toc-nav'}>
         {items.map((item, index) => (
-          <div key={index} className={"toc-item"}>
+          <div key={index} className={'toc-item'}>
             <a
               href={item.link}
               onClick={(e) => handleClick(e, item.link)}
-              className={`${"toc-link"} ${activeId === item.link.replace('#', '') ? 'active' : ''}`}
+              className={`${'toc-link'} ${activeId === item.link.replace('#', '') ? 'active' : ''}`}
             >
               • {item.title}
             </a>
             {item.subItems && (
-              <div className={"toc-subitems"}>
+              <div className={'toc-subitems'}>
                 {item.subItems.map((subItem, subIndex) => (
                   <a
                     key={subIndex}
                     href={subItem.link}
                     onClick={(e) => handleClick(e, subItem.link)}
-                    className={`${"toc-sublink"} ${activeId === subItem.link.replace('#', '') ? 'active' : ''}`}
+                    className={`${'toc-sublink'} ${activeId === subItem.link.replace('#', '') ? 'active' : ''}`}
                   >
                     {subItem.title}
                   </a>

@@ -47,7 +47,7 @@ async def generate_telegram_link(wallet_id: str):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    subscription_link = create_start_link(bot, user.id, encode=True)
+    subscription_link = await create_start_link(bot, user.id, encode=True)
     return {"subscription_link": subscription_link}
 
 

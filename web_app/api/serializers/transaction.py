@@ -1,7 +1,7 @@
 """
 This module defines the serializers for the transaction data.
 """
-
+from decimal import Decimal
 from pydantic import BaseModel, field_validator
 
 
@@ -40,7 +40,7 @@ class DepositData(BaseModel):
 
     token: str
     amount: str
-    multiplier: int
+    multiplier: Decimal
     borrow_portion_percent: int
 
     @field_validator("token", "amount", "multiplier", mode="before")
