@@ -74,15 +74,15 @@ export default function Component({ telegramId }) {
         return;
       }
 
-      const { health_ratio, current_sum, start_sum, borrowed, start_dates } = data;
+      const { health_ratio, current_sum, start_sum, borrowed, multipliers } = data;
 
       let currencyName = 'Ethereum';
       let currencyIcon = EthIcon;
 
-      if (start_dates && start_dates.STRK) {
+      if (multipliers && multipliers.STRK) {
         currencyName = 'STRK';
         currencyIcon = StrkIcon;
-      } else if (start_dates && start_dates.ETH) {
+      } else if (multipliers && multipliers.ETH) {
         currencyName = 'Ethereum';
         currencyIcon = EthIcon;
       }
