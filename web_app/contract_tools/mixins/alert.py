@@ -23,11 +23,12 @@ class AlertMixin:
         """
 
         users_data = UserDBConnector().get_users_for_notifications()
-
+        logger.info("Found number of users for notifications: ", len(users_data))
         for contract_address, telegram_id in users_data:
             health_ratio_level, _ = asyncio.run(HealthRatioMixin.get_health_ratio_and_tvl(contract_address))
 
             if float(health_ratio_level) < ALERT_THRESHOLD:
+                logger.info(f"Health ratio level for user {contract_address} is {health_ratio_level}")
                 cls.send_notification(telegram_id, health_ratio_level)
 
     @staticmethod
