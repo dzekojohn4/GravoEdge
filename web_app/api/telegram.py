@@ -4,7 +4,7 @@ Handles Telegram webhook integration for the web application.
 Provides FastAPI endpoints for setting up webhooks and processing updates
 using aiogram and a database connector.
 """
-
+import os
 from typing import Literal
 
 from aiogram.types import Update
@@ -72,8 +72,8 @@ async def set_telegram_webhook(request: Request) -> Literal["ok"]:
     Returns:
         Literal["ok"]: A confirmation message indicating the webhook has been set.
     """
-    url = str(request.url.replace(query=""))
-    await bot.set_webhook(url=url)
+    host_url = os.getenv("HOST_URL", "https://spotnet.xyz/api/webhook/telegram")
+    await bot.set_webhook(url=host_url)
     return "ok"
 
 
