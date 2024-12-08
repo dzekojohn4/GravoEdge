@@ -27,13 +27,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Redis credentials
-REDIS_HOST = os.environ.get("REDIS_HOST", "")
-REDIS_PORT = os.environ.get("REDIS_PORT", 6379)
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://redis:6379/0")
 
 app = Celery(
     main="spotnet",
-    broker=f"redis://{REDIS_HOST}:{REDIS_PORT}/0",
-    backend=f"redis://{REDIS_HOST}:{REDIS_PORT}/0",
+    broker=CELERY_BROKER_URL,
+    backend=CELERY_BROKER_URL,
 )
 
 app.conf.beat_schedule = {
@@ -42,7 +41,7 @@ app.conf.beat_schedule = {
         "schedule": 1,
     },
 }
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://redis:6379/0")
+
 app.conf.broker_connection_retry_on_startup = True
 
 
