@@ -13,7 +13,6 @@ import logging
 import time
 
 from web_app.contract_tools.mixins.alert import AlertMixin
-from web_app.contract_tools.mixins.custom_exception import HealthRatioLevelLowException
 from web_app.tasks.claim_airdrops import AirdropClaimer
 
 from .celery_config import app

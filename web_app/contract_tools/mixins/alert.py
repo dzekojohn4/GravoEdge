@@ -8,7 +8,7 @@ from web_app.contract_tools.mixins import HealthRatioMixin
 from web_app.db.crud import UserDBConnector
 
 logger = logging.getLogger(__name__)
-ALERT_THRESHOLD = 2.0 # FIXME return to 1.1 after testing
+ALERT_THRESHOLD = 3.2 # FIXME return to 1.1 after testing
 
 
 class AlertMixin:
