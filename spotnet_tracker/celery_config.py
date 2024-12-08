@@ -38,7 +38,7 @@ app = Celery(
 app.conf.beat_schedule = {
     "check_users_health_ratio": {
         "task": "check_users_health_ratio",
-        "schedule": 1,
+        "schedule": 60,
     },
 }
 
