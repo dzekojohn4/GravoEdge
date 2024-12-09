@@ -78,7 +78,7 @@ export default function Component({ telegramId }) {
         return;
       }
 
-      const { health_ratio, current_sum, start_sum, borrowed, multipliers } = data;
+      const { health_ratio, current_sum, start_sum, borrowed, multipliers, balance } = data;
 
       let currencyName = 'Ethereum';
       let currencyIcon = EthIcon;
@@ -96,7 +96,7 @@ export default function Component({ telegramId }) {
         {
           title: 'Collateral & Earnings',
           icon: CollateralIcon,
-          balance: current_sum,
+          balance: balance,
           currencyName: currencyName,
           currencyIcon: currencyIcon,
         },
