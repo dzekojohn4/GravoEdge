@@ -238,7 +238,7 @@ class PositionDBConnector(UserDBConnector):
                         Position.token_symbol,
                         func.sum(cast(Position.amount, Numeric)).label("total_amount"),
                     )
-                    .filter(Position.status == Status.OPENED.value)
+                    .filter(Position.status != Status.PENDING.value)
                     .group_by(Position.token_symbol)
                     .all()
                 )
