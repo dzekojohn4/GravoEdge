@@ -36,7 +36,7 @@ class TokenMultipliers:
     """
 
     ETH: float = 4.6
-    STRK: float = 2.5
+    STRK: float = 1.9
     USDC: float = 5.0
 
 
