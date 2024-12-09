@@ -179,6 +179,17 @@
     align-items: center;
     flex-direction: column;
   }
+
+  .link-wrapper span {
+    width: 80px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-mob-nav {
+    gap: 40px;
+  }
 }
 
 .footer-link-active {
