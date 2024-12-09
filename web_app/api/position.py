@@ -70,13 +70,17 @@ async def create_position_with_transaction_data(
         form_data.amount,
         form_data.multiplier,
     )
+    borrowing_token = TokenParams.USDC.address
+    if form_data.token_symbol == TokenParams.USDC.name:
+        borrowing_token = TokenParams.ETH.address
+
     # Get the transaction data for the deposit
     deposit_data = await DepositMixin.get_transaction_data(
         form_data.token_symbol,
         form_data.amount,
         form_data.multiplier,
         form_data.wallet_id,
-        TokenParams.USDC.address,
+        borrowing_token,
     )
     deposit_data["contract_address"] = (
         position_db_connector.get_contract_address_by_wallet_id(form_data.wallet_id)
