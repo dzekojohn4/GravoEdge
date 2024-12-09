@@ -17,7 +17,7 @@ import starknet_py.net.networks
 from starknet_py.contract import Contract
 from starknet_py.net.full_node_client import FullNodeClient
 
-from .constants import EKUBO_MAINNET_ADDRESS, ZKLEND_MARKET_ADDRESS, TokenParams
+from .constants import EKUBO_MAINNET_ADDRESS, ZKLEND_MARKET_ADDRESS, TokenParams, MULTIPLIER_POWER
 
 logger = logging.getLogger(__name__)
 
@@ -255,7 +255,7 @@ class StarknetClient:
             "amount": amount,
             "multiplier": int(multiplier * 10),
             # Moves for one decimal place, from 2.5 to 25
-            "borrow_portion_percent": 80,
+            "borrow_portion_percent": MULTIPLIER_POWER,
         }
 
         pool_price = floor(
