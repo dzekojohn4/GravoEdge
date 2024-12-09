@@ -14,7 +14,7 @@ function Footer() {
     {
       name: 'Github',
       icon: GithubIcon,
-      href: 'https://github.com',
+      href: 'https://github.com/djeck1432/spotnet',
     },
     {
       name: 'Telegram',
@@ -24,7 +24,7 @@ function Footer() {
     {
       name: 'Twitter',
       icon: TwitterIcon,
-      href: 'https://x.com',
+      href: 'https://x.com/SpotNet_123',
     },
   ];
 
