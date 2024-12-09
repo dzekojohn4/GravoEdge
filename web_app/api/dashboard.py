@@ -39,15 +39,17 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
     contract_address = position_db_connector.get_contract_address_by_wallet_id(
         wallet_id
     )
-    if not contract_address:
-        return DashboardResponse(
+    default_dashboard_response = DashboardResponse(
             health_ratio="0",
             multipliers={},
             start_dates={},
             current_sum=0,
             start_sum=0,
             borrowed="0",
+            balance="0",
         )
+    if not contract_address:
+        return default_dashboard_response
 
     opened_positions = position_db_connector.get_positions_by_wallet_id(wallet_id)
 
@@ -57,22 +59,34 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         if opened_positions
         else collections.defaultdict(lambda: None)
     )
-    # Fetch zkLend position for the wallet ID
-    health_ratio, tvl = await HealthRatioMixin.get_health_ratio_and_tvl(
-        contract_address
-    )
+    try:
+        # Fetch zkLend position for the wallet ID
+        health_ratio, tvl = await HealthRatioMixin.get_health_ratio_and_tvl(
+            contract_address
+        )
+    except IndexError:
+        return default_dashboard_response
+
+    position_multiplier = first_opened_position["multiplier"]
+    position_amount = first_opened_position["amount"]
 
     current_sum = await DashboardMixin.get_current_position_sum(first_opened_position)
     start_sum = await DashboardMixin.get_start_position_sum(
         first_opened_position["start_price"],
-        first_opened_position["amount"],
+        position_amount,
+        position_multiplier,
+    )
+    balance = await DashboardMixin.get_position_balance(
+        position_amount,
+        position_multiplier,
     )
     token_symbol = first_opened_position["token_symbol"]
     return DashboardResponse(
         health_ratio=health_ratio,
-        multipliers={token_symbol: str(first_opened_position["multiplier"])},
+        multipliers={token_symbol: str(position_multiplier)},
         start_dates={token_symbol: first_opened_position["created_at"]},
         current_sum=current_sum,
         start_sum=start_sum,
         borrowed=str(start_sum * Decimal(tvl)),
+        balance=str(balance),
     )
