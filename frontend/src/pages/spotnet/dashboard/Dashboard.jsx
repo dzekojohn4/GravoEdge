@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './dashboard.css';
+import newIcon from '../../../assets/icons/borrow-balance-icon.png';
 import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
 import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
 import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
@@ -144,7 +145,7 @@ export default function Component({ telegramId }) {
 
             <div className="card">
               <div className="card-header">
-                <EthIcon className="icon" />
+                <img src={newIcon} alt="Borrow Balance Icon" className="icon" />{' '}
                 <span className="label">Borrow Balance</span>
               </div>
               <div className="card-value">
