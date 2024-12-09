@@ -75,7 +75,7 @@ function Footer() {
         >
           <div className="link-wrapper">
             <DashboardIcon className="footer-icon" />
-            <span>Dashboard</span>
+            <span className="footer-links">Dashboard</span>
           </div>
         </NavLink>
         <div className="footer-mob-divider"></div>
@@ -85,7 +85,7 @@ function Footer() {
         >
           <div className="link-wrapper">
             <FormIcon className="footer-icon" />
-            <span>Form</span>
+            <span className="footer-links">Form</span>
           </div>
         </NavLink>
         {/* <div className="footer-mob-divider"></div> */}
