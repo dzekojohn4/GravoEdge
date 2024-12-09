@@ -94,16 +94,15 @@ async def create_position_with_transaction_data(
     response_description="Returns the repay transaction data.",
 )
 async def get_repay_data(
-    supply_token: str, wallet_id: str
+    wallet_id: str
 ) -> RepayTransactionDataResponse:
     """
     Obtain data for position closing.
-    :param supply_token: Supply token address
     :param wallet_id: Wallet ID
     :return: Dict containing the repay transaction data
     :raises: HTTPException :return: Dict containing status code and detail
     """
-
+    # TODO rework it too many requests to DB
     if not wallet_id:
         raise HTTPException(status_code=404, detail="Wallet not found")
 
@@ -111,7 +110,11 @@ async def get_repay_data(
         wallet_id
     )
     position_id = position_db_connector.get_position_id_by_wallet_id(wallet_id)
-    repay_data = await DepositMixin.get_repay_data(supply_token)
+    position = position_db_connector.get_position_by_id(position_id)
+    if not position:
+        raise HTTPException(status_code=404, detail="Position not found")
+
+    repay_data = await DepositMixin.get_repay_data(position.token_symbol)
     repay_data["contract_address"] = contract_address
     repay_data["position_id"] = str(position_id)
     return repay_data
