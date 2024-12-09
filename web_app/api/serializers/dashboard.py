@@ -39,3 +39,8 @@ class DashboardResponse(BaseModel):
         example="12",
         description="The borrowed token.",
     )
+    balance: str = Field(
+        ...,
+        example="12",
+        description="The balance of the position.",
+    )

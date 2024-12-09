@@ -14,6 +14,7 @@ EKUBO_MAINNET_ADDRESS: str = (
 ZKLEND_MARKET_ADDRESS: str = (
     "0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05"
 )
+MULTIPLIER_POWER = 99
 
 
 @dataclass(frozen=True)

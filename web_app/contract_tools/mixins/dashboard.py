@@ -7,7 +7,7 @@ from typing import Dict
 from decimal import Decimal
 
 from web_app.contract_tools.blockchain_call import StarknetClient
-from web_app.contract_tools.constants import TokenParams
+from web_app.contract_tools.constants import TokenParams, MULTIPLIER_POWER
 from web_app.contract_tools.api_request import APIRequest
 from web_app.api.serializers.dashboard import DashboardResponse
 
@@ -86,9 +86,7 @@ class DashboardMixin:
 
     @classmethod
     async def get_zklend_position(
-            cls,
-            contract_address: str,
-            position: "Position"
+        cls, contract_address: str, position: "Position"
     ) -> DashboardResponse:
         """
         Get the zkLend position for the given wallet ID.
@@ -108,33 +106,62 @@ class DashboardMixin:
         return [product for dapp in dapps for product in dapp.get("products", [])]
 
     @classmethod
-    async def get_current_position_sum(cls, position: dict) -> Decimal:
+    def _calculate_sum(
+        cls, price: Decimal, amount: Decimal, multiplier: Decimal
+    ) -> Decimal:
         """
-        Get the current position sum.
-        :param position: Position data
-        :return: current position sum
+        Calculate the sum.
+        :param price: Price
+        :param amount: Token amount
+        :param multiplier: Position multiplier
+        :return: calculated sum
         """
-        # TODO add test cases for this method
-        current_prices = await cls.get_current_prices()
         try:
-            result = current_prices.get(position["token_symbol"], Decimal(0)) * Decimal(
-                position["amount"]
+            return (
+                price * amount * multiplier * (Decimal(100) / Decimal(MULTIPLIER_POWER))
             )
-            return result
-        except (KeyError, TypeError, ValueError) as e:
-            logger.error(f"Error calculating current position sum: {e}")
+        except (TypeError, ValueError) as e:
+            logger.error(f"Error calculating sum: {e}")
             return Decimal(0)
 
     @classmethod
-    async def get_start_position_sum(cls, start_price: str, amount: str) -> Decimal:
+    async def get_current_position_sum(cls, position: dict) -> Decimal:
         """
-        Get the start position sum.
+        Calculate the current position sum.
+        :param position: Position data
+        :return: current sum
+        """
+        current_prices = await cls.get_current_prices()
+        price = current_prices.get(position.get("token_symbol"), Decimal(0))
+        amount = Decimal(position.get("amount", 0))
+        multiplier = Decimal(position.get("multiplier", 0))
+        return cls._calculate_sum(price, amount, multiplier)
+
+    @classmethod
+    async def get_start_position_sum(
+        cls, start_price: str, amount: str, multiplier: str
+    ) -> Decimal:
+        """
+        Calculate the start position sum.
         :param start_price: Start price
-        :param amount: Token symbol
-        :return: start position sum
+        :param amount: Token amount
+        :param multiplier: Multiplier
+        :return: Decimal sum
         """
-        try:
-            return Decimal(start_price) * Decimal(amount)
-        except (KeyError, TypeError, ValueError) as e:
-            logger.error(f"Error calculating start position sum: {e}")
-            return Decimal(0)
+        return cls._calculate_sum(
+            Decimal(start_price), Decimal(amount), Decimal(multiplier)
+        )
+
+    @classmethod
+    async def get_position_balance(cls, amount: str, multiplier: str) -> Decimal:
+        """
+        Calculate the position balance.
+        :param amount: Position amount
+        :param multiplier: Position multiplier
+        :return: Position balance
+        """
+        return (
+            Decimal(amount)
+            * Decimal(multiplier)
+            * (Decimal(100) / Decimal(MULTIPLIER_POWER))
+        )
