@@ -101,6 +101,7 @@ class StarknetClient:
             }
 
         """
+        token0, token1 = sorted(map(lambda x: StarknetClient._convert_address(x), (token0, token1)))
         return {
             "token0": token0,
             "token1": token1,
@@ -247,9 +248,7 @@ class StarknetClient:
         deposit_token, borrowing_token = self._convert_address(
             deposit_token
         ), self._convert_address(borrowing_token)
-        # Set pool key
-        pool_key["token0"], pool_key["token1"] = deposit_token, borrowing_token
-        # Set wallet id
+
         deposit_data = {
             "token": deposit_token,
             "amount": amount,
