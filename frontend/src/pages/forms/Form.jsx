@@ -112,7 +112,7 @@ const Form = () => {
             {alertMessage} <AlertHexagon className="form-alert-hex" />
           </p>
         )}
-        <label>Select Token</label>
+        <label className="token-select">Select Token</label>
         <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
         <label>Select Multiplier</label>
         <MultiplierSelector
@@ -121,7 +121,7 @@ const Form = () => {
           sliderValue={selectedMultiplier}
         />
         <div className="token-label">
-          <label>Token Amount</label>
+          <label className="token-amount">Token Amount</label>
           {error && <p className="error-message">{error}</p>}
           <input
             type="number"
