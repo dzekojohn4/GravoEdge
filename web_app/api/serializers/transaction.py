@@ -74,13 +74,21 @@ class RepayTransactionDataResponse(BaseModel):
     supply_token: str
     debt_token: str
     pool_key: PoolKey
-    supply_price: int
-    debt_price: int
+    supply_price: str
+    debt_price: str
     contract_address: str
     ekubo_limits: dict[str, str]
     borrow_portion_percent: int
     position_id: str
 
+    @field_validator("supply_price", "debt_price", mode="before")
+    def convert_int_to_str(cls, value: int) -> str:
+        """
+        Convert the integer values to strings.
+        :param value: The integer value to convert
+        :return: str
+        """
+        return str(value)
 
 class UpdateUserContractRequest(BaseModel):
     """
