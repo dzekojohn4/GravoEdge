@@ -287,7 +287,6 @@ class StarknetClient:
             deposit_token
         ), self._convert_address(borrowing_token)
 
-        pool_key["token0"], pool_key["token1"] = deposit_token, borrowing_token
         is_token1 = deposit_token == pool_key["token1"]
         supply_price = floor(await self._get_pool_price(pool_key, is_token1))
 

@@ -53,7 +53,7 @@ class DepositMixin:
         :return: dict with repay data
         """
         deposit_token_address = TokenParams.get_token_address(supply_token)
-        debt_token_address = TokenParams.get_token_address("USDC")
+        debt_token_address = TokenParams.get_token_address("USDC") if supply_token != "USDC" else TokenParams.get_token_address("ETH")
         repay_data = {
             "supply_token": deposit_token_address,
             "debt_token": debt_token_address,
