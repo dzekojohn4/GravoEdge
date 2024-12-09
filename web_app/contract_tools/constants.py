@@ -35,7 +35,7 @@ class TokenMultipliers:
     Class to hold the predefined multipliers for supported tokens/
     """
 
-    ETH: float = 5.0
+    ETH: float = 4.6
     STRK: float = 2.5
     USDC: float = 5.0
 

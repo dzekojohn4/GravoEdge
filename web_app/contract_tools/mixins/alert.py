@@ -23,7 +23,8 @@ class AlertMixin:
         """
 
         users_data = UserDBConnector().get_users_for_notifications()
-        logger.info("Found number of users for notifications: ", len(users_data))
+        user_number = len([user for user, _ in users_data])
+        logger.info(f"Found number of users for notifications: {user_number}")
         for contract_address, telegram_id in users_data:
             health_ratio_level, _ = asyncio.run(HealthRatioMixin.get_health_ratio_and_tvl(contract_address))
 
