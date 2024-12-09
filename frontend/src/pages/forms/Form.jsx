@@ -112,7 +112,7 @@ const Form = () => {
             {alertMessage} <AlertHexagon className="form-alert-hex" />
           </p>
         )}
-        <label>Select Token</label>
+        <label className="token-select">Select Token</label>
         <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
         <label>Select Multiplier</label>
         <MultiplierSelector
