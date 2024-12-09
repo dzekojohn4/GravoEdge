@@ -14,7 +14,7 @@ function Footer() {
     {
       name: 'Github',
       icon: GithubIcon,
-      href: 'https://github.com',
+      href: 'https://github.com/djeck1432/spotnet',
     },
     {
       name: 'Telegram',
@@ -24,7 +24,7 @@ function Footer() {
     {
       name: 'Twitter',
       icon: TwitterIcon,
-      href: 'https://x.com',
+      href: 'https://x.com/SpotNet_123',
     },
   ];
 
@@ -75,7 +75,7 @@ function Footer() {
         >
           <div className="link-wrapper">
             <DashboardIcon className="footer-icon" />
-            <span>Dashboard</span>
+            <span className="footer-links">Dashboard</span>
           </div>
         </NavLink>
         <div className="footer-mob-divider"></div>
@@ -85,7 +85,7 @@ function Footer() {
         >
           <div className="link-wrapper">
             <FormIcon className="footer-icon" />
-            <span>Form</span>
+            <span className="footer-links">Form</span>
           </div>
         </NavLink>
         {/* <div className="footer-mob-divider"></div> */}
