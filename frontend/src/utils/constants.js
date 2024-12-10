@@ -1,5 +1,5 @@
 export const CONTRACT_ADDRESS = '0x041a78e741e5af2fec34b695679bc6891742439f7afb8484ecd7766661ad02bf';
-export const CLASS_HASH = '0x031ae5768dced8a123907259d946edec39afa08073277abb3e55be8daa8fe49d';
+export const CLASS_HASH = '0x035ae0fe6ca00fcc8020a6c64503f38bfaf3481ae9a6c8b7daec2f899df735fa';
 export const UNIQUE = '0x0';
 export const EKUBO_ADDRESS = '0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b';
 export const ZKLEND_ADDRESS = '0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05';

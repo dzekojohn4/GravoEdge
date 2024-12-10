@@ -325,3 +325,16 @@ class StarknetClient:
             selector="claim",
             calldata=proofs,
         )
+
+    async def is_opened_position(self, contract_address: str) -> bool:
+        """
+        Checks if a position is opened on the Starknet blockchain.
+
+        :param contract_address: The contract address.
+        :return: A boolean indicating if the position is opened.
+        """
+        return await self._func_call(
+            addr=self._convert_address(contract_address),
+            selector="is_position_open",
+            calldata=[],
+        )

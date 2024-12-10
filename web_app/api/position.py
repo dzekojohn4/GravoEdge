@@ -14,8 +14,7 @@ from web_app.contract_tools.constants import (
     TokenMultipliers,
 )
 from web_app.api.serializers.position import TokenMultiplierResponse
-from web_app.contract_tools.mixins.deposit import DepositMixin
-from web_app.contract_tools.mixins.dashboard import DashboardMixin
+from web_app.contract_tools.mixins import DepositMixin, DashboardMixin, PositionMixin
 from web_app.db.crud import PositionDBConnector
 
 router = APIRouter()  # Initialize the router
@@ -106,19 +105,17 @@ async def get_repay_data(
     :return: Dict containing the repay transaction data
     :raises: HTTPException :return: Dict containing status code and detail
     """
-    # TODO rework it too many requests to DB
     if not wallet_id:
         raise HTTPException(status_code=404, detail="Wallet not found")
 
-    contract_address = position_db_connector.get_contract_address_by_wallet_id(
-        wallet_id
-    )
-    position_id = position_db_connector.get_position_id_by_wallet_id(wallet_id)
-    position = position_db_connector.get_position_by_id(position_id)
-    if not position:
-        raise HTTPException(status_code=404, detail="Position not found")
+    contract_address, position_id, token_symbol = position_db_connector.get_repay_data(wallet_id)
+    is_opened_position =  await PositionMixin.is_opened_position(contract_address)
+    if not is_opened_position:
+        raise HTTPException(status_code=400, detail="Position was closed")
+    if not position_id:
+        raise HTTPException(status_code=404, detail="Position not found or closed")
 
-    repay_data = await DepositMixin.get_repay_data(position.token_symbol)
+    repay_data = await DepositMixin.get_repay_data(token_symbol)
     repay_data["contract_address"] = contract_address
     repay_data["position_id"] = str(position_id)
     return repay_data

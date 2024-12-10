@@ -3,10 +3,9 @@ This module contains the deposit mixin class.
 """
 
 from decimal import Decimal
-from web_app.contract_tools.blockchain_call import StarknetClient
 from web_app.contract_tools.constants import TokenParams
 
-CLIENT = StarknetClient()
+
 # alternative ARGENT_X_POSITION_URL
 # "https://cloud.argent-api.com/v1/tokens/defi/decomposition/{wallet_id}?chain=starknet"
 ARGENT_X_POSITION_URL = "https://cloud.argent-api.com/v1/tokens/defi/"
@@ -35,6 +34,8 @@ class DepositMixin:
         :param borrowing_token: Borrowing token
         :return: approve_data and loop_liquidity_data
         """
+        from . import CLIENT
+
         deposit_token_address = TokenParams.get_token_address(deposit_token)
         decimal = TokenParams.get_token_decimals(deposit_token_address)
         amount = int(Decimal(amount) * 10**decimal)
@@ -52,8 +53,14 @@ class DepositMixin:
         :param supply_token: Deposit token
         :return: dict with repay data
         """
+        from . import CLIENT
+
         deposit_token_address = TokenParams.get_token_address(supply_token)
-        debt_token_address = TokenParams.get_token_address("USDC") if supply_token != "USDC" else TokenParams.get_token_address("ETH")
+        debt_token_address = (
+            TokenParams.get_token_address("USDC")
+            if supply_token != "USDC"
+            else TokenParams.get_token_address("ETH")
+        )
         repay_data = {
             "supply_token": deposit_token_address,
             "debt_token": debt_token_address,
