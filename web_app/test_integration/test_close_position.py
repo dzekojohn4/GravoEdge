@@ -8,11 +8,10 @@ from typing import Any, Dict
 
 import pytest
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
-from web_app.db.crud import PositionDBConnector, UserDBConnector, AirDropDBConnector
+from web_app.db.crud import PositionDBConnector, UserDBConnector
 from web_app.db.models import Status
 
 user_db = UserDBConnector()
-airdrop = AirDropDBConnector()
 position_db = PositionDBConnector()
 
 
@@ -104,7 +103,6 @@ class TestPositionClose:
 
         # Clean up - delete the position and user
         user = position_db.get_user_by_wallet_id(wallet_id)
-        airdrop.delete_all_users_airdrop(user.id)
         position_db.delete_position(position)
         if not position_db.get_positions_by_wallet_id(wallet_id):
             position_db.delete_user_by_wallet_id(wallet_id)
