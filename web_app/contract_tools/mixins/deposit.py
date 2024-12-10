@@ -3,7 +3,6 @@ This module contains the deposit mixin class.
 """
 
 from decimal import Decimal
-from . import CLIENT
 from web_app.contract_tools.constants import TokenParams
 
 
@@ -35,6 +34,8 @@ class DepositMixin:
         :param borrowing_token: Borrowing token
         :return: approve_data and loop_liquidity_data
         """
+        from . import CLIENT
+
         deposit_token_address = TokenParams.get_token_address(deposit_token)
         decimal = TokenParams.get_token_decimals(deposit_token_address)
         amount = int(Decimal(amount) * 10**decimal)
@@ -52,6 +53,8 @@ class DepositMixin:
         :param supply_token: Deposit token
         :return: dict with repay data
         """
+        from . import CLIENT
+
         deposit_token_address = TokenParams.get_token_address(supply_token)
         debt_token_address = (
             TokenParams.get_token_address("USDC")

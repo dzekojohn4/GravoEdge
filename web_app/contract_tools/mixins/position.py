@@ -1,4 +1,7 @@
-from . import CLIENT
+"""
+Mixins for position related methods
+"""
+
 
 class PositionMixin:
     """
@@ -12,4 +15,10 @@ class PositionMixin:
         :param contract_address: Contract address
         :return: True if the position is opened, False otherwise
         """
-        return await CLIENT.is_opened_position(contract_address)
+        from . import CLIENT
+
+        response = await CLIENT.is_opened_position(contract_address)
+        try:
+            return bool(response[0])
+        except IndexError:
+            return False
