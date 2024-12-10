@@ -13,6 +13,7 @@ import logging
 import time
 
 from web_app.contract_tools.mixins.alert import AlertMixin
+from web_app.tasks.claim_airdrops import AirdropClaimer
 
 from .celery_config import app
 
@@ -32,3 +33,19 @@ def check_users_health_ratio() -> None:
     except Exception as e:
         logger.error(f"Error in check_users_health_ratio task: {e}")
 
+
+@app.task(name="claim_airdrop_task")
+def claim_airdrop_task() -> None:
+    """
+    Background task to claim user airdrops.
+
+    :return: None
+    """
+    try:
+        logger.info("Running claim_airdrop_task.")
+        logger.info("Task started at: ",time.strftime("%a, %d %b %Y %H:%M:%S"))
+        airdrop_claimer = AirdropClaimer()
+        asyncio.run(airdrop_claimer.claim_airdrops())
+        logger.info("Task started at: ", time.strftime("%a, %d %b %Y %H:%M:%S"))
+    except Exception as e:
+        logger.error(f"Error in claiming airdrop task: {e}")
