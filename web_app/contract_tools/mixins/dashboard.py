@@ -6,15 +6,13 @@ import logging
 from typing import Dict
 from decimal import Decimal
 
-from web_app.contract_tools.blockchain_call import StarknetClient
+
 from web_app.contract_tools.constants import TokenParams, MULTIPLIER_POWER
 from web_app.contract_tools.api_request import APIRequest
-from web_app.api.serializers.dashboard import DashboardResponse
 
 logger = logging.getLogger(__name__)
 
 
-CLIENT = StarknetClient()
 # example of ARGENT_X_POSITION_URL
 # "https://cloud.argent-api.com/v1/tokens/defi/decomposition/{wallet_id}?chain=starknet"
 ARGENT_X_POSITION_URL = "https://cloud.argent-api.com/v1/tokens/defi/"
@@ -67,6 +65,8 @@ class DashboardMixin:
         :param holder_address: holder address
         :return: Returns the wallet balances for the given holder address.
         """
+        from . import CLIENT
+
         wallet_balances = {}
 
         for token in TokenParams.tokens():
@@ -83,18 +83,6 @@ class DashboardMixin:
                 )
 
         return wallet_balances
-
-    @classmethod
-    async def get_zklend_position(
-        cls, contract_address: str, position: "Position"
-    ) -> DashboardResponse:
-        """
-        Get the zkLend position for the given wallet ID.
-        :param contract_address: contract address
-        :param position: Position db model
-        :return: zkLend position validated by Pydantic models
-        """
-        pass
 
     @classmethod
     def _get_products(cls, dapps: list) -> list[dict]:
