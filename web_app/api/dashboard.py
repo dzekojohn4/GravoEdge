@@ -8,7 +8,7 @@ from fastapi import APIRouter
 from web_app.api.serializers.dashboard import DashboardResponse
 from web_app.contract_tools.mixins import DashboardMixin, HealthRatioMixin
 from web_app.db.crud import PositionDBConnector
-from decimal import Decimal
+from decimal import Decimal, DivisionByZero
 
 router = APIRouter()
 position_db_connector = PositionDBConnector()
@@ -64,7 +64,7 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         health_ratio, tvl = await HealthRatioMixin.get_health_ratio_and_tvl(
             contract_address
         )
-    except IndexError:
+    except (IndexError, DivisionByZero):
         return default_dashboard_response
 
     position_multiplier = first_opened_position["multiplier"]
