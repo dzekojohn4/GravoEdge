@@ -6,10 +6,9 @@ import logging
 from typing import Dict
 from decimal import Decimal
 
-from . import CLIENT
+
 from web_app.contract_tools.constants import TokenParams, MULTIPLIER_POWER
 from web_app.contract_tools.api_request import APIRequest
-from web_app.api.serializers.dashboard import DashboardResponse
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +65,8 @@ class DashboardMixin:
         :param holder_address: holder address
         :return: Returns the wallet balances for the given holder address.
         """
+        from . import CLIENT
+
         wallet_balances = {}
 
         for token in TokenParams.tokens():
@@ -82,18 +83,6 @@ class DashboardMixin:
                 )
 
         return wallet_balances
-
-    @classmethod
-    async def get_zklend_position(
-        cls, contract_address: str, position: "Position"
-    ) -> DashboardResponse:
-        """
-        Get the zkLend position for the given wallet ID.
-        :param contract_address: contract address
-        :param position: Position db model
-        :return: zkLend position validated by Pydantic models
-        """
-        pass
 
     @classmethod
     def _get_products(cls, dapps: list) -> list[dict]:
@@ -132,8 +121,8 @@ class DashboardMixin:
         """
         current_prices = await cls.get_current_prices()
         price = current_prices.get(position.get("token_symbol"), Decimal(0))
-        amount = Decimal(position.get("amount", 0))
-        multiplier = Decimal(position.get("multiplier", 0))
+        amount = Decimal(position.get("amount", 0) or 0)
+        multiplier = Decimal(position.get("multiplier", 0) or 0)
         return cls._calculate_sum(price, amount, multiplier)
 
     @classmethod
