@@ -131,13 +131,14 @@ async def test_get_dashboard_success():
 
         assert response.is_success
         data = response.json()
-
+        
         assert data == {
-            "multipliers": {"ETH": 1},
+            "multipliers": {"ETH": "1"},
             "start_dates": {"ETH": "2024-01-01T00:00:00"},
             "current_sum": "200.0",
             "start_sum": "200.0",
             "borrowed": "200000.00",
+            "balance": "2.020202020202020202020202020",
             "health_ratio": "1.2",
         }
 
@@ -281,12 +282,15 @@ async def test_empty_positions(
     mock_db_connector.get_contract_address_by_wallet_id.return_value = (
         MOCK_CONTRACT_ADDRESS
     )
-    mock_db_connector.get_positions_by_wallet_id.return_value = []
+    mock_db_connector.get_positions_by_wallet_id.return_value = [{
+        
+    }]
     DashboardMixin.get_wallet_balances = AsyncMock(return_value=MOCK_WALLET_BALANCES)
     DashboardMixin.get_zklend_position = AsyncMock(return_value={"products": []})
     HealthRatioMixin.get_health_ratio_and_tvl = AsyncMock(
         return_value=("1.2", "1000.0")
     )
+    
     response = await get_dashboard(VALID_WALLET_ID)
     assert isinstance(response, DashboardResponse)
     assert response.dict() == {

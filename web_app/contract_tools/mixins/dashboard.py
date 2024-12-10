@@ -133,8 +133,8 @@ class DashboardMixin:
         """
         current_prices = await cls.get_current_prices()
         price = current_prices.get(position.get("token_symbol"), Decimal(0))
-        amount = Decimal(position.get("amount", 0))
-        multiplier = Decimal(position.get("multiplier", 0))
+        amount = Decimal(position.get("amount", 0) or 0)
+        multiplier = Decimal(position.get("multiplier", 0) or 0)
         return cls._calculate_sum(price, amount, multiplier)
 
     @classmethod
