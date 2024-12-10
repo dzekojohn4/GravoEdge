@@ -87,9 +87,6 @@ async def test_get_dashboard_success():
         "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_wallet_balances",
         new_callable=AsyncMock,
     ) as mock_get_wallet_balances, patch(
-        "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_zklend_position",
-        new_callable=AsyncMock,
-    ) as mock_get_zklend_position, patch(
         "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_current_position_sum",
         new_callable=AsyncMock,
     ) as mock_get_current_position_sum, patch(
@@ -112,15 +109,15 @@ async def test_get_dashboard_success():
             "ETH": 5.0,
             "USDC": 1000.0,
         }
-        mock_get_zklend_position.return_value = {
-            "products": [
-                {
-                    "name": "ZkLend",
-                    "groups": {"1": {"healthRatio": "1.2"}},
-                    "positions": [],
-                }
-            ]
-        }
+        # mock_get_zklend_position.return_value = {
+        #     "products": [
+        #         {
+        #             "name": "ZkLend",
+        #             "groups": {"1": {"healthRatio": "1.2"}},
+        #             "positions": [],
+        #         }
+        #     ]
+        # }
         mock_get_current_position_sum.return_value = Decimal("200.0")
         mock_get_start_position_sum.return_value = Decimal("200.0")
 
@@ -158,17 +155,14 @@ async def test_get_dashboard_no_positions():
     ) as mock_get_health_ratio_and_tvl, patch(
         "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_wallet_balances",
         new_callable=AsyncMock,
-    ) as mock_get_wallet_balances, patch(
-        "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_zklend_position",
-        new_callable=AsyncMock,
-    ) as mock_get_zklend_position:
+    ) as mock_get_wallet_balances:
         mock_get_contract_address_by_wallet_id.return_value = "0xabcdef1234567890"
         mock_get_positions_by_wallet_id.return_value = []
         mock_get_wallet_balances.return_value = {
             "ETH": 5.0,
             "USDC": 1000.0,
         }
-        mock_get_zklend_position.return_value = {"products": []}
+        # mock_get_zklend_position.return_value = {"products": []}
         mock_get_health_ratio_and_tvl.return_value = ("1.2", "1000.0")
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url=BASE_URL
@@ -177,8 +171,8 @@ async def test_get_dashboard_no_positions():
 
         assert response.is_success
         data = response.json()
-        assert data["multipliers"] == {"ETH": None}
-        assert data["start_dates"] == {"ETH": None}
+        assert data["multipliers"] == {}
+        assert data["start_dates"] == {}
 
 
 @pytest.mark.asyncio
@@ -196,10 +190,7 @@ async def test_get_dashboard_no_contract_address():
     ) as mock_get_health_ratio_and_tvl, patch(
         "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_wallet_balances",
         new_callable=AsyncMock,
-    ) as mock_get_wallet_balances, patch(
-        "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_zklend_position",
-        new_callable=AsyncMock,
-    ) as mock_get_zklend_position:
+    ) as mock_get_wallet_balances:
 
         mock_get_contract_address_by_wallet_id.return_value = None
         mock_get_positions_by_wallet_id.return_value = []
@@ -207,7 +198,7 @@ async def test_get_dashboard_no_contract_address():
             "ETH": 5.0,
             "USDC": 1000.0,
         }
-        mock_get_zklend_position.return_value = {"products": []}
+        # mock_get_zklend_position.return_value = {"products": []}
         mock_get_health_ratio_and_tvl.return_value = ("1.2", "1000.0")
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url=BASE_URL
@@ -282,11 +273,9 @@ async def test_empty_positions(
     mock_db_connector.get_contract_address_by_wallet_id.return_value = (
         MOCK_CONTRACT_ADDRESS
     )
-    mock_db_connector.get_positions_by_wallet_id.return_value = [{
-        
-    }]
+    mock_db_connector.get_positions_by_wallet_id.return_value = []
     DashboardMixin.get_wallet_balances = AsyncMock(return_value=MOCK_WALLET_BALANCES)
-    DashboardMixin.get_zklend_position = AsyncMock(return_value={"products": []})
+    # DashboardMixin.get_zklend_position = AsyncMock(return_value={"products": []})
     HealthRatioMixin.get_health_ratio_and_tvl = AsyncMock(
         return_value=("1.2", "1000.0")
     )
@@ -294,12 +283,13 @@ async def test_empty_positions(
     response = await get_dashboard(VALID_WALLET_ID)
     assert isinstance(response, DashboardResponse)
     assert response.dict() == {
-        "multipliers": {"ETH": None},
-        "start_dates": {"ETH": None},
+        "multipliers": {},
+        "start_dates": {},
         "current_sum": Decimal("0"),
         "start_sum": Decimal("0"),
-        "borrowed": "0.0",
-        "health_ratio": "1.2",
+        "borrowed": "0",
+        "balance": "0",
+        "health_ratio": "0",
     }
 
 
