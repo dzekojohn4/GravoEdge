@@ -6,7 +6,7 @@ import logging
 from typing import Dict
 from decimal import Decimal
 
-from web_app.contract_tools.blockchain_call import StarknetClient
+from . import CLIENT
 from web_app.contract_tools.constants import TokenParams, MULTIPLIER_POWER
 from web_app.contract_tools.api_request import APIRequest
 from web_app.api.serializers.dashboard import DashboardResponse
@@ -14,7 +14,6 @@ from web_app.api.serializers.dashboard import DashboardResponse
 logger = logging.getLogger(__name__)
 
 
-CLIENT = StarknetClient()
 # example of ARGENT_X_POSITION_URL
 # "https://cloud.argent-api.com/v1/tokens/defi/decomposition/{wallet_id}?chain=starknet"
 ARGENT_X_POSITION_URL = "https://cloud.argent-api.com/v1/tokens/defi/"
