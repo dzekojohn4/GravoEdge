@@ -35,6 +35,8 @@ pub trait IDeposit<TContractState> {
     fn extra_deposit(ref self: TContractState, token: ContractAddress, amount: TokenAmount);
 
     fn withdraw(ref self: TContractState, token: ContractAddress, amount: TokenAmount);
+
+    fn is_position_open(self: @TContractState) -> bool;
 }
 
 #[starknet::interface]

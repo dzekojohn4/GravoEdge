@@ -165,7 +165,7 @@ fn test_loop_eth_fuzz(amount: u64) {
     if let Result::Err(panic_data) = deposit_disp
         .loop_liquidity(
             DepositData {
-                token: eth_addr, amount: amount.into(), multiplier: 40, borrow_portion_percent: 98
+                token: eth_addr, amount: amount.into(), multiplier: 40, borrow_portion_percent: 95
             },
             pool_key,
             get_slippage_limits(pool_key),
