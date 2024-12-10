@@ -3,10 +3,10 @@ This module contains the deposit mixin class.
 """
 
 from decimal import Decimal
-from web_app.contract_tools.blockchain_call import StarknetClient
+from . import CLIENT
 from web_app.contract_tools.constants import TokenParams
 
-CLIENT = StarknetClient()
+
 # alternative ARGENT_X_POSITION_URL
 # "https://cloud.argent-api.com/v1/tokens/defi/decomposition/{wallet_id}?chain=starknet"
 ARGENT_X_POSITION_URL = "https://cloud.argent-api.com/v1/tokens/defi/"
@@ -53,7 +53,11 @@ class DepositMixin:
         :return: dict with repay data
         """
         deposit_token_address = TokenParams.get_token_address(supply_token)
-        debt_token_address = TokenParams.get_token_address("USDC") if supply_token != "USDC" else TokenParams.get_token_address("ETH")
+        debt_token_address = (
+            TokenParams.get_token_address("USDC")
+            if supply_token != "USDC"
+            else TokenParams.get_token_address("ETH")
+        )
         repay_data = {
             "supply_token": deposit_token_address,
             "debt_token": debt_token_address,

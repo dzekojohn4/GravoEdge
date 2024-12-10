@@ -15,7 +15,7 @@ from web_app.api.serializers.user import (
     UpdateUserContractResponse,
     UserHistoryResponse,
 )
-from web_app.contract_tools.mixins.dashboard import DashboardMixin
+from web_app.contract_tools.mixins import PositionMixin, DashboardMixin
 from web_app.db.crud import (
     PositionDBConnector,
     TelegramUserDBConnector,
@@ -45,7 +45,9 @@ async def has_user_opened_position(wallet_id: str) -> dict:
     """
     try:
         has_position = position_db.has_opened_position(wallet_id)
-        return {"has_opened_position": has_position}
+        contract_address = user_db.get_contract_address_by_wallet_id(wallet_id)
+        is_position_opened = PositionMixin.is_opened_position(contract_address)
+        return {"has_opened_position": has_position or is_position_opened}
     except ValueError as e:
         raise HTTPException(
             status_code=404, detail=f"Invalid wallet ID format: {str(e)}"
