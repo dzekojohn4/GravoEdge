@@ -5,7 +5,7 @@ Seed data for initializing the database with predefined values.
 import logging
 from decimal import Decimal
 from faker import Faker
-from web_app.db.models import Status, User, Position, AirDrop, TelegramUser, Vault
+from web_app.db.models import Status, User, Position, TelegramUser, Vault
 from web_app.db.database import SessionLocal
 from web_app.contract_tools.constants import TokenParams
 
@@ -74,30 +74,6 @@ def create_positions(session: SessionLocal, users: list[User]) -> None:
         logger.info("No positions created.")
 
 
-def create_airdrops(session: SessionLocal, users: list[User]) -> None:
-    """
-    Create and save fake airdrop records for each user.
-    Args:
-        session (Session): SQLAlchemy session object.
-        users (list): List of User objects to associate with airdrops.
-    """
-    airdrops = []
-    for user in users:
-        for _ in range(2):
-            airdrop = AirDrop(
-                user_id=user.id,
-                amount=Decimal(
-                    fake.pydecimal(left_digits=5, right_digits=2, positive=True)
-                ),
-                is_claimed=fake.boolean(),
-                claimed_at=fake.date_time_this_decade() if fake.boolean() else None,
-            )
-            airdrops.append(airdrop)
-    if airdrops:
-        session.bulk_save_objects(airdrops)
-        session.commit()
-
-
 def create_telegram_users(session: SessionLocal, users: list[User]) -> None:
     """
     Create and save fake Telegram user records to the database.
@@ -157,7 +133,6 @@ if __name__ == "__main__":
         # Populate the database
         users = create_users(session)
         create_positions(session, users)
-        create_airdrops(session, users)
         create_telegram_users(session, users)
         create_vaults(session, users)
 
