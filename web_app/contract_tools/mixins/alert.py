@@ -8,6 +8,7 @@ from web_app.telegram.notifications import send_health_ratio_notification
 from web_app.contract_tools.mixins import HealthRatioMixin
 from web_app.db.crud import UserDBConnector
 
+
 logger = logging.getLogger(__name__)
 ALERT_THRESHOLD = 3.2  # FIXME return to 1.1 after testing
 
