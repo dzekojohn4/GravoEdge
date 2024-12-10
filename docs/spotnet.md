@@ -155,6 +155,10 @@ withdraw tokens from zkLend and transfer to the owner
 emit event
 ```
 
+### is_position_open
+
+The `is_position_open` method returns the status of the position
+
 ## Important types, events and constants
 ### Types
 #### DepositData
