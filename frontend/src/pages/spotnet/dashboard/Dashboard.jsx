@@ -12,7 +12,7 @@ import { TrendingDown, TrendingUp } from 'lucide-react';
 import Spinner from 'components/spinner/Spinner';
 // import { ZETH_ADDRESS } from 'utils/constants';
 import useDashboardData from 'hooks/useDashboardData';
-import { useClosePosition } from 'hooks/useClosePosition';
+import { useClosePosition, useCheckPosition } from 'hooks/useClosePosition';
 import Button from 'components/ui/Button/Button';
 import { useWalletStore } from 'stores/useWalletStore';
 import { ActionModal } from 'components/ui/ActionModal';
@@ -31,7 +31,10 @@ export default function Component({ telegramId }) {
     isLoading: false,
   };
   const { mutate: closePositionEvent, isLoading: isClosing, error: closePositionError } = useClosePosition(walletId);
+  const { data: positionData } = useCheckPosition();
   const { subscribe } = useTelegramNotification();
+
+  const hasOpenedPosition = positionData?.has_opened_position;
 
   const handleSubscribe = () => subscribe({ telegramId, walletId });
 
@@ -244,7 +247,7 @@ export default function Component({ telegramId }) {
             size="lg"
             className="dashboard-btn"
             onClick={() => closePositionEvent()}
-            disabled={isClosing}
+            disabled={isClosing || !hasOpenedPosition}
           >
             {isClosing ? 'Closing...' : 'Redeem'}
           </Button>
