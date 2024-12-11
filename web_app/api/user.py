@@ -46,6 +46,8 @@ async def has_user_opened_position(wallet_id: str) -> dict:
     try:
         has_position = position_db.has_opened_position(wallet_id)
         contract_address = user_db.get_contract_address_by_wallet_id(wallet_id)
+        if contract_address is None:
+            return {"has_opened_position": False}
         is_position_opened = await PositionMixin.is_opened_position(contract_address)
         return {"has_opened_position": has_position or is_position_opened}
     except ValueError as e:
