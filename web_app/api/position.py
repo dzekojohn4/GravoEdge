@@ -2,7 +2,7 @@
 This module handles position-related API endpoints.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
 from web_app.api.serializers.transaction import (
     LoopLiquidityData,
@@ -49,6 +49,7 @@ async def get_multipliers() -> TokenMultiplierResponse:
 )
 async def create_position_with_transaction_data(
     form_data: PositionFormData,
+    request: Request,
 ) -> LoopLiquidityData:
     """
     This endpoint creates a new user position.
@@ -58,6 +59,8 @@ async def create_position_with_transaction_data(
     - **token_symbol**: The symbol of the token used for the position.
     - **amount**: The amount of the token being deposited.
     - **multiplier**: The multiplier applied to the user's position.
+    - **borrowing_token**: The address of the borrowing token.
+    - **request**: The FastAPI request object.
 
     ### Returns:
     The created position's details and transaction data.
@@ -80,6 +83,7 @@ async def create_position_with_transaction_data(
         form_data.multiplier,
         form_data.wallet_id,
         borrowing_token,
+        request.app.state.ekubo_contract,
     )
     deposit_data["contract_address"] = (
         position_db_connector.get_contract_address_by_wallet_id(form_data.wallet_id)
@@ -97,11 +101,13 @@ async def create_position_with_transaction_data(
     response_description="Returns the repay transaction data.",
 )
 async def get_repay_data(
-    wallet_id: str
+    wallet_id: str,
+    request: Request,
 ) -> RepayTransactionDataResponse:
     """
     Obtain data for position closing.
     :param wallet_id: Wallet ID
+    :param request: Request object
     :return: Dict containing the repay transaction data
     :raises: HTTPException :return: Dict containing status code and detail
     """
@@ -115,7 +121,7 @@ async def get_repay_data(
     if not position_id:
         raise HTTPException(status_code=404, detail="Position not found or closed")
 
-    repay_data = await DepositMixin.get_repay_data(token_symbol)
+    repay_data = await DepositMixin.get_repay_data(token_symbol, request.app.state.ekubo_contract)
     repay_data["contract_address"] = contract_address
     repay_data["position_id"] = str(position_id)
     return repay_data
@@ -156,7 +162,6 @@ async def open_position(position_id: str) -> str:
     :return: str
     :raises: HTTPException :return: Dict containing status code and detail
     """
-
     if not position_id:
         raise HTTPException(status_code=404, detail="Position not found")
 
