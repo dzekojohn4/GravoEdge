@@ -2,7 +2,7 @@
 This module handles position-related API endpoints.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
 from web_app.api.serializers.transaction import (
     LoopLiquidityData,
@@ -80,6 +80,7 @@ async def create_position_with_transaction_data(
         form_data.multiplier,
         form_data.wallet_id,
         borrowing_token,
+        request.app.state.ekubo_contract,
     )
     deposit_data["contract_address"] = (
         position_db_connector.get_contract_address_by_wallet_id(form_data.wallet_id)
@@ -115,7 +116,7 @@ async def get_repay_data(
     if not position_id:
         raise HTTPException(status_code=404, detail="Position not found or closed")
 
-    repay_data = await DepositMixin.get_repay_data(token_symbol)
+    repay_data = await DepositMixin.get_repay_data(token_symbol, request.app.state.ekubo_contract)
     repay_data["contract_address"] = contract_address
     repay_data["position_id"] = str(position_id)
     return repay_data
@@ -156,7 +157,6 @@ async def open_position(position_id: str) -> str:
     :return: str
     :raises: HTTPException :return: Dict containing status code and detail
     """
-
     if not position_id:
         raise HTTPException(status_code=404, detail="Position not found")
 
