@@ -17,12 +17,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
-
-from web_app.api.dashboard import (
-    get_dashboard,
-    position_db_connector,
-    router,
-)
+from web_app.api.dashboard import get_dashboard, position_db_connector, router
 from web_app.api.serializers.dashboard import DashboardResponse
 from web_app.contract_tools.mixins import HealthRatioMixin
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
@@ -128,7 +123,7 @@ async def test_get_dashboard_success():
 
         assert response.is_success
         data = response.json()
-        
+
         assert data == {
             "multipliers": {"ETH": "1"},
             "start_dates": {"ETH": "2024-01-01T00:00:00"},
@@ -279,7 +274,7 @@ async def test_empty_positions(
     HealthRatioMixin.get_health_ratio_and_tvl = AsyncMock(
         return_value=("1.2", "1000.0")
     )
-    
+
     response = await get_dashboard(VALID_WALLET_ID)
     assert isinstance(response, DashboardResponse)
     assert response.dict() == {
