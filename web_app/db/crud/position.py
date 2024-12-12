@@ -12,7 +12,7 @@ from sqlalchemy import Numeric, cast, func
 from sqlalchemy.exc import SQLAlchemyError
 
 from .user import UserDBConnector
-from web_app.db.models import Base, Position, Status, User
+from web_app.db.models import AirDrop, Base, Position, Status, User
 
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)
@@ -207,7 +207,7 @@ class PositionDBConnector(UserDBConnector):
 
     def open_position(self, position_id: uuid.UUID, current_prices: dict) -> str | None:
         """
-        Opens a position by updating its status.
+        Opens a position by updating its status and creating an AirDrop claim.
         :param position_id: uuid.UUID
         :param current_prices: dict
         :return: str | None
@@ -216,6 +216,7 @@ class PositionDBConnector(UserDBConnector):
         if position:
             position.status = Status.OPENED.value
             self.write_to_db(position)
+            self.create_empty_claim(position.user_id)
             self.save_current_price(position, current_prices)
             return position.status
         else:
