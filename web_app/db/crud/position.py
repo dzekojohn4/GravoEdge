@@ -207,7 +207,7 @@ class PositionDBConnector(UserDBConnector):
 
     def open_position(self, position_id: uuid.UUID, current_prices: dict) -> str | None:
         """
-        Opens a position by updating its status.
+        Opens a position by updating its status and creating an AirDrop claim.
         :param position_id: uuid.UUID
         :param current_prices: dict
         :return: str | None
@@ -216,6 +216,7 @@ class PositionDBConnector(UserDBConnector):
         if position:
             position.status = Status.OPENED.value
             self.write_to_db(position)
+            self.create_empty_claim(position.user_id)
             self.save_current_price(position, current_prices)
             return position.status
         else:
@@ -320,29 +321,6 @@ class PositionDBConnector(UserDBConnector):
             except SQLAlchemyError as e:
                 logger.error(f"Error retrieving liquidated positions: {str(e)}")
                 return []
-
-    def get_repay_data(self, wallet_id: str) -> tuple:
-        """
-        Retrieves the repay data for a user.
-        :param wallet_id:
-        :return:
-        """
-        with self.Session() as db:
-            result = (
-                db.query(
-                    User.contract_address, Position.id, Position.token_symbol
-                )
-                .join(Position, Position.user_id == User.id)
-                .filter(User.wallet_id == wallet_id)
-                .first()
-            )
-
-            if not result:
-                return None, None, None
-
-            return result
-
-
 
     def get_position_by_id(self, position_id: int) -> Position | None:
         """

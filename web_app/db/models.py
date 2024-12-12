@@ -1,6 +1,6 @@
 """
 This module contains SQLAlchemy models for the application, including
-User, Position, and TelegramUser. Each model represents a
+User, Position, AirDrop, and TelegramUser. Each model represents a
 table in the database and defines the structure and relationships
 between the data entities.
 """
@@ -82,6 +82,23 @@ class Position(Base):
     liquidation_bonus = Column(Float, default=0.0)
     is_liquidated = Column(Boolean, default=False)
     datetime_liquidation = Column(DateTime, nullable=True)
+
+
+class AirDrop(Base):
+    """
+    SQLAlchemy model for the airdrop table.
+    """
+
+    __tablename__ = "airdrop"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("user.id"), index=True, nullable=False
+    )
+    created_at = Column(DateTime, nullable=False, default=func.now())
+    amount = Column(DECIMAL, nullable=True)
+    is_claimed = Column(Boolean, default=False, index=True)
+    claimed_at = Column(DateTime, nullable=True)
 
 
 class TelegramUser(Base):
