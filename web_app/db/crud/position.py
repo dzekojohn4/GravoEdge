@@ -12,7 +12,7 @@ from sqlalchemy import Numeric, cast, func
 from sqlalchemy.exc import SQLAlchemyError
 
 from .user import UserDBConnector
-from web_app.db.models import Base, Position, Status, User
+from web_app.db.models import AirDrop, Base, Position, Status, User
 
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)
@@ -321,6 +321,29 @@ class PositionDBConnector(UserDBConnector):
             except SQLAlchemyError as e:
                 logger.error(f"Error retrieving liquidated positions: {str(e)}")
                 return []
+
+    def get_repay_data(self, wallet_id: str) -> tuple:
+        """
+        Retrieves the repay data for a user.
+        :param wallet_id:
+        :return:
+        """
+        with self.Session() as db:
+            result = (
+                db.query(
+                    User.contract_address, Position.id, Position.token_symbol
+                )
+                .join(Position, Position.user_id == User.id)
+                .filter(User.wallet_id == wallet_id)
+                .first()
+            )
+
+            if not result:
+                return None, None, None
+
+            return result
+
+
 
     def get_position_by_id(self, position_id: int) -> Position | None:
         """
