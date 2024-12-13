@@ -4,7 +4,7 @@ This module defines the serializers for the position data.
 
 from pydantic import BaseModel, field_validator
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 
 class PositionFormData(BaseModel):
@@ -71,10 +71,11 @@ class UserPositionResponse(BaseModel):
     created_at: datetime
     start_price: float
     is_liquidated: bool
+    datetime_liquidation: Optional[datetime] = None
 
 
 class UserPositionsListResponse(BaseModel):
     """
-    Response model for list of user positions
+    Response model for list of user positions.
     """
-    positions: List[UserPositionResponse]
+    List[UserPositionResponse]
