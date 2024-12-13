@@ -181,12 +181,9 @@ async def open_position(position_id: str) -> str:
 async def get_user_positions(wallet_id: str) -> UserPositionsListResponse:
     """
     Get all positions for a specific user by their wallet ID.
-
-    ### Parameters:
-    - **wallet_id**: The wallet ID of the user
-
-    ### Returns:
-    List of all positions associated with the wallet ID
+    :param wallet_id: The wallet ID of the user
+    :return: UserPositionsListResponse containing list of positions
+    :raises: HTTPException: If wallet ID is empty or invalid
     """
     if not wallet_id:
         raise HTTPException(status_code=400, detail="Wallet ID is required")
