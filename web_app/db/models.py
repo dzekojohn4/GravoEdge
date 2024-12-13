@@ -141,7 +141,7 @@ class Vault(Base):
         DateTime, nullable=False, default=func.now(), onupdate=func.now()
     )
 
-    class TransactionStatus(PyEnum):
+class TransactionStatus(PyEnum):
     """
     Enum for the transaction status.
     """
