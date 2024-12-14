@@ -5,12 +5,9 @@ import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
 import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
 import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
 import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
-import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynamic.svg';
 import { ReactComponent as BorrowIcon } from 'assets/icons/borrow_dynamic.svg';
 import { ReactComponent as TelegramIcon } from 'assets/icons/telegram_dashboard.svg';
-import { TrendingDown, TrendingUp } from 'lucide-react';
 import Spinner from 'components/spinner/Spinner';
-// import { ZETH_ADDRESS } from 'utils/constants';
 import useDashboardData from 'hooks/useDashboardData';
 import { useClosePosition, useCheckPosition } from 'hooks/useClosePosition';
 import Button from 'components/ui/Button/Button';
@@ -18,6 +15,9 @@ import { useWalletStore } from 'stores/useWalletStore';
 import { ActionModal } from 'components/ui/ActionModal';
 import useTelegramNotification from 'hooks/useTelegramNotification';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
+import Borrow from 'components/Dashboard/Borrow';
+import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynamic.svg';
+import Collateral from 'components/Dashboard/Collateral';
 
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
@@ -141,31 +141,7 @@ export default function Component({ telegramId }) {
         {loading && <Spinner loading={loading} />}
         <h1 className="dashboard-title">zkLend Position</h1>
         <div className="dashboard-content">
-          <div className="top-cards-dashboard">
-            <div className="card">
-              <div className="card-header">
-                <HealthIcon className="icon" />
-                <span className="label">Health Factor</span>
-              </div>
-              <div className="card-value">
-                <span className="top-card-value">{healthFactor}</span>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="card-header">
-                <img src={newIcon} alt="Borrow Balance Icon" className="icon" />{' '}
-                <span className="label">Borrow Balance</span>
-              </div>
-              <div className="card-value">
-                <span className="currency-symbol">$</span>
-                <span className="top-card-value">
-                  {' '}
-                  {cardData[1]?.balance ? Number(cardData[1].balance).toFixed(8) : '0.00'}
-                </span>
-              </div>
-            </div>
-          </div>
+          
           <div className="dashboard-info-card">
             <div className="tabs">
               <button
@@ -189,61 +165,10 @@ export default function Component({ telegramId }) {
                 <div className={`tab-indicator ${isCollateralActive ? 'collateral' : 'borrow'}`} />
               </div>
             </div>
-
-            {isCollateralActive ? (
-              <div className="tab-content">
-                <div className="balance-info">
-                  <div className="currency-info">
-                    {React.createElement(cardData[0]?.currencyIcon || CollateralIcon, {
-                      className: 'icon',
-                    })}
-                    <span className="currency-name">{cardData[0]?.currencyName || 'N/A'}</span>
-                  </div>
-                  <span>
-                    <span className="balance-label">Balance: </span>
-                    <span className="balance-value">
-                      {cardData[0]?.balance ? Number(cardData[0].balance).toFixed(8) : '0.00'}
-                    </span>
-                  </span>
-                  <span>
-                    <span className="balance-label">Start sum: </span>
-                    <span className="balance-value">
-                      <span className="currency-symbol">$</span>
-                      {startSum ? Number(startSum).toFixed(8) : '0.00'}
-                    </span>
-                  </span>
-                  <span>
-                    <span className="balance-label">Current sum: </span>
-                    <span className={currentSum === 0 ? 'current-sum-white' : getCurrentSumColor()}>
-                      <span className="currency-symbol">$</span>
-                      {currentSum ? Number(currentSum).toFixed(8) : '0.00'}
-                      {currentSum > startSum && currentSum !== 0 && <TrendingUp className="lucide-up-icon" />}
-                      {currentSum < startSum && currentSum !== 0 && <TrendingDown className="lucide-down-icon" />}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="tab-content">
-                <div className="balance-info">
-                  <div className="currency-info">
-                    {React.createElement(cardData[1]?.currencyIcon || BorrowIcon, {
-                      className: 'icon',
-                    })}
-                    <span className="currency-name">{cardData[1]?.currencyName || 'N/A'}</span>
-                  </div>
-                  <span>
-                    <span className="balance-label">Balance: </span>
-                    <span className="balance-value">
-                      {cardData[1]?.balance ? Number(cardData[1].balance).toFixed(8) : '0.00'}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            )}
+            {isCollateralActive ?<Collateral getCurrentSumColor={getCurrentSumColor} startSum={startSum} currentSum={currentSum} data={cardData}/> :<Borrow data={cardData} />}
           </div>
           <Button
-            variant="primary"
+            variant={isCollateralActive?"secondary":"primary"}
             size="lg"
             className="dashboard-btn"
             onClick={() => closePositionEvent()}

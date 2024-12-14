@@ -8,9 +8,10 @@ body {
 }
 
 .dashboard-wrapper {
-  background: url('../../../../public/background.png') no-repeat;
+  /* background: url('../../../../public/background.png') no-repeat;
   background-size: cover;
-  background-position: center 39%;
+  background-position: center 39%; */
+  background:none;
   min-height: 100vh;
   display: flex;
   justify-content: center;
