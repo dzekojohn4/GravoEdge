@@ -50,7 +50,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.windows
     container_name: frontend_dev
     volumes:
       - ./frontend:/app
