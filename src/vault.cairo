@@ -5,7 +5,7 @@ mod Vault {
     use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use openzeppelin::upgrades::UpgradeableComponent;
     use openzeppelin::upgrades::interface::IUpgradeable;
-    use spotnet::interfaces::{IVault, IDepositDispatcher};
+    use spotnet::interfaces::{IVault, IDepositDispatcher, IDepositDispatcherTrait};
     use spotnet::types::{TokenAmount};
 
     use starknet::ContractAddress;
@@ -46,7 +46,7 @@ mod Vault {
         UpgradeableEvent: UpgradeableComponent::Event,
         LiquidityAdded: LiquidityAdded,
         LiquidityWithdrawn: LiquidityWithdrawn,
-        ContractAdded: ContractAdded
+        ContractAdded: ContractAdded,
         PositionProtected: PositionProtected
     }
 
@@ -70,6 +70,8 @@ mod Vault {
 
     #[derive(Drop, starknet::Event)]
     struct ContractAdded {
+        #[key]
+        token: ContractAddress,
         #[key]
         user: ContractAddress,
         #[key]
@@ -180,35 +182,34 @@ mod Vault {
         }
 
         fn add_deposit_contract(ref self: ContractState, deposit_contract: ContractAddress){
+            let token = self.token.read();
             let user = get_caller_address();
-            assert(deposit_contract.is_non_zero(), 'Deposit contract address is zero');
+            assert!(deposit_contract.is_non_zero(), "Deposit contract address is zero");
             self.activeContracts.entry(user).write(deposit_contract);
-            self.emit(ContractAdded {user, deposit_contract});
+            self.emit(ContractAdded { token, user, deposit_contract });
         }
 
         fn protect_position(
-            self: @TContractState, 
+            ref self: ContractState, 
             deposit_contract: ContractAddress, 
             user: ContractAddress, 
             amount: TokenAmount
         ) {
             let token = self.token.read();
             let caller = get_caller_address();
-            let vault_contract = get_contract_address();
-            let vault_owner = self.ownable.Ownable_owner.read();
+            let vault_owner = self.ownable.owner();
             let current_amount = self.amounts.entry(caller).read();
 
-            assert(vault_owner == caller || user == caller, 'Caller must equal to vault owner or user');
+            assert!(vault_owner == caller || user == caller, "Caller must equal to vault owner or user");
+            assert(current_amount >= amount, 'Insufficient balance');
             
-            let token_dispatcher = IERC20Dispatcher { contract_address: token };
-            assert(
-                token_dispatcher.allowance(user, vault_contract) >= amount,
-                'Approved amount insufficient'
-            );
-            assert(token_dispatcher.balance_of(user) >= amount, 'Insufficient balance');
+            // update new amount
+            self.amounts.entry(user).write(current_amount - amount);
+    
+            // transfer token to user
+            IERC20Dispatcher{contract_address: token}.approve(deposit_contract, amount);
 
-            let deposit = IDepositDispatcher(deposit_contract);
-            deposit.extra_deposit(token, amount);
+            IDepositDispatcher{contract_address: deposit_contract}.extra_deposit(token, amount);
 
             self.emit(
                 PositionProtected {
@@ -217,7 +218,7 @@ mod Vault {
                     contract_owner: user, 
                     amount: amount
                 }
-            )
+            );
         }
-    }    
+    }
 }
