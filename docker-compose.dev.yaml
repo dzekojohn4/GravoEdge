@@ -7,10 +7,10 @@ networks:
 services:
   backend:
     build: .
-    command: ["/bin/bash", "-c", "chmod +x /app/entrypoint.sh && /app/entrypoint.sh"]
+    command: ["/app/entrypoint.sh"]
     container_name: backend_dev
     volumes:
-      - .:/app
+      - ./entrypoint.sh:/app/entrypoint.sh
     env_file:
       - .env.dev
     ports:
