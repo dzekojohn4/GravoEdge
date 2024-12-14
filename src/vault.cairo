@@ -30,6 +30,7 @@ mod Vault {
     struct Storage {
         token: ContractAddress,
         amounts: Map<ContractAddress, TokenAmount>,
+        activeContracts: Map<ContractAddress, ContractAddress>,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
@@ -45,6 +46,7 @@ mod Vault {
         UpgradeableEvent: UpgradeableComponent::Event,
         LiquidityAdded: LiquidityAdded,
         LiquidityWithdrawn: LiquidityWithdrawn,
+        ContractAdded: ContractAdded
     }
 
     #[derive(Drop, starknet::Event)]
@@ -63,6 +65,14 @@ mod Vault {
         #[key]
         token: ContractAddress,
         amount: TokenAmount,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ContractAdded {
+        #[key]
+        user: ContractAddress,
+        #[key]
+        deposit_contract: ContractAddress
     }
 
 
@@ -155,6 +165,13 @@ mod Vault {
             IERC20Dispatcher { contract_address: token }.transfer(user, amount);
     
             self.emit(LiquidityWithdrawn { user, token, amount });
+        }
+
+        fn add_deposit_contract(ref self: ContractState, deposit_contract: ContractAddress){
+            let user = get_caller_address();
+            assert(deposit_contract.is_non_zero(), 'Deposit contract address is zero');
+            self.activeContracts.entry(user).write(deposit_contract);
+            self.emit(ContractAdded {user, deposit_contract});
         }
     }    
 }
