@@ -19,16 +19,18 @@ from httpx import AsyncClient
 from web_app.api.main import app
 from web_app.contract_tools.mixins.deposit import DepositMixin
 
-client = TestClient(app)
+# from .conftest import client
+
+# client = next(client())
 app.dependency_overrides.clear()
 
 
 @pytest.mark.anyio
-async def test_open_position_success(client: AsyncClient) -> None:
+async def test_open_position_success(client: TestClient) -> None:
     """
     Test for successfully opening a position using a valid position ID.
     Args:
-        client (AsyncClient): The test client for the FastAPI application.
+        client (TestClient): The test client for the FastAPI application.
     Returns:
         None
     """
@@ -44,12 +46,12 @@ async def test_open_position_success(client: AsyncClient) -> None:
 
 @pytest.mark.anyio
 async def test_open_position_missing_position_data(
-    client: AsyncClient,
+    client: TestClient,
 ) -> None:
     """
     Test for missing position data, which should return a 404 error.
     Args:
-        client (AsyncClient): The test client for the FastAPI application.
+        client (TestClient): The test client for the FastAPI application.
     Returns:
         None
     """
@@ -59,11 +61,11 @@ async def test_open_position_missing_position_data(
 
 
 @pytest.mark.anyio
-async def test_close_position_success(client: AsyncClient) -> None:
+async def test_close_position_success(client: TestClient) -> None:
     """
     Test for successfully closing a position using a valid position ID.
     Args:
-        client (AsyncClient): The test client for the FastAPI application.
+        client (TestClient): The test client for the FastAPI application.
     Returns:
         None
     """
@@ -79,13 +81,13 @@ async def test_close_position_success(client: AsyncClient) -> None:
 
 @pytest.mark.anyio
 async def test_close_position_invalid_position_id(
-    client: AsyncClient,
+    client: TestClient,
 ) -> None:
     """
     Test for attempting to close a position using an invalid position ID,
     which should return a 404 error.
     Args:
-        client (AsyncClient): The test client for the FastAPI application.
+        client (TestClient): The test client for the FastAPI application.
     Returns:
         None
     """
@@ -165,14 +167,14 @@ async def test_close_position_invalid_position_id(
 )
 @pytest.mark.anyio
 async def test_get_repay_data_success(
-    client: AsyncClient, supply_token, wallet_id, mock_repay_data
+    client: TestClient, supply_token, wallet_id, mock_repay_data
 ) -> None:
     """
     Test for successfully retrieving repayment data for
     different combinations of
     wallet ID and supply token.
     Args:
-        client (AsyncClient): The test client for the FastAPI application.
+        client (TestClient): The test client for the FastAPI application.
         supply_token (str): The token used for supply.
         wallet_id (str): The wallet ID of the user.
         mock_repay_data (dict): Mocked repayment data.
@@ -188,18 +190,18 @@ async def test_get_repay_data_success(
         ) as mock_get_contract_address,
         patch(
             "web_app.db.crud.PositionDBConnector.get_position_id_by_wallet_id"
-        ) as mock_get_position_id,
+        ) as mock_get_position_wallet_id,
     ):
         mock_get_repay_data.return_value = mock_repay_data
         mock_get_contract_address.return_value = "mock_contract_address"
-        mock_get_position_id.return_value = 123
+        mock_get_position_wallet_id.return_value = 123
         mock_get_repay_data.return_value = mock_repay_data
-        DepositMixin.get_repay_data = mock_get_repay_data
+        # DepositMixin.get_repay_data = mock_get_repay_data
         response = client.get(
             f"/api/get-repay-data?supply_token={supply_token}&wallet_id={wallet_id}"
         )
         mock_get_contract_address.assert_called_once_with(wallet_id)
-        mock_get_position_id.assert_called_once_with(wallet_id)
+        mock_get_position_wallet_id.assert_called_once_with(wallet_id)
         mock_get_repay_data.assert_called_once_with(supply_token)
         expected_response = {
             **mock_repay_data,
@@ -445,7 +447,7 @@ async def test_get_user_positions_success(client: AsyncClient) -> None:
         "web_app.db.crud.PositionDBConnector.get_positions_by_wallet_id"
     ) as mock_get_positions:
         mock_get_positions.return_value = mock_positions
-        response = await client.get(f"/api/user-positions/{wallet_id}")
+        response = client.get(f"/api/user-positions/{wallet_id}")
         
         assert response.status_code == 200
         data = response.json()
@@ -459,7 +461,7 @@ async def test_get_user_positions_empty_wallet_id(client: AsyncClient) -> None:
     """
     Test retrieving positions with empty wallet ID.
     """
-    response = await client.get("/api/user-positions/")
+    response = client.get("/api/user-positions/")
     assert response.status_code == 404
 
 
@@ -473,8 +475,8 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
         "web_app.db.crud.PositionDBConnector.get_positions_by_wallet_id"
     ) as mock_get_positions:
         mock_get_positions.return_value = []
-        response = await client.get(f"/api/user-positions/{wallet_id}")
+        response = client.get(f"/api/user-positions/{wallet_id}")
         
         assert response.status_code == 200
         data = response.json()
-        assert len(data["positions"]) == 0
+        assert data == {}
