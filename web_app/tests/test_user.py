@@ -5,10 +5,10 @@ This module contains the tests for the user endpoints.
 from unittest.mock import MagicMock, patch
 
 import pytest
+from httpx import AsyncClient
 
 from web_app.api.serializers.transaction import UpdateUserContractRequest
 from web_app.api.serializers.user import SubscribeToNotificationResponse
-from web_app.tests.conftest import client, mock_user_db_connector
 
 
 @pytest.mark.asyncio
@@ -27,21 +27,21 @@ from web_app.tests.conftest import client, mock_user_db_connector
     ],
 )
 async def test_get_user_contract(
-    client: client,
+    async_client: AsyncClient,
     mock_user_db_connector: MagicMock,
     wallet_id: str,
     expected_contract_address: str,
 ) -> None:
     """
     Test get_user_contract endpoint
-    :param client: fastapi.testclient.TestClient
+    :param async_client: httpx.AsyncClient
     :param mock_user_db_connector: unittest.mock.MagicMock
     :param wallet_id: str[wallet_id]
     :param expected_contract_address: str[expected_contract_address]
     :return: None
     """
-    response = client.get(
-        url="/api/get-user-contract",
+    response = await async_client.get(
+        "/api/get-user-contract",
         params={
             "wallet_id": wallet_id,
         },
@@ -72,17 +72,17 @@ async def test_get_user_contract(
     ],
 )
 async def test_check_user(
-    client: client, mock_user_db_connector: MagicMock, wallet_id: str
+    async_client: AsyncClient, mock_user_db_connector: MagicMock, wallet_id: str
 ) -> None:
     """
     Test check_user endpoint
-    :param client: fastapi.testclient.TestClient
+    :param async_client: httpx.AsyncClient
     :param mock_user_db_connector: unittest.mock.MagicMock
     :param wallet_id: str[wallet_id]
     :return: None
     """
-    response = client.get(
-        url="/api/check-user",
+    response = await async_client.get(
+        "/api/check-user",
         params={
             "wallet_id": wallet_id,
         },
@@ -110,14 +110,14 @@ async def test_check_user(
     ],
 )
 async def test_change_user_contract(
-    client: client,
+    async_client: AsyncClient,
     mock_user_db_connector: MagicMock,
     wallet_id: str,
     contract_address: str,
 ) -> None:
     """
     Test get_user_contract endpoint
-    :param client: fastapi.testclient.TestClient
+    :param async_client: httpx.AsyncClient
     :param mock_user_db_connector: unittest.mock.MagicMock
     :param wallet_id: str[wallet_id]
     :param contract_address: str[contract_address]
@@ -128,8 +128,8 @@ async def test_change_user_contract(
         contract_address=str(contract_address),
     )
 
-    response = client.post(
-        url="/api/update-user-contract",
+    response = await async_client.post(
+        "/api/update-user-contract",
         json=data.dict(),
     )
     response_json = response.json()
@@ -155,21 +155,21 @@ async def test_change_user_contract(
     ],
 )
 async def test_get_user_contract_address(
-    client: client,
+    async_client: AsyncClient,
     mock_user_db_connector: MagicMock,
     wallet_id: str,
     expected_contract_address: str,
 ) -> None:
     """
     Test get_user_contract_address endpoint
-    :param client: fastapi.testclient.TestClient
+    :param async_client: httpx.AsyncClient
     :param mock_user_db_connector: unittest.mock.MagicMock
     :param wallet_id: str[wallet_id]
     :param expected_contract_address: str[expected_contract_address]
     :return: None
     """
-    response = client.get(
-        url="/api/get-user-contract-address",
+    response = await async_client.get(
+        "/api/get-user-contract-address",
         params={
             "wallet_id": wallet_id,
         },
@@ -215,7 +215,7 @@ async def test_get_user_contract_address(
 async def test_subscribe_to_notification(
     mock_get_user_by_wallet_id: MagicMock,
     mock_allow_notification: MagicMock,
-    client,
+    async_client: AsyncClient,
     telegram_id: str,
     wallet_id: str,
     expected_status_code: int,
@@ -225,7 +225,7 @@ async def test_subscribe_to_notification(
     """
     Test subscribe_to_notification endpoint with both positive and negative cases.
 
-    :param client: fastapi.testclient.TestClient
+    :param async_client: httpx.AsyncClient
     :param mock_get_user_by_wallet_id: unittest.mock.MagicMock for get_user_by_wallet_id
     :param mock_allow_notification: unittest.mock.MagicMock for allow_notification
     :param telegram_id: str[Telegram ID of the user]
@@ -250,8 +250,8 @@ async def test_subscribe_to_notification(
     else:
         data = {"telegram_id": telegram_id, "wallet_id": wallet_id}
 
-    response = client.post(
-        url="/api/subscribe-to-notification",
+    response = await async_client.post(
+        "/api/subscribe-to-notification",
         json=data,
     )
     response_json = response.json()
