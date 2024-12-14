@@ -38,6 +38,7 @@
 /* Variant styles */
 .button--primary {
   color: white;
+  border-radius:8px !important;
   padding: 16px 24px 16px 24px;
   background: linear-gradient(73.48deg, #e01dee 1.13%, #49abd2 51.27%);
   transition: all 1 ease;
@@ -56,6 +57,7 @@
   display: inline-block;
   background: none;
   color: white;
+  border-radius:8px !important;
   font-size: 16px;
   cursor: pointer;
   border: none;
@@ -101,7 +103,7 @@
 
 @media (max-width: 768px) {
   .button {
-    border-radius: 16px;
+    border-radius: 8px;
   }
 
   .button--primary {
@@ -109,7 +111,7 @@
   }
 
   .button--secondary::before {
-    border-radius: 16px;
+    border-radius: 8px;
   }
 
   .button--lg {
