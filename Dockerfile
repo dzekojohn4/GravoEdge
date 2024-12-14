@@ -12,7 +12,6 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        libpq-dev gcc g++ make libffi-dev build-essential \
        curl nodejs npm \
-       dos2unix \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
@@ -36,8 +35,6 @@ ADD . /app
 RUN npm install @argent/get-starknet --legacy-peer-deps --save
 
 # Set the entrypoint script as executable
-# Add this before the EXPOSE line
-COPY . /app
-RUN dos2unix /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8000
