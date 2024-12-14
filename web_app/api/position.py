@@ -188,6 +188,10 @@ async def add_extra_deposit(
     - **position_id**: The position ID.
     - **amount**: The amount of the token being deposited.
     """
+
+    if not position_id:
+        raise HTTPException(status_code=404, detail="Position ID is required")
+    
     position = position_db_connector.get_position_by_id(position_id)
 
     if not position:
