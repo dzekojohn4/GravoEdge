@@ -5,7 +5,7 @@ mod Vault {
     use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use openzeppelin::upgrades::UpgradeableComponent;
     use openzeppelin::upgrades::interface::IUpgradeable;
-    use spotnet::interfaces::IVault;
+    use spotnet::interfaces::{IVault, IDepositDispatcher};
     use spotnet::types::{TokenAmount};
 
     use starknet::ContractAddress;
@@ -73,6 +73,17 @@ mod Vault {
         user: ContractAddress,
         #[key]
         deposit_contract: ContractAddress
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ContractAdded {
+        #[key]
+        token: ContractAddress,
+        #[key]
+        deposit_contract: ContractAddress,
+        #[key]
+        contract_owner: ContractAddress,
+        amount: TokenAmount,
     }
 
 
@@ -172,6 +183,33 @@ mod Vault {
             assert(deposit_contract.is_non_zero(), 'Deposit contract address is zero');
             self.activeContracts.entry(user).write(deposit_contract);
             self.emit(ContractAdded {user, deposit_contract});
+        }
+
+        fn protect_position(
+            self: @TContractState, 
+            deposit_contract: ContractAddress, 
+            user: ContractAddress, 
+            amount: TokenAmount
+        ) {
+            let token = self.token.read();
+            let caller = get_caller_address();
+            let vault_contract = get_contract_address();
+            let vault_owner = self.ownable.Ownable_owner.read();
+            let current_amount = self.amounts.entry(caller).read();
+
+            assert(vault_owner == caller || user == caller, 'Caller must equal to vault owner or user');
+            
+            let token_dispatcher = IERC20Dispatcher { contract_address: token };
+            assert(
+                token_dispatcher.allowance(user, vault_contract) >= amount,
+                'Approved amount insufficient'
+            );
+            assert(token_dispatcher.balance_of(user) >= amount, 'Insufficient balance');
+
+            let deposit = IDepositDispatcher(deposit_contract);
+            deposit.extra_deposit(token, amount);
+
+            self.emit(PositionProtected {token, deposit_contract, user, amount})
         }
     }    
 }

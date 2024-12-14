@@ -66,5 +66,11 @@ pub trait IVault<TContractState> {
     fn store_liquidity(ref self: TContractState, amount: TokenAmount);
     fn withdraw_liquidity(ref self: TContractState, amount: TokenAmount);
     fn add_deposit_contract(ref self: TContractState, deposit_contract: ContractAddress);
+    fn protect_position(
+        ref self: TContractState, 
+        deposit_contract: ContractAddress, 
+        user: ContractAddress, 
+        amount: TokenAmount
+    );
 }
 
