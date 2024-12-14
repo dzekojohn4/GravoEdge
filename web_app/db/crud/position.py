@@ -223,6 +223,27 @@ class PositionDBConnector(UserDBConnector):
             logger.error(f"Position with ID {position_id} not found")
             return None
 
+    def get_repay_data(self, wallet_id: str) -> tuple:
+        """
+        Retrieves the repay data for a user.
+        :param wallet_id:
+        :return:
+        """
+        with self.Session() as db:
+            result = (
+                db.query(
+                    User.contract_address, Position.id, Position.token_symbol
+                )
+                .join(Position, Position.user_id == User.id)
+                .filter(User.wallet_id == wallet_id)
+                .first()
+            )
+
+            if not result:
+                return None, None, None
+
+            return result
+
     def get_total_amounts_for_open_positions(self) -> dict[str, Decimal]:
         """
         Calculates the amounts for all positions where status is 'OPENED',
