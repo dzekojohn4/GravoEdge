@@ -6,7 +6,6 @@ from unittest.mock import MagicMock, patch, AsyncMock
 
 import pytest
 from fastapi.testclient import TestClient
-from httpx import AsyncClient
 from web_app.api.main import app
 from web_app.db.crud import (
     DBConnector,
@@ -18,7 +17,11 @@ from web_app.db.database import get_database
 
 
 @pytest.fixture(scope="module")
-def client():
+def client() -> None:
+    """
+    A client mock fixture
+    :return: TestClient
+    """
     mock_db_connector = MagicMock(spec=DBConnector)
     app.dependency_overrides[get_database] = lambda: mock_db_connector
 
