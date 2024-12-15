@@ -68,7 +68,7 @@ jobs:
             sleep 10
             
             # Check if the container is still running before logging
-            if ! docker ps | grep -q backend_dev; then
+            if ! docker ps | grep -q backend; then
               echo "Backend container is not running!"
               docker compose -f docker-compose.dev.yaml logs backend_dev || true 
               exit 1
