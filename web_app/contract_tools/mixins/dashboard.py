@@ -85,7 +85,7 @@ class DashboardMixin:
         return wallet_balances
 
     @classmethod
-    async def get_zklend_position(
+    async def get_zklend_position( # FIXME: Not used, only used in tests
             cls,
             contract_address: str,
             position: "Position"
@@ -99,7 +99,7 @@ class DashboardMixin:
         pass
 
     @classmethod
-    def _get_products(cls, dapps: list) -> list[dict]:
+    def _get_products(cls, dapps: list) -> list[dict]:  # FIXME: Not used anymore
         """
         Get the products from the dapps.
         :param dapps: List of dapps
@@ -114,7 +114,6 @@ class DashboardMixin:
         :param position: Position data
         :return: current position sum
         """
-        # TODO add test cases for this method
         current_prices = await cls.get_current_prices()
         try:
             result = current_prices.get(position["token_symbol"], Decimal(0)) * Decimal(

@@ -52,7 +52,7 @@ async def has_user_opened_position(wallet_id: str) -> dict:
         )
 
 
-@router.get(
+@router.get(  # FIXME: Not used, only used in tests
     "/api/get-user-contract",
     tags=["User Operations"],
     summary="Get user's contract status",
@@ -155,18 +155,27 @@ async def subscribe_to_notification(
     Success status of the subscription.
     """
     user = user_db.get_user_by_wallet_id(data.wallet_id)
+    # Check if the user exists; if not, raise a 404 error
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    is_allowed_notification = telegram_db.allow_notification(data.telegram_id)
 
-    if is_allowed_notification:
+    telegram_id = data.telegram_id
+    # Is not provided, attempt to retrieve it from the database
+    if not telegram_id:
+        tg_user = telegram_db.get_telegram_user_by_wallet_id(data.wallet_id)
+        telegram_id = tg_user.telegram_id
+    # Is found, set the notification preference for the user
+    if telegram_id:
+        telegram_db.set_allow_notification(telegram_id, data.wallet_id)
         return {"detail": "User subscribed to notifications successfully"}
+    
+    # If no Telegram ID is available, raise
     raise HTTPException(
         status_code=400, detail="Failed to subscribe user to notifications"
     )
 
 
-@router.get(
+@router.get( # FIXME: Not used, only used in tests
     "/api/get-user-contract-address",
     tags=["User Operations"],
     summary="Get user's contract address",
@@ -244,7 +253,7 @@ async def get_stats() -> GetStatsResponse:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
-@router.get(
+@router.get( # FIXME: Not used anymore
     "/api/get-user-history",
     tags=["User Operations"],
     summary="Get user position history",
@@ -281,14 +290,14 @@ async def get_user_history(user_id: str) -> list[dict]:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
-@router.post("/allow-notification/{telegram_id}")
+@router.post("/allow-notification/{telegram_id}") # FIXME: Not used anymore
 async def allow_notification(
     telegram_id: int,
     telegram_db: TelegramUserDBConnector = Depends(lambda: TelegramUserDBConnector()),
 ):
     """Enable notifications for a specific telegram user"""
     try:
-        telegram_db.allow_notification(telegram_id=telegram_id)
+        telegram_db.set_allow_notification(telegram_id=telegram_id)
         return {"message": "Notifications enabled successfully"}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

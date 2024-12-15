@@ -91,7 +91,7 @@ class UpdateUserContractRequest(BaseModel):
     contract_address: str
 
 
-class DeploymentStatus(BaseModel):
+class DeploymentStatus(BaseModel): # FIXME: Not used anymore
     """
     Pydantic model for the deployment status.
     """
@@ -99,7 +99,7 @@ class DeploymentStatus(BaseModel):
     is_contract_deployed: bool
 
 
-class ContractAddress(BaseModel):
+class ContractAddress(BaseModel): # FIXME: Not used anymore
     """
     Pydantic model for the contract address.
     """
