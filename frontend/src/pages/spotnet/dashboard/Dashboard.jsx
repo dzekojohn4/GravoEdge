@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './dashboard.css';
-import newIcon from '../../../assets/icons/borrow-balance-icon.png';
 import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
 import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
 import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
-import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
 import { ReactComponent as BorrowIcon } from 'assets/icons/borrow_dynamic.svg';
 import { ReactComponent as TelegramIcon } from 'assets/icons/telegram_dashboard.svg';
 import Spinner from 'components/spinner/Spinner';
@@ -15,9 +13,10 @@ import { useWalletStore } from 'stores/useWalletStore';
 import { ActionModal } from 'components/ui/ActionModal';
 import useTelegramNotification from 'hooks/useTelegramNotification';
 import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
-import Borrow from 'components/Dashboard/Borrow';
+import Borrow from 'components/borrow/Borrow';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynamic.svg';
-import Collateral from 'components/Dashboard/Collateral';
+import Collateral from 'components/collateral/Collateral';
+import Card from 'components/Card/Card';
 
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
@@ -42,22 +41,22 @@ export default function Component({ telegramId }) {
     {
       title: 'Collateral & Earnings',
       icon: CollateralIcon,
-      balance: '0.039404186081257303',
+      balance: '0.00',
       currencyName: 'Ethereum',
       currencyIcon: EthIcon,
     },
     {
       title: 'Borrow',
       icon: BorrowIcon,
-      balance: '-55.832665',
+      balance: '0.00',
       currencyName: 'USD Coin',
       currencyIcon: UsdIcon,
     },
   ]);
 
-  const [healthFactor, setHealthFactor] = useState('1.47570678');
-  const [startSum, setStartSum] = useState(200);
-  const [currentSum, setCurrentSum] = useState(200);
+  const [healthFactor, setHealthFactor] = useState('0.00');
+  const [startSum, setStartSum] = useState(0);
+  const [currentSum, setCurrentSum] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -141,28 +140,10 @@ export default function Component({ telegramId }) {
         {loading && <Spinner loading={loading} />}
         <h1 className="dashboard-title">zkLend Position</h1>
         <div className="dashboard-content">
-        <div className="top-cards-dashboard">
-        <div className="card">
-          <div className="card-header">
-            <HealthIcon className="icon" />
-            <span className="label">Health Factor</span>
+          <div className="top-cards-dashboard">
+            <Card label="Health Factor" value={healthFactor} />
+            <Card label="Borrow Balance" cardData={cardData} />
           </div>
-          <div className="card-value">
-            <span className="top-card-value">{healthFactor}</span>
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-header">
-            <img src={newIcon} alt="Borrow Balance Icon" className="icon" />{' '}
-            <span className="label">Borrow Balance</span>
-          </div>
-          <div className="card-value">
-            <span className="currency-symbol">$</span>
-            <span className="top-card-value">55.832665</span>
-          </div>
-        </div>
-      </div>
           <div className="dashboard-info-card">
             <div className="tabs">
               <button
@@ -186,16 +167,25 @@ export default function Component({ telegramId }) {
                 <div className={`tab-indicator ${isCollateralActive ? 'collateral' : 'borrow'}`} />
               </div>
             </div>
-            {isCollateralActive ?<Collateral getCurrentSumColor={getCurrentSumColor} startSum={startSum} currentSum={currentSum} data={cardData}/> :<Borrow data={cardData} />}
+            {isCollateralActive ? (
+              <Collateral
+                getCurrentSumColor={getCurrentSumColor}
+                startSum={startSum}
+                currentSum={currentSum}
+                data={cardData}
+              />
+            ) : (
+              <Borrow data={cardData} />
+            )}
           </div>
           <Button
-            variant={isCollateralActive?"secondary":"primary"}
+            variant="primary"
             size="lg"
             className="dashboard-btn"
             onClick={() => closePositionEvent()}
             disabled={isClosing || !hasOpenedPosition}
           >
-            {isClosing ? 'Closing...' : isCollateralActive?"Deposit":"Redeem"}
+            {isClosing ? 'Closing...' : 'Redeem'}
           </Button>
           {closePositionError && (
             <div className="error-message">
