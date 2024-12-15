@@ -11,6 +11,7 @@ export default function Withdraw() {
     <VaultLayout>
     <div className="withdraw-wrapper">
       <div className="withdraw-container">
+        <h1 className="withdrawal-title">zkLend Withdraw</h1>
         <div className="main-container">
           <div className="top-cards">
             <MetricCard title="Total Amount staked" value="324,909,894" />
@@ -57,6 +58,6 @@ export default function Withdraw() {
         <button className="withdraw-button">Withdraw</button>
       </div>
     </div>
-    </VaultLayout>
+    // </VaultLayout>
   );
 }

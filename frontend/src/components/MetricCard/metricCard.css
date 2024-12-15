@@ -1,6 +1,8 @@
 .metric-card {
   width: 309px;
-  background: var(--header-button-bg);
+  height: 101px;
+  /* background: var(--header-button-bg); */
+  background: transparent;
   border: var(--midnight-purple-border);
   border-radius: 900px;
   display: flex;
@@ -8,6 +10,18 @@
   justify-content: center;
   align-items: center;
   gap: 4px;
+}
+
+.card {
+  width: 309px;
+  
+  background: rgba(18, 7, 33, 1);
+  border: 1px solid rgba(54, 41, 78, 1);
+  border-radius: 900px;
+  padding-top: 4px;
+  padding-right: 24px;
+  padding-left: 24px;
+  text-align: center;
 }
 
 .card-header {
