@@ -179,7 +179,7 @@ export default function Component({ telegramId }) {
             )}
           </div>
           <Button
-            variant="primary"
+            variant="secondary"
             size="lg"
             className="dashboard-btn"
             onClick={() => closePositionEvent()}
