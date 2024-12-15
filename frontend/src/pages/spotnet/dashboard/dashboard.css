@@ -251,8 +251,8 @@ body {
   .dashboard-info-card {
     height: auto;
     min-height: 280px;
-    border-radius: 16px !important;
-    padding: 16px 24px !important;
+    border-radius: 16px;
+    padding: 16px 24px;
     margin: 20px auto;
     width: 500px;
   }
@@ -330,7 +330,7 @@ body {
     background: var(--deep-purple);
     height: auto;
     min-height: 280px;
-    padding: 14px 22px !important;
+    padding: 14px 22px;
     margin: 15px auto;
     width: 450px;
     gap:0;
@@ -352,7 +352,7 @@ body {
   .dashboard-info-card {
     height: auto;
     min-height: 280px;
-    padding: 14px 22px !important;
+    padding: 14px 22px;
     margin: 15px auto;
     width: 380px;
   }
@@ -398,7 +398,7 @@ body {
   .dashboard-info-card {
     height: auto;
     min-height: 280px;
-    padding: 14px 22px !important;
+    padding: 14px 22px;
     margin: 15px auto;
     width: 300px;
   }
@@ -420,7 +420,7 @@ body {
 @media (max-width: 320px) {
   .dashboard-info-card {
     height: auto;
-    padding: 10px 10px !important;
+    padding: 10px 10px;
     margin: 15px auto;
     width: 280px;
   }
