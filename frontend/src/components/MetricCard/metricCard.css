@@ -32,7 +32,8 @@
 
 @media (max-width: 768px) {
   .metric-card {
-    width: 100%; /* Full width on mobile */
+    /* Full width on mobile */
+    /* width: 100%; */
     border-radius: 16px; /* Adjust border radius for mobile */
     padding: 16px 24px;
   }
