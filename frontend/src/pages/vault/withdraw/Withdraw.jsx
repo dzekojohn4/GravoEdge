@@ -4,21 +4,21 @@ import { ReactComponent as DiamondIcon } from 'assets/icons/diamond.svg';
 import { ReactComponent as TimeIcon } from 'assets/icons/time.svg';
 import { ReactComponent as SettingIcon } from 'assets/icons/settings.svg';
 import MetricCard from 'components/MetricCard/MetricCard';
-import { VaultLayout } from '../VaultLayout';
+// import { VaultLayout } from '../VaultLayout';
 
 export default function Withdraw() {
   return (
-    <VaultLayout>
+    // <VaultLayout>
     <div className="withdraw-wrapper">
       <div className="withdraw-container">
-        <h1 className="withdrawal-title">zkLend Withdraw</h1>
+       <h1 className="withdrawal-title">zkLend Withdraw</h1>
         <div className="main-container">
           <div className="top-cards">
             <MetricCard title="Total Amount staked" value="324,909,894" />
             <MetricCard title="Daily Boost Multiplier" value="0.5%" />
           </div>
         </div>
-        <h1 className="withdraw-title">Staking withdrawal</h1>
+        <h1 className="withdraw-title">Stake withdrawal</h1>
         <div className="main-card">
           <div className="amount-stack-card">
             <div className="amount-stack-card-title-container">
@@ -54,8 +54,11 @@ export default function Withdraw() {
             </div>
           </div>
         </div>
-
-        <button className="withdraw-button">Withdraw</button>
+          <button className="withdraw-button larger-screen-btn">Withdraw</button>
+         <div className='mobile-screen-btns'>
+            <button className=" withdraw-button">Withdraw</button>
+            <button className=" cancel-button">Cancel</button>
+         </div>
       </div>
     </div>
     // </VaultLayout>
