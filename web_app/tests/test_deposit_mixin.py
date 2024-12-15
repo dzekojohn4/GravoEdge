@@ -66,6 +66,18 @@ class TestDepositMixin:
         wallet_id: str,
         borrowing_token: str,
     ) -> None:
+        """
+        Test cases for DepositMixin.get_transaction_data method
+        :param mock_get_loop_liquidity_data: unittest.mock.AsyncMock
+        :param mock_get_token_address: unittest.mock.MagicMock
+        :param mock_get_token_decimals: unittest.mock.MagicMock
+        :param deposit_token_name: str
+        :param amount: str
+        :param multiplier: int
+        :param wallet_id: str
+        :param borrowing_token: str
+        :return: None
+        """
         expected_transaction_data = {
             "caller": wallet_id,
             "pool_price": "mocked_pool_price",
