@@ -1,27 +1,14 @@
 .metric-card {
   width: 309px;
-  height: 101px;
   /* background: var(--header-button-bg); */
-  background: transparent;
   border: var(--midnight-purple-border);
-  border-radius: 900px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 4px;
-}
-
-.card {
-  width: 309px;
-  
-  background: rgba(18, 7, 33, 1);
-  border: 1px solid rgba(54, 41, 78, 1);
-  border-radius: 900px;
-  padding-top: 4px;
-  padding-right: 24px;
-  padding-left: 24px;
-  text-align: center;
+  padding: 24px 0px;
 }
 
 .card-header {
@@ -30,18 +17,20 @@
   font-weight: 600;
 }
 
+
+
 @media (max-width: 768px) {
   .metric-card {
-    /* Full width on mobile */
-    /* width: 100%; */
-    border-radius: 16px; /* Adjust border radius for mobile */
+    width: 100%; /* Full width on mobile */
+    border-radius: 10px; /* Adjust border radius for mobile */
     padding: 16px 24px;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 678px) {
   .metric-card {
     width: 100%; /* Ensure full width on smaller screens */
+    padding: 24px 0;
   }
 
   .card-header .label {
@@ -51,6 +40,25 @@
 
   .card-value .metric-card-value {
     font-size: 20px;
+    line-height: 27px;
+  }
+}
+
+@media (max-width: 400px) {
+  .metric-card {
+    width: 100%;
+  }
+  
+  .card-value .metric-card-value {
+    font-size: 16px;
+    line-height: 27px;
+  }
+}
+
+@media (max-width: 320px) {
+  
+  .card-value .metric-card-value {
+    font-size: 14px;
     line-height: 27px;
   }
 }
