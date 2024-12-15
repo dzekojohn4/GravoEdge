@@ -1,5 +1,7 @@
 import React from "react"
+import './collateral.css';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynamic.svg';
+import zkland_svg from "../../assets/icons/Vector.svg"
 
 function Collateral({data,startSum,currentSum,getCurrentSumColor}){
     return (
@@ -21,16 +23,15 @@ function Collateral({data,startSum,currentSum,getCurrentSumColor}){
                     <span className="balance-label">Start sum: </span>
                     <span className="balance-value">
                       <span className="currency-symbol">$</span>
-                      {startSum ? Number(startSum).toFixed(8) : '0.00'}
+                      {startSum ? Number(startSum).toFixed(0) : '0.00'}
                     </span>
                   </span>
                   <span>
                     <span className="balance-label">Current sum: </span>
-                    <span className={currentSum === 0 ? 'current-sum-white' : getCurrentSumColor()}>
+                    <span className={currentSum === 0 ? 'current-sum-green' : getCurrentSumColor()}>
                       <span className="currency-symbol">$</span>
-                      {currentSum ? Number(currentSum).toFixed(8) : '0.00'}
-                      {currentSum > startSum && currentSum !== 0 && <TrendingUp className="lucide-up-icon" />}
-                      {currentSum < startSum && currentSum !== 0 && <TrendingDown className="lucide-down-icon" />}
+                      {currentSum ? Number(currentSum).toFixed(0) : '200'}
+                      <img src={zkland_svg} className="up-icon" />
                     </span>
                   </span>
                 </div>

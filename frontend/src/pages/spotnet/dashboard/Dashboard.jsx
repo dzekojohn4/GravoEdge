@@ -42,22 +42,22 @@ export default function Component({ telegramId }) {
     {
       title: 'Collateral & Earnings',
       icon: CollateralIcon,
-      balance: '0.00',
+      balance: '0.039404186081257303',
       currencyName: 'Ethereum',
       currencyIcon: EthIcon,
     },
     {
       title: 'Borrow',
       icon: BorrowIcon,
-      balance: '0.0',
+      balance: '-55.832665',
       currencyName: 'USD Coin',
       currencyIcon: UsdIcon,
     },
   ]);
 
-  const [healthFactor, setHealthFactor] = useState('0.00');
-  const [startSum, setStartSum] = useState(0);
-  const [currentSum, setCurrentSum] = useState(0);
+  const [healthFactor, setHealthFactor] = useState('1.47570678');
+  const [startSum, setStartSum] = useState(200);
+  const [currentSum, setCurrentSum] = useState(200);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -141,7 +141,28 @@ export default function Component({ telegramId }) {
         {loading && <Spinner loading={loading} />}
         <h1 className="dashboard-title">zkLend Position</h1>
         <div className="dashboard-content">
-          
+        <div className="top-cards-dashboard">
+        <div className="card">
+          <div className="card-header">
+            <HealthIcon className="icon" />
+            <span className="label">Health Factor</span>
+          </div>
+          <div className="card-value">
+            <span className="top-card-value">{healthFactor}</span>
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-header">
+            <img src={newIcon} alt="Borrow Balance Icon" className="icon" />{' '}
+            <span className="label">Borrow Balance</span>
+          </div>
+          <div className="card-value">
+            <span className="currency-symbol">$</span>
+            <span className="top-card-value">55.832665</span>
+          </div>
+        </div>
+      </div>
           <div className="dashboard-info-card">
             <div className="tabs">
               <button
@@ -174,14 +195,14 @@ export default function Component({ telegramId }) {
             onClick={() => closePositionEvent()}
             disabled={isClosing || !hasOpenedPosition}
           >
-            {isClosing ? 'Closing...' : 'Redeem'}
+            {isClosing ? 'Closing...' : isCollateralActive?"Deposit":"Redeem"}
           </Button>
           {closePositionError && (
             <div className="error-message">
               Error: {closePositionError.message} <AlertHexagon className="form-alert-hex" />
             </div>
           )}
-          <Button variant="secondary" size="lg" className="dashboard-btn" onClick={handleOpen}>
+          <Button variant="secondary" size="lg" className="dashboard-btn telegram" onClick={handleOpen}>
             <TelegramIcon className="tab-icon" />
             Enable telegram notification bot
           </Button>

@@ -8,16 +8,18 @@ body {
 }
 
 .dashboard-wrapper {
-  /* background: url('../../../../public/background.png') no-repeat;
+  position: relative;
+  background: url('../../../../public/Form-bg.png') no-repeat;
   background-size: cover;
-  background-position: center 39%; */
-  background:none;
+  background-position: center left;
+  background: radial-gradient(circl, #0B0014, #1A0033);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding: 1rem;
   padding-top: 1rem;
+  margin-bottom: 20px;
 }
 
 .dashboard-container {
@@ -188,93 +190,16 @@ body {
   margin: 0 1rem;
 }
 
-.tab-content {
-  font-size: 16px;
-  font-weight: 400;
-  color: #8b8a91;
-  text-align: left;
-  width: 594px;
-  height: 190px;
-  padding: 24px;
-  gap: 12px;
-}
-
-.currency-info {
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
-}
-
-.currency-name {
-  font-size: 20px;
-  color: white;
-}
-
-.balance-info {
-  font-size: 16px;
-  gap: 8px;
-  display: flex;
-  flex-direction: column;
-  width: 594px;
-  height: 190px;
-  margin-top: 12px;
-}
 
 .label {
   font-size: 14px;
   font-weight: 600;
 }
 
-.balance-label {
-  color: #9aa7b4;
-  font-size: 16px;
-  font-weight: 400;
-}
-
-.balance-value {
-  color: white;
-  margin-left: 2px;
-}
-
-.balance-value.negative {
-  color: rgba(255, 53, 211, 1);
-}
-
-.current-sum-white {
-  color: white;
-}
-
-.lucide-up-icon {
-  color: #60af77;
-  width: 23px;
-  height: 23px;
-  margin-left: 8px;
-}
-
-.lucide-down-icon {
-  color: #f42222;
-  width: 22px;
-  height: 22px;
-  margin-left: 8px;
-}
-
 .currency-symbol {
   margin-right: 4px;
   font-size: inherit;
   color: inherit;
-}
-
-.redeem-button {
-  width: 642px;
-  height: 60px;
-  border-radius: 900px;
-  background: linear-gradient(73.48deg, #e01dee 1.13%, #49abd2 51.27%);
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  padding: 18px 24px 18px 24px;
 }
 
 .telegram-button {
@@ -314,16 +239,6 @@ body {
   z-index: -1;
 }
 
-.current-sum-green {
-  color: #60af77;
-  font-weight: 600;
-}
-
-.current-sum-red {
-  color: #f42222;
-  font-weight: 600;
-}
-
 .error-message {
   padding: 10px;
   border-radius: 5px;
@@ -338,12 +253,6 @@ body {
 
 .form-alert-hex {
   margin-left: auto;
-}
-
-@media (max-width: 950px) {
-  .top-card-value {
-    font-size: 22px;
-  }
 }
 
 @media (max-width: 768px) {
@@ -525,6 +434,9 @@ body {
 
   .top-cards-dashboard {
     width: 450px;
+  }
+  .telegram{
+    display: none;
   }
 }
 
