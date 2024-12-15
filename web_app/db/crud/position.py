@@ -282,6 +282,34 @@ class PositionDBConnector(UserDBConnector):
         except SQLAlchemyError as e:
             logger.error(f"Error while saving current_price for position: {e}")
 
+    def save_transaction(
+        self, 
+        position_id: uuid.UUID, 
+        status: str, 
+        transaction_hash: str
+    ) -> bool:
+        """
+        Creates a new transaction record associated with a position.
+        
+        Args:
+            position_id: UUID of the position
+            status: Transaction status (opened/closed)
+            transaction_hash: Blockchain transaction hash
+            
+        Returns:
+            Transaction object if successful, None if failed
+        """
+        try:
+            transaction = Transaction(
+                position_id=position_id,
+                status=status,
+                transaction_hash=transaction_hash
+            )
+            return self.write_to_db(transaction)
+        except SQLAlchemyError as e:
+            logger.error(f"Failed to save transaction: {str(e)}")
+            return None
+
     def liquidate_position(self, position_id: int) -> bool:
         """
         Marks a position as liquidated by setting `is_liquidated` to True
@@ -364,3 +392,13 @@ class PositionDBConnector(UserDBConnector):
                 db.commit()
             except SQLAlchemyError as e:
                 logger.error(f"Error deleting positions for user {user_id}: {str(e)}")
+
+    def add_extra_deposit_to_position(self, position: Position, amount: str) -> None:
+        """
+        Adds extra deposit to a position in the database.
+        :param position: Position
+        :param amount: str
+        :return: None
+        """
+        position.amount = str(int(position.amount) + int(amount))
+        self.write_to_db(position)
