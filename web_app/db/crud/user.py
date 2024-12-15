@@ -20,6 +20,7 @@ class UserDBConnector(DBConnector):
     """
 
     def get_all_users_with_opened_position(self) -> List[User]:
+        # FIXME: Not used anymore
         """
         Retrieves all users with an OPENED position status from the database.
         First queries Position table for OPENED positions, then gets the associated users.
@@ -118,31 +119,6 @@ class UserDBConnector(DBConnector):
                 logger.error(f"Failed to retrieve unique users count: {str(e)}")
                 return 0
 
-    def delete_user_by_wallet_id(self, wallet_id: str) -> None:
-        """
-        Deletes a user from the database by their wallet ID.
-        Rolls back the transaction if the operation fails.
-
-        :param wallet_id: str
-        :return: None
-        :raises SQLAlchemyError: If the operation fails
-        """
-        with self.Session() as session:
-            try:
-                user = session.query(User).filter(User.wallet_id == wallet_id).first()
-                if user:
-                    session.delete(user)
-                    session.commit()
-                    logger.info(
-                        f"User with wallet_id {wallet_id} deleted successfully."
-                    )
-                else:
-                    logger.warning(f"No user found with wallet_id {wallet_id}.")
-            except SQLAlchemyError as e:
-                session.rollback()
-                logger.error(f"Failed to delete user with wallet_id {wallet_id}: {e}")
-                raise e
-
     def fetch_user_history(self, user_id: int) -> List[dict]:
         """
         Fetches all positions for a user with the specified fields:
@@ -191,7 +167,7 @@ class UserDBConnector(DBConnector):
                 )
                 return []
 
-    def delete_user_by_wallet_id(self, wallet_id: str) -> None:
+    def delete_user_by_wallet_id(self, wallet_id: str) -> None:  # FIXME: Not used, only used in tests
         """
         Deletes a user from the database by their wallet ID.
         Rolls back the transaction if the operation fails.

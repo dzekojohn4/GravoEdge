@@ -55,16 +55,16 @@ class AirDropDBConnector(DBConnector):
                 )
                 return []
 
-    def delete_all_users_airdrop(self, user_id: uuid.UUID) -> None:
+    def delete_all_users_airdrop(self, user_id: uuid.UUID) -> None: # FIXME: Not used, only used in tests
         """
         Delete all airdrops for a user.
         :param user_id: User ID
         """
         with self.Session() as db:
             try:
-                airdrops = db.query(AirDrop).filter_by(user_id=user_id).all()
-                for airdrop in airdrops:
-                    db.delete(airdrop)
+                db.query(AirDrop).filter_by(user_id=user_id).delete(
+                    synchronize_session=False
+                )
                 db.commit()
             except SQLAlchemyError as e:
                 logger.error(f"Error deleting airdrops for user {user_id}: {str(e)}")
