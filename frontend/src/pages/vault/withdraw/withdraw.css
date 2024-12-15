@@ -1,16 +1,14 @@
 .withdraw-wrapper {
   background: url('../../../../public/background.png') no-repeat;
   background-size: cover;
-  background-position: center ;
+  background-position: center 39%;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  /* margin-left: 178px; */
-  /* margin-left: 178px; */
+  margin-left: 200px;
   padding: 0 24px;
-  /* width: 100vw; */
-  width: 100;
+  width: 100vw;
   padding: 0 24px;
 }
 
@@ -30,8 +28,6 @@
   flex-direction: column;
   justify-content: center;
   gap: 20px;
-  border: 1px solid red;
-  
 }
 
 .withdrawal-title {
@@ -44,9 +40,9 @@
 
 .main-container {
   width: 642px;
-  gap: 24px;
+  gap: 2px;
   padding-top: 37px;
-  border-radius: 20px;
+  border-radius: 8px;
   color: var(--primary);
   text-align: center;
   display: flex;
@@ -207,7 +203,7 @@
 
 
 
-@media (max-width: 1024px) {
+/* @media (max-width: 1024px) {
   .withdraw-wrapper {
     padding: 0 16px;
   }
@@ -221,12 +217,126 @@
     padding-top: 30px;
   }
 
+  .main-card {
+    padding: 20px;
+    gap: 26px;
+    flex-direction: column;
+    border-radius: 12px;
+    margin-left: 12px;
+    margin-right: 11px;
+  }
+
   .withdraw-button {
     width: 540px;
   }
+} */
+@media screen and (max-width: 1024px) {
+  .withdraw-wrapper {
+    display: block;
+    width: 100%;
+    margin-right: 374px;
+    margin-left: 0px;
+    padding: 0 16px;
+    background: url('../../../../public/background.png') no-repeat;
+    background-size: cover;
+    background-position: -250px center;
+  }
+
+  .withdraw-container {
+     padding: 0;
+     margin-left: 0; 
+     margin-right: 0; 
+    width: 100%;
+    display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  }
+
+  .withraw-container {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 5px;
+    max-width: 100%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .withdraw-item:first-child {
+    margin-left: 20px;
+  }
+
+  .balance-item:last-child {
+    margin-right: 20px;
+  }
+
+  .balance-item .balance-title {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+
+  
+  .withdraw-title {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .main-card {
+    padding: 20px;
+    gap: 26px;
+    flex-direction: column;
+    border-radius: 12px;
+    margin-left: 12px;
+    margin-right: 11px;
+  }
+
+  .top-cards {
+    gap: 8px;
+  }
+
+  .amount-field {
+    font-size: 32px;
+    padding: 12px;
+  }
+
+  .currency {
+    right: 10%;
+    font-size: 14px;
+  }
+
+  .apy-rate {
+    font-size: 14px;
+  }
+
+  .withdraw-button {
+    font-size: 14px;
+    padding: 18px 24px;
+
+    align-self: center;
+  }
+
+  .balance-card {
+    max-width: 100%;
+    margin-top: 20px;
+  }
+
+  .balance-display-container .large-screen-balance {
+    display: none;
+  }
+
+  .balance-display-container .mobile-screen-balance {
+    display: block;
+  }
 }
 
-@media (max-width: 768px) {
+
+/* @media (max-width: 768px) {
   .withdraw-wrapper {
     padding: 0 12px;
   }
@@ -247,9 +357,50 @@
   .withdraw-button {
     width: 460px;
   }
+} */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .withdraw-wrapper {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: flex-start; */
+    align-items: center;
+    margin: 0 auto;
+    padding: 0 20px;
+    background-position: center;
+  }
+
+  .withdraw-container {
+    width: max-content;
+    padding: 1rem;
+    /* margin: 0 auto; */
+  } 
+
+  .main-card {
+    margin: 0 auto;
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+    border: 1px solid red;
+  }
+
+  .amount-field {
+    font-size: 24px;
+    padding: 10px;
+  }
+
+  .stake-button {
+    font-size: 16px;
+    padding: 16px 24px;
+    margin-left: 12px;
+    margin-right: 11px;
+    align-self: center;
+    width: 85%;
+  }
 }
 
-@media (max-width: 320px) {
+
+
+@media (max-width: 640px) {
   .withdraw-wrapper {
     padding: 0 8px;
   }
@@ -259,8 +410,21 @@
   }
 
   .main-container {
-    width: 300px;
+    width: 100%;
     padding-top: 20px;
+  }
+
+  .top-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    overflow-x: auto;
+  }
+
+  .top-cards:first-child,
+  .top-cards:last-child
+  {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .withdraw-button {
