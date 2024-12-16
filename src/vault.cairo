@@ -180,7 +180,23 @@ mod Vault {
     
             self.emit(LiquidityWithdrawn { user, token, amount });
         }
-
+        
+        /// Add deposit contract to vault
+        ///
+        /// # Arguments
+        ///
+        /// * `deposit_contract` - The address of the deposit contract
+        ///
+        /// # Panics
+        ///
+        /// * When deposit contract is equal to zero
+        ///
+        /// # Events
+        ///
+        /// Emits a `ContractAdded` event with:
+        /// * `token` - The address of the token from storage
+        /// * `user` - The address of the user from storage
+        /// * `deposit_contract` - The address of the deposit contract
         fn add_deposit_contract(ref self: ContractState, deposit_contract: ContractAddress){
             let token = self.token.read();
             let user = get_caller_address();
@@ -189,6 +205,26 @@ mod Vault {
             self.emit(ContractAdded { token, user, deposit_contract });
         }
 
+        /// Makes a protect deposit into open zkLend position to control stability
+        ///
+        /// # Arguments
+        ///
+        /// * `deposit_contract` - The address of the deposit contract
+        /// * `user` - The address of the withdrawer
+        /// * `amount` - amount to withdraw
+        ///
+        /// # Panics
+        ///
+        /// * When caller don't equal to user or owner
+        /// * If the current amount is less than the amount to withdraw
+        ///
+        /// # Events
+        ///
+        /// Emits a `PositionProtected` event with:
+        /// * `token` - The address of the token from storage
+        /// * `deposit_contract` - The address of the deposit contract
+        /// * `contract_owner` - The address of contract owner
+        /// * `amount` - amount to withdraw
         fn protect_position(
             ref self: ContractState, 
             deposit_contract: ContractAddress, 
