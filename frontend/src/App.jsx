@@ -9,7 +9,7 @@ import Login from 'pages/Login';
 import Form from 'pages/forms/Form';
 import { createPortal } from 'react-dom';
 import { logout } from 'services/wallet';
-import { saveTelegramUser, getTelegramUserWalletId } from 'services/telegram';
+import { getTelegramUserWalletId } from 'services/telegram';
 import Documentation from 'pages/spotnet/documentation/Documentation';
 import Withdraw from 'pages/vault/withdraw/Withdraw';
 import { useWalletStore } from 'stores/useWalletStore';
@@ -21,35 +21,11 @@ import Stake from 'pages/vault/stake/Stake';
 
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore();
-  const [tgUser, setTgUser] = useState(JSON.parse(localStorage.getItem('tg_user')));
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const connectWalletMutation = useConnectWallet(setWalletId);
-  useEffect(() => {
-    if (tgUser) {
-      saveTelegramUser(tgUser, walletId)
-        .then(() => console.log('Telegram user saved successfully'))
-        .catch((error) => console.error('Error saving Telegram user:', error));
-    }
-  }, [walletId, tgUser]);
 
-  useEffect(() => {
-    if (!tgUser) {
-      localStorage.removeItem('tg_user');
-      return;
-    }
-    if (!walletId) {
-      getTelegramUserWalletId(tgUser)
-        .then((fetchedWalletId) => {
-          if (fetchedWalletId) {
-            setWalletId(fetchedWalletId);
-          }
-        })
-        .catch((error) => console.error('Error fetching wallet ID:', error));
-      localStorage.setItem('tg_user', JSON.stringify(tgUser));
-    }
-  }, [tgUser, walletId, setWalletId]);
 
   const handleConnectWallet = () => {
     connectWalletMutation.mutate();
@@ -70,6 +46,15 @@ function App() {
     setShowModal(false);
   };
 
+  useEffect(() => {
+    if (window.Telegram?.WebApp?.initData?.user) {
+      getTelegramUserWalletId(window.Telegram.WebApp.initData.user.id).then((linked_wallet_id) => {
+        setWalletId(linked_wallet_id);
+        window.Telegram.WebApp.ready();
+      });
+    }
+  });
+
   return (
     <div className="App">
       <Notifier />
@@ -87,19 +72,17 @@ function App() {
           document.body
         )}
       <Header
-        tgUser={tgUser}
-        setTgUser={setTgUser}
         onConnectWallet={handleConnectWallet}
         onLogout={handleLogoutModal}
       />
       <main>
         <Routes>
           <Route index element={<SpotnetApp onConnectWallet={handleConnectWallet} onLogout={handleLogout} />} />
-          <Route
+          <Route  
             path="/login"
             element={walletId ? <Navigate to="/" /> : <Login onConnectWallet={handleConnectWallet} />}
           />
-          <Route path="/dashboard" element={<Dashboard telegramId={tgUser} />} />
+          <Route path="/dashboard" element={<Dashboard telegramId={window?.Telegram?.WebApp?.initData?.user?.id} />} />
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/form" element={<Form />} />
