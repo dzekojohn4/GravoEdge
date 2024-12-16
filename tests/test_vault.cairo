@@ -2,11 +2,11 @@ use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTr
 use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
-use snforge_std::{load};
+use snforge_std::{load, map_entry_address};
 use spotnet::interfaces::{IVaultDispatcher, IVaultDispatcherTrait};
 
 use starknet::{ContractAddress};
-use super::utils::{setup_test_suite, setup_user, assert_vault_amount};
+use super::utils::{setup_test_suite, setup_user, assert_vault_amount, deploy_deposit_contract};
 
 const MOCK_USER: felt252 = 0x1234;
 const MOCK_USER_2: felt252 = 0x5678;
@@ -102,5 +102,39 @@ fn test_insufficient_balance_withdraw() {
 
     start_cheat_caller_address(suite.vault.contract_address, user1);
     suite.vault.withdraw_liquidity(100);
+    stop_cheat_caller_address(suite.vault.contract_address);
+}
+
+#[test]
+fn test_add_deposit_contract() {
+    let suite = setup_test_suite();
+    let user: ContractAddress = MOCK_USER.try_into().unwrap();
+    let deposit_address: ContractAddress = deploy_deposit_contract(user);
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    suite.vault.add_deposit_contract(deposit_address);
+    // Check activeContracts
+    let activeContracts_after_adding = load(
+        suite.vault.contract_address,
+        map_entry_address(
+            selector!("activeContracts"), 
+            array![user.try_into().unwrap()].span()
+        ), 1,
+    );
+
+    stop_cheat_caller_address(suite.vault.contract_address);
+    assert(
+        (*activeContracts_after_adding[0]).try_into().unwrap() == deposit_address, 
+        'Deposit contract mismatch'
+    );
+}
+
+#[test]
+#[should_panic(expected: ('Deposit contract is zero',))]
+fn test_deposit_contract_address_is_zero() {
+    let suite = setup_test_suite();
+    let user: ContractAddress = MOCK_USER.try_into().unwrap();
+    let deposit_address: ContractAddress = 0.try_into().unwrap();
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    suite.vault.add_deposit_contract(deposit_address);
     stop_cheat_caller_address(suite.vault.contract_address);
 }
