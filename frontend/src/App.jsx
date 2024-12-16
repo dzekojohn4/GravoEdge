@@ -47,8 +47,8 @@ function App() {
   };
 
   useEffect(() => {
-    if (window.Telegram?.WebApp?.initData?.user) {
-      getTelegramUserWalletId(window.Telegram.WebApp.initData.user.id).then((linked_wallet_id) => {
+    if (window.Telegram?.WebApp?.initData) {
+      getTelegramUserWalletId(window.Telegram.WebApp.initDataUnsafe.user.id).then((linked_wallet_id) => {
         setWalletId(linked_wallet_id);
         window.Telegram.WebApp.ready();
       });
