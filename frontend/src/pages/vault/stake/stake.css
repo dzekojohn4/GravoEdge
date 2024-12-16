@@ -1,15 +1,17 @@
 .stake-wrapper {
-  background: url('../../../../public/background.png') no-repeat;
+  background: url('../../../../public/background(jpeg).png') no-repeat;
   background-size: cover;
-  background-position: center 39%;
+  background-position: center ;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   margin-left: 200px;
   padding: 0 24px;
-  width: 100vw;
+  /* width: 100vw; */
   padding: 0 24px;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
 }
 
 .token-icon {
@@ -23,9 +25,12 @@
 
 .stake-card {
   width: 309px;
+  height:101px;
   background: var(--header-button-bg);
   border: var(--midnight-purple-border);
-  border-radius: 900px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 24px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -33,10 +38,11 @@
 }
 
 .stake-title {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 400;
   color: var(--primary);
   text-align: center;
+  padding: 1rem 0rem;
 }
 
 .stake-container {
@@ -79,7 +85,7 @@
   display: flex;
   flex-direction: column;
   border: var(--midnight-purple-border);
-  border-radius: 24px;
+  border-radius: 8px;
 }
 
 .network-selector {
@@ -187,9 +193,14 @@
   text-align: center;
 }
 
-.stake-button {
-  width: 100%;
-}
+ .stake-button {
+  width: 642px;
+  height: 60px;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+} 
 
 .balance-display-container .large-screen-balance {
   display: block;
@@ -216,6 +227,7 @@
     padding: 0;
     margin-left: 0;
     margin-right: 0;
+    margin-bottom: 5rem;
     width: 100%;
   }
 
@@ -269,10 +281,11 @@
     color: var(--secondary);
     /* font-size: 14px; */
   }
-  .stake-title {
-    font-size: 16px;
+  /* .stake-title {
+    font-size: 14px;
     font-weight: 400;
-  }
+   
+  } */
 
   .main-card {
     padding: 20px;
@@ -309,12 +322,12 @@
     font-size: 14px;
   }
 
-  .stake-button {
+  /* .stake-button {
     font-size: 14px;
     padding: 18px 24px;
 
     align-self: center;
-  }
+  } */
 
   .balance-card {
     max-width: 100%;
@@ -344,7 +357,7 @@
   .stake-container {
     width: 100%;
     padding: 1rem;
-    margin: 0 auto;
+    margin: 5rem auto;
   }
 
   .top-cards {
@@ -365,12 +378,19 @@
     padding: 10px;
   }
 
-  .stake-button {
+  /* .stake-title {
+    font-size: 14px;
+    font-weight: 400;
+    padding-bottom: 2rem 0rem;
+  } */
+
+
+  /* .stake-button {
     font-size: 16px;
     padding: 16px 24px;
     margin-left: 12px;
     margin-right: 11px;
     align-self: center;
     width: 85%;
-  }
+  } */
 }
