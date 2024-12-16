@@ -66,6 +66,10 @@ This guide explains how to start the development environment for the project usi
   ```sh
   docker-compose -f docker-compose.dev.yaml build --no-cache
   ```
+  Windows users:
+  ```sh
+  docker-compose -f docker-compose.dev-windows.yaml build --no-cache
+  ```
   
 ## How to run test cases
 In root folder run next commands:
@@ -88,6 +92,11 @@ To stop the environment and remove containers, use:
 ```sh
 docker-compose -f docker-compose.dev.yaml down
 ```
+windows users:
+
+```sh
+docker-compose -f docker-compose.dev-windows.yaml down
+```
 
 This command stops all running containers and removes them, but the data volumes will persist.
 
@@ -97,6 +106,10 @@ If you have made changes to the code or Docker configuration, rebuild the contai
 
 ```sh
 docker-compose -f docker-compose.dev.yaml up --build
+```
+windows users:
+```sh
+docker-compose -f docker-compose.dev-windows.yaml up --build
 ```
 
 ## About Celery
@@ -135,6 +148,10 @@ docker-compose run --rm celery celery -A spotnet_tracker.celery_config purge
 ```
 docker-compose -f docker-compose.dev.yaml up --build
 ```
+windows only:
+```
+docker-compose -f docker-compose.dev-windows.yaml up --build
+```
 2. In new terminal window run command to populate db
 ```
 docker exec -ti backend_dev python -m web_app.db.seed_data
@@ -145,6 +162,10 @@ docker exec -ti backend_dev python -m web_app.db.seed_data
 Run up docker containers
 ```bash
 docker-compose -f docker-compose.dev.yaml up --build
+```
+Windows users:
+```bash
+docker-compose -f docker-compose.dev-windows.yaml up --build
 ```
 Go to backend container in new terminal window
 ```bash
