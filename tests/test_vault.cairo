@@ -6,7 +6,13 @@ use snforge_std::{load, map_entry_address};
 use spotnet::interfaces::{IVaultDispatcher, IVaultDispatcherTrait};
 
 use starknet::{ContractAddress};
-use super::utils::{setup_test_suite, setup_user, assert_vault_amount, deploy_deposit_contract};
+use super::utils::{
+    setup_test_suite, 
+    setup_user, 
+    assert_vault_amount, 
+    deploy_deposit_contract,
+    HYPOTHETICAL_OWNER_ADDR
+};
 
 const MOCK_USER: felt252 = 0x1234;
 const MOCK_USER_2: felt252 = 0x5678;
@@ -137,4 +143,51 @@ fn test_deposit_contract_address_is_zero() {
     start_cheat_caller_address(suite.vault.contract_address, user);
     suite.vault.add_deposit_contract(deposit_address);
     stop_cheat_caller_address(suite.vault.contract_address);
+}
+
+#[test]
+#[should_panic(expected: ('Insufficient balance',))]
+fn test_protect_position_insufficient_balance() {
+    let suite = setup_test_suite();
+    let user: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
+    let user_2: ContractAddress = MOCK_USER.try_into().unwrap();
+    let user_amount: u256 = 100;
+
+    suite.token.transfer(user_2, user_amount); // Transfer tokens to caller
+    let deposit_address: ContractAddress = deploy_deposit_contract(user); // Deploy contract for owner
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    suite.vault.protect_position(deposit_address, user_2, user_amount+50);
+    stop_cheat_caller_address(suite.vault.contract_address);
+}
+
+#[test]
+#[should_panic(expected: ('Caller must be owner or user',))]
+fn test_protect_position_caller_must_be_owner_or_user() {
+    let suite = setup_test_suite();
+    let user: ContractAddress = MOCK_USER.try_into().unwrap();
+    let user_2: ContractAddress = MOCK_USER_2.try_into().unwrap();
+    let user_amount: u256 = 100;
+
+    suite.token.transfer(user_2, user_amount); // Transfer tokens to caller
+    let deposit_address: ContractAddress = deploy_deposit_contract(user); // Deploy contract for owner
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    suite.vault.protect_position(deposit_address, user_2, user_amount);
+    stop_cheat_caller_address(suite.vault.contract_address);
+}
+
+#[test]
+fn test_protect_position() {
+    let suite = setup_test_suite();
+    let user: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
+    let user_2: ContractAddress = MOCK_USER.try_into().unwrap();
+    let user_amount: u256 = 100;
+    let withdrawn_amount: u256 = 50;
+
+    suite.token.transfer(user_2, user_amount); // Transfer tokens to caller
+    let deposit_address: ContractAddress = deploy_deposit_contract(user); // Deploy contract for owner
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    suite.vault.protect_position(deposit_address, user, withdrawn_amount);
+    stop_cheat_caller_address(suite.vault.contract_address);
+    let expected_amount: felt252 = (user_amount-withdrawn_amount).try_into().unwrap();
+    assert_vault_amount(suite.vault.contract_address, user_2, expected_amount);
 }
