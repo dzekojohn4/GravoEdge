@@ -18,6 +18,7 @@ import { useConnectWallet } from 'hooks/useConnectWallet';
 import { useCheckPosition } from 'hooks/useClosePosition';
 import { useNavigate } from 'react-router-dom';
 import { ActionModal } from 'components/ui/ActionModal';
+import { useHealthFactor } from 'hooks/useHealthRatio';
 
 const Form = () => {
   const navigate = useNavigate();
@@ -29,10 +30,17 @@ const Form = () => {
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [successful, setSuccessful] = useState(false);
+  
   useLockBodyScroll(successful);
   const [isClosePositionOpen, setClosePositionOpen] = useState(false);
   const connectWalletMutation = useConnectWallet(setWalletId);
   const { data: positionData, refetch: refetchPosition } = useCheckPosition();
+
+  const { healthFactor, isLoading: isHealthFactorLoading } = useHealthFactor(
+    selectedToken,
+    tokenAmount,
+    selectedMultiplier
+  );
 
   const connectWalletHandler = () => {
     if (!walletId) {
@@ -97,7 +105,7 @@ const Form = () => {
           content={[
             'You have already opened a position.',
             'Please close active position to open a new one.',
-            'Click the ‘Close Active Position’ button to continue.',
+            "Click the 'Close Active Position' button to continue.",
           ]}
           cancelLabel="Cancel"
           submitLabel="Close Active Position"
@@ -134,6 +142,14 @@ const Form = () => {
           />
         </div>
         <div>
+          <div className="form-health-factor">
+            <p>
+              Estimated Health Factor Level:
+            </p>
+            <p>
+          {isHealthFactorLoading ? 'Loading...' : healthFactor}
+        </p>
+          </div>
           <div className="form-button-container">
             <Button variant="secondary" size="lg" type="submit">
               Submit
