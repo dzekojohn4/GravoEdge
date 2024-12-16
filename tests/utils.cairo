@@ -6,7 +6,20 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
 use snforge_std::{declare, ContractClassTrait, DeclareResultTrait, load, map_entry_address};
 use spotnet::interfaces::{IVaultDispatcher, IVaultDispatcherTrait};
 use starknet::{ContractAddress, contract_address_const, get_contract_address};
+
 const HYPOTHETICAL_OWNER_ADDR: felt252 = 0x56789;
+pub mod contracts {
+    pub const EKUBO_CORE_MAINNET: felt252 =
+        0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b;
+
+    pub const ZKLEND_MARKET: felt252 =
+        0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05;
+
+    pub const PRAGMA_ADDRESS: felt252 =
+        0x02a85bd616f912537c50a49a4076db02c00b29b2cdc8a197ce92ed1837fa875b;
+
+    pub const TREASURY_ADDRESS: felt252 = 0x123; // Mock Address
+}
 
 
 pub fn ERC20_MOCK_CONTRACT() -> ContractAddress {
@@ -72,4 +85,19 @@ pub fn assert_vault_amount(
         vault, map_entry_address(selector!("amounts"), array![user.try_into().unwrap()].span()), 2,
     );
     assert(*balance_after_withdraw[0] == expected_amount, 'balance mismatch');
+}
+
+pub fn deploy_deposit_contract(user: ContractAddress) -> ContractAddress {
+    let deposit_contract = declare("Deposit").unwrap().contract_class();
+    let (deposit_address, _) = deposit_contract
+        .deploy(
+            @array![
+                user.try_into().unwrap(),
+                contracts::EKUBO_CORE_MAINNET,
+                contracts::ZKLEND_MARKET,
+                contracts::TREASURY_ADDRESS
+            ]
+        )
+        .expect('Deploy failed');
+    deposit_address
 }
