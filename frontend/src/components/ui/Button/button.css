@@ -21,7 +21,6 @@
   width: 642px;
   padding: 18px 32px;
   font-size: 16px;
-  border-radius: 8px;
 }
 
 .button--md {
@@ -34,7 +33,6 @@
   width: 167px;
   padding: 18px 16px;
   font-size: 14px;
-  border-radius: 8px;
 }
 
 /* Variant styles */
@@ -43,7 +41,6 @@
   padding: 16px 24px 16px 24px;
   background: linear-gradient(73.48deg, #e01dee 1.13%, #49abd2 51.27%);
   transition: all 1 ease;
-  border-radius: 8px;
 }
 
 .button--primary:active {
@@ -64,7 +61,6 @@
   border: none;
   padding: 16px 24px 16px 24px;
   z-index: 1;
-  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -123,5 +119,10 @@
   .button--md {
     font-size: 14px;
     width: 167px;
+  }
+}
+@media (max-width: 400px){
+  .button--lg{
+    width:100% !important;
   }
 }
