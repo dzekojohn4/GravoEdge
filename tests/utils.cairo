@@ -7,7 +7,7 @@ use snforge_std::{declare, ContractClassTrait, DeclareResultTrait, load, map_ent
 use spotnet::interfaces::{IVaultDispatcher, IVaultDispatcherTrait};
 use starknet::{ContractAddress, contract_address_const, get_contract_address};
 
-const HYPOTHETICAL_OWNER_ADDR: felt252 = 0x56789;
+pub const HYPOTHETICAL_OWNER_ADDR: felt252 = 0x56789;
 pub mod contracts {
     pub const EKUBO_CORE_MAINNET: felt252 =
         0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b;
