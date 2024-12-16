@@ -72,10 +72,3 @@ class UserPositionResponse(BaseModel):
     start_price: float
     is_liquidated: bool
     datetime_liquidation: Optional[datetime] = None
-
-
-class UserPositionsListResponse(BaseModel):
-    """
-    Response model for list of user positions.
-    """
-    List[UserPositionResponse]
