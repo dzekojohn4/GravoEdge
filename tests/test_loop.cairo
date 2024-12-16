@@ -28,38 +28,11 @@ use spotnet::types::{DepositData, EkuboSlippageLimits};
 use starknet::{ContractAddress, get_block_timestamp};
 
 use super::interfaces::{IMarketTestingDispatcher, IMarketTestingDispatcherTrait};
-
-mod contracts {
-    pub const EKUBO_CORE_MAINNET: felt252 =
-        0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b;
-
-    pub const ZKLEND_MARKET: felt252 =
-        0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05;
-
-    pub const PRAGMA_ADDRESS: felt252 =
-        0x02a85bd616f912537c50a49a4076db02c00b29b2cdc8a197ce92ed1837fa875b;
-
-    pub const TREASURY_ADDRESS: felt252 = 0x123; // Mock Address
-}
+use super::utils::{deploy_deposit_contract, contracts};
 
 mod tokens {
     pub const ETH: felt252 = 0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7;
     pub const USDC: felt252 = 0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8;
-}
-
-fn deploy_deposit_contract(user: ContractAddress) -> ContractAddress {
-    let deposit_contract = declare("Deposit").unwrap().contract_class();
-    let (deposit_address, _) = deposit_contract
-        .deploy(
-            @array![
-                user.try_into().unwrap(),
-                contracts::EKUBO_CORE_MAINNET,
-                contracts::ZKLEND_MARKET,
-                contracts::TREASURY_ADDRESS
-            ]
-        )
-        .expect('Deploy failed');
-    deposit_address
 }
 
 fn get_deposit_dispatcher(user: ContractAddress) -> IDepositDispatcher {
