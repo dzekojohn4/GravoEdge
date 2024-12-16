@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import scoped_session
 
 from web_app.db.crud import PositionDBConnector
-from web_app.db.models import Position, Status, User
+from web_app.db.models import Position, Status, User, TransactionStatus
 
 
 @pytest.fixture(scope="function")
@@ -168,9 +168,9 @@ def test_get_total_amounts_for_open_positions(mock_position_db_connector):
 
     assert result == Decimal(1000.0)
 
-def test_save_transaction_success(db_connector, mocker):
+def test_save_transaction_success(db_connector):
     """Test successful transaction creation"""
-    position_id = uuid4()
+    position_id = uuid.uuid4()
     transaction_hash = "0x123456789"
     status = TransactionStatus.OPENED.value
     
@@ -187,7 +187,7 @@ def test_save_transaction_success(db_connector, mocker):
 
 def test_save_transaction_duplicate_hash(db_connector):
     """Test handling duplicate transaction hash"""
-    position_id = uuid4()
+    position_id = uuid.uuid4()
     transaction_hash = "0x123456789"
     status = TransactionStatus.OPENED.value
     
@@ -206,7 +206,7 @@ def test_save_transaction_duplicate_hash(db_connector):
 
 def test_save_transaction_invalid_position(db_connector):
     """Test handling non-existent position ID"""
-    invalid_position_id = uuid4()
+    invalid_position_id = uuid.uuid4()
     transaction_hash = "0x123456789"
     status = TransactionStatus.OPENED.value
     
