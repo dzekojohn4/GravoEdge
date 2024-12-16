@@ -2,16 +2,13 @@
 This module contains the fixtures for the tests.
 """
 
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
+
 from web_app.api.main import app
-from web_app.db.crud import (
-    DBConnector,
-    PositionDBConnector,
-    UserDBConnector,
-)
+from web_app.db.crud import DBConnector, PositionDBConnector, UserDBConnector
 from web_app.db.database import get_database
 
 
