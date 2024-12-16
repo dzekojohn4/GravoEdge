@@ -17,6 +17,7 @@ import Borrow from 'components/borrow/Borrow';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynamic.svg';
 import Collateral from 'components/collateral/Collateral';
 import Card from 'components/Card/Card';
+import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
 
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
@@ -141,75 +142,77 @@ export default function Component({ telegramId }) {
         <h1 className="dashboard-title">zkLend Position</h1>
         <div className="dashboard-content">
           <div className="top-cards-dashboard">
-            <Card label="Health Factor" value={healthFactor} />
-            <Card label="Borrow Balance" cardData={cardData} />
+            <Card label="Health Factor" value={healthFactor} icon={<HealthIcon className="icon" />} />
+            <Card label="Borrow Balance" cardData={cardData} icon={<EthIcon className="icon" />} />
           </div>
-          <div className="dashboard-info-card">
-            <div className="tabs">
-              <button
-                onClick={() => setIsCollateralActive(true)}
-                className={`tab ${isCollateralActive ? 'active' : ''}`}
-              >
-                <CollateralIcon className="tab-icon" />
-                <span className="tab-title">Collateral & Earnings</span>
-              </button>
+          <div className="dashboard-info-container">
+            <div className="dashboard-info-card">
+              <div className="tabs">
+                <button
+                  onClick={() => setIsCollateralActive(true)}
+                  className={`tab ${isCollateralActive ? 'active' : ''}`}
+                >
+                  <CollateralIcon className="tab-icon" />
+                  <span className="tab-title">Collateral & Earnings</span>
+                </button>
 
-              <div className="tab-divider" />
+                <div className="tab-divider" />
 
-              <button
-                onClick={() => setIsCollateralActive(false)}
-                className={`tab ${!isCollateralActive ? 'active borrow' : ''}`}
-              >
-                <BorrowIcon className="tab-icon" />
-                <span className="tab-title">Borrow</span>
-              </button>
-              <div className="tab-indicator-container">
-                <div className={`tab-indicator ${isCollateralActive ? 'collateral' : 'borrow'}`} />
+                <button
+                  onClick={() => setIsCollateralActive(false)}
+                  className={`tab ${!isCollateralActive ? 'active borrow' : ''}`}
+                >
+                  <BorrowIcon className="tab-icon" />
+                  <span className="tab-title">Borrow</span>
+                </button>
+                <div className="tab-indicator-container">
+                  <div className={`tab-indicator ${isCollateralActive ? 'collateral' : 'borrow'}`} />
+                </div>
               </div>
+              {isCollateralActive ? (
+                <Collateral
+                  getCurrentSumColor={getCurrentSumColor}
+                  startSum={startSum}
+                  currentSum={currentSum}
+                  data={cardData}
+                />
+              ) : (
+                <Borrow data={cardData} />
+              )}
             </div>
-            {isCollateralActive ? (
-              <Collateral
-                getCurrentSumColor={getCurrentSumColor}
-                startSum={startSum}
-                currentSum={currentSum}
-                data={cardData}
+            <Button
+              variant="primary"
+              size="lg"
+              className="dashboard-btn"
+              onClick={() => closePositionEvent()}
+              disabled={isClosing || !hasOpenedPosition}
+            >
+              {isClosing ? 'Closing...' : 'Redeem'}
+            </Button>
+            {closePositionError && (
+              <div className="error-message">
+                Error: {closePositionError.message} <AlertHexagon className="form-alert-hex" />
+              </div>
+            )}
+            <Button variant="secondary" size="lg" className="dashboard-btn telegram" onClick={handleOpen}>
+              <TelegramIcon className="tab-icon" />
+              Enable telegram notification bot
+            </Button>
+            {showModal && (
+              <ActionModal
+                isOpen={showModal}
+                title="Telegram Notification"
+                subTitle="Do you want to enable telegram notification bot?"
+                content={[
+                  'This will allow you to receive quick notifications on your telegram line in realtime. You can disable this setting anytime.',
+                ]}
+                cancelLabel="Cancel"
+                submitLabel="Yes, Sure"
+                submitAction={handleSubscribe}
+                cancelAction={handleClose}
               />
-            ) : (
-              <Borrow data={cardData} />
             )}
           </div>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="dashboard-btn"
-            onClick={() => closePositionEvent()}
-            disabled={isClosing || !hasOpenedPosition}
-          >
-            {isClosing ? 'Closing...' : 'Redeem'}
-          </Button>
-          {closePositionError && (
-            <div className="error-message">
-              Error: {closePositionError.message} <AlertHexagon className="form-alert-hex" />
-            </div>
-          )}
-          <Button variant="secondary" size="lg" className="dashboard-btn telegram" onClick={handleOpen}>
-            <TelegramIcon className="tab-icon" />
-            Enable telegram notification bot
-          </Button>
-          {showModal && (
-            <ActionModal
-              isOpen={showModal}
-              title="Telegram Notification"
-              subTitle="Do you want to enable telegram notification bot?"
-              content={[
-                'This will allow you to receive quick notifications on your telegram line in realtime. You can disable this setting anytime.',
-              ]}
-              cancelLabel="Cancel"
-              submitLabel="Yes, Sure"
-              submitAction={handleSubscribe}
-              cancelAction={handleClose}
-            />
-          )}
         </div>
       </div>
     </div>
