@@ -20,8 +20,8 @@ export const saveTelegramUser = async (telegramUser, walletId) => {
 export const getTelegramUserWalletId = async (telegram_id) => {
   try {
     const response = await axiosInstance.post(`/api/telegram/get-wallet-id/${telegram_id}`, {
-      raw: window.Telegram.initData,
-      is_webapp: !!window.Telegram.initData
+      raw: window.Telegram.WebApp.initData,
+      is_webapp: !!window.Telegram.WebApp.initData
     });
     return response.data.wallet_id;
   } catch (error) {
