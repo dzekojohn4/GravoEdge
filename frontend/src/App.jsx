@@ -18,6 +18,7 @@ import { useConnectWallet } from 'hooks/useConnectWallet';
 import OverviewPage from 'pages/spotnet/overview/Overview';
 import { ActionModal } from 'components/ui/ActionModal';
 import Stake from 'pages/vault/stake/Stake';
+import { notifyError } from 'utils/notification';
 
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore();
@@ -51,9 +52,13 @@ function App() {
       getTelegramUserWalletId(window.Telegram.WebApp.initDataUnsafe.user.id).then((linked_wallet_id) => {
         setWalletId(linked_wallet_id);
         window.Telegram.WebApp.ready();
+      }).catch((error) => {
+        console.error('Error getting Telegram user wallet ID:', error);
+        notifyError('Error loading wallet');
+        window.Telegram.WebApp.ready();
       });
     }
-  });
+  }, [window.Telegram?.WebApp?.initDataUnsafe]);
 
   return (
     <div className="App">
