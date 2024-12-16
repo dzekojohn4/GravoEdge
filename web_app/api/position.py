@@ -8,15 +8,17 @@ from web_app.api.serializers.transaction import (
     LoopLiquidityData,
     RepayTransactionDataResponse,
 )
-from web_app.api.serializers.position import PositionFormData
 from web_app.contract_tools.constants import (
     TokenParams,
     TokenMultipliers,
 )
-from web_app.api.serializers.position import TokenMultiplierResponse
+from web_app.api.serializers.position import (
+    TokenMultiplierResponse,
+    UserPositionResponse,
+    PositionFormData,
+)
 from web_app.contract_tools.mixins import DepositMixin, DashboardMixin, PositionMixin
 from web_app.db.crud import PositionDBConnector
-from web_app.api.serializers.position import UserPositionsListResponse
 
 router = APIRouter()  # Initialize the router
 position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
@@ -209,11 +211,11 @@ async def add_extra_deposit(
 @router.get(
     "/api/user-positions/{wallet_id}",
     tags=["Position Operations"],
-    response_model=UserPositionsListResponse,
+    response_model=list[UserPositionResponse],
     summary="Get all positions for a user",
     response_description="Returns list of all positions for the given wallet ID",
 )
-async def get_user_positions(wallet_id: str) -> UserPositionsListResponse:
+async def get_user_positions(wallet_id: str) -> list:
     """
     Get all positions for a specific user by their wallet ID.
     :param wallet_id: The wallet ID of the user
@@ -224,4 +226,4 @@ async def get_user_positions(wallet_id: str) -> UserPositionsListResponse:
         raise HTTPException(status_code=400, detail="Wallet ID is required")
         
     positions = position_db_connector.get_positions_by_wallet_id(wallet_id)
-    return UserPositionsListResponse(positions=positions)
+    return positions
