@@ -309,26 +309,27 @@ async def allow_notification(
     response_description="Status of withdrawal operations",
 )
 async def withdraw_all(wallet_id: str) -> dict:
-    """
-    Withdraws all supported tokens from the user's contract.
+   """
+   Withdraws all supported tokens from the user's contract.
 
-    :param wallet_id: The wallet ID of the user.
-    :return: detail: "Successfully initiated withdrawals for all tokens"
-    """
-    try:
-        # Get user's contract address
-        contract_address = await get_user_contract(wallet_id)
-        if not contract_address:
-            raise HTTPException(status_code=404, detail="Contract not found")
+   :param wallet_id: The wallet ID of the user.
+   :return: detail: "Successfully initiated withdrawals for all tokens"
+   """
+   # Get user's contract address
+   contract_address = await get_user_contract(wallet_id)
+   if not contract_address:
+       raise HTTPException(status_code=404, detail="Contract not found")
 
-        # Perform withdrawals
-        await CLIENT.withdraw_all(contract_address)
-        
-        return {"detail": "Successfully initiated withdrawals for all tokens"}
-
-    except Exception as e:
-        logger.error(f"Error in withdraw_all: {e}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to withdraw tokens: {str(e)}"
-        )
+   try:
+       # Perform withdrawals
+       results = await CLIENT.withdraw_all(contract_address)
+       return {
+           "detail": "Successfully initiated withdrawals for all tokens",
+           "results": results
+       }
+   except Exception as e:
+       logger.error(f"Contract withdrawal failed: {str(e)}")
+       raise HTTPException(
+           status_code=500, 
+           detail=f"Failed to withdraw tokens: {str(e)}"
+       )
