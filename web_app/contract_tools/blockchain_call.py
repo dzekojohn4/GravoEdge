@@ -352,5 +352,38 @@ class StarknetClient:
             calldata=[self._convert_address(token_address), amount],
         )
 
+    async def withdraw_all(self, contract_address: str) -> List[Any]:
+        """
+        Withdraws all supported tokens from the contract by calling withdraw with amount=0.
+        
+        :param contract_address: The contract address to withdraw from
+        :return: List of responses from withdraw calls. Failed withdrawals return None.
+        """
+        contract_addr_int = self._convert_address(contract_address)
+        tasks = []
+        
+        for token in TokenParams.tokens():
+            try:
+                token_addr_int = self._convert_address(token.address)
+                tasks.append(
+                    self._func_call(
+                        addr=contract_addr_int,
+                        selector="withdraw",
+                        calldata=[token_addr_int, 0]
+                    )
+                )
+            except Exception as e:
+                logger.error(f"Error preparing withdrawal for token {token.address}: {str(e)}")
+        
+        results = []
+        try:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+
+            results = [None if isinstance(r, Exception) else r for r in results]
+        except Exception as e:
+            logger.error(f"Error during batch withdrawal execution: {str(e)}")
+        
+        return results
+
 
 CLIENT = StarknetClient()
