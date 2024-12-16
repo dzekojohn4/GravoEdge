@@ -1,13 +1,10 @@
 import './card.css';
-import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
-import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
 
-function Card({ label, value = '', cardData = [] }) {
+function Card({ label, icon, value = '', cardData = [] }) {
   return (
     <div className="card">
       <div className="card-header">
-        {label == 'Health Factor' && <HealthIcon className="icon" />}
-        {label == 'Borrow Balance' && <EthIcon className="icon" />}
+        {icon}
         <span className="label">{label}</span>
       </div>
       <div className="card-value">
