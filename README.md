@@ -42,6 +42,12 @@ This guide explains how to start the development environment for the project usi
    docker-compose -f docker-compose.dev.yaml up --build
    ```
 
+   For Windows users, use this command to build and start the development environment:
+   
+   ```sh
+   docker-compose -f docker-compose.dev-windows.yaml up --build
+   ```
+
    This command will:
    - Build the backend and frontend Docker images.
    - Start the backend, frontend, and PostgreSQL database containers.
