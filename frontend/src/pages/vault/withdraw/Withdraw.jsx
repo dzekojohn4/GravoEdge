@@ -4,11 +4,11 @@ import { ReactComponent as DiamondIcon } from 'assets/icons/diamond.svg';
 import { ReactComponent as TimeIcon } from 'assets/icons/time.svg';
 import { ReactComponent as SettingIcon } from 'assets/icons/settings.svg';
 import MetricCard from 'components/MetricCard/MetricCard';
-// import { VaultLayout } from '../VaultLayout';
+import { VaultLayout } from '../VaultLayout';
 
 export default function Withdraw() {
   return (
-    // <VaultLayout>
+    <VaultLayout>
     <div className="withdraw-wrapper">
       <div className="withdraw-container">
        <h1 className="withdrawal-title">zkLend Withdraw</h1>
@@ -41,7 +41,7 @@ export default function Withdraw() {
             </div>
           </div>
           <div className="withdraw-input-container">
-            <div className="withdraw-input-title">Input Amount</div>
+            <div className="withdraw-input-title">Input Unstake Amount</div>
             <input type="text" className="withdraw-input" placeholder="Enter Amount to Withdraw" />
           </div>
           <div className="main-card-footer">
@@ -61,6 +61,6 @@ export default function Withdraw() {
          </div>
       </div>
     </div>
-    // </VaultLayout>
+    </VaultLayout>
   );
 }
