@@ -7,27 +7,10 @@ import pytest
 from starknet_py.contract import Contract
 from starknet_py.net.full_node_client import FullNodeClient
 
-from web_app.contract_tools.blockchain_call import (
-    RepayDataException,
-    StarknetClient,
-)
+from web_app.contract_tools.blockchain_call import RepayDataException, StarknetClient
 from web_app.contract_tools.constants import TokenParams
 
 CLIENT = StarknetClient()
-
-import logging
-
-# Configure the logger
-logging.basicConfig(
-    level=logging.DEBUG,  # Set the log level
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler()  # Log to console
-    ]
-)
-
-# Get a logger instance
-logger = logging.getLogger(__name__)
 
 
 class TestStarknetClient:
@@ -315,13 +298,15 @@ class TestStarknetClient:
             multiplier=multiplier,
             wallet_id=wallet_id,
             borrowing_token=borrowing_token_addr,
-            ekubo_contract=mock_contract
+            ekubo_contract=mock_contract,
         )
 
         assert liquidity_data
         assert isinstance(liquidity_data, dict)
         assert isinstance(liquidity_data["pool_price"], int)
-        assert int(liquidity_data["caller"], base=16) == CLIENT._convert_address(wallet_id)
+        assert int(liquidity_data["caller"], base=16) == CLIENT._convert_address(
+            wallet_id
+        )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(

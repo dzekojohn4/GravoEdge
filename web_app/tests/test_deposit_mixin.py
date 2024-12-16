@@ -2,6 +2,7 @@
 
 from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 
 from web_app.contract_tools.mixins.deposit import DepositMixin
@@ -23,6 +24,7 @@ class TestDepositMixin:
     """
     Test cases for DepositMixin
     """
+
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "deposit_token_name, amount, multiplier, wallet_id, borrowing_token",
