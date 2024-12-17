@@ -19,6 +19,7 @@ import OverviewPage from 'pages/spotnet/overview/Overview';
 import { ActionModal } from 'components/ui/ActionModal';
 import Stake from 'pages/vault/stake/Stake';
 import { notifyError } from 'utils/notification';
+import { ErrorToast } from 'components/Toast/ErrorToast';
 
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore();
@@ -63,6 +64,7 @@ function App() {
   return (
     <div className="App">
       <Notifier />
+      <ErrorToast /> 
       {showModal &&
         createPortal(
           <ActionModal

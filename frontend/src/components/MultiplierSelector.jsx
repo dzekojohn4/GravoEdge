@@ -2,6 +2,7 @@ import React, { useMemo, useCallback, useState, useRef, useEffect } from 'react'
 import { useMaxMultiplier } from 'hooks/useMaxMultiplier';
 import sliderThumb from '../assets/icons/slider_thumb.svg';
 import './multiplier.css';
+import { notifyError } from 'components/Toast/ErrorToast';
 
 const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   const minMultiplier = 1.1;
@@ -104,7 +105,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   }, [maxMultiplier, actualValue, setSelectedMultiplier]);
 
   if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
-  if (error) return <div className="error-message">Error loading multiplier data: {error.message}</div>;
+  if (error) return notifyError(error.message);
 
   return (
     <div className="multiplier-card">
