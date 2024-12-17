@@ -12,7 +12,7 @@ from sqlalchemy import Numeric, cast, func
 from sqlalchemy.exc import SQLAlchemyError
 
 from .user import UserDBConnector
-from web_app.db.models import AirDrop, Base, Position, Status, User
+from web_app.db.models import Base, Position, Status, User, Transaction
 
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)

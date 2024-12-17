@@ -337,7 +337,9 @@ class StarknetClient:
             calldata=[],
         )
 
-    async def add_extra_deposit(self, contract_address: str, token_address: str, amount: str) -> Any:
+    async def add_extra_deposit(
+        self, contract_address: str, token_address: str, amount: str
+    ) -> Any:
         """
         Adds extra deposit to position.
 
