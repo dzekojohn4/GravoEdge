@@ -24,6 +24,9 @@ function App() {
   const [tgUser, setTgUser] = useState(JSON.parse(localStorage.getItem('tg_user')));
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
 
   const connectWalletMutation = useConnectWallet(setWalletId);
   useEffect(() => {
@@ -69,6 +72,34 @@ function App() {
   const closeModal = () => {
     setShowModal(false);
   };
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      
+      const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+      
+      const isMobileDevice = mobileRegex.test(userAgent);
+      setIsMobile(isMobileDevice);
+
+      const isMobileWidth = window.innerWidth <= 768;
+      setIsMobile(isMobileDevice || isMobileWidth);
+    };
+
+    checkMobile();
+
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  
+  const handleWebSiteAccess = () => {
+    if (isMobile) {
+      setShowPopup(true);
+    }
+    
+  };
 
   return (
     <div className="App">
@@ -109,6 +140,10 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      {isMobile && showPopup && (
+        mobile noot allowed
+         // currently looking for popup code
+      )}
     </div>
   );
 }
