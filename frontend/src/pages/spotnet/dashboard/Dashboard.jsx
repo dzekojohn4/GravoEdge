@@ -12,12 +12,12 @@ import Button from 'components/ui/Button/Button';
 import { useWalletStore } from 'stores/useWalletStore';
 import { ActionModal } from 'components/ui/ActionModal';
 import useTelegramNotification from 'hooks/useTelegramNotification';
-import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
 import Borrow from 'components/borrow/Borrow';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynamic.svg';
 import Collateral from 'components/collateral/Collateral';
 import Card from 'components/Card/Card';
 import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
+import { notifyError } from 'components/Toast/ErrorToast';
 
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
@@ -189,11 +189,7 @@ export default function Component({ telegramId }) {
             >
               {isClosing ? 'Closing...' : 'Redeem'}
             </Button>
-            {closePositionError && (
-              <div className="error-message">
-                Error: {closePositionError.message} <AlertHexagon className="form-alert-hex" />
-              </div>
-            )}
+            {closePositionError && (notifyError("Error: " + closePositionError.message))}
             <Button variant="secondary" size="lg" className="dashboard-btn telegram" onClick={handleOpen}>
               <TelegramIcon className="tab-icon" />
               Enable telegram notification bot
