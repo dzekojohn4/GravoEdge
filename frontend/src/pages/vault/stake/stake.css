@@ -1,3 +1,17 @@
+.stake-wrapper {
+  background: url('../../../../public/background.png') no-repeat;
+  background-size: cover;
+  background-position: center 29%;
+  /* min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-left: 200px;
+  padding: 0 24px;
+  width: 100vw;
+  padding: 0 24px; */
+}
+
 
 .token-icon {
   display: flex;
@@ -13,8 +27,8 @@
   width: 100%;
 }
 
-.main-card {
-  padding: 3rem 1.5rem;
+.main-stake-card {
+  padding:4px 4px;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -137,7 +151,6 @@
 .balance-display-container .mobile-screen-balance {
   display: none;
 }
-
 /* Responsive  */
 
 /* Mobile view */
@@ -146,15 +159,19 @@
     display: none;
   }
 .top-cards {
-  width: 342px;
+  width:100%;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
   /* display: grid; */
   /* grid-template-columns: 1fr 1fr; */
-  gap: 5px;
+  height: 88px;
   /* align-items: stretch; */
 } 
 
   .main-container {
     width: 100%;
+  
     /* gap: 24px;
     padding-top: 37px;
     border-radius: 20px;
@@ -171,6 +188,7 @@
     width: 167px;
     height:88px;
     padding: 16px 24px;
+    border: 1px;
     background: var(--header-button-bg);
     border: var(--midnight-purple-border);
     border-radius: 8px;
@@ -178,7 +196,6 @@
     font-size: 16px;
     display: flex;
     justify-content: center; 
-    gap: 16px;
     /* flex-direction: column;
    
     /* align-items: center; */
@@ -193,7 +210,7 @@
     align-items: flex-start; 
     /* width: 390px; */
    
-    padding: 5rem 24px; 
+    padding: 3rem 24px; 
    
   }
 
@@ -202,8 +219,10 @@
     justify-content: center;
     flex-direction: column;
     gap: 20px; */
-    width: 390px;
+    width: 100%;
+    max-width: 390px;
     height: 610px;
+    margin:0 auto;
     margin-bottom: 2rem;
   }
 
@@ -214,6 +233,7 @@
     display: block;
     margin: 0 auto;
     text-align: center;
+    align-items: center;
     padding: 1.5rem 0rem;
   }
 
@@ -224,20 +244,17 @@
     justify-content: center;
     margin-top: 2rem;
   }
-
-  .cancel {
+  .can-stk .cancel {
     width: 167px;
     height: 60px;
     padding: 16px 24px;
     border-radius: 8px;
     font-weight: 600;
     font-size: 14px;
-    border-color: #36294E;
-    background-color: transparent;
+    border-color:#36294E ;
     color: white;
-  } 
-
-  .stake-button {
+  }
+  .stake-button1 {
     width: 167px;
     height: 60px;
     padding: 16px 24px;
@@ -247,7 +264,7 @@
   } 
   .form{
     margin-bottom: 2rem;
-    width: 342px;
+    width: 100%;    
     display: block;
     margin: 0 auto;
 
@@ -259,11 +276,11 @@
 
 @media (min-width:768px) {
   .stake-wrapper {
-    /* background-position: 15rem center ; */
-    min-height: 100vh;
+    height: 100vh;
+    overflow-y: auto;
     display: flex;
     justify-content: center;
-    align-items: flex-start; 
+    align-items: flex-start;
     margin-left: 200px;
     width: 100vw;
     padding: 5rem 24px; 
@@ -282,7 +299,10 @@
     flex-direction: column;
     align-items: center;
   }
-
+  .top-cards{
+    display: flex;
+    gap: 24px;
+  }
   .stake-card {
     width: 309px;
     height:101px;
@@ -304,7 +324,7 @@
     text-align: center;
     padding: 1rem 0rem;
   }
-  .stake-button {
+  .stake-button1 {
     width: 642px;
     height: 60px;
     padding: 16px 24px;
@@ -312,7 +332,8 @@
     font-weight: 600;
     font-size: 14px;
     margin-top: 2rem;
-  } 
+  }
+   
   .cancel{
     display: none;
   }
@@ -395,7 +416,7 @@
     font-weight: 400;
   }
 
-  .main-card {
+  .main-stake-card {
     gap: 26px;
     flex-direction: column;
     border-radius: 12px;
@@ -423,12 +444,12 @@
     font-size: 14px;
   } */
 
-  /* .stake-button {
+   /* .stake-button {
     font-size: 14px;
     padding: 18px 24px;
 
     align-self: center;
-  } */
+  }  */
 
   /* .balance-card {
     max-width: 100%;
@@ -469,12 +490,12 @@
     width: 100%;
     /* flex-wrap: wrap; */
     /* gap: 6px; */
-  }
+  
 
-  .main-card {
+  /* .main-stake-card {
     margin: 0 auto;
     gap: 20px;
-  }
+  } */
 
   .amount-field {
     font-size: 24px;
@@ -495,8 +516,8 @@
     margin-right: 11px;
     align-self: center;
     width: 85%;
-  }
-}
+  } */
+/* } */
 
 @media (max-width: 678px) {
   .main-container {
@@ -504,42 +525,42 @@
   }
 
   .top-cards {
-    width: 470px;
+    /* width: 470px; */
     gap: 8px;
   }
 
-  .main-card {
+  /* .main-stake-card {
     padding: 0 20px;
     border: none;
-  }
+  } */
 
 }
 
 @media (max-width: 480px) {
   .top-cards {
-    width: 380px;
+    /* width: 380px; */
     gap: 10px;
   }
 
-  .main-card {
+  /* .main-stake-card {
     width: 450px;
-  }
+  } */
 }
 
 @media (max-width: 400px) {
-  .top-cards {
+  /* .top-cards {
     width: 330px;
-  }
+  } */
 
 }
 
 @media (max-width: 320px) {
-  .top-cards {
+  /* .top-cards {
     width: 280px;
-  }
+  } */
 
-  .main-card {
+  /* .main-stake-card {
     width: 330px;
     margin:auto;
-  }
+  } */
 }
