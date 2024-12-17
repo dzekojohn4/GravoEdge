@@ -554,6 +554,11 @@ mod Deposit {
             };
             self.emit(Withdraw { token, amount: withdrawn_amount });
         }
+
+        /// Returns the status of the position
+        fn is_position_open(self: @ContractState) -> bool {
+            return self.is_position_open.read();
+        }
     }
 
     #[abi(embed_v0)]

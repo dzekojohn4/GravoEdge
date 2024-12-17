@@ -14,6 +14,7 @@ EKUBO_MAINNET_ADDRESS: str = (
 ZKLEND_MARKET_ADDRESS: str = (
     "0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05"
 )
+MULTIPLIER_POWER = 99
 
 
 @dataclass(frozen=True)
@@ -35,8 +36,8 @@ class TokenMultipliers:
     Class to hold the predefined multipliers for supported tokens/
     """
 
-    ETH: float = 5.0
-    STRK: float = 2.5
+    ETH: float = 4.6
+    STRK: float = 1.9
     USDC: float = 5.0
 
 

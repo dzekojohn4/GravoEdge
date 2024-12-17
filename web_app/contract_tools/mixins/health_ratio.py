@@ -7,13 +7,9 @@ from decimal import Decimal
 
 from pragma_sdk.common.types.types import AggregationMode
 from pragma_sdk.onchain.client import PragmaOnChainClient
-
-from web_app.contract_tools.blockchain_call import (
-    StarknetClient,
-)
+from web_app.contract_tools.blockchain_call import CLIENT
 from web_app.contract_tools.constants import TokenParams
 
-CLIENT = StarknetClient()
 PRAGMA = PragmaOnChainClient(
     network="mainnet",
 )
@@ -81,6 +77,7 @@ class HealthRatioMixin:
         :return: A dictionary of deposited tokens with token symbols as keys
          and amounts as Decimal values.
         """
+
         reserves = await CLIENT.get_z_addresses()
         deposits = await cls._get_z_balances(
             reserves, deposit_contract_address
@@ -174,10 +171,6 @@ class HealthRatioMixin:
             * prices[borrowed_token]
             / 10 ** int(TokenParams.get_token_decimals(borrowed_address))
         )
-        # return {
-        #     "health_factor": f"{round(deposit_usdc / Decimal(debt_usdc), 2)}" if debt_usdc != 0 else "0", # pylint: disable=line-too-long
-        #     "ltv": f"{round((debt_usdc / TokenParams.get_borrow_factor(borrowed_token)) / deposit_usdc, 2)}" # pylint: disable=line-too-long
-        # }
         health_factor = (
             f"{round(deposit_usdc / Decimal(debt_usdc), 2)}"
             if debt_usdc != 0
