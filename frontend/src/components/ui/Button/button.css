@@ -121,3 +121,8 @@
     width: 167px;
   }
 }
+@media (max-width: 400px){
+  .button--lg{
+    width:100% !important;
+  }
+}
