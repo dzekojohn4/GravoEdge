@@ -240,8 +240,8 @@ mod Vault {
             
             assert(deposit_contract.is_non_zero(), 'Deposit contract is zero');
             assert(user.is_non_zero(), 'User address is zero');
+            assert(current_amount >= amount, 'Insufficient balance!');
             assert(vault_owner == caller || user == caller, 'Caller must be owner or user');
-            assert(current_amount >= amount, 'Insufficient balance');
             
             // update new amount
             self.amounts.entry(user).write(current_amount - amount);

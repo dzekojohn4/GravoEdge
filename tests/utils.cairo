@@ -7,12 +7,13 @@ use pragma_lib::types::{AggregationMode, DataType, PragmaPricesResponse};
 use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
+use spotnet::types::{DepositData, EkuboSlippageLimits};
 use snforge_std::{declare, ContractClassTrait, DeclareResultTrait, load, map_entry_address};
 use spotnet::interfaces::IVaultDispatcher;
-use spotnet::types::EkuboSlippageLimits;
 use starknet::{ContractAddress, contract_address_const, get_contract_address};
-use super::constants::{HYPOTHETICAL_OWNER_ADDR, contracts};
-use super::types::VaultTestSuite;
+use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
+use super::constants::{HYPOTHETICAL_OWNER_ADDR, contracts, tokens, pool_key};
+use super::types::{VaultTestSuite, DepositTestSuite};
 
 pub fn ERC20_MOCK_CONTRACT() -> ContractAddress {
     contract_address_const::<'erc20mock'>()
@@ -102,4 +103,35 @@ pub fn deploy_deposit_contract(user: ContractAddress) -> ContractAddress {
         )
         .expect('Deploy failed');
     deposit_address
+}
+
+pub fn setup_test_deposit(
+    user: ContractAddress,
+    amount: u256,
+) -> DepositTestSuite {
+    let deposit_address: ContractAddress = deploy_deposit_contract(user);
+    let usdc_addr: ContractAddress = tokens::USDC.try_into().unwrap();
+    let eth_addr: ContractAddress = tokens::ETH.try_into().unwrap();
+
+    let pool_key = PoolKey {
+        token0: eth_addr,
+        token1: usdc_addr,
+        fee: pool_key::FEE,
+        tick_spacing: pool_key::TICK_SPACING,
+        extension: pool_key::EXTENSION.try_into().unwrap()
+    };
+    
+    let pool_price = get_asset_price_pragma('ETH/USD').into();
+
+    DepositTestSuite {
+        deposit_address: deposit_address,
+        deposit_data: DepositData {
+            token: eth_addr, 
+            amount: amount, multiplier: 40, 
+            borrow_portion_percent: 98
+        },
+        pool_key: pool_key,
+        ekubo_limits: get_slippage_limits(pool_key),
+        pool_price: pool_price
+    }
 }
