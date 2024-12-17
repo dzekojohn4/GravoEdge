@@ -1,0 +1,477 @@
+body {
+  font-family:
+    'Open Sans',
+    -apple-system,
+    Roboto,
+    Helvetica,
+    sans-serif;
+}
+
+.position-wrapper {
+  background: url('../../../../public/background.png') no-repeat;
+  background-size: cover;
+  background-position: center 39%;
+  min-height: 100vh;
+  padding: 1rem;
+  padding-top: 1rem;
+}
+
+.position-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+}
+
+.position-content {
+  width: 642px;
+  gap: 24px;
+  border-radius: 20px;
+  padding: 1rem;
+  color: white;
+  text-align: center;
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.position-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+}
+
+.position-top-cards {
+  display: flex;
+  gap: 0.8rem;
+  width: 642px;
+  height: 101px;
+}
+
+.top-card-value {
+  font-size: 24px;
+}
+
+.dashboard-error {
+  color: red;
+}
+
+.position-card {
+  width: 309px;
+  height: 101px;
+  border: red 2px solid;
+  background: rgba(18, 7, 33, 1);
+  border: 1px solid rgba(54, 41, 78, 1);
+  border-radius: 10px;
+  padding-top: 4px;
+  padding-right: 24px;
+  padding-left: 24px;
+  text-align: center;
+}
+
+.position-card-header {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  color: white;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  background: rgba(32, 19, 56, 1);
+  border-radius: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px;
+}
+
+.position-card-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+}
+
+.position-content-table {
+  border-radius: 20px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 70%;
+}
+
+.position-table {
+  margin: 0 auto;
+  display: flex;
+  border: 1px solid #36294e;
+  border-radius: 9px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.position-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.position-table thead {
+  font-size: 14px;
+  color: var(--gray);
+  border-bottom: 1px solid #36294e;
+}
+
+.position-table thead th {
+  padding-top: 40px;
+  padding-bottom: 10px;
+  max-width: 200px;
+  text-align: center;
+}
+
+.position-table tbody tr:nth-child(even) {
+  background-color: rgba(18, 7, 33, 0.5);
+}
+
+.position-table tbody td {
+  padding: 18px;
+  text-align: center;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.index {
+  color: var(--gray);
+}
+
+.position-table-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+@media (max-width: 950px) {
+  .top-card-value {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-wrapper {
+    padding: 1rem;
+  }
+
+  .dashboard-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .dashboard-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.5rem;
+    gap: 16px;
+  }
+
+  .top-cards-dashboard {
+    flex-direction: row;
+    height: auto;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 500px;
+  }
+
+  .card {
+    height: 90px;
+    padding: 8px 2px 14px 2px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card-header {
+    padding: 0;
+  }
+
+  .card-header .label {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 4px;
+    padding: 3px;
+  }
+
+  .tab-title {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .dashboard-btn {
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 500px;
+    height: 55px;
+  }
+
+  .tab {
+    padding: 0.5rem 0.5rem;
+  }
+
+  .dashboard-info-card {
+    height: auto;
+    min-height: 280px;
+    border-radius: 16px !important;
+    padding: 16px 24px !important;
+    margin: 20px auto;
+    width: 500px;
+  }
+
+  .tab-content {
+    width: 100%;
+    height: auto;
+    padding: 16px;
+  }
+
+  .balance-info {
+    width: 100%;
+    height: auto;
+  }
+
+  .dashboard-title {
+    font-size: 24px;
+  }
+
+  .tab-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .currency-symbol {
+    font-size: 18px;
+  }
+
+  .currency-name {
+    font-size: 18px;
+  }
+
+  .balance-label,
+  .balance-value,
+  .current-sum-red {
+    font-size: 14px;
+  }
+
+  .top-card-value {
+    font-size: 18px;
+  }
+
+  .tabs {
+    padding: 0 8px;
+    gap: 2px;
+  }
+
+  .tab {
+    padding: 8px 12px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .tab-divider {
+    width: 2px;
+    height: 16px;
+    margin: 0 4px;
+  }
+
+  .tab-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+  }
+
+  .tab-indicator-container {
+    bottom: -12px;
+    width: calc(100% - 16px);
+  }
+
+  .lucide-up-icon {
+    width: 22px;
+    height: 22px;
+    margin-left: 6px;
+  }
+
+  .lucide-down-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 6px;
+  }
+
+  .current-sum-green {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 550px) {
+  .dashboard-info-card {
+    height: auto;
+    min-height: 280px;
+    padding: 14px 22px !important;
+    margin: 15px auto;
+    width: 450px;
+  }
+
+  .dashboard-btn {
+    width: 450px;
+  }
+
+  .top-cards-dashboard {
+    width: 450px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-info-card {
+    height: auto;
+    min-height: 280px;
+    padding: 14px 22px !important;
+    margin: 15px auto;
+    width: 380px;
+  }
+
+  .top-card-value {
+    font-size: 16px;
+  }
+
+  .dashboard-btn {
+    width: 380px;
+    font-size: 14px;
+    height: 50px;
+  }
+
+  .top-cards-dashboard {
+    width: 380px;
+    gap: 8px;
+  }
+  .dashboard-wrapper {
+    padding: 0.75rem;
+  }
+
+  .dashboard-content {
+    gap: 20px;
+  }
+
+  .tab-title {
+    font-size: 14px;
+  }
+
+  .tab-content {
+    width: fit-content;
+    font-size: 14px;
+  }
+
+  .currency-symbol {
+    font-size: 16px;
+  }
+
+  .currency-name {
+    font-size: 16px;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .balance-info {
+    width: fit-content;
+  }
+
+  .card {
+    flex: 1;
+    padding: 16px 24px;
+  }
+
+  .card-header {
+    gap: 4px;
+  }
+
+  .tab {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .dashboard-info-card {
+    height: auto;
+    min-height: 280px;
+    padding: 14px 22px !important;
+    margin: 15px auto;
+    width: 300px;
+  }
+
+  .top-cards-dashboard {
+    width: 300px;
+  }
+
+  .dashboard-btn {
+    width: 300px;
+    height: 45px;
+  }
+
+  .top-card-value {
+    font-size: 14px;
+  }
+
+  .tab-title {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 320px) {
+  .dashboard-info-card {
+    height: auto;
+    padding: 10px 10px !important;
+    margin: 15px auto;
+    width: 280px;
+  }
+
+  .top-cards-dashboard {
+    width: 280px;
+  }
+
+  .dashboard-btn {
+    width: 300px;
+    height: 45px;
+  }
+
+  .card {
+    padding: 10px 16px;
+  }
+
+  .tabs {
+    padding: 0;
+  }
+}
