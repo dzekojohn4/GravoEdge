@@ -95,7 +95,12 @@ function App() {
   }, []);
 
   const handleCloseModal = () => {
-    setClosePositionOpen(false);
+    setModal(false);
+  };
+
+  const openTelegramBot = () => {
+    const telegramBotLink = 'https://t.me/spotnet_bot';
+    window.open(telegramBotLink, '_blank');
   };
 
   return (
@@ -137,7 +142,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      {isMobile && showPopup && (
+      {isMobile && (
          <ActionModal
          isOpen={modal}
          title="Mobile website restriction"
@@ -147,7 +152,7 @@ function App() {
          ]}
          cancelLabel="Cancel"
          submitLabel="Open in Telegram"
-         submitAction={onClosePositionAction}
+         submitAction={openTelegramBot}
          cancelAction={handleCloseModal}
        />
       )}
