@@ -362,10 +362,18 @@ class StarknetClient:
         contract_addr_int = self._convert_address(contract_address)
         results = {}
 
-        for token in TokenParams.tokens():  
+        for token in TokenParams.tokens():
+            token_symbol = token.name
+
             try:
                 token_addr_int = self._convert_address(token.address)  
-                token_symbol = token.name
+
+            except ValueError as e:
+                logger.error(f"Invalid address format for {token_symbol}: {str(e)}")
+                results[token_symbol] = f"Failed: Invalid address format"
+                continue
+
+            try:
                 logger.info(f"Withdrawing {token_symbol} from contract {contract_address}")
                 await self._func_call(
                     addr=contract_addr_int,
@@ -373,11 +381,6 @@ class StarknetClient:
                     calldata=[token_addr_int, 0] 
                 )
                 results[token_symbol] = "Success"
-
-            except ValueError as e:
-                logger.error(f"Invalid address format for {token_symbol}: {str(e)}")
-                results[token_symbol] = f"Failed: Invalid address format"
-
             except Exception as e:
                 logger.error(f"Error withdrawing {token_symbol}: {e}")
                 results[token_symbol] = f"Failed: {e}"
