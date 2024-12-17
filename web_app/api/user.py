@@ -56,7 +56,7 @@ async def has_user_opened_position(wallet_id: str) -> dict:
         )
 
 
-@router.get(  # FIXME: Not used, only used in tests
+@router.get(
     "/api/get-user-contract",
     tags=["User Operations"],
     summary="Get user's contract status",
@@ -179,7 +179,7 @@ async def subscribe_to_notification(
     )
 
 
-@router.get( # FIXME: Not used, only used in tests
+@router.get(
     "/api/get-user-contract-address",
     tags=["User Operations"],
     summary="Get user's contract address",
@@ -255,56 +255,3 @@ async def get_stats() -> GetStatsResponse:
     except Exception as e:
         logger.error(f"Error in get_stats: {e}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
-
-
-@router.get( # FIXME: Not used anymore
-    "/api/get-user-history",
-    tags=["User Operations"],
-    summary="Get user position history",
-    response_model=UserHistoryResponse,
-    response_description="List of user positions including status,created_at, \
-                                start_price, amount, and multiplier.",
-)
-async def get_user_history(user_id: str) -> list[dict]:
-    """
-    Retrieves the history of positions for a specified user.
-
-    ### Parameters:
-    - **user_id**: The unique ID of the user whose position history is being fetched.
-
-    ### Returns:
-    - A list of positions with the following details:
-        - `status`: Current status of the position.
-        - `created_at`: Timestamp when the position was created.
-        - `start_price`: Initial price of the asset when the position was opened.
-        - `amount`: Amount involved in the position.
-        - `multiplier`: Leverage multiplier applied to the position.
-    """
-    # FIXME REMOVE IT
-    try:
-        # Fetch user history from the database
-        positions = user_db.fetch_user_history(user_id)
-
-        if not positions:
-            logger.info(f"No positions found for user_id={user_id}")
-            return []
-
-        return positions
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
-
-
-@router.post("/allow-notification/{telegram_id}") # FIXME: Not used anymore
-async def allow_notification(
-    telegram_id: int,
-    telegram_db: TelegramUserDBConnector = Depends(lambda: TelegramUserDBConnector()),
-):
-    """Enable notifications for a specific telegram user"""
-    try:
-        telegram_db.set_allow_notification(telegram_id=telegram_id)
-        return {"message": "Notifications enabled successfully"}
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/vault", tags=["vault"])
 
 
-@router.post("/deposit", response_model=VaultDepositResponse) # FIXME: Not used, only used in tests
+@router.post("/deposit", response_model=VaultDepositResponse)
 async def deposit_to_vault(
     request: VaultDepositRequest,
     deposit_connector: DepositDBConnector = Depends(DepositDBConnector),
@@ -50,7 +50,7 @@ async def deposit_to_vault(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/balance", response_model=VaultBalanceResponse) # FIXME: Not used, only used in tests
+@router.get("/balance", response_model=VaultBalanceResponse)
 async def get_user_vault_balance(
     wallet_id: str,
     symbol: str,
@@ -67,7 +67,7 @@ async def get_user_vault_balance(
     return VaultBalanceResponse(wallet_id=wallet_id, symbol=symbol, amount=balance)
 
 
-@router.post("/add_balance", response_model=UpdateVaultBalanceResponse) # FIXME: Not used, only used in tests
+@router.post("/add_balance", response_model=UpdateVaultBalanceResponse)
 async def add_vault_balance(
     request: UpdateVaultBalanceRequest,
     deposit_connector: DepositDBConnector = Depends(DepositDBConnector),
