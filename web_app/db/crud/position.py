@@ -59,11 +59,18 @@ class PositionDBConnector(UserDBConnector):
         """
         return self.get_user_by_wallet_id(wallet_id)
 
-    def get_positions_by_wallet_id(self, wallet_id: str) -> list:
+    def get_positions_by_wallet_id(
+        self,
+        wallet_id: str,
+        start: int,
+        limit: int
+    ) -> list:
         """
-        Retrieves all positions for a user by their wallet ID
+        Retrieves paginated positions for a user by their wallet ID
         and returns them as a list of dictionaries.
         :param wallet_id: str
+        :param start: starting index for pagination
+        :param limit: number of records to return
         :return: list of dict
         """
         with self.Session() as db:
@@ -78,6 +85,8 @@ class PositionDBConnector(UserDBConnector):
                         Position.user_id == user.id,
                         Position.status == Status.OPENED.value,
                     )
+                    .offset(start)
+                    .limit(limit)
                     .all()
                 )
                 # Convert positions to a list of dictionaries
@@ -288,19 +297,19 @@ class PositionDBConnector(UserDBConnector):
             logger.error(f"Error while saving current_price for position: {e}")
 
     def save_transaction(
-        self, 
-        position_id: uuid.UUID, 
-        status: str, 
+        self,
+        position_id: uuid.UUID,
+        status: str,
         transaction_hash: str
     ) -> bool:
         """
         Creates a new transaction record associated with a position.
-        
+
         Args:
             position_id: UUID of the position
             status: Transaction status (opened/closed)
             transaction_hash: Blockchain transaction hash
-            
+
         Returns:
             Transaction object if successful, None if failed
         """
