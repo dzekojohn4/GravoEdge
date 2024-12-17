@@ -236,7 +236,8 @@ async def test_subscribe_to_notification(
 
     :param client: fastapi.testclient.TestClient
     :param mock_get_user_by_wallet_id: unittest.mock.MagicMock for get_user_by_wallet_id
-    :param mock_get_telegram_user_by_wallet_id: unittest.mock.MagicMock for get_telegram_user_by_wallet_id
+    :param mock_get_telegram_user_by_wallet_id: unittest.mock.MagicMock 
+                                             for get_telegram_user_by_wallet_id
     :param mock_set_allow_notification: unittest.mock.MagicMock for set_allow_notification
     :param telegram_id: str[Telegram ID of the user]
     :param wallet_id: str[Wallet ID of the user] 
