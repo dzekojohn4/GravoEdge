@@ -18,15 +18,16 @@ import { useConnectWallet } from 'hooks/useConnectWallet';
 import OverviewPage from 'pages/spotnet/overview/Overview';
 import { ActionModal } from 'components/ui/ActionModal';
 import Stake from 'pages/vault/stake/Stake';
+import { TELEGRAM_BOT_LINK } from 'utils/constants';
+import { useCheckMobile } from 'hooks/useCheckMobile';
 
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore();
   const [tgUser, setTgUser] = useState(JSON.parse(localStorage.getItem('tg_user')));
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  const [isMobile, setIsMobile] = useState(false);
-  const [modal, setModal] = useState(true);
-
+  const [isMobileRestrictionModalOpen, setisMobileRestrictionModalOpen] = useState(true);
+  const isMobile = useCheckMobile();
 
   const connectWalletMutation = useConnectWallet(setWalletId);
   useEffect(() => {
@@ -72,34 +73,13 @@ function App() {
   const closeModal = () => {
     setShowModal(false);
   };
-  
-  useEffect(() => {
-    const checkMobile = () => {
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      
-      const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
-      
-      const isMobileDevice = mobileRegex.test(userAgent);
-      setIsMobile(isMobileDevice);
 
-      const isMobileWidth = window.innerWidth <= 768;
-      setIsMobile(isMobileDevice || isMobileWidth);
-    };
-
-    checkMobile();
-
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const handleCloseModal = () => {
-    setModal(false);
+  const handleisMobileRestrictionModalClose = () => {
+    setisMobileRestrictionModalOpen(false);
   };
 
   const openTelegramBot = () => {
-    const telegramBotLink = 'https://t.me/spotnet_bot';
-    window.open(telegramBotLink, '_blank');
+    window.open(TELEGRAM_BOT_LINK, '_blank');
   };
 
   return (
@@ -142,18 +122,16 @@ function App() {
       </main>
       <Footer />
       {isMobile && (
-         <ActionModal
-         isOpen={modal}
-         title="Mobile website restriction"
-         subTitle=""
-         content={[
-          'Please, use desktop version or telegram mini-app'
-         ]}
-         cancelLabel="Cancel"
-         submitLabel="Open in Telegram"
-         submitAction={openTelegramBot}
-         cancelAction={handleCloseModal}
-       />
+        <ActionModal
+          isOpen={isMobileRestrictionModalOpen}
+          title="Mobile website restriction"
+          subTitle="Please, use desktop version or telegram mini-app"
+          content={[]}
+          cancelLabel="Cancel"
+          submitLabel="Open in Telegram"
+          submitAction={openTelegramBot}
+          cancelAction={handleisMobileRestrictionModalClose}
+        />
       )}
     </div>
   );
