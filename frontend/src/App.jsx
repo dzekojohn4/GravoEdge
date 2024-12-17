@@ -141,7 +141,7 @@ function App() {
       </main>
       <Footer />
       {isMobile && showPopup && (
-        mobile noot allowed
+        <div>mobile noot allowed</div>
          // currently looking for popup code
       )}
     </div>
