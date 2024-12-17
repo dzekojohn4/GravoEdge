@@ -11,7 +11,7 @@ from web_app.api.serializers.user import (
     CheckUserResponse,
     GetStatsResponse,
     GetUserContractAddressResponse,
-    SubscribeToNotificationResponse,
+    SubscribeToNotificationRequest,
     UpdateUserContractResponse,
     UserHistoryResponse,
 )
@@ -146,7 +146,7 @@ async def update_user_contract(
     response_description="Returns success status of notification subscription",
 )
 async def subscribe_to_notification(
-    data: SubscribeToNotificationResponse,
+    data: SubscribeToNotificationRequest,
 ):
     """
     This endpoint subscribes a user to notifications by linking their telegram ID to their wallet.
@@ -167,7 +167,8 @@ async def subscribe_to_notification(
     # Is not provided, attempt to retrieve it from the database
     if not telegram_id:
         tg_user = telegram_db.get_telegram_user_by_wallet_id(data.wallet_id)
-        telegram_id = tg_user.telegram_id
+        if tg_user:
+            telegram_id = tg_user.telegram_id
     # Is found, set the notification preference for the user
     if telegram_id:
         telegram_db.set_allow_notification(telegram_id, data.wallet_id)
