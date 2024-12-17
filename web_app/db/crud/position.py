@@ -12,7 +12,7 @@ from sqlalchemy import Numeric, cast, func
 from sqlalchemy.exc import SQLAlchemyError
 
 from .user import UserDBConnector
-from web_app.db.models import AirDrop, Base, Position, Status, User
+from web_app.db.models import Base, Position, Status, User, Transaction
 
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)
@@ -43,6 +43,12 @@ class PositionDBConnector(UserDBConnector):
             ),
             "start_price": position.start_price,
             "status": position.status,
+            "is_liquidated": position.is_liquidated,
+            "datetime_liquidation": (
+                position.datetime_liquidation.isoformat()
+                if position.datetime_liquidation
+                else None
+            ),
         }
 
     def _get_user_by_wallet_id(self, wallet_id: str) -> User | None:
@@ -74,7 +80,6 @@ class PositionDBConnector(UserDBConnector):
                     )
                     .all()
                 )
-
                 # Convert positions to a list of dictionaries
                 positions_dict = [
                     self._position_to_dict(position) for position in positions
