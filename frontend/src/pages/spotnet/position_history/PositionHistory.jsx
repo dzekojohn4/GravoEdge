@@ -1,20 +1,55 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './position_history.css';
 import newIcon from '../../../assets/icons/borrow-balance-icon.png';
 import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
+import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
+import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
+import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
 import { usePositionHistoryTable } from 'hooks/usePosition';
 import Spinner from 'components/spinner/Spinner';
 import { formatDate } from 'utils/formatDate';
+import useDashboardData from 'hooks/useDashboardData';
 import { useWalletStore } from 'stores/useWalletStore';
 
 function PositionHistory() {
   const { walletId } = useWalletStore();
+  const [healthFactor, setHealthFactor] = useState('0.00');
+  const [borrowed, setBorrowed] = useState('0.00');
 
-  const { data, isLoading } = usePositionHistoryTable(walletId);
+  const { data: tableData, isLoading } = usePositionHistoryTable(walletId);
+
+  const { data } = useDashboardData(walletId) || {
+    data: { health_ratio: '1.5', current_sum: '0.05', start_sum: '0.04', borrowed: '10.0' },
+  };
+
+  const tokenIconMap = {
+    STRK: <StrkIcon className="token-icon" />,
+    USDC: <UsdIcon className="token-icon" />,
+    ETH: <EthIcon className="token-icon" />,
+  };
+
+  const statusStyles = {
+    opened: 'status-opened',
+    closed: 'status-closed',
+    pending: 'status-pending',
+  };
 
   useEffect(() => {
-    console.log('Fetching data for walletId:', walletId);
-  }, [walletId]);
+    const getData = async () => {
+      if (isLoading || !data) {
+        console.log('Card data not available');
+        return;
+      }
+
+      const { health_ratio, borrowed } = data;
+      console.log(data);
+
+      setHealthFactor(health_ratio || '0.00');
+      setBorrowed(borrowed || '0.00');
+    };
+
+    getData();
+  }, [walletId, data, tableData, isLoading]);
 
   return (
     <div className="position-wrapper">
@@ -28,7 +63,7 @@ function PositionHistory() {
                 <span className="label">Health Factor</span>
               </div>
               <div className="position-card-value">
-                <span className="top-card-value">1.47570678</span>
+                <span className="top-card-value">{healthFactor}</span>
               </div>
             </div>
             <div className="position-card">
@@ -38,7 +73,7 @@ function PositionHistory() {
               </div>
               <div className="position-card-value">
                 <span className="currency-symbol">$</span>
-                <span className="top-card-value">-55.832665</span>
+                <span className="top-card-value">{borrowed}</span>
               </div>
             </div>
           </div>
@@ -71,19 +106,22 @@ function PositionHistory() {
                 </thead>
 
                 <tbody>
-                  {data?.map((data, index) => (
+                  {tableData?.map((data, index) => (
                     <tr key={index}>
                       <td className="index">{index + 1}.</td>
-                      <td>{data.token_symbol.toUpperCase()}</td>
+                      <div className="token-cell">
+                        {tokenIconMap[data.token_symbol]}
+                        <span className="token-symbol">{data.token_symbol.toUpperCase()}</span>
+                      </div>
                       <td>{Number(data.amount).toFixed(2)}</td>
                       <td>{formatDate(data.created_at)}</td>
-                      <td>{data.status.charAt(0).toUpperCase() + data.status.slice(1)}</td>
+                      <td className={`status-cell ${statusStyles[data.status.toLowerCase()] || ''}`}>
+                        {data.status.charAt(0).toUpperCase() + data.status.slice(1)}
+                      </td>
                       <td>${data.start_price.toFixed(2)}</td>
                       <td>{data.multiplier.toFixed(1)}</td>
                       <td>{data.is_liquidated ? 'Yes' : 'No'}</td>
-                      <td>
-                        {data.datetime_liquidation ? new Date(data.datetime_liquidation).toLocaleDateString() : 'N/A'}
-                      </td>
+                      <td>{formatDate(data.datetime_liquidation)}</td>
                     </tr>
                   ))}
                 </tbody>

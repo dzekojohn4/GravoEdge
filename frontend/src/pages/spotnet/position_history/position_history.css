@@ -28,7 +28,7 @@ body {
   gap: 24px;
   border-radius: 20px;
   padding: 1rem;
-  color: white;
+  color: var(--primary);
   text-align: center;
   display: flex;
   margin: 0 auto;
@@ -40,7 +40,7 @@ body {
 .position-title {
   font-size: 20px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--primary);
   text-align: center;
 }
 
@@ -55,14 +55,9 @@ body {
   font-size: 24px;
 }
 
-.dashboard-error {
-  color: red;
-}
-
 .position-card {
   width: 309px;
   height: 101px;
-  border: red 2px solid;
   background: rgba(18, 7, 33, 1);
   border: 1px solid rgba(54, 41, 78, 1);
   border-radius: 10px;
@@ -78,7 +73,7 @@ body {
   justify-content: center;
   align-items: center;
   border: none;
-  color: white;
+  color: var(--primary);
 }
 
 .icon {
@@ -96,7 +91,7 @@ body {
 .position-card-value {
   font-size: 24px;
   font-weight: 600;
-  color: white;
+  color: var(--primary);
 }
 
 .position-content-table {
@@ -111,7 +106,7 @@ body {
 .position-table {
   margin: 0 auto;
   display: flex;
-  border: 1px solid #36294e;
+  border: 1px solid var(--nav-divider-bg);
   border-radius: 9px;
   justify-content: center;
   align-items: center;
@@ -130,7 +125,7 @@ body {
 .position-table thead {
   font-size: 14px;
   color: var(--gray);
-  border-bottom: 1px solid #36294e;
+  border-bottom: 1px solid var(--nav-divider-bg);
 }
 
 .position-table thead th {
@@ -152,6 +147,39 @@ body {
   font-size: 14px;
 }
 
+.token-cell {
+  display: flex;
+  margin-top: 19px;
+  align-items: center;
+  gap: 6px;
+}
+
+.token-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.token-symbol {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.status-cell {
+  font-weight: 600;
+}
+
+.status-opened {
+  color: var(--status-opened);
+}
+
+.status-closed {
+  color: var(--status-closed);
+}
+
+.status-pending {
+  color: var(--status-pending);
+}
+
 .index {
   color: var(--gray);
 }
@@ -163,7 +191,7 @@ body {
   margin-bottom: 8px;
 }
 
-@media (max-width: 950px) {
+/* @media (max-width: 950px) {
   .top-card-value {
     font-size: 22px;
   }
@@ -474,4 +502,4 @@ body {
   .tabs {
     padding: 0;
   }
-}
+} */
