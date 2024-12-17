@@ -271,6 +271,7 @@ async def get_user_history(user_id: str) -> list[dict]:
         - `amount`: Amount involved in the position.
         - `multiplier`: Leverage multiplier applied to the position.
     """
+    # FIXME REMOVE IT
     try:
         # Fetch user history from the database
         positions = user_db.fetch_user_history(user_id)
