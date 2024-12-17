@@ -7,13 +7,17 @@ use pragma_lib::types::{AggregationMode, DataType, PragmaPricesResponse};
 use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
+use snforge_std::cheatcodes::execution_info::account_contract_address::{
+    start_cheat_account_contract_address, stop_cheat_account_contract_address
+};
+use spotnet::interfaces::{IVaultDispatcherTrait, IDepositDispatcherTrait, IDepositDispatcher};
 use spotnet::types::{DepositData, EkuboSlippageLimits};
 use snforge_std::{declare, ContractClassTrait, DeclareResultTrait, load, map_entry_address};
 use spotnet::interfaces::IVaultDispatcher;
 use starknet::{ContractAddress, contract_address_const, get_contract_address};
 use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
 use super::constants::{HYPOTHETICAL_OWNER_ADDR, contracts, tokens, pool_key};
-use super::types::{VaultTestSuite, DepositTestSuite};
+use super::types::VaultTestSuite;
 
 pub fn ERC20_MOCK_CONTRACT() -> ContractAddress {
     contract_address_const::<'erc20mock'>()
@@ -55,10 +59,9 @@ pub fn deploy_erc20_mock() -> ContractAddress {
     contract_addr
 }
 
-pub fn setup_test_suite() -> VaultTestSuite {
-    let owner: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
+pub fn setup_test_suite(token_address: ContractAddress) -> VaultTestSuite {
     let contract = declare("Vault").unwrap().contract_class();
-    let token_address: ContractAddress = deploy_erc20_mock();
+    let owner: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
 
     let (vault_address, _) = contract
         .deploy(@array![owner.try_into().unwrap(), token_address.try_into().unwrap()])
@@ -105,10 +108,9 @@ pub fn deploy_deposit_contract(user: ContractAddress) -> ContractAddress {
     deposit_address
 }
 
-pub fn setup_test_deposit(
-    user: ContractAddress,
-    amount: u256,
-) -> DepositTestSuite {
+pub fn setup_test_deposit(amount: u256) -> (VaultTestSuite, ContractAddress) {
+    let suite = setup_test_suite(tokens::ETH.try_into().unwrap());
+    let user = suite.owner;
     let deposit_address: ContractAddress = deploy_deposit_contract(user);
     let usdc_addr: ContractAddress = tokens::USDC.try_into().unwrap();
     let eth_addr: ContractAddress = tokens::ETH.try_into().unwrap();
@@ -122,16 +124,30 @@ pub fn setup_test_deposit(
     };
     
     let pool_price = get_asset_price_pragma('ETH/USD').into();
+    let deposit_data = DepositData {
+        token: eth_addr, 
+        amount: amount, multiplier: 40, 
+        borrow_portion_percent: 98
+    };
+    let ekubo_limits = get_slippage_limits(pool_key);
 
-    DepositTestSuite {
-        deposit_address: deposit_address,
-        deposit_data: DepositData {
-            token: eth_addr, 
-            amount: amount, multiplier: 40, 
-            borrow_portion_percent: 98
-        },
-        pool_key: pool_key,
-        ekubo_limits: get_slippage_limits(pool_key),
-        pool_price: pool_price
-    }
+    start_cheat_caller_address(deposit_data.token, user);
+    IERC20Dispatcher{contract_address: deposit_data.token}.approve(suite.vault.contract_address, amount);
+    stop_cheat_caller_address(deposit_data.token);
+
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    suite.vault.store_liquidity(amount);
+    stop_cheat_caller_address(suite.vault.contract_address);
+
+    start_cheat_caller_address(deposit_data.token, user);
+    IERC20Dispatcher{contract_address: deposit_data.token}.approve(deposit_address, amount);
+    stop_cheat_caller_address(deposit_data.token);
+
+    start_cheat_account_contract_address(deposit_address, user);
+    IDepositDispatcher{contract_address: deposit_address}.loop_liquidity(
+        deposit_data, pool_key, ekubo_limits, pool_price
+    );
+    stop_cheat_account_contract_address(deposit_address);
+
+    (suite, deposit_address)
 }
