@@ -12,7 +12,7 @@ from sqlalchemy import Numeric, cast, func
 from sqlalchemy.exc import SQLAlchemyError
 
 from .user import UserDBConnector
-from web_app.db.models import AirDrop, Base, Position, Status, User
+from web_app.db.models import Base, Position, Status, User, Transaction
 
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)
@@ -43,6 +43,12 @@ class PositionDBConnector(UserDBConnector):
             ),
             "start_price": position.start_price,
             "status": position.status,
+            "is_liquidated": position.is_liquidated,
+            "datetime_liquidation": (
+                position.datetime_liquidation.isoformat()
+                if position.datetime_liquidation
+                else None
+            ),
         }
 
     def _get_user_by_wallet_id(self, wallet_id: str) -> User | None:
@@ -74,7 +80,6 @@ class PositionDBConnector(UserDBConnector):
                     )
                     .all()
                 )
-
                 # Convert positions to a list of dictionaries
                 positions_dict = [
                     self._position_to_dict(position) for position in positions
@@ -223,6 +228,27 @@ class PositionDBConnector(UserDBConnector):
             logger.error(f"Position with ID {position_id} not found")
             return None
 
+    def get_repay_data(self, wallet_id: str) -> tuple:
+        """
+        Retrieves the repay data for a user.
+        :param wallet_id:
+        :return:
+        """
+        with self.Session() as db:
+            result = (
+                db.query(
+                    User.contract_address, Position.id, Position.token_symbol
+                )
+                .join(Position, Position.user_id == User.id)
+                .filter(User.wallet_id == wallet_id)
+                .first()
+            )
+
+            if not result:
+                return None, None, None
+
+            return result
+
     def get_total_amounts_for_open_positions(self) -> dict[str, Decimal]:
         """
         Calculates the amounts for all positions where status is 'OPENED',
@@ -260,6 +286,34 @@ class PositionDBConnector(UserDBConnector):
             self.write_to_db(position)
         except SQLAlchemyError as e:
             logger.error(f"Error while saving current_price for position: {e}")
+
+    def save_transaction(
+        self, 
+        position_id: uuid.UUID, 
+        status: str, 
+        transaction_hash: str
+    ) -> bool:
+        """
+        Creates a new transaction record associated with a position.
+        
+        Args:
+            position_id: UUID of the position
+            status: Transaction status (opened/closed)
+            transaction_hash: Blockchain transaction hash
+            
+        Returns:
+            Transaction object if successful, None if failed
+        """
+        try:
+            transaction = Transaction(
+                position_id=position_id,
+                status=status,
+                transaction_hash=transaction_hash
+            )
+            return self.write_to_db(transaction)
+        except SQLAlchemyError as e:
+            logger.error(f"Failed to save transaction: {str(e)}")
+            return None
 
     def liquidate_position(self, position_id: int) -> bool:
         """
@@ -343,3 +397,13 @@ class PositionDBConnector(UserDBConnector):
                 db.commit()
             except SQLAlchemyError as e:
                 logger.error(f"Error deleting positions for user {user_id}: {str(e)}")
+
+    def add_extra_deposit_to_position(self, position: Position, amount: str) -> None:
+        """
+        Adds extra deposit to a position in the database.
+        :param position: Position
+        :param amount: str
+        :return: None
+        """
+        position.amount = str(int(position.amount) + int(amount))
+        self.write_to_db(position)
