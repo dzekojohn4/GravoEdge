@@ -59,7 +59,7 @@ function Stake() {
           </div>
          <div className='form'>
          <h1 className="stake-title">Please submit your leverage details</h1>
-          <div className="main-card">
+          <div className="main-stake-card">
             <div onClick={() => setShowDrop(!showDrop)} className={showDrop ? "clicked-network-selector-container" : "network-selector-container"}>
               <div className="network-selector">
                 <div className="selected-network">
@@ -113,13 +113,13 @@ function Stake() {
             </div>
 
             <div className="apy-rate">$0.00 APY / year</div>
-            <GasFee />
+            <GasFee/>
           </div>
 
          </div>
          <div className='can-stk'>
-         <button className='cancel'> Cancel</button>
-         <Button variant="secondary" size="lg" className="stake-button">
+         <Button variant="secondary" size="lg" className='cancel'> Cancel</Button>
+         <Button variant="secondary" size="lg" className="stake-button1">
             Stake
           </Button>
          
