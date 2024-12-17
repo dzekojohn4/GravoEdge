@@ -1,18 +1,13 @@
-use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+use openzeppelin::token::erc20::interface::IERC20DispatcherTrait;
 use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
 use snforge_std::{load, map_entry_address};
-use spotnet::interfaces::{IVaultDispatcher, IVaultDispatcherTrait};
+use spotnet::interfaces::IVaultDispatcherTrait;
 
 use starknet::{ContractAddress};
-use super::utils::{
-    setup_test_suite, 
-    setup_user, 
-    assert_vault_amount, 
-    deploy_deposit_contract,
-    HYPOTHETICAL_OWNER_ADDR
-};
+use super::constants::{HYPOTHETICAL_OWNER_ADDR};
+use super::utils::{setup_test_suite, setup_user, assert_vault_amount, deploy_deposit_contract,};
 
 const MOCK_USER: felt252 = 0x1234;
 const MOCK_USER_2: felt252 = 0x5678;
@@ -121,15 +116,13 @@ fn test_add_deposit_contract() {
     // Check activeContracts
     let activeContracts_after_adding = load(
         suite.vault.contract_address,
-        map_entry_address(
-            selector!("activeContracts"), 
-            array![user.try_into().unwrap()].span()
-        ), 1,
+        map_entry_address(selector!("activeContracts"), array![user.try_into().unwrap()].span()),
+        1,
     );
 
     stop_cheat_caller_address(suite.vault.contract_address);
     assert(
-        (*activeContracts_after_adding[0]).try_into().unwrap() == deposit_address, 
+        (*activeContracts_after_adding[0]).try_into().unwrap() == deposit_address,
         'Deposit contract mismatch'
     );
 }
@@ -154,9 +147,11 @@ fn test_protect_position_insufficient_balance() {
     let user_amount: u256 = 100;
 
     suite.token.transfer(user_2, user_amount); // Transfer tokens to caller
-    let deposit_address: ContractAddress = deploy_deposit_contract(user); // Deploy contract for owner
+    let deposit_address: ContractAddress = deploy_deposit_contract(
+        user
+    ); // Deploy contract for owner
     start_cheat_caller_address(suite.vault.contract_address, user);
-    suite.vault.protect_position(deposit_address, user_2, user_amount+50);
+    suite.vault.protect_position(deposit_address, user_2, user_amount + 50);
     stop_cheat_caller_address(suite.vault.contract_address);
 }
 
@@ -169,7 +164,9 @@ fn test_protect_position_caller_must_be_owner_or_user() {
     let user_amount: u256 = 100;
 
     suite.token.transfer(user_2, user_amount); // Transfer tokens to caller
-    let deposit_address: ContractAddress = deploy_deposit_contract(user); // Deploy contract for owner
+    let deposit_address: ContractAddress = deploy_deposit_contract(
+        user
+    ); // Deploy contract for owner
     start_cheat_caller_address(suite.vault.contract_address, user);
     suite.vault.protect_position(deposit_address, user_2, user_amount);
     stop_cheat_caller_address(suite.vault.contract_address);
@@ -184,10 +181,12 @@ fn test_protect_position() {
     let withdrawn_amount: u256 = 50;
 
     suite.token.transfer(user_2, user_amount); // Transfer tokens to caller
-    let deposit_address: ContractAddress = deploy_deposit_contract(user); // Deploy contract for owner
+    let deposit_address: ContractAddress = deploy_deposit_contract(
+        user
+    ); // Deploy contract for owner
     start_cheat_caller_address(suite.vault.contract_address, user);
     suite.vault.protect_position(deposit_address, user, withdrawn_amount);
     stop_cheat_caller_address(suite.vault.contract_address);
-    let expected_amount: felt252 = (user_amount-withdrawn_amount).try_into().unwrap();
+    let expected_amount: felt252 = (user_amount - withdrawn_amount).try_into().unwrap();
     assert_vault_amount(suite.vault.contract_address, user_2, expected_amount);
 }

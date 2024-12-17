@@ -1,29 +1,39 @@
 use alexandria_math::fast_power::fast_power;
+use ekubo::interfaces::core::{ICoreDispatcher, ICoreDispatcherTrait};
+use ekubo::types::keys::PoolKey;
 use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+use pragma_lib::abi::{IPragmaABIDispatcher, IPragmaABIDispatcherTrait};
+use pragma_lib::types::{AggregationMode, DataType, PragmaPricesResponse};
 use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
 use snforge_std::{declare, ContractClassTrait, DeclareResultTrait, load, map_entry_address};
-use spotnet::interfaces::{IVaultDispatcher, IVaultDispatcherTrait};
+use spotnet::interfaces::IVaultDispatcher;
+use spotnet::types::EkuboSlippageLimits;
 use starknet::{ContractAddress, contract_address_const, get_contract_address};
-
-pub const HYPOTHETICAL_OWNER_ADDR: felt252 = 0x56789;
-pub mod contracts {
-    pub const EKUBO_CORE_MAINNET: felt252 =
-        0x00000005dd3d2f4429af886cd1a3b08289dbcea99a294197e9eb43b0e0325b4b;
-
-    pub const ZKLEND_MARKET: felt252 =
-        0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05;
-
-    pub const PRAGMA_ADDRESS: felt252 =
-        0x02a85bd616f912537c50a49a4076db02c00b29b2cdc8a197ce92ed1837fa875b;
-
-    pub const TREASURY_ADDRESS: felt252 = 0x123; // Mock Address
-}
-
+use super::constants::{HYPOTHETICAL_OWNER_ADDR, contracts};
+use super::types::VaultTestSuite;
 
 pub fn ERC20_MOCK_CONTRACT() -> ContractAddress {
     contract_address_const::<'erc20mock'>()
+}
+
+pub fn get_asset_price_pragma(pair: felt252) -> u128 {
+    let oracle_dispatcher = IPragmaABIDispatcher {
+        contract_address: contracts::PRAGMA_ADDRESS.try_into().unwrap()
+    };
+    let output: PragmaPricesResponse = oracle_dispatcher
+        .get_data(DataType::SpotEntry(pair), AggregationMode::Median(()));
+    output.price / 100 // Make 6 decimals wide instead of 8.
+}
+
+pub fn get_slippage_limits(pool_key: PoolKey) -> EkuboSlippageLimits {
+    let ekubo_core = ICoreDispatcher {
+        contract_address: contracts::EKUBO_CORE_MAINNET.try_into().unwrap()
+    };
+    let sqrt_ratio = ekubo_core.get_pool_price(pool_key).sqrt_ratio;
+    let tolerance = sqrt_ratio * 15 / 100;
+    EkuboSlippageLimits { lower: sqrt_ratio - tolerance, upper: sqrt_ratio + tolerance }
 }
 
 pub fn deploy_erc20_mock() -> ContractAddress {
@@ -42,14 +52,6 @@ pub fn deploy_erc20_mock() -> ContractAddress {
     let (contract_addr, _) = contract.deploy_at(@calldata, ERC20_MOCK_CONTRACT()).unwrap();
 
     contract_addr
-}
-
-
-#[derive(Drop)]
-pub struct VaultTestSuite {
-    pub vault: IVaultDispatcher,
-    pub token: IERC20Dispatcher,
-    pub owner: ContractAddress,
 }
 
 pub fn setup_test_suite() -> VaultTestSuite {
