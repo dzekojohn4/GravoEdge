@@ -8,7 +8,7 @@ import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
 from web_app.db.crud import UserDBConnector
-from web_app.db.models import  User
+from web_app.db.models import User
 
 
 @pytest.fixture
