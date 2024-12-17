@@ -7,11 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 
-from web_app.db.crud import (
-    DBConnector,
-    PositionDBConnector,
-    UserDBConnector,
-)
+from web_app.db.crud import DBConnector, PositionDBConnector, UserDBConnector
 from web_app.db.models import AirDrop, Base, Position, Status, User
 
 

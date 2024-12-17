@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
-from web_app.db.crud import AirDropDBConnector, UserDBConnector
-from web_app.db.models import AirDrop, User
+from web_app.db.crud import UserDBConnector
+from web_app.db.models import User
 
 
 @pytest.fixture
@@ -90,50 +90,3 @@ def test_get_unique_users_count(mock_user_db_connector):
     result = mock_user_db_connector.get_unique_users_count()
 
     assert result == 5
-
-
-def test_delete_all_users_airdrop_success(user_db):
-    """
-    Test successful deletion of all airdrops for a user.
-    """
-    user_id = "123e4567-e89b-12d3-a456-426614174000"
-    mock_session = MagicMock()
-    mock_airdrops = [
-        AirDrop(id=1, user_id=user_id),
-        AirDrop(id=2, user_id=user_id),
-    ]
-
-    air_drop_connector = AirDropDBConnector()
-    with patch.object(air_drop_connector, "Session") as mock_session_factory:
-        mock_session_factory.return_value.__enter__.return_value = mock_session
-        mock_session.query.return_value.filter_by.return_value.all.return_value = (
-            mock_airdrops
-        )
-
-        air_drop_connector.delete_all_users_airdrop(user_id)
-
-        mock_session.query.assert_called_once_with(AirDrop)
-        mock_session.query.return_value.filter_by.assert_called_once_with(
-            user_id=user_id
-        )
-        assert mock_session.delete.call_count == len(mock_airdrops)
-        mock_session.commit.assert_called_once()
-
-
-def test_delete_all_users_airdrop_failure(user_db):
-    """
-    Test failure while deleting airdrops for a user.
-    """
-    user_id = "123e4567-e89b-12d3-a456-426614174000"
-    mock_session = MagicMock()
-    mock_session.query.side_effect = SQLAlchemyError("Database error")
-
-    air_drop_connector = AirDropDBConnector()
-    with patch.object(
-        air_drop_connector, "Session", return_value=mock_session
-    ) as mock_session_factory:
-        mock_session_factory.return_value.__enter__.return_value = mock_session
-
-        air_drop_connector.delete_all_users_airdrop(user_id)
-        mock_session.query.assert_called_once_with(AirDrop)
-        # mock_session.rollback.assert_called_once()

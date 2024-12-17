@@ -12,7 +12,7 @@ export const useClosePosition = () => {
         console.error('closePositionEvent: walletId is undefined');
         return;
       }
-      const response = await axiosInstance.get(`/api/get-repay-data?supply_token=ETH&wallet_id=${walletId}`);
+      const response = await axiosInstance.get(`/api/get-repay-data?wallet_id=${walletId}`);
       await closePosition(response.data);
       await axiosInstance.get(`/api/close-position?position_id=${response.data.position_id}`);
     },
@@ -30,7 +30,6 @@ export const useCheckPosition = () => {
     queryFn: async () => {
       if (!walletId) return { has_opened_position: false };
 
-      console.log(walletId);
       const { data } = await axiosInstance.get('/api/has-user-opened-position', {
         params: { wallet_id: walletId },
       });

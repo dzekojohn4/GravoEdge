@@ -16,6 +16,7 @@ export async function deployContract(walletId) {
     // Execute the deployment transaction
     // const result = await starknet.account.execute([deployContractTransaction]);
     const result = await starknet.account.deployContract(deployContractTransaction);
+    console.log('Contract deployed successfully:', result);
     await starknet.account.waitForTransaction(result.transaction_hash);
     return {
       transactionHash: result.transaction_hash,

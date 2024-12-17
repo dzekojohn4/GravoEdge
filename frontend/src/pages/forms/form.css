@@ -2,7 +2,6 @@
   background: url('/public/background.png') no-repeat;
   background-size: cover;
   background-position: center 50%;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -11,6 +10,7 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
   font-family: var(--font-family);
+  height: 100vh;
 }
 
 .form-container {
@@ -69,6 +69,7 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+  margin-top: 60px;
 }
 
 .token-label input {
@@ -86,6 +87,14 @@
 .form-container label {
   color: var(--gray);
   font-size: 1rem;
+}
+
+.token-select {
+  margin: 8px 0 8px 0;
+}
+
+.token-amount {
+  margin: 20px 0 12px 0;
 }
 
 .token-card h5 {
@@ -463,6 +472,13 @@ input[type='number'].error {
   .dot.active {
     background-color: var(--light-blue);
   }
+
+  .token-label {
+    margin-top: 0;
+  }
+  .token-amount {
+    margin: 25px 0 12px 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -471,6 +487,12 @@ input[type='number'].error {
     overflow-x: scroll;
     gap: 16px;
     scrollbar-width: none;
+  }
+}
+
+@media (max-width: 375px) {
+  .token-amount {
+    margin: 20px 0 12px 0;
   }
 }
 
@@ -499,4 +521,16 @@ input[type='number'].error {
     height: 22px;
     font-size: 15px;
   }
+}
+
+.form-health-factor{
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  justify-self: flex-end;
+  width: fit-content;
+  margin: 2px;
+  color: gray;
+  align-self: flex-end;
+  gap: 5px;
 }

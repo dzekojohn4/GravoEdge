@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './dashboard.css';
+import newIcon from '../../../assets/icons/borrow-balance-icon.png';
 import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
 import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
 import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
@@ -11,11 +12,12 @@ import { TrendingDown, TrendingUp } from 'lucide-react';
 import Spinner from 'components/spinner/Spinner';
 // import { ZETH_ADDRESS } from 'utils/constants';
 import useDashboardData from 'hooks/useDashboardData';
-import { useClosePosition } from 'hooks/useClosePosition';
+import { useClosePosition, useCheckPosition } from 'hooks/useClosePosition';
 import Button from 'components/ui/Button/Button';
 import { useWalletStore } from 'stores/useWalletStore';
 import { ActionModal } from 'components/ui/ActionModal';
 import useTelegramNotification from 'hooks/useTelegramNotification';
+import { ReactComponent as AlertHexagon } from 'assets/icons/alert_hexagon.svg';
 
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
@@ -29,7 +31,10 @@ export default function Component({ telegramId }) {
     isLoading: false,
   };
   const { mutate: closePositionEvent, isLoading: isClosing, error: closePositionError } = useClosePosition(walletId);
+  const { data: positionData } = useCheckPosition();
   const { subscribe } = useTelegramNotification();
+
+  const hasOpenedPosition = positionData?.has_opened_position;
 
   const handleSubscribe = () => subscribe({ telegramId, walletId });
 
@@ -61,7 +66,11 @@ export default function Component({ telegramId }) {
 
   useEffect(() => {
     const getData = async () => {
+      if (isLoading) {
+        return;
+      }
       console.log('Data:', data);
+
       if (!walletId) {
         console.error('getData: walletId is undefined');
         setLoading(false);
@@ -74,17 +83,22 @@ export default function Component({ telegramId }) {
         return;
       }
 
-      const { health_ratio, current_sum, start_sum, borrowed, multipliers } = data;
+      const { health_ratio, current_sum, start_sum, borrowed, multipliers, balance } = data;
 
       let currencyName = 'Ethereum';
       let currencyIcon = EthIcon;
 
-      if (multipliers && multipliers.STRK) {
-        currencyName = 'STRK';
-        currencyIcon = StrkIcon;
-      } else if (multipliers && multipliers.ETH) {
-        currencyName = 'Ethereum';
-        currencyIcon = EthIcon;
+      if (multipliers) {
+        if (multipliers.STRK) {
+          currencyName = 'STRK';
+          currencyIcon = StrkIcon;
+        } else if (multipliers.ETH) {
+          currencyName = 'Ethereum';
+          currencyIcon = EthIcon;
+        } else if (multipliers.USDC) {
+          currencyName = 'USDC';
+          currencyIcon = UsdIcon;
+        }
       }
 
       // Update card data using the new data structure
@@ -92,7 +106,7 @@ export default function Component({ telegramId }) {
         {
           title: 'Collateral & Earnings',
           icon: CollateralIcon,
-          balance: current_sum,
+          balance: balance,
           currencyName: currencyName,
           currencyIcon: currencyIcon,
         },
@@ -140,7 +154,7 @@ export default function Component({ telegramId }) {
 
             <div className="card">
               <div className="card-header">
-                <EthIcon className="icon" />
+                <img src={newIcon} alt="Borrow Balance Icon" className="icon" />{' '}
                 <span className="label">Borrow Balance</span>
               </div>
               <div className="card-value">
@@ -233,12 +247,15 @@ export default function Component({ telegramId }) {
             size="lg"
             className="dashboard-btn"
             onClick={() => closePositionEvent()}
-            disabled={isClosing}
+            disabled={isClosing || !hasOpenedPosition}
           >
             {isClosing ? 'Closing...' : 'Redeem'}
           </Button>
-
-          {closePositionError && <div>Error: {closePositionError.message}</div>}
+          {closePositionError && (
+            <div className="error-message">
+              Error: {closePositionError.message} <AlertHexagon className="form-alert-hex" />
+            </div>
+          )}
           <Button variant="secondary" size="lg" className="dashboard-btn" onClick={handleOpen}>
             <TelegramIcon className="tab-icon" />
             Enable telegram notification bot
