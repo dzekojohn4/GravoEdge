@@ -12,14 +12,14 @@ export default function Withdraw() {
     <div className="withdraw-wrapper">
       <div className="withdraw-container">
        <h1 className="withdrawal-title">zkLend Withdraw</h1>
-        <div className="main-container">
-          <div className="top-cards">
+        <div className="main-container-withdraw">
+          <div className="top-cards-withdraw">
             <MetricCard title="Total Amount staked" value="324,909,894" />
             <MetricCard title="Daily Boost Multiplier" value="0.5%" />
           </div>
         </div>
         <h1 className="withdraw-title">Stake withdrawal</h1>
-        <div className="main-card">
+        <div className="main-card-withdraw">
           <div className="amount-stack-card">
             <div className="amount-stack-card-title-container">
               <div className="card-header">
@@ -56,8 +56,8 @@ export default function Withdraw() {
         </div>
           <button className="withdraw-button larger-screen-btn">Withdraw</button>
          <div className='mobile-screen-btns'>
-            <button className=" withdraw-button">Withdraw</button>
-            <button className=" cancel-button">Cancel</button>
+            <button className=" withdraw-button btn">Withdraw</button>
+            <button className=" cancel-button btn">Cancel</button>
          </div>
       </div>
     </div>
