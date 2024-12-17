@@ -19,28 +19,6 @@ class UserDBConnector(DBConnector):
     Provides database connection and operations management for the User model.
     """
 
-    def get_all_users_with_opened_position(self) -> List[User]:
-        # FIXME: Not used anymore
-        """
-        Retrieves all users with an OPENED position status from the database.
-        First queries Position table for OPENED positions, then gets the associated users.
-
-        :return: List[User]
-        """
-        with self.Session() as db:
-            try:
-                users = (
-                    db.query(User)
-                    .join(Position, Position.user_id == User.id)
-                    .filter(Position.status == Status.OPENED.value)
-                    .distinct()
-                    .all()
-                )
-                return users
-            except SQLAlchemyError as e:
-                logger.error(f"Error retrieving users with OPENED positions: {e}")
-                return []
-
     def get_users_for_notifications(self) -> List[Tuple[str, str]]:
         """
         Retrieves the contract_address of users with an OPENED position status and
@@ -167,7 +145,7 @@ class UserDBConnector(DBConnector):
                 )
                 return []
 
-    def delete_user_by_wallet_id(self, wallet_id: str) -> None:  # FIXME: Not used, only used in tests
+    def delete_user_by_wallet_id(self, wallet_id: str) -> None:
         """
         Deletes a user from the database by their wallet ID.
         Rolls back the transaction if the operation fails.

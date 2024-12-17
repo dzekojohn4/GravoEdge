@@ -55,7 +55,7 @@ class AirDropDBConnector(DBConnector):
                 )
                 return []
 
-    def delete_all_users_airdrop(self, user_id: uuid.UUID) -> None: # FIXME: Not used, only used in tests
+    def delete_all_users_airdrop(self, user_id: uuid.UUID) -> None:
         """
         Delete all airdrops for a user.
         :param user_id: User ID
