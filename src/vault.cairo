@@ -217,6 +217,8 @@ mod Vault {
         ///
         /// * When caller don't equal to user or owner
         /// * If the current amount is less than the amount to withdraw
+        /// * When deposit contract address is zero
+        /// * When user address is zero
         ///
         /// # Events
         ///
@@ -235,7 +237,9 @@ mod Vault {
             let caller = get_caller_address();
             let vault_owner = self.ownable.owner();
             let current_amount = self.amounts.entry(caller).read();
-
+            
+            assert(deposit_contract.is_non_zero(), 'Deposit contract is zero');
+            assert(user.is_non_zero(), 'User address is zero');
             assert(vault_owner == caller || user == caller, 'Caller must be owner or user');
             assert(current_amount >= amount, 'Insufficient balance');
             
