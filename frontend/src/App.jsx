@@ -26,6 +26,7 @@ function App() {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [modal, setModal] = useState(true);
 
 
   const connectWalletMutation = useConnectWallet(setWalletId);
@@ -93,12 +94,8 @@ function App() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  
-  const handleWebSiteAccess = () => {
-    if (isMobile) {
-      setShowPopup(true);
-    }
-    
+  const handleCloseModal = () => {
+    setClosePositionOpen(false);
   };
 
   return (
@@ -141,8 +138,18 @@ function App() {
       </main>
       <Footer />
       {isMobile && showPopup && (
-        <div>mobile noot allowed</div>
-         // currently looking for popup code
+         <ActionModal
+         isOpen={modal}
+         title="Mobile website restriction"
+         subTitle=""
+         content={[
+          'Please, use desktop version or telegram mini-app'
+         ]}
+         cancelLabel="Cancel"
+         submitLabel="Open in Telegram"
+         submitAction={onClosePositionAction}
+         cancelAction={handleCloseModal}
+       />
       )}
     </div>
   );
