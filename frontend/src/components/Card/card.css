@@ -42,7 +42,7 @@
   .card {
     height: 90px;
     padding: 8px 2px 14px 2px;
-    border-radius: 8px;
+    border-radius: 14px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -81,12 +81,19 @@
     font-size: 16px;
   }
   .card {
-    flex: 1;
-    padding: 16px 10px;
+    width: 167px;
+    padding: 16px 0px;
   }
 }
 
 @media (max-width: 400px) {
+  .card {
+    width: 167px;
+    padding: 16px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
   .top-card-value {
     font-size: 14px;
   }
@@ -94,6 +101,7 @@
 
 @media (max-width: 320px) {
   .card {
-    padding: 10px 10px;
+    width: 167px;
+    padding: 10px 0px;
   }
 }
