@@ -57,7 +57,7 @@ function Stake() {
               />
             </div>
           </div>
-         <div className=''>
+         <div className='form'>
          <h1 className="stake-title">Please submit your leverage details</h1>
           <div className="main-card">
             <div onClick={() => setShowDrop(!showDrop)} className={showDrop ? "clicked-network-selector-container" : "network-selector-container"}>
@@ -117,9 +117,14 @@ function Stake() {
           </div>
 
          </div>
-          <Button variant="secondary" size="lg" className="stake-button">
+         <div className='can-stk'>
+         <button className='cancel'> Cancel</button>
+         <Button variant="secondary" size="lg" className="stake-button">
             Stake
           </Button>
+         
+         </div>
+         
         </div>
       </div>
     </VaultLayout>
