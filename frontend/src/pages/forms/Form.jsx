@@ -18,7 +18,7 @@ import { useCheckPosition } from 'hooks/useClosePosition';
 import { useNavigate } from 'react-router-dom';
 import { ActionModal } from 'components/ui/ActionModal';
 import { useHealthFactor } from 'hooks/useHealthRatio';
-import { notifyError } from 'components/Toast/ErrorToast';
+import { notify } from 'components/Notifier/Notifier';
 
 const Form = () => {
   const navigate = useNavigate();
@@ -117,7 +117,7 @@ const Form = () => {
         <div className="form-title">
           <h1>Please submit your leverage details</h1>
         </div>
-        {alertMessage && notifyError(alertMessage, "error1")}
+        {alertMessage && notify(alertMessage, "error1")}
         <label className="token-select">Select Token</label>
         <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
         <label>Select Multiplier</label>
@@ -128,7 +128,7 @@ const Form = () => {
         />
         <div className="token-label">
           <label className="token-amount">Token Amount</label>
-          {error && notifyError(alertMessage, "error1")}
+          {error && notify(alertMessage, "error1")}
           <input
             type="number"
             placeholder="Enter Token Amount"

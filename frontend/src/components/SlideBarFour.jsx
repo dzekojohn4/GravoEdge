@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useMaxMultiplier } from 'hooks/useMaxMultiplier';
 import './slider-three.css';
-import { notifyError } from 'components/Toast/ErrorToast';
+import { notify } from 'components/Notifier/Notifier';
 
 const StepSlider = ({ min = 0, max = 10, step = 1, defaultValue = 1, setSelectedMultiplier, selectedToken }) => {
     const { data, isLoading, error } = useMaxMultiplier();
@@ -35,7 +35,7 @@ const StepSlider = ({ min = 0, max = 10, step = 1, defaultValue = 1, setSelected
     }, [value, maxMultiplier, TOTAL_MARKS]);
 
     if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
-    if (error) return notifyError(error.message);
+    if (error) return notify(error.message);
 
     const currentMark = getCurrentMark();
 
