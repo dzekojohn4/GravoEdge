@@ -9,6 +9,7 @@ that all edge cases and error scenarios are appropriately handled.
 
 import uuid
 from datetime import datetime
+from decimal import Decimal
 from unittest.mock import Mock, patch
 
 import pytest
@@ -17,6 +18,7 @@ from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
 from web_app.api.main import app
+from web_app.api.position import add_extra_deposit
 
 app.dependency_overrides.clear()
 
@@ -487,3 +489,46 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
         assert response.status_code == 200
         data = response.json()
         assert data == []
+
+# Test fixtures
+@pytest.fixture
+def mock_position():
+    return {
+        "id": str(uuid.uuid4()),
+        "wallet_id": "0x1234567890abcdef",
+        "amount": Decimal("1000.00"),
+        "status": "active"
+    }
+
+@pytest.fixture
+def mock_db_connector():
+    connector = Mock()
+    connector.get_position_by_id.return_value = mock_position()
+    return connector
+
+class TestAddExtraDeposit:
+    """Test cases for add_extra_deposit endpoint"""
+    
+    @pytest.mark.asyncio
+    @patch('your_module.position_db_connector')
+    async def test_successful_deposit(self, mock_connector, mock_position):
+        mock_connector.get_position_by_id.return_value = mock_position
+        result = await add_extra_deposit(1, "100.50")
+        assert result == {"detail": "Successfully added extra deposit"}
+        mock_connector.add_extra_deposit_to_position.assert_called_once_with(
+            mock_position, "100.50"
+        )
+
+    @pytest.mark.asyncio
+    async def test_missing_position_id(self):
+        with pytest.raises(HTTPException) as exc_info:
+            await add_extra_deposit(None, "100.50")
+        assert exc_info.value.status_code == 404
+        assert exc_info.value.detail == "Position ID is required"
+
+    @pytest.mark.asyncio
+    async def test_missing_amount(self):
+        with pytest.raises(HTTPException) as exc_info:
+            await add_extra_deposit(1, None)
+        assert exc_info.value.status_code == 404
+        assert exc_info.value.detail == "Amount is required"
