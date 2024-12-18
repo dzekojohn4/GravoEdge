@@ -76,7 +76,7 @@ export const handleTransaction = async (connectedWalletId, formData, setTokenAmo
     await checkAndDeployContract(connectedWalletId);
   } catch (error) {
     console.error('Error deploying contract:', error);
-    notify('Error deploying contract. Please try again.')
+    notify('Error deploying contract. Please try again.', 'error')
     setSuccessful(false)
     setLoading(false);
     return;
@@ -98,7 +98,7 @@ export const handleTransaction = async (connectedWalletId, formData, setTokenAmo
     setTokenAmount('');
   } catch (err) {
     console.error('Failed to create position:', err);
-    notify('Error deploying contract. Please try again.')
+    notify('Error deploying contract. Please try again.', 'error')
     setSuccessful(false)
   } finally {
     setLoading(false);

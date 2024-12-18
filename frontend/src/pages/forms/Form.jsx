@@ -68,7 +68,7 @@ const Form = () => {
     }
 
     if (tokenAmount === '' || selectedToken === '' || selectedMultiplier === '') {
-      notify("Please fill the form")
+      notify("Please fill the form", 'error')
       return;
     }
 

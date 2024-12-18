@@ -35,7 +35,7 @@ const StepSlider = ({ min = 0, max = 10, step = 1, defaultValue = 1, setSelected
     }, [value, maxMultiplier, TOTAL_MARKS]);
 
     if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
-    if (error) return notify(error.message);
+    if (error) return notify(error.message, 'error');
 
     const currentMark = getCurrentMark();
 

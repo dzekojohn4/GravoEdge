@@ -19,7 +19,7 @@ export const useClosePosition = () => {
     },
     onError: (error) => {
       console.error('Error during closePositionEvent', error);
-      notify(`Error during closePositionEvent: ${error.message}`)
+      notify(`Error during closePositionEvent: ${error.message}`, 'error')
     },
   });
 };
