@@ -113,6 +113,10 @@ function Stake() {
             </div>
 
             <div className="apy-rate">$0.00 APY / year</div>
+                 <div className='parent-divider1' >
+                          <div className="divider1"></div>
+                 </div>
+         
             <GasFee/>
           </div>
 

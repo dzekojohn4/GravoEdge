@@ -1,15 +1,7 @@
 .stake-wrapper {
-  background: url('../../../../public/background.png') no-repeat;
+  background: url('../../../../public/background(jpeg).png') no-repeat;
   background-size: cover;
   background-position: center 29%;
-  /* min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  margin-left: 200px;
-  padding: 0 24px;
-  width: 100vw;
-  padding: 0 24px; */
 }
 
 
@@ -142,8 +134,6 @@
   text-align: center;
 }
 
-
-
 .balance-display-container .large-screen-balance {
   display: block;
 }
@@ -151,7 +141,10 @@
 .balance-display-container .mobile-screen-balance {
   display: none;
 }
-/* Responsive  */
+
+
+
+/********Responsiveness  **********/
 
 /* Mobile view */
 @media (max-width:768px) {
@@ -163,24 +156,11 @@
   display: flex;
   gap: 16px;
   justify-content: space-between;
-  /* display: grid; */
-  /* grid-template-columns: 1fr 1fr; */
   height: 88px;
-  /* align-items: stretch; */
 } 
 
   .main-container {
     width: 100%;
-  
-    /* gap: 24px;
-    padding-top: 37px;
-    border-radius: 20px;
-    color: var(--primary);
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center; */
     padding: 0;
   }
 
@@ -196,29 +176,20 @@
     font-size: 16px;
     display: flex;
     justify-content: center; 
-    /* flex-direction: column;
-   
-    /* align-items: center; */
   }
 
   .stake-wrapper {
-    /* background-position: 15rem center ; */
     top: 80px;
     display: flex;
     flex-direction: column-reverse;
     justify-content: center;
-    align-items: flex-start; 
-    /* width: 390px; */
+    align-items: flex-start;   
+    padding: 3rem 24px;
    
-    padding: 3rem 24px; 
    
   }
 
   .stake-container {
-    /* display: flex;
-    justify-content: center;
-    flex-direction: column;
-    gap: 20px; */
     width: 100%;
     max-width: 390px;
     height: 610px;
@@ -244,7 +215,7 @@
     justify-content: center;
     margin-top: 2rem;
   }
-  .can-stk .cancel {
+   .cancel {
     width: 167px;
     height: 60px;
     padding: 16px 24px;
@@ -269,12 +240,30 @@
     margin: 0 auto;
 
   }
+
+  .parent-divider {
+    display: flex;
+    justify-items: auto;
+  
+  
+}
+
+.divider1 {
+    /* max-width: 100%; */
+    height: 1px;
+    background: var(--footer-divider-bg);
+}
+
   
 }
 
 /* Desktop view */
-
 @media (min-width:768px) {
+  .divider {
+    width: 100%;
+    background: var(--footer-divider-bg);
+  
+  }
   .stake-wrapper {
     height: 100vh;
     overflow-y: auto;
@@ -340,184 +329,11 @@
   
 }
 
-/* Tablet and Mobile Responsiveness */
-/* @media screen and (max-width: 1024px) {
-  .stake-wrapper {
-    display: block;
-    width: 100%;
-    margin-right: 374px;
-    margin-left: 0px;
-    padding: 0 16px;
-    background: url('../../../../public/background.png') no-repeat;
-    background-size: cover;
-    background-position: -250px center;
-  }
-
-  .stake-container {
-    padding: 0;
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 5rem;
-    width: 100%;
-  }
-
-  .balance-container {
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    margin-bottom: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 5px;
-    max-width: 100%;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  /* .balance-item {
-    height: fit-content;
-    padding: 16px 24px;
-    display: flex;
-    width: 167px;
-    height: 88px;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 0;
-    border-radius: 16px;
-    border: 1px solid var(--light-purple);
-    background-color: var(--dark-purple);
-  } */
-
-  /* .balance-item:first-child {
-    margin-left: 20px;
-  }
-
-  .balance-item:last-child {
-    margin-right: 20px;
-  }
-
-  .balance-item .balance-title {
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-  }
-
-  .balance-item .title-container + label:nth-of-type(1) {
-    font-size: 20px;
-    font-weight: 600;
-  }
-
-  .balance-item label:nth-child(2) {
-    color: var(--secondary); */
-    /* font-size: 14px;
-  } */
-  /* .stake-title {
-    font-size: 14px;
-    font-weight: 400;
-  }
-
-  .main-stake-card {
-    gap: 26px;
-    flex-direction: column;
-    border-radius: 12px;
-  }
-
-  .clicked-network-selector-container .network-dropdown {
-    display: block;
-  }
-
-  .network-selector {
-    padding: 15px;
-  }
-
-  .amount-field {
-    font-size: 32px;
-    padding: 12px;
-  }
-
-  .currency {
-    right: 10%;
-    font-size: 14px;
-  }
-
-  .apy-rate {
-    font-size: 14px;
-  } */
-
-   /* .stake-button {
-    font-size: 14px;
-    padding: 18px 24px;
-
-    align-self: center;
-  }  */
-
-  /* .balance-card {
-    max-width: 100%;
-    margin-top: 20px;
-  }
-
-  .balance-display-container .large-screen-balance {
-    display: none;
-  }
-
-  .balance-display-container .mobile-screen-balance {
-    display: block;
-  }
-} */
-
-/* @media (min-width: 768px) and (max-width: 1024px) {
-  .stake-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 0 auto;
-    padding: 0 20px;
-    
-    background: url('../../../../public/background(jpeg).png') no-repeat;
-    background-size: cover;
-   
-  }
-
-  .stake-container {
-    width: 100%;
-    padding: 1rem;
-    margin: 5rem auto;
-  }
-
-  .top-cards {
-    display: flex;
-    width: 100%;
-    /* flex-wrap: wrap; */
-    /* gap: 6px; */
-  
-
-  /* .main-stake-card {
-    margin: 0 auto;
-    gap: 20px;
-  } */
 
   .amount-field {
     font-size: 24px;
     padding: 10px;
   }
-
-  /* .stake-title {
-    font-size: 14px;
-    font-weight: 400;
-    padding-bottom: 2rem 0rem;
-  } */
-
-
-  /* .stake-button {
-    font-size: 16px;
-    padding: 16px 24px;
-    margin-left: 12px;
-    margin-right: 11px;
-    align-self: center;
-    width: 85%;
-  } */
-/* } */
 
 @media (max-width: 678px) {
   .main-container {
@@ -525,42 +341,22 @@
   }
 
   .top-cards {
-    /* width: 470px; */
     gap: 8px;
   }
-
-  /* .main-stake-card {
-    padding: 0 20px;
-    border: none;
-  } */
-
 }
 
 @media (max-width: 480px) {
   .top-cards {
-    /* width: 380px; */
     gap: 10px;
   }
 
-  /* .main-stake-card {
-    width: 450px;
-  } */
 }
 
 @media (max-width: 400px) {
-  /* .top-cards {
-    width: 330px;
-  } */
+
 
 }
 
 @media (max-width: 320px) {
-  /* .top-cards {
-    width: 280px;
-  } */
 
-  /* .main-stake-card {
-    width: 330px;
-    margin:auto;
-  } */
 }
