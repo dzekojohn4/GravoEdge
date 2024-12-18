@@ -4,6 +4,7 @@ import { erc20abi } from '../abis/erc20';
 import { abi } from '../abis/abi';
 import { axiosInstance } from '../utils/axios';
 import {checkAndDeployContract} from './contract';
+import { notify } from '../components/Notifier/Notifier';
 
 export async function sendTransaction(loopLiquidityData, contractAddress) {
   try {
@@ -68,15 +69,14 @@ export async function closePosition(transactionData) {
   ]);
 }
 
-export const handleTransaction = async (connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful) => {
+export const handleTransaction = async (connectedWalletId, formData, setTokenAmount, setLoading, setSuccessful) => {
 
   setLoading(true);
-  setError('');
   try{
     await checkAndDeployContract(connectedWalletId);
   } catch (error) {
     console.error('Error deploying contract:', error);
-    setError('Error deploying contract. Please try again.');
+    notify('Error deploying contract. Please try again.')
     setSuccessful(false)
     setLoading(false);
     return;
@@ -98,7 +98,7 @@ export const handleTransaction = async (connectedWalletId, formData, setError, s
     setTokenAmount('');
   } catch (err) {
     console.error('Failed to create position:', err);
-    setError('Failed to create position. Please try again.');
+    notify('Error deploying contract. Please try again.')
     setSuccessful(false)
   } finally {
     setLoading(false);
