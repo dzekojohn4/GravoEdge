@@ -16,7 +16,7 @@ use snforge_std::{declare, ContractClassTrait, DeclareResultTrait, load, map_ent
 use spotnet::interfaces::IVaultDispatcher;
 use starknet::{ContractAddress, contract_address_const, get_contract_address};
 use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
-use super::constants::{HYPOTHETICAL_OWNER_ADDR, contracts, tokens, pool_key};
+use super::constants::{contracts, tokens, pool_key};
 use super::types::VaultTestSuite;
 
 pub fn ERC20_MOCK_CONTRACT() -> ContractAddress {
@@ -59,9 +59,8 @@ pub fn deploy_erc20_mock() -> ContractAddress {
     contract_addr
 }
 
-pub fn setup_test_suite(token_address: ContractAddress) -> VaultTestSuite {
+pub fn setup_test_suite(owner: ContractAddress, token_address: ContractAddress) -> VaultTestSuite {
     let contract = declare("Vault").unwrap().contract_class();
-    let owner: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
 
     let (vault_address, _) = contract
         .deploy(@array![owner.try_into().unwrap(), token_address.try_into().unwrap()])
@@ -108,9 +107,7 @@ pub fn deploy_deposit_contract(user: ContractAddress) -> ContractAddress {
     deposit_address
 }
 
-pub fn setup_test_deposit(amount: u256) -> (VaultTestSuite, ContractAddress) {
-    let suite = setup_test_suite(tokens::ETH.try_into().unwrap());
-    let user = suite.owner;
+pub fn setup_test_deposit(ref suite: VaultTestSuite, user: ContractAddress, amount: u256) -> ContractAddress {
     let deposit_address: ContractAddress = deploy_deposit_contract(user);
     let usdc_addr: ContractAddress = tokens::USDC.try_into().unwrap();
     let eth_addr: ContractAddress = tokens::ETH.try_into().unwrap();
@@ -149,5 +146,5 @@ pub fn setup_test_deposit(amount: u256) -> (VaultTestSuite, ContractAddress) {
     );
     stop_cheat_account_contract_address(deposit_address);
 
-    (suite, deposit_address)
+    deposit_address
 }
