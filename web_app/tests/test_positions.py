@@ -493,6 +493,10 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
 # Test fixtures
 @pytest.fixture
 def mock_position():
+    """
+    Creates a mock position dictionary with default test values.
+    
+    """
     return {
         "id": str(uuid.uuid4()),
         "wallet_id": "0x1234567890abcdef",
@@ -502,6 +506,10 @@ def mock_position():
 
 @pytest.fixture
 def mock_db_connector():
+    """
+    Creates a mock database connector for testing.
+
+    """
     connector = Mock()
     connector.get_position_by_id.return_value = mock_position()
     return connector
@@ -512,6 +520,12 @@ class TestAddExtraDeposit:
     @pytest.mark.asyncio
     @patch('your_module.position_db_connector')
     async def test_successful_deposit(self, mock_connector, mock_position):
+        """
+        Test successful extra deposit addition to a position.
+        
+        Verifies that the extra deposit is correctly added when valid position ID
+        and amount are provided.
+        """
         mock_connector.get_position_by_id.return_value = mock_position
         result = await add_extra_deposit(1, "100.50")
         assert result == {"detail": "Successfully added extra deposit"}
@@ -521,6 +535,12 @@ class TestAddExtraDeposit:
 
     @pytest.mark.asyncio
     async def test_missing_position_id(self):
+        """
+        Test error handling when position ID is missing.
+        
+        Verifies that appropriate HTTP exception is raised when position ID
+        is not provided.
+        """
         with pytest.raises(HTTPException) as exc_info:
             await add_extra_deposit(None, "100.50")
         assert exc_info.value.status_code == 404
@@ -528,6 +548,12 @@ class TestAddExtraDeposit:
 
     @pytest.mark.asyncio
     async def test_missing_amount(self):
+        """
+        Test error handling when deposit amount is missing.
+        
+        Verifies that appropriate HTTP exception is raised when amount
+        is not provided.
+        """
         with pytest.raises(HTTPException) as exc_info:
             await add_extra_deposit(1, None)
         assert exc_info.value.status_code == 404
