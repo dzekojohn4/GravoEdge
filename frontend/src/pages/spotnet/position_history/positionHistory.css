@@ -1,15 +1,3 @@
-body {
-  font-family:
-    'Open Sans',
-    -apple-system,
-    Roboto,
-    Helvetica,
-    sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: var(--bg);
-}
-
 .position-wrapper {
   background: url('../../../../public/background.png') no-repeat center center;
   background-size: cover;
@@ -44,7 +32,7 @@ body {
 .position-top-cards {
   display: flex;
   justify-content: center;
-  gap: 24px;
+  gap: 10px;
   width: 100%;
   max-width: 642px;
 }
@@ -56,8 +44,7 @@ body {
 }
 
 .position-table-title {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
   color: var(--primary);
   margin-bottom: 16px;
 }
@@ -66,7 +53,6 @@ body {
   background: rgba(18, 7, 33, 0.5);
   border: 1px solid rgba(54, 41, 78, 1);
   border-radius: 10px;
-  overflow-x: auto;
 }
 
 .position-table table {
@@ -126,10 +112,6 @@ body {
 }
 
 @media (max-width: 768px) {
-  .position-top-cards {
-    flex-direction: column;
-  }
-
   .position-table th:nth-child(4),
   .position-table th:nth-child(6),
   .position-table th:nth-child(7),
@@ -142,24 +124,10 @@ body {
   .position-table td:nth-child(9) {
     display: none;
   }
-}
 
-.position-table::-webkit-scrollbar {
-  height: 6px;
-}
-
-.position-table::-webkit-scrollbar-track {
-  background: rgba(18, 7, 33, 0.5);
-  border-radius: 3px;
-}
-
-.position-table::-webkit-scrollbar-thumb {
-  background: rgba(54, 41, 78, 1);
-  border-radius: 3px;
-}
-
-.position-table::-webkit-scrollbar-thumb:hover {
-  background: rgba(54, 41, 78, 0.8);
+  .position-table {
+    overflow: hidden;
+  }
 }
 
 .action-button {
@@ -243,5 +211,9 @@ body {
 @media (max-width: 768px) {
   .action-column {
     display: table-cell;
+  }
+
+  .position-table-title {
+    text-align: center;
   }
 }

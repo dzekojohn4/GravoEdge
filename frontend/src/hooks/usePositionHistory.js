@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { axiosInstance } from 'utils/axios';
+import { useWalletStore } from 'stores/useWalletStore';
 
 const fetchPositionHistoryTable = async (walletId) => {
     if (!walletId) {
@@ -9,15 +10,23 @@ const fetchPositionHistoryTable = async (walletId) => {
     return response.data;
 };
 
-const usePositionHistoryTable = (walletId) => {
-    return useQuery({
+const usePositionHistoryTable = () => {
+    const walletId = useWalletStore((state) => state.walletId);
+
+    const { data, isLoading, error } = useQuery({
         queryKey: ['positionHistory', walletId],
         queryFn: () => fetchPositionHistoryTable(walletId),
         enabled: !!walletId,
-        onError: (error) => {
-            console.error('Error during fetching position history:', error);
+        onError: (err) => {
+            console.error('Error during fetching position history:', err);
         },
     });
+
+    return {
+        data,
+        isLoading,
+        error: walletId ? error : 'Wallet ID is required',
+    };
 };
 
-export { fetchPositionHistoryTable, usePositionHistoryTable };
+export { usePositionHistoryTable };
