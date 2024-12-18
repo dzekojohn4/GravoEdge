@@ -28,6 +28,8 @@ function App() {
   const navigate = useNavigate();
   const [isMobileRestrictionModalOpen, setisMobileRestrictionModalOpen] = useState(true);
   const isMobile = useCheckMobile();
+  
+  const disableDesktopOnMobile = process.env.REACT_APP_DISABLE_DESKTOP_ON_MOBILE !== 'false';
 
   const connectWalletMutation = useConnectWallet(setWalletId);
   useEffect(() => {
@@ -116,12 +118,11 @@ function App() {
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/form" element={<Form />} />
           <Route path="/documentation" element={<Documentation />} />
-
           <Route path="/stake" element={<Stake />} />
         </Routes>
       </main>
       <Footer />
-      {isMobile && (
+      {isMobile && disableDesktopOnMobile && (
         <ActionModal
           isOpen={isMobileRestrictionModalOpen}
           title="Mobile website restriction"
@@ -130,7 +131,7 @@ function App() {
           cancelLabel="Cancel"
           submitLabel="Open in Telegram"
           submitAction={openTelegramBot}
-          cancelAction={handleisMobileRestrictionModalClose}
+          cancelAction={handleisMobileRestrictionModalOpen}
         />
       )}
     </div>
