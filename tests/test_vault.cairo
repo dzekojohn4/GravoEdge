@@ -1,41 +1,26 @@
-use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+use openzeppelin::token::erc20::interface::IERC20DispatcherTrait;
 use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
 use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
-use snforge_std::cheatcodes::execution_info::account_contract_address::{
-    start_cheat_account_contract_address, stop_cheat_account_contract_address
-};
 use snforge_std::{load, map_entry_address};
-use spotnet::interfaces::{
-    IVaultDispatcherTrait, 
-    IDepositDispatcherTrait, 
-    IDepositDispatcher,
-    IMarketDispatcher,
-    IMarketDispatcherTrait
-};
+use spotnet::interfaces::{IVaultDispatcherTrait, IMarketDispatcher, IMarketDispatcherTrait};
 
 use starknet::ContractAddress;
 use super::constants::{HYPOTHETICAL_OWNER_ADDR, tokens, contracts};
 use super::utils::{
-    setup_test_suite, 
-    setup_user, 
-    assert_vault_amount, 
-    deploy_deposit_contract,
-    setup_test_deposit,
+    setup_test_suite, setup_user, assert_vault_amount, deploy_deposit_contract, setup_test_deposit,
     deploy_erc20_mock
 };
 
 const MOCK_USER: felt252 = 0x1234;
 const MOCK_USER_2: felt252 = 0x5678;
-const DEPOSIT_MOCK_USER: felt252 = 0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5;
+const DEPOSIT_MOCK_USER: felt252 =
+    0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5;
 
 #[test]
 fn test_deploy() {
-    let suite = setup_test_suite(
-        HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), 
-        deploy_erc20_mock()
-    );
+    let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
     let token = load(suite.vault.contract_address, selector!("token"), 1,);
 
     assert!(*token[0] == suite.token.contract_address.try_into().unwrap(), "token not match");
@@ -43,10 +28,7 @@ fn test_deploy() {
 
 #[test]
 fn test_store_and_withdraw_liquidity_happy_path() {
-    let suite = setup_test_suite(
-        HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), 
-        deploy_erc20_mock()
-    );
+    let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
     let user1: ContractAddress = MOCK_USER.try_into().unwrap();
     let amount: u256 = 100;
 
@@ -71,10 +53,7 @@ fn test_store_and_withdraw_liquidity_happy_path() {
 
 #[test]
 fn test_store_and_withdraw_multiple_users() {
-    let suite = setup_test_suite(
-        HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), 
-        deploy_erc20_mock()
-    );
+    let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
     let user1: ContractAddress = MOCK_USER.try_into().unwrap();
     let user2: ContractAddress = MOCK_USER_2.try_into().unwrap();
 
@@ -105,10 +84,7 @@ fn test_store_and_withdraw_multiple_users() {
 #[test]
 #[should_panic(expected: ('Approved amount insufficient',))]
 fn test_insufficient_allowance() {
-    let suite = setup_test_suite(
-        HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), 
-        deploy_erc20_mock()
-    );
+    let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
     let user1: ContractAddress = MOCK_USER.try_into().unwrap();
     let user_amount: u256 = 100;
     let approved_amount: u256 = 50; // less than needed
@@ -128,10 +104,7 @@ fn test_insufficient_allowance() {
 #[test]
 #[should_panic(expected: ('Not enough tokens to withdraw',))]
 fn test_insufficient_balance_withdraw() {
-    let suite = setup_test_suite(
-        HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), 
-        deploy_erc20_mock()
-    );
+    let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
     let user1: ContractAddress = MOCK_USER.try_into().unwrap();
 
     start_cheat_caller_address(suite.vault.contract_address, user1);
@@ -141,10 +114,7 @@ fn test_insufficient_balance_withdraw() {
 
 #[test]
 fn test_add_deposit_contract() {
-    let suite = setup_test_suite(
-        HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), 
-        deploy_erc20_mock()
-    );
+    let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
     let user: ContractAddress = MOCK_USER.try_into().unwrap();
     let deposit_address: ContractAddress = deploy_deposit_contract(user);
 
@@ -167,10 +137,7 @@ fn test_add_deposit_contract() {
 #[test]
 #[should_panic(expected: ('Deposit contract is zero',))]
 fn test_add_deposit_contract_address_is_zero() {
-    let suite = setup_test_suite(
-        HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), 
-        deploy_erc20_mock()
-    );
+    let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
     let user: ContractAddress = MOCK_USER.try_into().unwrap();
     let deposit_address: ContractAddress = 0.try_into().unwrap();
 
@@ -196,10 +163,14 @@ fn test_protect_position_with_owner() {
     let expected_amount_vault: felt252 = (user_amount - withdrawn_amount).try_into().unwrap();
     assert_vault_amount(suite.vault.contract_address, user, expected_amount_vault);
 
-    let z_token_address = IMarketDispatcher{contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()}
-        .get_reserve_data(token).z_token_address;
-    let deposit_balance: u256 = ERC20ABIDispatcher{contract_address: z_token_address}.balanceOf(deposit_address);
-    
+    let z_token_address = IMarketDispatcher {
+        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
+    }
+        .get_reserve_data(token)
+        .z_token_address;
+    let deposit_balance: u256 = ERC20ABIDispatcher { contract_address: z_token_address }
+        .balanceOf(deposit_address);
+
     println!("Deposit {}", deposit_balance);
 
     assert(deposit_balance >= user_amount, 'Deposit amount mismatch');
@@ -216,7 +187,7 @@ fn test_protect_position_with_user() {
     let token = tokens::ETH.try_into().unwrap();
 
     let mut suite_owner = setup_test_suite(owner, token);
-    let deposit_address_owner = setup_test_deposit(ref suite_owner, owner, owner_amount);
+    let _deposit_address_owner = setup_test_deposit(ref suite_owner, owner, owner_amount);
     let mut suite_user = setup_test_suite(user, token);
     let deposit_address_user = setup_test_deposit(ref suite_user, user, user_amount);
 
@@ -227,9 +198,13 @@ fn test_protect_position_with_user() {
     let expected_amount_owner: felt252 = (owner_amount - withdrawn_amount).try_into().unwrap();
     assert_vault_amount(suite_owner.vault.contract_address, owner, expected_amount_owner);
 
-    let z_token_address = IMarketDispatcher{contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()}
-        .get_reserve_data(token).z_token_address;
-    let deposit_balance: u256 = ERC20ABIDispatcher{contract_address: z_token_address}.balanceOf(deposit_address_user);
+    let z_token_address = IMarketDispatcher {
+        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
+    }
+        .get_reserve_data(token)
+        .z_token_address;
+    let deposit_balance: u256 = ERC20ABIDispatcher { contract_address: z_token_address }
+        .balanceOf(deposit_address_user);
 
     println!("Deposit {}", deposit_balance);
 
@@ -264,7 +239,7 @@ fn test_protect_position_insufficient_balance() {
     let deposit_address = setup_test_deposit(ref suite, user, user_amount);
 
     start_cheat_caller_address(suite.vault.contract_address, user);
-    suite.vault.protect_position(deposit_address, user, user_amount+10000);
+    suite.vault.protect_position(deposit_address, user, user_amount + 10000);
     stop_cheat_caller_address(suite.vault.contract_address);
 }
 
@@ -285,10 +260,7 @@ fn test_protect_position_deposit_contract_is_zero() {
 #[test]
 #[should_panic(expected: ('User address is zero',))]
 fn test_protect_position_user_address_is_zero() {
-    let suite = setup_test_suite(
-        HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), 
-        deploy_erc20_mock()
-    );
+    let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
     let user_amount: u256 = 685000000000000;
     let user: ContractAddress = 0.try_into().unwrap();
     let deposit_address: ContractAddress = tokens::ETH.try_into().unwrap();
