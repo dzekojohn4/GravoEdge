@@ -18,13 +18,20 @@ import { useConnectWallet } from 'hooks/useConnectWallet';
 import OverviewPage from 'pages/spotnet/overview/Overview';
 import { ActionModal } from 'components/ui/ActionModal';
 import Stake from 'pages/vault/stake/Stake';
+import { TELEGRAM_BOT_LINK } from 'utils/constants';
+import { useCheckMobile } from 'hooks/useCheckMobile';
 import { notifyError } from 'utils/notification';
 import PositionHistory from 'pages/spotnet/position_history/PositionHistory';
+
 
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore();
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const [isMobileRestrictionModalOpen, setisMobileRestrictionModalOpen] = useState(true);
+  const isMobile = useCheckMobile();
+  
+  const disableDesktopOnMobile = process.env.REACT_APP_DISABLE_DESKTOP_ON_MOBILE !== 'false';
 
   const connectWalletMutation = useConnectWallet(setWalletId);
 
@@ -47,6 +54,15 @@ function App() {
     setShowModal(false);
   };
 
+
+  const handleisMobileRestrictionModalClose = () => {
+    setisMobileRestrictionModalOpen(false);
+  };
+
+  const openTelegramBot = () => {
+    window.open(TELEGRAM_BOT_LINK, '_blank');
+  };
+
   useEffect(() => {
     if (window.Telegram?.WebApp?.initData) {
       getTelegramUserWalletId(window.Telegram.WebApp.initDataUnsafe.user.id)
@@ -61,6 +77,7 @@ function App() {
         });
     }
   }, [window.Telegram?.WebApp?.initDataUnsafe]);
+
 
   return (
     <div className="App">
@@ -96,6 +113,18 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      {isMobile && disableDesktopOnMobile && (
+        <ActionModal
+          isOpen={isMobileRestrictionModalOpen}
+          title="Mobile website restriction"
+          subTitle="Please, use desktop version or telegram mini-app"
+          content={[]}
+          cancelLabel="Cancel"
+          submitLabel="Open in Telegram"
+          submitAction={openTelegramBot}
+          cancelAction={handleisMobileRestrictionModalClose}
+        />
+      )}
     </div>
   );
 }
