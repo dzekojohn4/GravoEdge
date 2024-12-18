@@ -235,3 +235,13 @@ body {
 .detail-row span:first-child {
   color: var(--primary);
 }
+
+.action-column {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .action-column {
+    display: table-cell;
+  }
+}

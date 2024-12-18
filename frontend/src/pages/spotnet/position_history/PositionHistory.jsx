@@ -108,7 +108,7 @@ function PositionHistory() {
                       <td>{data.multiplier.toFixed(1)}</td>
                       <td>{data.is_liquidated ? 'Yes' : 'No'}</td>
                       <td>{formatDate(data.datetime_liquidation)}</td>
-                      <td>
+                      <td className="action-column">
                         <span className="action-button" onClick={() => setSelectedPosition(data)}>
                           &#x22EE;
                         </span>
