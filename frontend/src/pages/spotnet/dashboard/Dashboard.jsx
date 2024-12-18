@@ -17,7 +17,6 @@ import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynami
 import Collateral from 'components/collateral/Collateral';
 import Card from 'components/Card/Card';
 import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
-import { notify } from 'components/Notifier/Notifier';
 
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
@@ -30,7 +29,7 @@ export default function Component({ telegramId }) {
     data: { health_ratio: '1.5', current_sum: '0.05', start_sum: '0.04', borrowed: '10.0' },
     isLoading: false,
   };
-  const { mutate: closePositionEvent, isLoading: isClosing, error: closePositionError } = useClosePosition(walletId);
+  const { mutate: closePositionEvent, isLoading: isClosing } = useClosePosition(walletId);
   const { data: positionData } = useCheckPosition();
   const { subscribe } = useTelegramNotification();
 
@@ -189,7 +188,6 @@ export default function Component({ telegramId }) {
             >
               {isClosing ? 'Closing...' : 'Redeem'}
             </Button>
-            {closePositionError && (notify("Error: " + closePositionError.message))}
             <Button variant="secondary" size="lg" className="dashboard-btn telegram" onClick={handleOpen}>
               <TelegramIcon className="tab-icon" />
               Enable telegram notification bot
