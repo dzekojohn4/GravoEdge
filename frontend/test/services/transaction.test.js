@@ -133,14 +133,14 @@ describe('Transaction Functions', () => {
   });
 
   describe('handleTransaction', () => {
-    const mockSetError = jest.fn();
+    // const mockSetError = jest.fn();
     const mockSetTokenAmount = jest.fn();
     const mockSetLoading = jest.fn();
     const mockSetSuccessful = jest.fn();
     const mockFormData = { position_id: 1 };
 
     beforeEach(() => {
-      mockSetError.mockClear();
+      // mockSetError.mockClear();
       mockSetTokenAmount.mockClear();
       mockSetLoading.mockClear();
       mockSetSuccessful.mockClear();
@@ -162,7 +162,7 @@ describe('Transaction Functions', () => {
         data: { status: 'open' },
       });
 
-      await handleTransaction(mockWalletId, mockFormData, mockSetError, mockSetTokenAmount, mockSetLoading, mockSetSuccessful);
+      await handleTransaction(mockWalletId, mockFormData, mockSetTokenAmount, mockSetLoading, mockSetSuccessful);
 
       expect(mockSetLoading).toHaveBeenCalledWith(true);
       expect(axiosInstance.post).toHaveBeenCalledWith('/api/create-position', mockFormData);
@@ -171,7 +171,7 @@ describe('Transaction Functions', () => {
       });
       expect(mockSetTokenAmount).toHaveBeenCalledWith('');
       expect(mockSetLoading).toHaveBeenCalledWith(false);
-      expect(mockSetError).toHaveBeenCalledWith('');
+      // expect(mockSetError).toHaveBeenCalledWith('');
     });
 
     it('should handle create position error', async () => {
@@ -180,9 +180,9 @@ describe('Transaction Functions', () => {
 
       console.error = jest.fn();
 
-      await handleTransaction(mockWalletId, mockFormData, mockSetError, mockSetTokenAmount, mockSetLoading, mockSetSuccessful);
+      await handleTransaction(mockWalletId, mockFormData, mockSetTokenAmount, mockSetLoading, mockSetSuccessful);
 
-      expect(mockSetError).toHaveBeenCalledWith('Failed to create position. Please try again.');
+      // expect(mockSetError).toHaveBeenCalledWith('Failed to create position. Please try again.');
       expect(console.error).toHaveBeenCalledWith('Failed to create position:', mockError);
       expect(mockSetLoading).toHaveBeenCalledWith(false);
       expect(mockSetSuccessful).toHaveBeenCalledWith(false);
