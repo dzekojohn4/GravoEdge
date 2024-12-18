@@ -1,5 +1,5 @@
 import React from 'react';
-import './position_history.css';
+import './positionHistory.css';
 import { formatDate } from 'utils/formatDate';
 
 function PositionHistoryModal({ position, onClose }) {

@@ -1,12 +1,11 @@
 export function formatDate(timestamp) {
     const date = new Date(timestamp);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = String(date.getFullYear()).slice(2);
-    const hours = String(date.getHours() % 12 || 12).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const period = date.getHours() >= 12 ? 'PM' : 'AM';
-
-    return `${day}/${month}/${year} - ${hours}:${minutes}${period}`
+    return new Intl.DateTimeFormat('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    }).format(date).replace(',', ' -');
 }
-
