@@ -36,7 +36,7 @@ function Stake() {
     }
   };
   return (
-    <VaultLayout className="sidenav">
+    <VaultLayout>
       <div className="stake-wrapper">
         <div className="stake-container">
           <div className="balance-display-container">
