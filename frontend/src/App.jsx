@@ -122,7 +122,7 @@ function App() {
           cancelLabel="Cancel"
           submitLabel="Open in Telegram"
           submitAction={openTelegramBot}
-          cancelAction={handleisMobileRestrictionModalOpen}
+          cancelAction={handleisMobileRestrictionModalClose}
         />
       )}
     </div>
