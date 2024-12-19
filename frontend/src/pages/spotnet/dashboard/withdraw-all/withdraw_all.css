@@ -31,7 +31,7 @@ body {
   .withdrawall-content {
     width: 642px;
     gap: 24px;
-    border-radius: 20px;
+    border-radius: 8px;
     padding: 1rem 0;
     color: var(--second-primary);
     text-align: center;
@@ -42,15 +42,24 @@ body {
   }
   
   .withdrawall-info-card {
-    background: var(--dark-background);
-    border: 1px solid var(--border-color);
-    border-radius: 48px;
+    background: var(--warning-colour-alt);
+    border: 1px solid var(--warning-colour);
+    color: var(--second-primary);
+    text-align: center;
+    border-radius: 8px;
     width: 642px;
-    height: 318px;
-    padding: 16px 30px;
+    height: 98px;
+    padding: 8px 16px;
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
     gap: 20px;
+    margin-top: 52px;
+    margin-bottom: 52px;
+  }
+  .withdrawall-btn {
+    border-radius: 4px;
   }
   
   @media (max-width: 768px) {
@@ -73,20 +82,20 @@ body {
     }
 
     .withdrawall-btn {
-      border-radius: 16px;
+      border-radius: 8px;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 500px;
+      width: 100%;
       height: 55px;
     }
   
     .withdrawall-info-card {
-      height: fit-content;
-      border-radius: 16px;
-      padding: 16px 24px;
-      min-height: 215px;
-      width: 500px;
+      height: 98px;
+      border-radius: 8px;
+      width: 100%;
+      margin-top: 52px;
+      margin-bottom: 52px;
     }
   }
   
@@ -113,9 +122,9 @@ body {
       width: 100%;
     }
     .withdrawall-info-card {
-      background: var(--deep-purple);
       padding: 16px 24px;
-      margin: 0px auto;
+      height: 128px;
+      font-size: medium; 
       width: 100%;
       border-radius: 8px;
       gap: 0;
@@ -131,6 +140,7 @@ body {
       width: 100%;
     }
     .withdrawall-info-card {
+      font-size: x-small; 
       padding: 16px 24px;
       width: 100%;
     }
@@ -156,6 +166,11 @@ body {
       width: 100%;
       height: 45px;
     }
+
+    .withdrawall-info-card {
+        padding: 16px 24px;
+        width: 100%;
+      }
   }
   
   @media (max-width: 350px) {
@@ -164,4 +179,8 @@ body {
       width: 100%;
       height: 45px;
     }
+
+    .withdrawall-info-card {
+        width: 100%;
+      }
   }

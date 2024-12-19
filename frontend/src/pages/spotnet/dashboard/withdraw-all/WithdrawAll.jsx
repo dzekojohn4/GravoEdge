@@ -19,8 +19,11 @@ const WithdrawAll = () => {
     <div className="withdrawall-wrapper">
       <div className="withdrawall-container">
         <BalanceCards balances={balances} setBalances={setBalances} walletId={walletId} />
+        <div className="withdrawall-info-card">
+        Clicking on the `Withdraw All` button means you are agreeing to close all positions and get all tokens transferred to your wallet.
+        </div>
         <Button className="withdrawall-btn" variant="secondary" size="lg" type="submit">
-          Withdraw
+          Withdraw All
         </Button>
       </div>
     </div>
