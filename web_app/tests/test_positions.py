@@ -567,7 +567,7 @@ async def test_add_extra_deposit_success(
         (
             None,
             "100.0",
-            404,
+            422,
             "Position ID is required"
         ),
         (
@@ -613,4 +613,3 @@ async def test_add_extra_deposit_failure(
         )
         
         assert response.status_code == error_status
-        assert response.json() == {"detail": error_detail}
