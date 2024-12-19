@@ -275,9 +275,10 @@ async def test_subscribe_to_notification(
     if expected_response:
         assert response.json() == expected_response
 
+
 @pytest.mark.asyncio
-@patch("web_app.api.routes.user.CLIENT.withdraw_all")
-@patch("web_app.api.routes.user.user_db.get_contract_address_by_wallet_id")
+@patch("web_app.contract_tools.blockchain_call.CLIENT.withdraw_all")
+@patch("web_app.api.user.user_db.get_contract_address_by_wallet_id")
 @pytest.mark.parametrize(
     "wallet_id, contract_address, withdrawal_results, expected_status_code, expected_response",
     [
