@@ -20,6 +20,7 @@ import { ActionModal } from 'components/ui/ActionModal';
 import Stake from 'pages/vault/stake/Stake';
 import { TELEGRAM_BOT_LINK } from 'utils/constants';
 import { useCheckMobile } from 'hooks/useCheckMobile';
+import PositionHistory from 'pages/spotnet/position_history/PositionHistory';
 
 
 function App() {
@@ -32,7 +33,6 @@ function App() {
   const disableDesktopOnMobile = process.env.REACT_APP_DISABLE_DESKTOP_ON_MOBILE !== 'false';
 
   const connectWalletMutation = useConnectWallet(setWalletId);
-
 
   const handleConnectWallet = () => {
     connectWalletMutation.mutate();
@@ -64,14 +64,16 @@ function App() {
 
   useEffect(() => {
     if (window.Telegram?.WebApp?.initData) {
-      getTelegramUserWalletId(window.Telegram.WebApp.initDataUnsafe.user.id).then((linked_wallet_id) => {
-        setWalletId(linked_wallet_id);
-        window.Telegram.WebApp.ready();
-      }).catch((error) => {
-        console.error('Error getting Telegram user wallet ID:', error);
-        notify('Error loading wallet', "error");
-        window.Telegram.WebApp.ready();
-      });
+      getTelegramUserWalletId(window.Telegram.WebApp.initDataUnsafe.user.id)
+        .then((linked_wallet_id) => {
+          setWalletId(linked_wallet_id);
+          window.Telegram.WebApp.ready();
+        })
+        .catch((error) => {
+          console.error('Error getting Telegram user wallet ID:', error);
+          notify('Error loading wallet', "error");
+          window.Telegram.WebApp.ready();
+        });
     }
   }, [window.Telegram?.WebApp?.initDataUnsafe]);
 
@@ -92,14 +94,11 @@ function App() {
           />,
           document.body
         )}
-      <Header
-        onConnectWallet={handleConnectWallet}
-        onLogout={handleLogoutModal}
-      />
+      <Header onConnectWallet={handleConnectWallet} onLogout={handleLogoutModal} />
       <main>
         <Routes>
           <Route index element={<SpotnetApp onConnectWallet={handleConnectWallet} onLogout={handleLogout} />} />
-          <Route  
+          <Route
             path="/login"
             element={walletId ? <Navigate to="/" /> : <Login onConnectWallet={handleConnectWallet} />}
           />
@@ -108,6 +107,7 @@ function App() {
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/form" element={<Form />} />
           <Route path="/documentation" element={<Documentation />} />
+          <Route path="/position-history" element={<PositionHistory />} />
           <Route path="/stake" element={<Stake />} />
         </Routes>
       </main>
