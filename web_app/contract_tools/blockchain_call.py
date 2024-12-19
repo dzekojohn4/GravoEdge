@@ -14,7 +14,7 @@ import starknet_py.cairo.felt
 import starknet_py.hash.selector
 import starknet_py.net.client_models
 import starknet_py.net.networks
-from constants import MULTIPLIER_POWER, ZKLEND_MARKET_ADDRESS, TokenParams
+from .constants import MULTIPLIER_POWER, ZKLEND_MARKET_ADDRESS, TokenParams
 from starknet_py.contract import Contract
 from starknet_py.net.full_node_client import FullNodeClient
 
