@@ -20,7 +20,6 @@ import { ActionModal } from 'components/ui/ActionModal';
 import Stake from 'pages/vault/stake/Stake';
 import { TELEGRAM_BOT_LINK } from 'utils/constants';
 import { useCheckMobile } from 'hooks/useCheckMobile';
-import { notifyError } from 'utils/notification';
 
 
 function App() {
