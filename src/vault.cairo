@@ -198,11 +198,10 @@ mod Vault {
         /// * `user` - The address of the user from storage
         /// * `deposit_contract` - The address of the deposit contract
         fn add_deposit_contract(ref self: ContractState, deposit_contract: ContractAddress) {
-            let token = self.token.read();
             let user = get_caller_address();
             assert(deposit_contract.is_non_zero(), 'Deposit contract is zero');
             self.activeContracts.entry(user).write(deposit_contract);
-            self.emit(ContractAdded { token, user, deposit_contract });
+            self.emit(ContractAdded { token: self.token.read(), user, deposit_contract });
         }
 
         /// Makes a protect deposit into open zkLend position to control stability
@@ -235,13 +234,12 @@ mod Vault {
         ) {
             let token = self.token.read();
             let caller = get_caller_address();
-            let vault_owner = self.ownable.owner();
             let current_amount = self.amounts.entry(caller).read();
 
             assert(deposit_contract.is_non_zero(), 'Deposit contract is zero');
             assert(user.is_non_zero(), 'User address is zero');
             assert(current_amount >= amount, 'Insufficient balance!');
-            assert(vault_owner == caller || user == caller, 'Caller must be owner or user');
+            assert(self.ownable.owner() == caller || user == caller, 'Caller must be owner or user');
 
             // update new amount
             self.amounts.entry(user).write(current_amount - amount);
@@ -251,15 +249,7 @@ mod Vault {
 
             IDepositDispatcher { contract_address: deposit_contract }.extra_deposit(token, amount);
 
-            self
-                .emit(
-                    PositionProtected {
-                        token: token,
-                        deposit_contract: deposit_contract,
-                        contract_owner: user,
-                        amount: amount
-                    }
-                );
+            self.emit(PositionProtected { token, deposit_contract, contract_owner: user, amount });
         }
     }
 }
