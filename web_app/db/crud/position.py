@@ -10,6 +10,7 @@ from typing import TypeVar
 
 from sqlalchemy import Numeric, cast, func
 from sqlalchemy.exc import SQLAlchemyError
+
 from web_app.db.models import Base, Position, Status, Transaction, User
 
 from .user import UserDBConnector
@@ -179,7 +180,7 @@ class PositionDBConnector(UserDBConnector):
         :param wallet_id: wallet ID
         :return: Position ID
         """
-        position = self.get_positions_by_wallet_id(wallet_id)
+        position = self.get_positions_by_wallet_id(wallet_id, 0, 1)
         if position:
             return position[0]["id"]
         return None
