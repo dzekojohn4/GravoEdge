@@ -79,10 +79,16 @@
   position: relative;
   width: 100%;
 }
-
+@media (min-width: 1024px) {
+  .sidebar {
+    width: 220px;
+    display: block;
+  }
+}
 @media (max-width: 1024px) {
   .sidebar {
     width: 220px;
+    display: none;
   }
 
   .sidebar-title {
