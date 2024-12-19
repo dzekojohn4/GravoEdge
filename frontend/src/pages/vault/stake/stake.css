@@ -3,13 +3,11 @@
   background-size: cover;
   background-position: center 39%;
   min-height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  margin-left: 200px;
-  padding: 0 24px;
-  width: 100vw;
-  padding: 0 24px;
+  align-items: center;
+  width: calc(100vw - 372px);
 }
 
 .token-icon {
