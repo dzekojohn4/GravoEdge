@@ -9,6 +9,12 @@ const defaultStyles = {
   info: { backgroundColor: 'blue', color: 'white' },
 };
 
+const ToastWithLink = (message, link, linkMessage) => (
+  <div>
+    <span>{message}</span> <a target='_blank' href={link}>{linkMessage}</a>
+  </div>
+);
+
 const notify = (message, type='info', autoClose=3000) => toast(message, { type, autoClose, style: defaultStyles[type] || defaultStyles.info });
 
 const Notifier = () => {
@@ -19,4 +25,4 @@ const Notifier = () => {
   );
 };
 
-export { Notifier, notify };
+export { Notifier, notify, ToastWithLink};
