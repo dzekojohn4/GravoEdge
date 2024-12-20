@@ -4,11 +4,9 @@
 FROM node:20-alpine AS build
 
 WORKDIR /app
-COPY package.json yarn.lock ./
+COPY . /app
 
 RUN yarn
-COPY src/ ./src/
-COPY public/ ./public/
 RUN yarn build
 
 # Stage 2: Set up Nginx to serve the built app
