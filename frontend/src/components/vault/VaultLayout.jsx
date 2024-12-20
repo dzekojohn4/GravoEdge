@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import './VaultLayout.css';
+import './vaultLayout.css';
 
 export function VaultLayout({ children }) {
   return (

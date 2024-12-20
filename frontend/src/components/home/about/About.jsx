@@ -4,7 +4,7 @@ import { ReactComponent as BorrowUSDC } from '../../../assets/icons/borrow_usdc.
 import { ReactComponent as EkuboSwap } from '../../../assets/icons/ekubo_swap.svg';
 import { ReactComponent as Repeat } from '../../../assets/icons/repeats.svg';
 import StarMaker from '../../layout/star-maker/StarMaker';
-import './About.css';
+import './about.css';
 
 const CardData = [
   {

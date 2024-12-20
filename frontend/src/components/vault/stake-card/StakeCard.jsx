@@ -1,5 +1,5 @@
 import React from 'react';
-import './StakeCard.css';
+import './stakeCard.css';
 
 export default function StakeCard({ icon= 1, title, value }) {
   return (

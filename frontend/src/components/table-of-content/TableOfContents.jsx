@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './TableOfContentStyles.css';
+import './tableOfContentStyles.css';
 
 const TableOfContents = ({ items, defaultActiveId, tabelTitle, headerHeight = 80 }) => {
   const [activeId, setActiveId] = useState(defaultActiveId);
