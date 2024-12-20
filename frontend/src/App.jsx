@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import './globals.css';
 import Header from './components/layout/header/Header';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -23,7 +23,7 @@ import PositionHistory from './pages/position-history/PositionHistory';
 
 
 function App() {
-  const { walletId, setWalletId, removeWalletId } = useWalletStore();
+  const { setWalletId, removeWalletId } = useWalletStore();
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const [isMobileRestrictionModalOpen, setisMobileRestrictionModalOpen] = useState(true);
