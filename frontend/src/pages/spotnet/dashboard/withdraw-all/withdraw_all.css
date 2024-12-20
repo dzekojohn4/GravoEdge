@@ -52,18 +52,6 @@
   .withdrawall-btn {
     border-radius: 4px;
   }
-
-  .error-message {
-    padding: 10px;
-    border-radius: 5px;
-    background-color: var(--error-color);
-    font-size: 15px;
-    color: var(--black);
-    margin-bottom: 5px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
   
   @media (max-width: 768px) {
     .withdrawall-wrapper {
