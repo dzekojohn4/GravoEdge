@@ -1,5 +1,5 @@
 import React from 'react';
-import './button.css';
+import './Button.css';
 
 const Button = ({ variant = 'primary', size = 'md', className = '', children, ...props }) => {
   const buttonClasses = ['button', `button--${variant}`, `button--${size}`, className].filter(Boolean).join(' ');

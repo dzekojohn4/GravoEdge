@@ -1,5 +1,5 @@
 import React from 'react';
-import './congratulationsModal.css';
+import './CongratulationsModal.css';
 import doneLogo from '../../../assets/icons/done-badge.svg';
 import { useNavigate } from 'react-router-dom';
 

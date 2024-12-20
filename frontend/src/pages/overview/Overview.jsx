@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import './overview.css';
+import './Overview.css';
 import TableOfContents from '../../components/table-of-content/TableOfContents';
 import ScrollButton from '../../components/ui/scroll-button/ScrollButton';
 import Sections from '../../components/layout/sections/Sections';
