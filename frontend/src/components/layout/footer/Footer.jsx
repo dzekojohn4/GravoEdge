@@ -7,7 +7,7 @@ import { ReactComponent as GithubIcon } from '../../../assets/icons/github.svg';
 import { ReactComponent as DashboardIcon } from '../../../assets/icons/dashboard-icon.svg';
 import { ReactComponent as FormIcon } from '../../../assets/icons/form-icon.svg';
 
-import '../../layout/footer/footer.css';
+import './footer.css';
 
 function Footer() {
   const socialLinks = [
