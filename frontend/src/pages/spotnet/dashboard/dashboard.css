@@ -5,6 +5,7 @@ body {
     Roboto,
     Helvetica,
     sans-serif;
+    
 }
 
 .dashboard-wrapper {
@@ -342,7 +343,7 @@ body {
 
 @media (max-width: 550px) {
   .dashboard-wrapper {
-    background: url('../../../../public/dashboardmobile.png') no-repeat;
+    background: url('../../../../public/mobile-background.png') no-repeat;
     background-size: cover;
     background-position: 50% 40%;
     height: 100%;

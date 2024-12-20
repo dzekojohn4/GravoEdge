@@ -9,17 +9,17 @@ import './home.css';
 import { useWalletStore } from 'stores/useWalletStore';
 import { notify } from 'components/Notifier/Notifier';
 
-
 function Home() {
-      const { walletId } = useWalletStore();
+  const { walletId } = useWalletStore();
 
   const navigate = useNavigate();
 
   const handleLaunchApp = async () => {
+    console.log('Launch button clicked'); // Debugging
     if (walletId) {
       navigate('/form');
     } else {
-      notify('Please connect to your wallet', "warning");
+      notify('Please connect to your wallet', 'warning');
     }
   };
 
