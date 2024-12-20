@@ -70,6 +70,9 @@
   filter: grayscale(1);
 }
 
+.balance-text {
+    color: #83919F;
+}
 .token-icon {
     display: flex;
     align-items: center;

@@ -15,7 +15,6 @@
     flex-direction: column;
     justify-content: center;
     gap: 10px;
-    padding: 0 24px;
     padding-top: 20px;
   }
   
@@ -36,6 +35,8 @@
     background: var(--warning-colour-alt);
     border: 1px solid var(--warning-colour);
     color: var(--second-primary);
+    font-family: 'Open Sans';
+    font-weight: 400;
     text-align: center;
     border-radius: 8px;
     width: 642px;
@@ -51,6 +52,13 @@
   }
   .withdrawall-btn {
     border-radius: 4px;
+  }
+
+  .withdrawall-title h1 {
+    text-align: center;
+    font-weight: normal;
+    font-size: 20px;
+    margin-bottom: 10px;
   }
   
   @media (max-width: 768px) {
@@ -68,7 +76,7 @@
     .withdrawall-content {
       width: 100%;
       max-width: 100%;
-      padding: 0.5rem 0;
+      padding: 0.5rem 24px;
       gap: 16px;
     }
 
@@ -87,6 +95,13 @@
       width: 100%;
       margin-top: 52px;
       margin-bottom: 52px;
+    }
+
+    .withdrawall-title h1 {
+      text-align: center;
+      font-weight: normal;
+      font-size: 1rem;
+      margin-bottom: 20px;
     }
   }
   
@@ -114,8 +129,8 @@
     }
     .withdrawall-info-card {
       padding: 16px 24px;
-      height: 128px;
-      font-size: medium; 
+      height: 168px;
+      font-size: 400; 
       width: 100%;
       border-radius: 8px;
       gap: 0;
@@ -131,8 +146,7 @@
       width: 100%;
     }
     .withdrawall-info-card {
-      font-size: x-small; 
-      padding: 16px 24px;
+      padding: 32px 8px;
       width: 100%;
     }
   
