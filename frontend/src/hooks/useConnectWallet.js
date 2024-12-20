@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { notify } from 'components/Notifier/Notifier';
+import { notify } from 'components/layout/notifier/Notifier';
 import { connectWallet, checkForCRMToken } from 'services/wallet';
 
 export const useConnectWallet = (setWalletId) => {

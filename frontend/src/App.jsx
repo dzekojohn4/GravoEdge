@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import './globals.css';
-import Header from './components/header/Header';
-import Dashboard from 'pages/spotnet/dashboard/Dashboard';
-import Footer from './components/Footer/Footer';
-import SpotnetApp from 'pages/spotnet/spotnet_app/SpotnetApp';
+import Header from './components/layout/header/Header';
+import Dashboard from 'pages/dashboard/Dashboard';
+import Footer from './components/layout/footer/Footer';
+import SpotnetApp from 'pages/spotnet-app/SpotnetApp';
 import Login from 'pages/Login';
-import Form from 'pages/forms/Form';
+import Form from 'pages/form/Form';
 import { createPortal } from 'react-dom';
 import { logout } from 'services/wallet';
 import { getTelegramUserWalletId } from 'services/telegram';
-import Documentation from 'pages/spotnet/documentation/Documentation';
-import Withdraw from 'pages/vault/withdraw/Withdraw';
+import Documentation from 'pages/documentation/Documentation';
+import Withdraw from 'pages/withdraw/Withdraw';
 import { useWalletStore } from 'stores/useWalletStore';
-import { Notifier, notify } from 'components/Notifier/Notifier';
+import { Notifier, notify } from 'components/layout/notifier/Notifier';
 import { useConnectWallet } from 'hooks/useConnectWallet';
-import OverviewPage from 'pages/spotnet/overview/Overview';
-import { ActionModal } from 'components/ui/ActionModal';
-import Stake from 'pages/vault/stake/Stake';
+import OverviewPage from 'pages/overview/Overview';
+import { ActionModal } from 'components/ui/action-modal';
+import Stake from 'pages/stake/Stake';
 import { TELEGRAM_BOT_LINK } from 'utils/constants';
 import { useCheckMobile } from 'hooks/useCheckMobile';
-import PositionHistory from 'pages/spotnet/position_history/PositionHistory';
+import PositionHistory from 'pages/position-history/PositionHistory';
 
 
 function App() {
