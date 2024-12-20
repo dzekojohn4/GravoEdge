@@ -75,7 +75,7 @@ const Sidebar = ({
           >
             {item.icon && (
               <span className="item-icon">
-                {item.icon}
+                <img src={item.icon} alt={item.name} />
               </span>
             )}
             <span className="item-name">{item.name}</span>
@@ -92,8 +92,8 @@ const Sidebar = ({
           >
             {item.icon && (
               <span className="item-icon">
-                {item.icon}
-              </span>
+              <img src={item.icon} alt={item.name} />
+            </span>
             )}
             <span className="item-name">{item.name}</span>
             {hasChildren && (

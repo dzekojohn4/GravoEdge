@@ -34,21 +34,6 @@ const Documentation = () => {
     { name: 'The Hub And Zones', link: '#hub-5' }
   ];
 
-  // const dashboardItems = [
-  //   {
-  //     id: 'dashboard',
-  //     name: 'Dashboard',
-  //     link: '/dashboard',
-  //     icon: <LucideComputer size={16} />
-  //   },
-  //   {
-  //     id: 'd ',
-  //     name: 'Vault',
-  //     link: '/vault',
-  //     icon: <VaultIcon size={16} />
-  //   }
-  // ];
-
   const sectionsData = [
     {
       id: 'introduction',

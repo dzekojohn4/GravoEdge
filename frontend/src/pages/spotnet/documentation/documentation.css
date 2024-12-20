@@ -1,8 +1,10 @@
 .documentation-page{
   display: flex;
-  width: 100vw;
+  width: calc(100vw - 372px);
   min-height: 100vh;
   height: 100%;
+  position: relative;
+  margin-left: 372px;
 }
 
 .documentation-container {
@@ -17,6 +19,7 @@
 .sidebar-docs-sticky{
   margin-top: 5.5rem;
   height: 100vh;
+  position: fixed;
 }
 
 .documentation-container::before {
@@ -77,7 +80,19 @@ html {
     padding: 1rem;
   }
 
+  .documentation-page{
+    margin-left: 0;
+    width: 100vw;
+  }
+
   .main-title {
     font-size: 2rem;
+  }
+}
+
+@media (max-width: 1024px){
+  .documentation-page{
+    margin-left: 0;
+    width: 100vw;
   }
 }
