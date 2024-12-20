@@ -60,7 +60,7 @@ export function VaultLayout({ children }) {
       <Sidebar 
       title='Vault'
   items={vaultItems}
-  className=""
+  className="sidebar-docs-sticky"
 />
 
       <main className="@media (max-width: 1024px) {
