@@ -15,7 +15,6 @@ function Home() {
   const navigate = useNavigate();
 
   const handleLaunchApp = async () => {
-    console.log('Launch button clicked'); // Debugging
     if (walletId) {
       navigate('/form');
     } else {

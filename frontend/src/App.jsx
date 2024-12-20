@@ -25,7 +25,6 @@ import PositionHistory from 'pages/spotnet/position_history/PositionHistory';
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore();
   const [showModal, setShowModal] = useState(false);
-  // const [currentPage, setCurrentPage] = useState('home');
   const navigate = useNavigate();
   const [isMobileRestrictionModalOpen, setisMobileRestrictionModalOpen] = useState(true);
   const isMobile = useCheckMobile();
