@@ -3,7 +3,7 @@ import { ReactComponent as ArrowDownIcon } from '../../../assets/icons/dropdown-
 import { ReactComponent as ReloadIcon } from '../../../assets/icons/reload.svg';
 import { ReactComponent as OpenBotIcon } from '../../../assets/icons/bot.svg';
 import { ReactComponent as TermsIcon } from '../../../assets/icons/terms.svg';
-import './MobDropdownMenu.css';
+import './mobDropdownMenu.css';
 
 const menuItems = [
   { id: 1, text: 'Reload page', icon: <ReloadIcon className="dpd-icon" />, link: '#' },

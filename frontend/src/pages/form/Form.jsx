@@ -7,7 +7,7 @@ import BalanceCards from '../../components/ui/balance-cards/BalanceCards';
 import MultiplierSelector from '../../components/ui/multiplier-selector/MultiplierSelector';
 import { handleTransaction } from '../../services/transaction';
 import Spinner from '../../components/ui/spinner/Spinner';
-import './Form.css';
+import './form.css';
 import { createPortal } from 'react-dom';
 import useLockBodyScroll from '../../hooks/useLockBodyScroll';
 import CongratulationsModal from '../../components/layout/congratulations-modal/CongratulationsModal';

@@ -1,5 +1,5 @@
 import React from 'react';
-import './Withdraw.css';
+import './withdraw.css';
 import { ReactComponent as DiamondIcon } from '../../assets/icons/diamond.svg';
 import { ReactComponent as TimeIcon } from '../../assets/icons/time.svg';
 import { ReactComponent as SettingIcon } from '../../assets/icons/settings.svg';

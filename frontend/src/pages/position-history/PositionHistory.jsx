@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './PositionHistory.css';
+import './positionHistory.css';
 import { ReactComponent as HealthIcon } from '../../assets/icons/health.svg';
 import { ReactComponent as EthIcon } from '../../assets/icons/ethereum.svg';
 import { ReactComponent as StrkIcon } from '../../assets/icons/strk.svg';
