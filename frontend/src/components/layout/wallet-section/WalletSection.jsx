@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Button from '../../ui/button/Button';
+import { Button } from 'components/ui/button';
 import { useWalletStore } from '../../../stores/useWalletStore';
 
 const WalletSection = ({ onConnectWallet, onLogout }) => {
