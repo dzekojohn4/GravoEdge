@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import './layout/header/header.css';
+import '../header/header.css';
 
 const NavigationLinks = ({ onNavClick }) => (
   <div className="nav-items">

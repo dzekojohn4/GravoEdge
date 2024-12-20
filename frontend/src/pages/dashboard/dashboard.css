@@ -9,7 +9,7 @@ body {
 
 .dashboard-wrapper {
   position: relative;
-  background: url('../../../../public/Form-bg.png') no-repeat;
+  background: url('../../../public/Form-bg.png') no-repeat;
   background-size: cover;
   background-position: center left;
   min-height: 100vh;
@@ -342,7 +342,7 @@ body {
 
 @media (max-width: 550px) {
   .dashboard-wrapper {
-    background: url('../../../../public/dashboardmobile.png') no-repeat;
+    background: url('../../../public/dashboardmobile.png') no-repeat;
     background-size: cover;
     background-position: 50% 40%;
     height: 100%;

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import './positionHistory.css';
-import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
-import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
-import { ReactComponent as StrkIcon } from 'assets/icons/strk.svg';
-import { ReactComponent as UsdIcon } from 'assets/icons/usd_coin.svg';
-import { usePositionHistoryTable } from 'hooks/usePositionHistory';
-import Spinner from 'components/ui/spinner/Spinner';
-import filterIcon from '../../../assets/icons/filter-horizontal.svg';
-import useDashboardData from 'hooks/useDashboardData';
-import Card from 'components/ui/card/Card';
-import PositionHistoryModal from 'pages/position-history/PositionHistoryModal';
+import { ReactComponent as HealthIcon } from '../../assets/icons/health.svg';
+import { ReactComponent as EthIcon } from '../../assets/icons/ethereum.svg';
+import { ReactComponent as StrkIcon } from '../../assets/icons/strk.svg';
+import { ReactComponent as UsdIcon } from '../../assets/icons/usd_coin.svg';
+import { usePositionHistoryTable } from '../../hooks/usePositionHistory';
+import Spinner from '../../components/ui/spinner/Spinner';
+import filterIcon from '../../assets/icons/filter-horizontal.svg';
+import useDashboardData from '../../hooks/useDashboardData';
+import Card from '../../components/ui/card/Card';
+import PositionHistoryModal from '../../pages/position-history/PositionHistoryModal';
 
 function PositionHistory() {
   const [selectedPosition, setSelectedPosition] = useState(null);

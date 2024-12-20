@@ -1,6 +1,6 @@
 import React from 'react';
-import './CongratulationsModal.css';
-import doneLogo from '../../assets/icons/done-badge.svg';
+import './congratulationsModal.css';
+import doneLogo from '../../../assets/icons/done-badge.svg';
 import { useNavigate } from 'react-router-dom';
 
 function CongratulationsModal({ message }) {

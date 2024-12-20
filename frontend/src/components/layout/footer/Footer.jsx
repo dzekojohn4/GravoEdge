@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import { ReactComponent as TwitterIcon } from 'assets/icons/new-twitter.svg';
-import { ReactComponent as TelegramIcon } from 'assets/icons/telegram.svg';
-import { ReactComponent as GithubIcon } from 'assets/icons/github.svg';
-import { ReactComponent as DashboardIcon } from 'assets/icons/dashboard-icon.svg';
-import { ReactComponent as FormIcon } from 'assets/icons/form-icon.svg';
+import { ReactComponent as TwitterIcon } from '../../../assets/icons/new-twitter.svg';
+import { ReactComponent as TelegramIcon } from '../../../assets/icons/telegram.svg';
+import { ReactComponent as GithubIcon } from '../../../assets/icons/github.svg';
+import { ReactComponent as DashboardIcon } from '../../../assets/icons/dashboard-icon.svg';
+import { ReactComponent as FormIcon } from '../../../assets/icons/form-icon.svg';
 
-import './Footer.css';
+import './footer.css';
 
 function Footer() {
   const socialLinks = [

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { ReactComponent as ETH } from '../../../assets/icons/ethereum.svg';
-import { ReactComponent as USDC } from '../../../assets/icons/borrow_usdc.svg';
-import { ReactComponent as DAI } from '../../../assets/icons/dai.svg';
-import { ReactComponent as STTRK } from '../../../assets/icons/strk.svg';
-import MetricCard from 'components/StakeCard/MetricCard';
-import STRK from '../../../assets/icons/strk.svg';
-import USDCc from '../../../assets/icons/apy_icon.svg';
+import { ReactComponent as ETH } from '../../assets/icons/ethereum.svg';
+import { ReactComponent as USDC } from '../../assets/icons/borrow_usdc.svg';
+import { ReactComponent as DAI } from '../../assets/icons/dai.svg';
+import { ReactComponent as STTRK } from '../../assets/icons/strk.svg';
+import MetricCard from '../../components/vault/stake-card/MetricCard';
+import STRK from '../../assets/icons/strk.svg';
+import USDCc from '../../assets/icons/apy_icon.svg';
 import './stake.css';
 import { VaultLayout } from '../../components/vault/VaultLayout';
-import { Button } from 'components/ui/button';
-import GasFee from 'components/GasFee/GasFee';
-import BalanceCards from 'components/ui/balance-cards/BalanceCards';
+import { Button } from '../../components/ui/button';
+import GasFee from '../../components/vault/gas-fee/GasFee';
+import BalanceCards from '../../components/ui/balance-cards/BalanceCards';
 
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');

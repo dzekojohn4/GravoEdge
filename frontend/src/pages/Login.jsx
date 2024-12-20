@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from 'components/ui/button/Button';
+import Button from '../components/ui/button/Button';
 
 function Login({ onConnectWallet }) {
   return (

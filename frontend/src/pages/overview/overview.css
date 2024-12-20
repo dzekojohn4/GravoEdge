@@ -1,5 +1,5 @@
 .overview-container {
-  background: url('../../../../public/background.png') no-repeat;
+  background: url('../../../public/background.png') no-repeat;
   background-size: cover;
   background-position: center 39%;
   min-height: 100vh;

@@ -1,8 +1,8 @@
 import React from 'react';
-import { ReactComponent as ZkLend } from 'assets/icons/zklend_eth_collateral.svg';
-import { ReactComponent as BorrowUSDC } from 'assets/icons/borrow_usdc.svg';
-import { ReactComponent as EkuboSwap } from 'assets/icons/ekubo_swap.svg';
-import { ReactComponent as Repeat } from 'assets/icons/repeats.svg';
+import { ReactComponent as ZkLend } from '../../../assets/icons/zklend_eth_collateral.svg';
+import { ReactComponent as BorrowUSDC } from '../../../assets/icons/borrow_usdc.svg';
+import { ReactComponent as EkuboSwap } from '../../../assets/icons/ekubo_swap.svg';
+import { ReactComponent as Repeat } from '../../../assets/icons/repeats.svg';
 import StarMaker from '../../layout/star-maker/StarMaker';
 import './about.css';
 

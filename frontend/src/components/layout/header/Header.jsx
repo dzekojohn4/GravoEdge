@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import { ReactComponent as Logo } from 'assets/icons/spotnet-logo.svg';
+import { ReactComponent as Logo } from '../../../assets/icons/spotnet-logo.svg';
 import WalletSection from '../wallet-section/WalletSection';
 import NavigationLinks from '../navigation-links/NavigationLinks';
-import useLockBodyScroll from 'hooks/useLockBodyScroll';
+import useLockBodyScroll from '../../../hooks/useLockBodyScroll';
 import MobDropdownMenu from '../mob-dropdown-menu/MobDropdownMenu';
-import './Header.css';
-import '../../globals.css';
+import './header.css';
+import '../../../globals.css';
 
 
 function Header({ onConnectWallet, onLogout }) {
