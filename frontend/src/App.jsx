@@ -5,7 +5,6 @@ import Header from './components/layout/header/Header';
 import Dashboard from './pages/dashboard/Dashboard';
 import Footer from './components/layout/footer/Footer';
 import SpotnetApp from './pages/spotnet-app/SpotnetApp';
-import Login from './pages/Login';
 import Form from './pages/form/Form';
 import { createPortal } from 'react-dom';
 import { logout } from './services/wallet';
@@ -98,10 +97,6 @@ function App() {
       <main>
         <Routes>
           <Route index element={<SpotnetApp onConnectWallet={handleConnectWallet} onLogout={handleLogout} />} />
-          <Route
-            path="/login"
-            element={walletId ? <Navigate to="/" /> : <Login onConnectWallet={handleConnectWallet} />}
-          />
           <Route path="/dashboard" element={<Dashboard telegramId={window?.Telegram?.WebApp?.initData?.user?.id} />} />
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/overview" element={<OverviewPage />} />
