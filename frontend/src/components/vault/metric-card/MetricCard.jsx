@@ -1,5 +1,5 @@
 import React from 'react';
-import './metricCard.css';
+import './MetricCard.css';
 
 export default function MetricCard({ title, value }) {
   return (

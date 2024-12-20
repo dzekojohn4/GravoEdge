@@ -1,4 +1,4 @@
-import './card.css';
+import './Card.css';
 
 function Card({ label, icon, value = '', cardData = [] }) {
   return (

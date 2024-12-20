@@ -1,4 +1,4 @@
-import './information.css';
+import './Information.css';
 import React, { useEffect, useState } from 'react';
 import StarMaker from '../../layout/star-maker/StarMaker';
 import { axiosInstance } from 'utils/axios';

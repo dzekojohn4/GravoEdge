@@ -1,5 +1,5 @@
 import React from 'react';
-import './partnership.css';
+import './Partnership.css';
 import { ReactComponent as ZklendLogo } from '../../../assets/images/zklend_logo.svg';
 import { ReactComponent as EkuboLogo } from '../../../assets/images/ekubo_logo.svg';
 import { ReactComponent as Star } from '../../../assets/particles/star.svg';

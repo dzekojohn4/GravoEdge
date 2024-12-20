@@ -1,5 +1,5 @@
 import React from "react"
-import './borrow.css'
+import './Borrow.css'
 import { ReactComponent as BorrowIcon } from 'assets/icons/borrow_dynamic.svg';
 
 function Borrow({data}){

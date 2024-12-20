@@ -6,7 +6,7 @@ import { ReactComponent as STTRK } from '../../assets/icons/strk.svg';
 import MetricCard from '../../components/vault/stake-card/StakeCard';
 import STRK from '../../assets/icons/strk.svg';
 import USDCc from '../../assets/icons/apy_icon.svg';
-import './stake.css';
+import './Stake.css';
 import { VaultLayout } from '../../components/vault/VaultLayout';
 import { Button } from 'components/ui/button';
 import GasFee from '../../components/vault/gas-fee/GasFee';

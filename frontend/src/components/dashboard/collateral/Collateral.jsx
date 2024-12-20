@@ -1,5 +1,5 @@
 import React from 'react';
-import './collateral.css';
+import './Collateral.css';
 import { ReactComponent as CollateralIcon } from 'assets/icons/collateral_dynamic.svg';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
