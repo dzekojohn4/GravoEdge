@@ -31,7 +31,8 @@ const BalanceCards = ({ balances, setBalances }) => {
             <div className="balance-item" key={balance.title}>
               <label htmlFor={balance.title} className={'balance-title'}>
                 <span className="token-icon blend">{balance.icon}</span>
-                {balance.title} Balance
+                <span className="balance-text">{balance.title} Balance</span>
+        
               </label>
               <label htmlFor={balance.title}>{balance.balance}</label>
             </div>
