@@ -7,10 +7,6 @@ body {
     sans-serif;
 }
 .withdraw-wrapper {
-  background: url('../../../../public/background.png') no-repeat;
-  background-size: cover;
-  background-position: center 39%;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;

@@ -22,14 +22,14 @@ import { TELEGRAM_BOT_LINK } from 'utils/constants';
 import { useCheckMobile } from 'hooks/useCheckMobile';
 import PositionHistory from 'pages/spotnet/position_history/PositionHistory';
 
-
 function App() {
   const { walletId, setWalletId, removeWalletId } = useWalletStore();
   const [showModal, setShowModal] = useState(false);
+  // const [currentPage, setCurrentPage] = useState('home');
   const navigate = useNavigate();
   const [isMobileRestrictionModalOpen, setisMobileRestrictionModalOpen] = useState(true);
   const isMobile = useCheckMobile();
-  
+
   const disableDesktopOnMobile = process.env.REACT_APP_DISABLE_DESKTOP_ON_MOBILE !== 'false';
 
   const connectWalletMutation = useConnectWallet(setWalletId);
@@ -53,7 +53,6 @@ function App() {
     setShowModal(false);
   };
 
-
   const handleisMobileRestrictionModalClose = () => {
     setisMobileRestrictionModalOpen(false);
   };
@@ -71,15 +70,14 @@ function App() {
         })
         .catch((error) => {
           console.error('Error getting Telegram user wallet ID:', error);
-          notify('Error loading wallet', "error");
+          notify('Error loading wallet', 'error');
           window.Telegram.WebApp.ready();
         });
     }
   }, [window.Telegram?.WebApp?.initDataUnsafe]);
 
-
   return (
-    <div className="App">
+    <div className={`${location.pathname === '/' ? 'home' : 'App'}`}>
       <Notifier />
       {showModal &&
         createPortal(

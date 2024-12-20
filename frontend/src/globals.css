@@ -95,3 +95,12 @@ li {
 a.svelte-1mtuslq.svelte-1mtuslq {
   display: none;
 }
+
+.App {
+  background: url('../public/desktop-background.png') no-repeat;
+  background-size: cover;
+  min-height: 100vh; 
+  box-sizing: border-box;
+}
+
+
