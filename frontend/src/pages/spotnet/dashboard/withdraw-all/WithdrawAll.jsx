@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BalanceCards from 'components/BalanceCards';
+import BalanceCards from 'components/BalanceCards/BalanceCards';
 import { ReactComponent as ETH } from '../../../../assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from '../../../../assets/icons/borrow_usdc.svg';
 import { ReactComponent as STRK } from '../../../../assets/icons/strk.svg';

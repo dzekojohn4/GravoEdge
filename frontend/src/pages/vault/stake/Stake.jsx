@@ -10,7 +10,7 @@ import './stake.css';
 import { VaultLayout } from '../VaultLayout';
 import { Button } from 'components/ui/Button';
 import GasFee from 'components/GasFee/GasFee';
-import BalanceCards from 'components/BalanceCards';
+import BalanceCards from 'components/BalanceCards/BalanceCards';
 
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
