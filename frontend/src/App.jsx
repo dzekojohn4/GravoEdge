@@ -13,14 +13,13 @@ import { getTelegramUserWalletId } from 'services/telegram';
 import Documentation from 'pages/spotnet/documentation/Documentation';
 import Withdraw from 'pages/vault/withdraw/Withdraw';
 import { useWalletStore } from 'stores/useWalletStore';
-import { Notifier } from 'components/Notifier/Notifier';
+import { Notifier, notify } from 'components/Notifier/Notifier';
 import { useConnectWallet } from 'hooks/useConnectWallet';
 import OverviewPage from 'pages/spotnet/overview/Overview';
 import { ActionModal } from 'components/ui/ActionModal';
 import Stake from 'pages/vault/stake/Stake';
 import { TELEGRAM_BOT_LINK } from 'utils/constants';
 import { useCheckMobile } from 'hooks/useCheckMobile';
-import { notifyError } from 'utils/notification';
 import PositionHistory from 'pages/spotnet/position_history/PositionHistory';
 import WithdrawAll from 'pages/spotnet/dashboard/withdraw-all/WithdrawAll';
 
@@ -73,7 +72,7 @@ function App() {
         })
         .catch((error) => {
           console.error('Error getting Telegram user wallet ID:', error);
-          notifyError('Error loading wallet');
+          notify('Error loading wallet', "error");
           window.Telegram.WebApp.ready();
         });
     }
