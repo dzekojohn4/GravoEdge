@@ -125,7 +125,7 @@ class UserDBConnector(DBConnector):
                     )
                     .filter(Position.user_id == user_id)
                     .all()
-                ).scalar()
+                )
 
                 # Transform the query result into a list of dictionaries
                 return [
