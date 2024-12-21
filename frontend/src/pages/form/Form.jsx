@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
-import { ReactComponent as ETH } from '../../assets/icons/ethereum.svg';
-import { ReactComponent as USDC } from '../../assets/icons/borrow_usdc.svg';
-import { ReactComponent as STRK } from '../../assets/icons/strk.svg';
-import TokenSelector from '../../components/ui/token-selector/TokenSelector';
-import BalanceCards from '../../components/ui/balance-cards/BalanceCards';
-import MultiplierSelector from '../../components/ui/multiplier-selector/MultiplierSelector';
-import { handleTransaction } from '../../services/transaction';
-import Spinner from '../../components/ui/spinner/Spinner';
+import TokenSelector from 'components/ui/token-selector/TokenSelector';
+import BalanceCards from 'components/ui/balance-cards/BalanceCards';
+import MultiplierSelector from 'components/ui/multiplier-selector/MultiplierSelector';
+import { handleTransaction } from 'services/transaction';
+import Spinner from 'components/ui/spinner/Spinner';
 import './form.css';
 import { createPortal } from 'react-dom';
 import useLockBodyScroll from '../../hooks/useLockBodyScroll';
 import CongratulationsModal from '../../components/layout/congratulations-modal/CongratulationsModal';
-import Button from 'components/ui/button/Button';
+import Button from 'components/ui/Button/Button';
 import { useWalletStore } from '../../stores/useWalletStore';
 import { useConnectWallet } from '../../hooks/useConnectWallet';
 import { useCheckPosition } from '../../hooks/useClosePosition';
@@ -45,12 +42,6 @@ const Form = () => {
       connectWalletMutation.mutate();
     }
   };
-
-  const [balances, setBalances] = useState([
-    { icon: <ETH />, title: 'ETH', balance: '0.00' },
-    { icon: <USDC />, title: 'USDC', balance: '0.00' },
-    { icon: <STRK />, title: 'STRK', balance: '0.00' },
-  ]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,7 +82,7 @@ const Form = () => {
 
   return (
     <div className="form-content-wrapper">
-      <BalanceCards balances={balances} setBalances={setBalances} walletId={walletId} />
+      <BalanceCards />
       {successful && createPortal(<CongratulationsModal />, document.body)}
       {isClosePositionOpen && (
         <ActionModal

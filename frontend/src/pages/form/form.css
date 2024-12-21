@@ -56,15 +56,6 @@
   background: var(--button-gradient);
 }
 
-.token-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-  border-radius: 2000px;
-  background-color: hsla(261, 49%, 15%, 1);
-}
-
 .token-label {
   display: flex;
   flex-direction: column;
@@ -232,11 +223,6 @@ input[type='number'].error {
   padding: 1px;
 }
 
-.balance-card {
-  max-width: 100%;
-  margin-top: 20px;
-}
-
 .form-alert {
   display: flex;
   align-items: center;
@@ -244,73 +230,6 @@ input[type='number'].error {
 
 .form-alert-hex {
   margin-left: auto;
-}
-
-.balance-container {
-  display: flex;
-  justify-content: space-between;
-  max-width: 100%;
-  gap: 16px;
-}
-
-.balance-item {
-  display: flex;
-  flex-direction: column;
-  width: 198px;
-  height: 101px;
-  align-items: center;
-  border-radius: 900px;
-  border: 1px solid var(--light-purple);
-  justify-content: center;
-  background-color: var(--dark-purple);
-  padding: 16px 30px;
-}
-
-.balance-item label:nth-child(1) {
-  font-size: 14px;
-  color: var(--secondary);
-  display: flex;
-  gap: 4px;
-}
-
-.balance-item label:nth-child(2) {
-  font-size: 24px;
-  color: var(--secondary);
-  line-height: 32.68px;
-}
-
-.balance-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.balance-title span {
-  font-size: 14px;
-}
-
-.balance-title .balance-icon-wrapper {
-  background-color: #201338;
-  border-radius: 12px;
-  display: block;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
-  margin-bottom: 0;
-}
-
-.balance-title svg {
-  height: 18px;
-  width: 18px;
-  height: 18px;
-  width: 18px;
-}
-
-.balance-title.blend svg {
-  filter: grayscale(1);
 }
 
 /* Responsiveness */
@@ -347,65 +266,9 @@ input[type='number'].error {
     font-size: 12px;
   }
 
-  .balance-container {
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 20px;
-    max-width: 100%;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .balance-item {
-    height: fit-content;
-    padding: 16px 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 0;
-    border-radius: 16px;
-  }
-
-  .balance-item:first-child {
-    margin-left: 20px;
-  }
-
-  .balance-item:last-child {
-    margin-right: 20px;
-  }
-
-  .balance-item .balance-title {
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-  }
-
-  .balance-item .title-container + label:nth-of-type(1) {
-    font-size: 20px;
-    font-weight: 600;
-  }
-
-  .title-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: max-content;
-  }
-
   .multiplier-card {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     display: grid;
-  }
-
-  .balance-item label:nth-child(2) {
-    color: var(--secondary);
-    font-size: 14px;
   }
 
   .form-title h1 {
@@ -413,12 +276,6 @@ input[type='number'].error {
     font-weight: normal;
     font-size: 1rem;
     margin-bottom: 20px;
-  }
-
-  .token-icon {
-    margin-right: 5px;
-    position: relative;
-    z-index: 1;
   }
 
   .token-card {
@@ -452,25 +309,6 @@ input[type='number'].error {
     border-radius: 12px;
     max-width: fit-content;
     position: relative;
-  }
-
-  .pagination {
-    display: flex;
-    gap: 8px;
-    margin-top: 25px;
-    justify-content: center;
-  }
-
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.3);
-    transition: background-color 0.3s ease;
-  }
-
-  .dot.active {
-    background-color: var(--light-blue);
   }
 
   .token-label {
