@@ -1,8 +1,5 @@
   .withdrawall-wrapper {
     position: relative;
-    background: url('../../../../../public/Form-bg.png') no-repeat;
-    background-size: cover;
-    background-position: center left;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -106,12 +103,6 @@
   }
   
   @media (max-width: 550px) {
-    .withdrawall-wrapper {
-      background: url('../../../../../public/mobile-background.png') no-repeat;
-      background-size: cover;
-      background-position: 50% 40%;
-      height: 100%;
-    }
     .withdrawall-content {
       gap: 40px;
       display: flex;
