@@ -73,6 +73,11 @@
 .balance-text {
     color: #83919F;
 }
+
+.balance-amount {
+  font-weight: 600;
+}
+
 .token-icon {
     display: flex;
     align-items: center;
@@ -103,7 +108,7 @@
     
     .balance-item {
         height: fit-content;
-        padding: 16px 24px;
+        padding: 16px 8px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -150,3 +155,4 @@
     }
 
 }
+
