@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "utils/axios";
-import { notify } from "components/Notifier/Notifier";
+import { notify } from "components/layout/notifier/Notifier";
 
 const useWithdrawAll = () => {
     const mutation = useMutation({
