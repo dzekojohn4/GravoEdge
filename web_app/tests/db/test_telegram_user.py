@@ -38,7 +38,9 @@ def test_get_telegram_user_by_wallet_id_success(telegram_user_db, mock_db_connec
     mock_db_connector.get_object_by_field.return_value = expected_user
     result = telegram_user_db.get_telegram_user_by_wallet_id(wallet_id)
     assert result == expected_user
-    mock_db_connector.get_object_by_field.assert_called_once_with(TelegramUser, "wallet_id", wallet_id)
+    mock_db_connector.get_object_by_field.assert_called_once_with(
+        TelegramUser, "wallet_id", wallet_id
+    )
 
 def test_get_telegram_user_by_wallet_id_none(telegram_user_db, mock_db_connector):
     """
@@ -113,7 +115,9 @@ def test_save_or_update_user_update(telegram_user_db, mock_db_connector):
     existing_user = TelegramUser(id=uuid4(), wallet_id="w7", telegram_id="t7")
     mock_db_connector.get_object_by_field.side_effect = [existing_user, existing_user]
     with patch.object(telegram_user_db, 'update_telegram_user', MagicMock()):
-        result = telegram_user_db.save_or_update_user({"wallet_id": "w7_updated", "telegram_id": "t7"})
+        result = telegram_user_db.save_or_update_user(
+            {"wallet_id": "w7_updated", "telegram_id": "t7"}
+        )
         assert result.wallet_id == "w7"
 
 def test_delete_telegram_user_success(telegram_user_db, mock_db_connector):
