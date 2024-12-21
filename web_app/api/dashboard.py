@@ -48,6 +48,7 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         start_sum=0,
         borrowed="0",
         balance="0",
+        position_id="0",
     )
     if not contract_address:
         return default_dashboard_response
@@ -95,4 +96,5 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         start_sum=start_sum,
         borrowed=str(start_sum * Decimal(tvl)),
         balance=str(balance),
+        position_id=first_opened_position["id"],
     )
