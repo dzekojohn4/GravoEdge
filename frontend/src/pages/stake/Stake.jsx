@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { ReactComponent as ETH } from '../../assets/icons/ethereum.svg';
-import { ReactComponent as USDC } from '../../assets/icons/borrow_usdc.svg';
-import { ReactComponent as DAI } from '../../assets/icons/dai.svg';
-import { ReactComponent as STTRK } from '../../assets/icons/strk.svg';
 import MetricCard from '../../components/vault/stake-card/StakeCard';
 import STRK from '../../assets/icons/strk.svg';
 import USDCc from '../../assets/icons/apy_icon.svg';
 import './stake.css';
 import { VaultLayout } from '../../components/vault/VaultLayout';
-import { Button } from 'components/ui/button';
+import { Button } from 'components/ui/Button';
 import GasFee from '../../components/vault/gas-fee/GasFee';
 import BalanceCards from '../../components/ui/balance-cards/BalanceCards';
 
@@ -17,12 +13,6 @@ function Stake() {
   const [amount, setAmount] = useState('0');
   const [showDrop, setShowDrop] = useState(false);
 
-  const [balances, setBalances] = useState([
-    { icon: <STTRK />, title: 'STRK', balance: '0.046731' },
-    { icon: <USDC />, title: 'APY', balance: '0.046731' },
-    { icon: <ETH />, title: 'ETH', balance: '0.046731' },
-    { icon: <DAI />, title: 'DAI', balance: '0.046731' },
-  ]);
   const networks = [{ name: 'Starknet', image: STRK }];
   const handleChange = (network) => {
     setSelectedNetwork(network.name);
@@ -49,7 +39,7 @@ function Stake() {
               </div>
             </div>
             <div className="mobile-screen-balance">
-              <BalanceCards balances={balances} setBalances={setBalances} walletId={null} />
+              <BalanceCards />
             </div>
           </div>
           <div className="form">
