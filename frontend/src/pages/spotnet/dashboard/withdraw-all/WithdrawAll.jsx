@@ -1,7 +1,6 @@
 import React from 'react';
 import BalanceCards from 'components/ui/balance-cards/BalanceCards';
 import './withdraw_all.css';
-import '../../../../../../frontend/src/globals.css';
 import { useWalletStore } from 'stores/useWalletStore';
 import Button from 'components/ui/Button/Button';
 import useWithdrawAll from 'hooks/useWithdrawAll';
