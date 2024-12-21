@@ -4,7 +4,7 @@ import { erc20abi } from '../abis/erc20';
 import { abi } from '../abis/abi';
 import { axiosInstance } from '../utils/axios';
 import {checkAndDeployContract} from './contract';
-import { notify, ToastWithLink } from '../components/Notifier/Notifier';
+import { notify, ToastWithLink } from '../components/layout/notifier/Notifier';
 
 export async function sendTransaction(loopLiquidityData, contractAddress) {
   try {
