@@ -7,13 +7,25 @@ body {
     sans-serif;
 }
 .withdraw-wrapper {
-  min-height: 100vh;
+  background: url('../../../public/background.png') no-repeat;
+  background-size: cover;
+  background-position: center 39%;
+  min-height: 125vh;
+  height: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 1rem;
-  padding-top: 24px;
+  align-items: center;
   transition: all 0.2s ease-in-out;
+  width: calc(100vw - 372px);
+margin-left: 372px;
+}
+
+@media (max-width: 1024px) {
+  .withdraw-wrapper {
+    width: 100vw;
+    margin-left: 0;
+    justify-content: center;
+  }
 }
 
 .withdraw-container {
@@ -21,8 +33,7 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 24px;
-  margin-left: 200px;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out
 }
 
 .withdrawal-title {
