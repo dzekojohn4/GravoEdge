@@ -2,18 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import './Sidebar.css';
+import addSquare from 'assets/icons/add-square.svg';
 
-const Sidebar = ({ 
-  title, 
-  items, 
-  className = '' 
-}) => {
+const Sidebar = ({ title, items, className = '' }) => {
   const location = useLocation();
   const [activeItemId, setActiveItemId] = useState('');
   const [expandedItems, setExpandedItems] = useState({});
 
   useEffect(() => {
-    // Handle hash changes for scroll navigation
     const hash = location.hash.replace('#', '');
     if (hash) {
       setActiveItemId(hash);
@@ -25,15 +21,15 @@ const Sidebar = ({
 
     // Find and set active item based on current path
     const currentPath = location.pathname;
-    items.forEach(item => {
+    items.forEach((item) => {
       if (item.link === currentPath) {
         setActiveItemId(item.id);
       }
       if (item.children) {
-        item.children.forEach(child => {
+        item.children.forEach((child) => {
           if (child.link === currentPath) {
             setActiveItemId(child.id);
-            setExpandedItems(prev => ({ ...prev, [item.id]: true }));
+            setExpandedItems((prev) => ({ ...prev, [item.id]: true }));
           }
         });
       }
@@ -43,9 +39,9 @@ const Sidebar = ({
   const handleItemClick = (item) => {
     if (item.children) {
       // Toggle expansion for items with children
-      setExpandedItems(prev => ({
+      setExpandedItems((prev) => ({
         ...prev,
-        [item.id]: !prev[item.id]
+        [item.id]: !prev[item.id],
       }));
     } else if (item.link.startsWith('#')) {
       // Handle hash navigation
@@ -69,10 +65,7 @@ const Sidebar = ({
     return (
       <div key={item.id} className="sidebar-item-wrapper">
         {item.link.startsWith('#') ? (
-          <button
-            onClick={() => handleItemClick(item)}
-            className={itemClass}
-          >
+          <button onClick={() => handleItemClick(item)} className={itemClass}>
             {item.icon && (
               <span className="item-icon">
                 <img src={item.icon} alt={item.name} />
@@ -80,34 +73,27 @@ const Sidebar = ({
             )}
             <span className="item-name">{item.name}</span>
             {hasChildren && (
-              <span className="expand-icon">
-                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </span>
+              <span className="expand-icon">{isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
             )}
           </button>
         ) : (
-          <Link
-            to={item.link}
-            className={itemClass}
-          >
-            {item.icon && (
-              <span className="item-icon">
-              <img src={item.icon} alt={item.name} />
+          <Link to={item.link} className={itemClass}>
+            <span className="item-icon">
+              <img
+                className={`item-icon-image--${!item.icon ? 'sm' : 'lg'}`}
+                src={item.icon || addSquare}
+                alt={item.name}
+              />
             </span>
-            )}
             <span className="item-name">{item.name}</span>
             {hasChildren && (
-              <span className="expand-icon">
-                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </span>
+              <span className="expand-icon">{isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
             )}
           </Link>
         )}
-        
+
         {hasChildren && isExpanded && (
-          <div className="nested-items">
-            {item.children.map(child => renderSidebarItem(child, level + 1))}
-          </div>
+          <div className="nested-items">{item.children.map((child) => renderSidebarItem(child, level + 1))}</div>
         )}
       </div>
     );
@@ -115,13 +101,13 @@ const Sidebar = ({
 
   return (
     <div className={`sidebar ${className}`}>
-      {title && (
-        <div className="sidebar-title">
-          <h2>{title}</h2>
-        </div>
-      )}
       <nav className="sidebar-nav">
-        {items.map(item => renderSidebarItem(item))}
+        {title && (
+          <div className="sidebar-title">
+            <h2>{title}</h2>
+          </div>
+        )}
+        {items.map((item) => renderSidebarItem(item))}
       </nav>
     </div>
   );

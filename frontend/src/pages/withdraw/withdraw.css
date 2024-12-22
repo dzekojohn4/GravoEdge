@@ -7,7 +7,6 @@ body {
     sans-serif;
 }
 .withdraw-wrapper {
-  background: url('../../../public/background.png') no-repeat;
   background-size: cover;
   background-position: center 39%;
   min-height: 125vh;
@@ -17,7 +16,7 @@ body {
   align-items: center;
   transition: all 0.2s ease-in-out;
   width: calc(100vw - 372px);
-margin-left: 372px;
+  margin-left: 372px;
 }
 
 @media (max-width: 1024px) {
@@ -33,7 +32,7 @@ margin-left: 372px;
   flex-direction: column;
   justify-content: center;
   gap: 24px;
-  transition: all 0.3s ease-in-out
+  transition: all 0.3s ease-in-out;
 }
 
 .withdrawal-title {
