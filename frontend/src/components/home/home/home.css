@@ -1,6 +1,11 @@
 body {
   background-color: var(--dashboard-bg);
-  font-family: 'Rethink Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  font-family:
+    'Rethink Sans',
+    -apple-system,
+    Roboto,
+    Helvetica,
+    sans-serif;
 }
 
 .container {
@@ -17,7 +22,6 @@ body {
   align-items: center;
   color: var(--secondary);
   text-align: center;
-  margin-top: 10px;
   width: 100%;
   pointer-events: auto;
 }

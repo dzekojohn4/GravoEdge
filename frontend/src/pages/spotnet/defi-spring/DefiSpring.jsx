@@ -1,29 +1,28 @@
 import React, { useEffect } from 'react';
 import './defi-spring.css';
-import TableOfContents from '../../../components/TableOfContent/TableOfContents';
-import ScrollButton from '../../../components/scrollButton/ScrollButton';
-import Sections from 'components/Sections';
+import ScrollButton from 'components/ui/scroll-button/ScrollButton';
+import Sections from 'components/layout/sections/Sections';
+import Sidebar from 'components/layout/sidebar/Sidebar';
 
-const Documentation = () => {
-
+export const DefiSpringPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-
   const tableOfContents = [
-    { title: 'Introduction', link: '#introduction' },
+    { id: 'introduction', name: 'Introduction', link: '#introduction' },
     {
-      title: 'Program overview',
+      id: 'overview',
+      name: 'Program overview',
       link: '#overview',
     },
-    { title: 'Claiming rewards', link: '#claiming-rewards' },
-    { title: 'Important notes', link: '#important-notes' },
-    { title: 'Maximize your profit', link: '#maximize-your-profit' },
-    { title: 'The Hub And Zones', link: '#hub-2' },
-    { title: 'The Hub And Zones', link: '#hub-3' },
-    { title: 'The Hub And Zones', link: '#hub-4' },
-    { title: 'The Hub And Zones', link: '#hub-5' }
+    { id: 'claiming-rewards', name: 'Claiming rewards', link: '#claiming-rewards' },
+    { id: 'important-notes', name: 'Important notes', link: '#important-notes' },
+    { id: 'maximize-your-profit', name: 'Maximize your profit', link: '#maximize-your-profit' },
+    { id: 'hub-2', name: 'The Hub And Zones', link: '#hub-2' },
+    { id: 'hub-3', name: 'The Hub And Zones', link: '#hub-3' },
+    { id: 'hub-4', name: 'The Hub And Zones', link: '#hub-4' },
+    { id: 'hub-5', name: 'The Hub And Zones', link: '#hub-5' },
   ];
 
   const sectionsData = [
@@ -49,7 +48,7 @@ const Documentation = () => {
             'Duration: 6-8 months.',
             'Eligibility: Open to everyone!.',
             'Reward APR: The approximate $STRK rewards APR will be displayed next to eligible supply and borrow pools, in addition to the base interest rate.',
-          ]
+          ],
         },
       ],
     },
@@ -63,7 +62,7 @@ const Documentation = () => {
             'Reward Phases: Rewards are earned in phases, each lasting from Thursday to Wednesday. After each phase ends, it will take about 1 day for the rewards to be claimable.',
             'Reward Claims: Rewards can be claimed via zkLend Rewards.',
             'Accrued Rewards: The total rewards earned will be visible at the end of the program. You can claim your rewards all at once at that time.',
-            'Final Claim Deadline: Be sure to claim your rewards before the DeFi Spring program ends. Any unclaimed rewards will be returned to the Starknet Foundation.'
+            'Final Claim Deadline: Be sure to claim your rewards before the DeFi Spring program ends. Any unclaimed rewards will be returned to the Starknet Foundation.',
           ],
         },
       ],
@@ -79,10 +78,9 @@ const Documentation = () => {
             'Dynamic APRs: The APRs (Annual Percentage Rates) are updated daily based on market conditions, pool sizes, and allocations from the Starknet Foundation. These rates may change throughout the program.',
             'Incentive Strategy: Different actions, such as depositing or borrowing, may receive varying rewards depending on market dynamics',
             'Recursive Borrow Adjustment: Rewards are based on your net deposit after accounting for borrowed funds. For example, if you deposit 100 ETH and borrow 50 ETH, your net deposit is considered 50 ETH. Recursive borrowers will see a higher APR than what they ultimately claim.',
-            'Stablecoin Considerations: From Phase 3 onward, stablecoins (USDC, USDT, DAI) will be treated as the same asset for reward calculations. Your eligible net deposit for these will be calculated as the value of stablecoins deposited minus the value of stablecoins borrowed.'
+            'Stablecoin Considerations: From Phase 3 onward, stablecoins (USDC, USDT, DAI) will be treated as the same asset for reward calculations. Your eligible net deposit for these will be calculated as the value of stablecoins deposited minus the value of stablecoins borrowed.',
           ],
         },
-
       ],
     },
 
@@ -92,17 +90,16 @@ const Documentation = () => {
       content: [
         {
           type: 'text',
-          value: 'By participating in the DeFi Spring program, you can leverage your assets and earn additional rewards, contributing to a more liquid and dynamic DeFi ecosystem. Keep an eye on your rewards as you participate, and make the most out of the program!'
+          value:
+            'By participating in the DeFi Spring program, you can leverage your assets and earn additional rewards, contributing to a more liquid and dynamic DeFi ecosystem. Keep an eye on your rewards as you participate, and make the most out of the program!',
         },
-
       ],
     },
-    
   ];
 
   return (
     <div className="documentation-page">
-      <TableOfContents tabelTitle={"Table Of Content"} defaultActiveId={"introduction"} headerHeight={80} items={tableOfContents} />
+      <Sidebar title="Content" items={tableOfContents} />
 
       <div className="main-content">
         <h1 className="main-title">Defi Spring Documentation</h1>
@@ -111,8 +108,5 @@ const Documentation = () => {
 
       <ScrollButton />
     </div>
-
   );
 };
-
-export default Documentation;

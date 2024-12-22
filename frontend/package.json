@@ -26,7 +26,7 @@
     "build": "react-scripts build",
     "test": "jest",
     "lint": "eslint .",
-    "format": "prettier --check .",
+    "format": "prettier --check . --write",
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:8000",

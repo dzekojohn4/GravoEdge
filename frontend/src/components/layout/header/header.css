@@ -89,7 +89,6 @@
   padding: 16px 24px;
   font-size: 24px;
   color: var(--primary);
-  background: var(--header-bg);
 }
 
 .wallet-container::before {

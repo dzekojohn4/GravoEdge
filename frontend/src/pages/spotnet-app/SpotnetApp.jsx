@@ -6,14 +6,13 @@ import DontMiss from '../../components/home/dont-miss/DontMiss';
 import Home from '../../components/home/home/Home';
 
 const SpotnetApp = ({ onConnectWallet, onLogout }) => {
-
   return (
     <div className="spotnet-app">
-      <Home  onConnectWallet={onConnectWallet} onLogout={onLogout} />
+      <Home onConnectWallet={onConnectWallet} onLogout={onLogout} />
       <About />
       <Partnership />
       <Information />
-      <DontMiss  onConnectWallet={onConnectWallet} onLogout={onLogout} />
+      <DontMiss onConnectWallet={onConnectWallet} onLogout={onLogout} />
     </div>
   );
 };

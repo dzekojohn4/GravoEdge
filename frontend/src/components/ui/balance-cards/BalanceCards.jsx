@@ -22,7 +22,6 @@ const BalanceCards = () => {
     { icon: <STRK />, title: 'STRK', balance: '0.00' },
   ]);
 
-
   return (
     <div className="balance-card">
       <div className="balance-container">
@@ -46,7 +45,7 @@ const BalanceCards = () => {
                 <span className="balance-text">{balance.title} Balance</span>
               </label>
               <label htmlFor={balance.title}>
-              <span className="balance-amount">{balance.balance}</span>
+                <span className="balance-amount">{balance.balance}</span>
               </label>
             </div>
           )

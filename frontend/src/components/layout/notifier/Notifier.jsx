@@ -11,18 +11,22 @@ const defaultStyles = {
 
 const ToastWithLink = (message, link, linkMessage) => (
   <div>
-    <span>{message}</span> <a target='_blank' href={link}>{linkMessage}</a>
+    <span>{message}</span>{' '}
+    <a target="_blank" href={link}>
+      {linkMessage}
+    </a>
   </div>
 );
 
-const notify = (message, type='info', autoClose=3000) => toast(message, { type, autoClose, style: defaultStyles[type] || defaultStyles.info });
+const notify = (message, type = 'info', autoClose = 3000) =>
+  toast(message, { type, autoClose, style: defaultStyles[type] || defaultStyles.info });
 
 const Notifier = () => {
   return (
     <div>
-      <ToastContainer position='top-center' />
+      <ToastContainer position="top-center" />
     </div>
   );
 };
 
-export { Notifier, notify, ToastWithLink};
+export { Notifier, notify, ToastWithLink };
