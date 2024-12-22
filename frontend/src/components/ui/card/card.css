@@ -1,9 +1,9 @@
 .card {
-  width: 309px;
+  width: 317px;
   height: 101px;
-  background: var(--bg);
+  background: transparent;
   border: 1px solid var(--light-purple);
-  border-radius: 12px;
+  border-radius: 8px;
   padding-top: 4px;
   padding-right: 24px;
   padding-left: 24px;
@@ -42,7 +42,6 @@
   .card {
     height: 90px;
     padding: 8px 2px 14px 2px;
-    border-radius: 14px;
     display: flex;
     flex-direction: column;
     justify-content: center;
