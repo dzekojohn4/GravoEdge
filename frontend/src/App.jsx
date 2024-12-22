@@ -22,6 +22,7 @@ import { useCheckMobile } from './hooks/useCheckMobile';
 import PositionHistory from './pages/position-history/PositionHistory';
 import WithdrawAll from 'pages/spotnet/dashboard/withdraw-all/WithdrawAll';
 import { DefiSpringPage } from 'pages/spotnet/defi-spring/DefiSpring';
+import { AddDeposit } from 'pages/add-deposit/AddDeposit';
 
 function App() {
   const { setWalletId, removeWalletId } = useWalletStore();
@@ -98,7 +99,8 @@ function App() {
           <Route index element={<SpotnetApp onConnectWallet={handleConnectWallet} onLogout={handleLogout} />} />
           <Route path="/dashboard" element={<Dashboard telegramId={window?.Telegram?.WebApp?.initData?.user?.id} />} />
           <Route path="/dashboard/position-history" element={<PositionHistory />} />
-          <Route path="/dashboard/withdraw-all" element={<WithdrawAll />} />
+          <Route path="/dashboard/withdraw" element={<WithdrawAll />} />
+          <Route path="/dashboard/deposit" element={<AddDeposit />} />
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/form" element={<Form />} />
