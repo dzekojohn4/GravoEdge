@@ -107,7 +107,7 @@ a.svelte-1mtuslq.svelte-1mtuslq {
 }
 
 @media (max-width: 550px) {
-  .withdrawall-wrapper {
+  .App {
     background: url('../public/mobile-background.png') no-repeat;
     background-size: cover;
     background-position: 50% 40%;
