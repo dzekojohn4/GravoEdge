@@ -1,11 +1,5 @@
 import { connect } from 'get-starknet';
-import {
-  checkForCRMToken,
-  connectWallet,
-  getTokenBalances,
-  getBalances,
-  logout,
-} from '../../src/services/wallet';
+import { checkForCRMToken, connectWallet, getTokenBalances, getBalances, logout } from '../../src/services/wallet';
 import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../../src/utils/constants';
 
 jest.mock('get-starknet', () => ({
@@ -58,9 +52,7 @@ describe('Wallet Services', () => {
 
       const result = await checkForCRMToken('0x123');
       expect(result).toBe(false);
-      expect(global.alert).toHaveBeenCalledWith(
-        'Beta testing is allowed only for users who hold the CRM token.'
-      );
+      expect(global.alert).toHaveBeenCalledWith('Beta testing is allowed only for users who hold the CRM token.');
     });
 
     it('should throw an error if wallet is not connected', async () => {
@@ -126,7 +118,7 @@ describe('Wallet Services', () => {
           }),
         },
       };
-      
+
       connect.mockResolvedValue(mockStarknet);
 
       const balances = await getTokenBalances('0x123');
@@ -175,8 +167,6 @@ describe('Wallet Services', () => {
       expect(mockSetBalances).not.toHaveBeenCalled();
     });
   });
-  
-  
 
   describe('logout', () => {
     it('should clear wallet ID from local storage', () => {

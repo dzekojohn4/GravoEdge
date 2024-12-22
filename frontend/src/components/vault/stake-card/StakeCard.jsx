@@ -1,7 +1,7 @@
 import React from 'react';
 import './stakeCard.css';
 
-export default function StakeCard({ icon= 1, title, value }) {
+export default function StakeCard({ icon = 1, title, value }) {
   return (
     <div className="stake-card">
       <div className="card-header">

@@ -40,7 +40,14 @@ export async function checkAndDeployContract(walletId) {
       const result = await deployContract(walletId);
       const contractAddress = result.contractAddress;
 
-      notify(ToastWithLink("Contract Deployed Successfully", `https://starkscan.co/tx/${result.transactionHash}`, "Transaction ID"), "success")
+      notify(
+        ToastWithLink(
+          'Contract Deployed Successfully',
+          `https://starkscan.co/tx/${result.transactionHash}`,
+          'Transaction ID'
+        ),
+        'success'
+      );
       console.log('Contract address:', contractAddress);
 
       // Update the backend with transaction hash and wallet ID

@@ -358,7 +358,7 @@ input[type='number'].error {
   }
 }
 
-.form-health-factor{
+.form-health-factor {
   display: flex;
   flex-direction: row;
   align-items: end;

@@ -12,7 +12,7 @@ export const useMaxMultiplier = () => {
     },
     staleTime: ONE_HOUR_IN_MILLISECONDS,
     refetchInterval: ONE_HOUR_IN_MILLISECONDS,
-    onError: (error) => notify(`Error using multiplier: ${error.message}`, 'error')
+    onError: (error) => notify(`Error using multiplier: ${error.message}`, 'error'),
   });
 
   return { data, isLoading: isPending };
