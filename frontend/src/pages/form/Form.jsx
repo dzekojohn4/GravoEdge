@@ -5,10 +5,7 @@ import MultiplierSelector from 'components/ui/multiplier-selector/MultiplierSele
 import { handleTransaction } from 'services/transaction';
 import Spinner from 'components/ui/spinner/Spinner';
 import './form.css';
-import { createPortal } from 'react-dom';
-import useLockBodyScroll from '../../hooks/useLockBodyScroll';
-import CongratulationsModal from '../../components/layout/congratulations-modal/CongratulationsModal';
-import Button from 'components/ui/Button/Button';
+import { Button } from 'components/ui/button/Button';
 import { useWalletStore } from '../../stores/useWalletStore';
 import { useConnectWallet } from '../../hooks/useConnectWallet';
 import { useCheckPosition } from '../../hooks/useClosePosition';
@@ -24,9 +21,7 @@ const Form = () => {
   const [selectedToken, setSelectedToken] = useState('ETH');
   const [selectedMultiplier, setSelectedMultiplier] = useState('');
   const [loading, setLoading] = useState(false);
-  const [successful, setSuccessful] = useState(false);
-  
-  useLockBodyScroll(successful);
+
   const [isClosePositionOpen, setClosePositionOpen] = useState(false);
   const connectWalletMutation = useConnectWallet(setWalletId);
   const { data: positionData, refetch: refetchPosition } = useCheckPosition();
@@ -59,7 +54,7 @@ const Form = () => {
     }
 
     if (tokenAmount === '' || selectedToken === '' || selectedMultiplier === '') {
-      notify("Please fill the form", 'error')
+      notify('Please fill the form', 'error');
       return;
     }
 
@@ -69,7 +64,7 @@ const Form = () => {
       amount: tokenAmount,
       multiplier: selectedMultiplier,
     };
-    await handleTransaction(connectedWalletId, formData, setTokenAmount, setLoading, setSuccessful);
+    await handleTransaction(connectedWalletId, formData, setTokenAmount, setLoading);
   };
 
   const handleCloseModal = () => {
@@ -83,7 +78,6 @@ const Form = () => {
   return (
     <div className="form-content-wrapper">
       <BalanceCards />
-      {successful && createPortal(<CongratulationsModal />, document.body)}
       {isClosePositionOpen && (
         <ActionModal
           isOpen={isClosePositionOpen}
@@ -123,12 +117,8 @@ const Form = () => {
         </div>
         <div>
           <div className="form-health-factor">
-            <p>
-              Estimated Health Factor Level:
-            </p>
-            <p>
-          {isHealthFactorLoading ? 'Loading...' : healthFactor}
-        </p>
+            <p>Estimated Health Factor Level:</p>
+            <p>{isHealthFactorLoading ? 'Loading...' : healthFactor}</p>
           </div>
           <div className="form-button-container">
             <Button variant="secondary" size="lg" type="submit">

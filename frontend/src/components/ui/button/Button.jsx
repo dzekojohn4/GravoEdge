@@ -1,7 +1,7 @@
 import React from 'react';
 import './button.css';
 
-const Button = ({ variant = 'primary', size = 'md', className = '', children, ...props }) => {
+export const Button = ({ variant = 'primary', size = 'md', className = '', children, ...props }) => {
   const buttonClasses = ['button', `button--${variant}`, `button--${size}`, className].filter(Boolean).join(' ');
 
   return (
@@ -10,5 +10,3 @@ const Button = ({ variant = 'primary', size = 'md', className = '', children, ..
     </button>
   );
 };
-
-export default Button;

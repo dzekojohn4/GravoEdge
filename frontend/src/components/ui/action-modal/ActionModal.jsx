@@ -1,7 +1,8 @@
 import React from 'react';
 import './actionModal.css';
-import { Button } from '../Button';
+import { Button } from 'components/ui/button/Button';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
+
 const ActionModal = ({
   isOpen,
   title,
