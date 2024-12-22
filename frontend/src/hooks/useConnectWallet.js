@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { connectWallet, checkForCRMToken } from 'services/wallet';
-import {  notifyError } from 'utils/notification';
+import { notify } from '../components/layout/notifier/Notifier';
+import { connectWallet, checkForCRMToken } from '../services/wallet';
 
 export const useConnectWallet = (setWalletId) => {
   return useMutation({
@@ -22,7 +22,7 @@ export const useConnectWallet = (setWalletId) => {
     },
     onError: (error) => {
       console.error('Wallet connection failed:', error);
-      notifyError('Failed to connect wallet. Please try again.');
+      notify('Failed to connect wallet. Please try again.', "error");
     },
   });
 };
