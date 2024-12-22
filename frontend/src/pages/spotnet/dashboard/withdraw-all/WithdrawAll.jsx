@@ -26,14 +26,7 @@ const WithdrawAll = () => {
             Clicking on the `Withdraw All` button means you are agreeing to close all positions and get all tokens
             transferred to your wallet.
           </div>
-          <Button
-            className="withdrawall-btn"
-            variant="secondary"
-            size="lg"
-            type="button"
-            onClick={handleWithdrawAll}
-            disabled={isLoading}
-          >
+          <Button variant="primary" size="lg" type="button" onClick={handleWithdrawAll} disabled={isLoading}>
             {isLoading ? 'Processing...' : 'Withdraw All'}
           </Button>
         </div>

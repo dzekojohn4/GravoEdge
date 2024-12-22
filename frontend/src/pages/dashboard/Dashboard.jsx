@@ -18,10 +18,10 @@ import Collateral from '../../components/dashboard/collateral/Collateral';
 import Card from '../../components/ui/card/Card';
 import { ReactComponent as HealthIcon } from '../../assets/icons/health.svg';
 import Sidebar from 'components/ui/Components/Sidebar/Sidebar';
-import clock_icon from 'assets/icons/clock.svg';
-import Computer_icon from 'assets/icons/computer-icon.svg';
-import deposit_icon from 'assets/icons/deposit.svg';
-import withdraw_icon from 'assets/icons/withdraw.svg';
+import clockIcon from 'assets/icons/clock.svg';
+import computerIcon from 'assets/icons/computer-icon.svg';
+import depositIcon from 'assets/icons/deposit.svg';
+import withdrawIcon from 'assets/icons/withdraw.svg';
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
   const [isCollateralActive, setIsCollateralActive] = useState(true);
@@ -143,31 +143,31 @@ export default function Component({ telegramId }) {
       id: 'dashboard',
       name: 'Dashboard',
       link: '/dashboard',
-      icon: Computer_icon,
+      icon: computerIcon,
     },
     {
       id: 'position_history',
       name: 'Position History',
-      link: '/position_history',
-      icon: clock_icon,
+      link: '/dashboard/position-history',
+      icon: clockIcon,
     },
     {
       id: 'deposit ',
       name: 'Add Deposit',
-      link: '/deposit',
-      icon: deposit_icon,
+      link: '/add-deposit',
+      icon: depositIcon,
     },
     {
       id: 'withdraw ',
       name: 'Withdraw All',
-      link: '/withdraw',
-      icon: withdraw_icon,
+      link: '/dashboard/withdraw-all',
+      icon: withdrawIcon,
     },
   ];
 
   return (
     <div className="dashboard">
-      <Sidebar title={'Dashboard'} items={dashboardItems} className="sidebar-docs-sticky" />
+      <Sidebar items={dashboardItems} className="sidebar-docs-sticky" />
 
       <div className="dashboard-wrapper">
         <div className="dashboard-container">
@@ -216,7 +216,6 @@ export default function Component({ telegramId }) {
               <Button
                 variant="primary"
                 size="lg"
-                className="dashboard-btn"
                 onClick={() => closePositionEvent()}
                 disabled={isClosing || !hasOpenedPosition}
               >

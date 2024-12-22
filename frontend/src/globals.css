@@ -70,6 +70,7 @@
   --warning-colour: #bdc000;
   --warning-colour-alt: #272a0a;
   --warning-text-colour: #f0f0f0;
+  --deep-purple: #300734;
 }
 
 body {
@@ -104,9 +105,10 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   background-size: cover;
   min-height: 100vh;
   box-sizing: border-box;
+  background-position: center;
 }
 
-@media (max-width: 550px) {
+@media (max-width: 768px) {
   .App {
     background: url('../public/mobile-background.png') no-repeat;
     background-size: cover;

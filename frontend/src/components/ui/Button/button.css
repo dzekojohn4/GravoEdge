@@ -1,5 +1,5 @@
 .button {
-  font-family: inherit;
+  position: relative;
   border: none;
   cursor: pointer;
   font-weight: 600;
@@ -9,6 +9,8 @@
   justify-content: center;
   align-items: center;
   text-align: center;
+  font-size: 14px;
+  height: 60px;
 }
 
 .button:focus {
@@ -16,73 +18,57 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
 }
 
-/* Size variants */
 .button--lg {
   width: 642px;
   padding: 18px 32px;
-  font-size: 16px;
 }
 
 .button--md {
   width: 309px;
   padding: 18px 24px;
-  font-size: 16px;
 }
 
 .button--sm {
   width: 167px;
   padding: 18px 16px;
-  font-size: 14px;
 }
 
-/* Variant styles */
 .button--primary {
   color: white;
   padding: 16px 24px 16px 24px;
-  background: linear-gradient(73.48deg, #e01dee 1.13%, #49abd2 51.27%);
-  transition: all 1 ease;
+  background: transparent;
+}
+
+.button--primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  background: linear-gradient(90deg, #49abd2 0%, #e01dee 100%);
+  border-radius: inherit;
+  mask:
+    conic-gradient(#000 0 0) content-box exclude,
+    conic-gradient(#000 0 0);
 }
 
 .button--primary:active {
   transform: translateY(1px);
 }
 
-.button--primary:hover:not(:disabled) {
-  background: linear-gradient(73.48deg, #49abd2 1.13%, #e01dee 51.27%);
+.button--primary:hover:not(:disabled)::after {
+  background: linear-gradient(90deg, #e01dee 0%, #49abd2 100%);
 }
 
 .button--secondary {
   position: relative;
   display: inline-block;
-  background: none;
+  background: transparent;
   color: white;
-  font-size: 16px;
   cursor: pointer;
-  border: none;
+  border: var(--midnight-purple-border);
   padding: 16px 24px 16px 24px;
   z-index: 1;
   overflow: hidden;
-}
-
-.button--secondary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 8px;
-  padding: 2px;
-  background: linear-gradient(90deg, #74d6fd 0%, #e01dee 100%);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: destination-out;
-  mask-composite: exclude;
-  z-index: -1;
 }
 
 .button--secondary:active {
@@ -100,16 +86,8 @@
 }
 
 @media (max-width: 768px) {
-  .button {
-    border-radius: 8px;
-  }
-
   .button--primary {
     padding: 20px 12px;
-  }
-
-  .button--secondary::before {
-    border-radius: 8px;
   }
 
   .button--lg {
@@ -117,12 +95,11 @@
   }
 
   .button--md {
-    font-size: 14px;
     width: 167px;
   }
 }
-@media (max-width: 400px){
-  .button--lg{
-    width:100% !important;
+@media (max-width: 400px) {
+  .button--lg {
+    width: 100% !important;
   }
 }

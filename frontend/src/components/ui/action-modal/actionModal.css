@@ -77,10 +77,8 @@
 
 .modal-btn {
   padding: 20px 16px;
-  border-radius: 40px;
   font-size: 16px;
   font-weight: 700;
-  background-color: var(--plain-button-bg);
   cursor: pointer;
 }
 
@@ -198,7 +196,6 @@
 
   .modal-btn {
     padding: 20px 8px;
-    border-radius: 16px;
     font-size: 14px;
   }
 
