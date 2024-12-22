@@ -5,12 +5,12 @@ import { connectWallet, checkForCRMToken } from '../services/wallet';
 export const useConnectWallet = (setWalletId) => {
   return useMutation({
     mutationFn: async () => {
-     const walletAddress = await connectWallet();
+      const walletAddress = await connectWallet();
 
       if (!walletAddress) {
         throw new Error('Failed to connect wallet');
       }
-    const hasCRMToken = await checkForCRMToken(walletAddress);
+      const hasCRMToken = await checkForCRMToken(walletAddress);
       if (!hasCRMToken) {
         throw new Error('Wallet does not have CRM token');
       }
@@ -22,7 +22,7 @@ export const useConnectWallet = (setWalletId) => {
     },
     onError: (error) => {
       console.error('Wallet connection failed:', error);
-      notify('Failed to connect wallet. Please try again.', "error");
+      notify('Failed to connect wallet. Please try again.', 'error');
     },
   });
 };

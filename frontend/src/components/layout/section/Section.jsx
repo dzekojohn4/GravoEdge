@@ -27,7 +27,9 @@ const Section = ({ id, title, content }) => {
         return (
           <ol key={index} className="setup-steps">
             {item.items.map((listItem, i) => (
-              <li key={i}>{i + 1}. {listItem}</li>
+              <li key={i}>
+                {i + 1}. {listItem}
+              </li>
             ))}
           </ol>
         );

@@ -6,20 +6,20 @@ const TOKEN_CONFIG = {
     id: 'ethereum',
     collateralFactor: 0.8,
     borrowFactor: 0.9,
-    decimals: 18
+    decimals: 18,
   },
   USDC: {
     id: 'usd-coin',
     collateralFactor: 0.85,
     borrowFactor: 0.9,
-    decimals: 6
+    decimals: 6,
   },
   STRK: {
     id: 'starknet',
     collateralFactor: 0.75,
     borrowFactor: 0.85,
-    decimals: 18
-  }
+    decimals: 18,
+  },
 };
 
 const fetchTokenPrice = async (tokenId) => {
@@ -66,6 +66,6 @@ export const useHealthFactor = (selectedToken, tokenAmount, selectedMultiplier) 
     healthFactor: calculateHealthFactor(),
     tokenPrice,
     isLoading: !error && !tokenPrice,
-    isError: !!error
+    isError: !!error,
   };
 };
