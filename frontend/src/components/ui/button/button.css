@@ -75,7 +75,6 @@
   transform: translateY(1px);
 }
 
-/* Disabled state */
 .button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -83,6 +82,10 @@
 
 .button:disabled:hover {
   transform: none;
+}
+
+.button--secondary:hover:not(:disabled) {
+  border: var(--midnight-purple-hover-border);
 }
 
 @media (max-width: 768px) {

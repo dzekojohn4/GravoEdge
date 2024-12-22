@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './overview.css';
 import ScrollButton from 'components/ui/scroll-button/ScrollButton';
 import Sections from 'components/layout/sections/Sections';
-import Sidebar from 'components/ui/Components/Sidebar/Sidebar';
+import Sidebar from 'components/layout/sidebar/Sidebar';
 
 const OverviewPage = () => {
   useEffect(() => {
@@ -10,17 +10,18 @@ const OverviewPage = () => {
   }, []);
 
   const tableOfContents = [
-    { name: 'Welcome', link: '#welcome' },
+    { id: 'welcome', name: 'Welcome', link: '#welcome' },
     {
-      title: 'How it works',
+      id: 'how-it-works',
+      name: 'How it works',
       link: '#how-it-works',
-      subItems: [
-        { name: 'Connect Your Wallet', link: '#connect-wallet' },
-        { title: 'Choose A Service', link: '#choose-service' },
-        { title: 'Transact Seamlessly', link: '#transact-seamlessly' },
+      children: [
+        { id: 'connect-wallet', name: 'Connect Your Wallet', link: '#connect-wallet' },
+        { id: 'choose-service', name: 'Choose A Service', link: '#choose-service' },
+        { ud: 'transact-seamlessly', name: 'Transact Seamlessly', link: '#transact-seamlessly' },
       ],
     },
-    { name: 'Supported Chains', link: '#supported-chains' },
+    { id: 'supported-chains', name: 'Supported Chains', link: '#supported-chains' },
   ];
 
   const sectionsData = [
@@ -67,7 +68,7 @@ const OverviewPage = () => {
   return (
     <div className="overview-container">
       <div>
-        <Sidebar items={tableOfContents} className="sidebar-docs-sticky" title={'Overview'} />
+        <Sidebar items={tableOfContents} title={'Overview'} />
       </div>
 
       <div className="content">

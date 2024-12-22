@@ -3,7 +3,7 @@ import { CallData } from 'starknet';
 import { erc20abi } from '../abis/erc20';
 import { abi } from '../abis/abi';
 import { axiosInstance } from '../utils/axios';
-import {checkAndDeployContract} from './contract';
+import { checkAndDeployContract } from './contract';
 import { notify, ToastWithLink } from '../components/layout/notifier/Notifier';
 
 export async function sendTransaction(loopLiquidityData, contractAddress) {
@@ -23,7 +23,7 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
       entrypoint: 'approve',
       calldata: approveCalldata.compile('approve', [contractAddress, loopLiquidityData.deposit_data.amount]),
     };
-    console.log(loopLiquidityData)
+    console.log(loopLiquidityData);
     const callData = new CallData(abi);
     const compiled = callData.compile('loop_liquidity', loopLiquidityData);
     const depositTransaction = {
@@ -36,7 +36,14 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
 
     console.log('Resp: ');
     console.log(result);
-    notify(ToastWithLink("Transaction successfully sent", `https://starkscan.co/tx/${result.transaction_hash}`, "Transaction ID"), "success")
+    notify(
+      ToastWithLink(
+        'Transaction successfully sent',
+        `https://starkscan.co/tx/${result.transaction_hash}`,
+        'Transaction ID'
+      ),
+      'success'
+    );
 
     return {
       loopTransaction: result.transaction_hash,
@@ -70,19 +77,23 @@ export async function closePosition(transactionData) {
   let result = await starknet.account.execute([
     { contractAddress: transactionData.contract_address, entrypoint: 'close_position', calldata: compiled },
   ]);
-  notify(ToastWithLink("Close position successfully sent", `https://starkscan.co/tx/${result.transaction_hash}`, "Transaction ID"), "success")
-
+  notify(
+    ToastWithLink(
+      'Close position successfully sent',
+      `https://starkscan.co/tx/${result.transaction_hash}`,
+      'Transaction ID'
+    ),
+    'success'
+  );
 }
 
-export const handleTransaction = async (connectedWalletId, formData, setTokenAmount, setLoading, setSuccessful) => {
-
+export const handleTransaction = async (connectedWalletId, formData, setTokenAmount, setLoading) => {
   setLoading(true);
-  try{
+  try {
     await checkAndDeployContract(connectedWalletId);
   } catch (error) {
     console.error('Error deploying contract:', error);
-    notify('Error deploying contract. Please try again.', 'error')
-    setSuccessful(false)
+    notify('Error deploying contract. Please try again.', 'error');
     setLoading(false);
     return;
   }
@@ -97,14 +108,12 @@ export const handleTransaction = async (connectedWalletId, formData, setTokenAmo
       params: { position_id: transactionData.position_id },
     });
 
-    openPositionResponse == openPositionResponse
+    openPositionResponse == openPositionResponse;
 
-    // Reset form data
     setTokenAmount('');
   } catch (err) {
     console.error('Failed to create position:', err);
-    notify(`Error sending transaction: ${err}`, 'error')
-    setSuccessful(false)
+    notify(`Error sending transaction: ${err}`, 'error');
   } finally {
     setLoading(false);
   }

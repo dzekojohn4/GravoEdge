@@ -1,4 +1,4 @@
-.documentation-page{
+.documentation-page {
   display: flex;
   width: calc(100vw - 372px);
   min-height: 100vh;
@@ -14,12 +14,6 @@
   color: var(--primary);
   position: relative;
   width: calc(100vw - 372px);
-}
-
-.sidebar-docs-sticky{
-  margin-top: 5.5rem;
-  height: 100vh;
-  position: fixed;
 }
 
 .documentation-container::before {
@@ -77,7 +71,7 @@ html {
     padding: 1rem;
   }
 
-  .documentation-page{
+  .documentation-page {
     margin-left: 0;
     width: 100vw;
   }
@@ -87,8 +81,8 @@ html {
   }
 }
 
-@media (max-width: 1024px){
-  .documentation-page{
+@media (max-width: 1024px) {
+  .documentation-page {
     margin-left: 0;
     width: 100vw;
   }

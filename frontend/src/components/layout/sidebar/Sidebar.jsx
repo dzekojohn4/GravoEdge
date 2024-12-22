@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import './Sidebar.css';
-import addSquare from 'assets/icons/add-square.svg';
+import './sidebar.css';
+import { SidebarItem } from './SidebarItem';
 
 const Sidebar = ({ title, items, className = '' }) => {
   const location = useLocation();
@@ -19,8 +18,8 @@ const Sidebar = ({ title, items, className = '' }) => {
       }
     }
 
-    // Find and set active item based on current path
     const currentPath = location.pathname;
+
     items.forEach((item) => {
       if (item.link === currentPath) {
         setActiveItemId(item.id);
@@ -37,22 +36,18 @@ const Sidebar = ({ title, items, className = '' }) => {
   }, [location, items]);
 
   const handleItemClick = (item) => {
+    const elementId = item.link.replace('#', '');
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setActiveItemId(item.id);
+      window.history.pushState(null, '', item.link);
+    }
     if (item.children) {
-      // Toggle expansion for items with children
       setExpandedItems((prev) => ({
         ...prev,
         [item.id]: !prev[item.id],
       }));
-    } else if (item.link.startsWith('#')) {
-      // Handle hash navigation
-      const elementId = item.link.replace('#', '');
-      const element = document.getElementById(elementId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-        setActiveItemId(item.id);
-        // Update URL with hash
-        window.history.pushState(null, '', item.link);
-      }
     }
   };
 
@@ -66,29 +61,11 @@ const Sidebar = ({ title, items, className = '' }) => {
       <div key={item.id} className="sidebar-item-wrapper">
         {item.link.startsWith('#') ? (
           <button onClick={() => handleItemClick(item)} className={itemClass}>
-            {item.icon && (
-              <span className="item-icon">
-                <img src={item.icon} alt={item.name} />
-              </span>
-            )}
-            <span className="item-name">{item.name}</span>
-            {hasChildren && (
-              <span className="expand-icon">{isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
-            )}
+            <SidebarItem item={item} isExpanded={isExpanded} hasChildren={hasChildren} isNested={level > 0} />
           </button>
         ) : (
           <Link to={item.link} className={itemClass}>
-            <span className="item-icon">
-              <img
-                className={`item-icon-image--${!item.icon ? 'sm' : 'lg'}`}
-                src={item.icon || addSquare}
-                alt={item.name}
-              />
-            </span>
-            <span className="item-name">{item.name}</span>
-            {hasChildren && (
-              <span className="expand-icon">{isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
-            )}
+            <SidebarItem item={item} isExpanded={isExpanded} hasChildren={hasChildren} isNested={level > 0} />
           </Link>
         )}
 

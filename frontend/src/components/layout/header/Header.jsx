@@ -9,13 +9,11 @@ import MobDropdownMenu from '../mob-dropdown-menu/MobDropdownMenu';
 import './header.css';
 import '../../../globals.css';
 
-
 function Header({ onConnectWallet, onLogout }) {
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation(); // Getting object of currant route
 
-  const makeNavStick = location.pathname === "/overview" || location.pathname === "/documentation" || location.pathname === "/dashboard" || location.pathname === "/stake" || location.pathname === "/withdraw"
+  const makeNavStick = ['/overview', '/documentation', '/dashboard', '/stake', '/withdraw'].includes(location.pathname);
 
   // Blocking screen scroll if menu is open
   useLockBodyScroll(isMenuOpen);
@@ -48,7 +46,7 @@ function Header({ onConnectWallet, onLogout }) {
   };
 
   return (
-    <nav className={makeNavStick ? "header-nav-sticky" : "header-nav"}>
+    <nav className={makeNavStick ? 'header-nav-sticky' : 'header-nav'}>
       <div className="list-items">
         <div className="logo">
           <NavLink to="/">

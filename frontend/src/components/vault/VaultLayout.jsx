@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import './vaultLayout.css';
-import Sidebar from 'components/ui/Components/Sidebar/Sidebar';
+import Sidebar from 'components/layout/sidebar/Sidebar';
 
 export function VaultLayout({ children }) {
   const vaultItems = [
@@ -23,7 +23,7 @@ export function VaultLayout({ children }) {
   ];
   return (
     <div className="layout">
-      <Sidebar title="Vault" items={vaultItems} className="sidebar-docs-sticky" />
+      <Sidebar title="Vault" items={vaultItems} />
       <main>
         {children}
         <Outlet />

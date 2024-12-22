@@ -21,7 +21,7 @@ import { TELEGRAM_BOT_LINK } from './utils/constants';
 import { useCheckMobile } from './hooks/useCheckMobile';
 import PositionHistory from './pages/position-history/PositionHistory';
 import WithdrawAll from 'pages/spotnet/dashboard/withdraw-all/WithdrawAll';
-import SpringDefiPage from 'pages/spotnet/defi-spring/Defi-spring';
+import { DefiSpringPage } from 'pages/spotnet/defi-spring/DefiSpring';
 
 function App() {
   const { setWalletId, removeWalletId } = useWalletStore();
@@ -104,7 +104,7 @@ function App() {
           <Route path="/form" element={<Form />} />
           <Route path="/documentation" element={<Documentation />} />
           <Route path="/stake" element={<Stake />} />
-          <Route path="/springdefi" element={<SpringDefiPage />} />
+          <Route path="/defispring" element={<DefiSpringPage />} />
         </Routes>
       </main>
       <Footer />

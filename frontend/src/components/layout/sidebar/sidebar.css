@@ -3,6 +3,9 @@
   border-right: 1px solid #300734;
   display: none;
   color: #83919f;
+  margin-top: 5.5rem;
+  height: 100vh;
+  position: fixed;
 }
 
 @media (min-width: 1024px) {
@@ -68,7 +71,15 @@
 }
 
 .sidebar-item.nested {
-  padding-left: 32px;
+  padding-left: 8px;
+}
+
+.item-bullet {
+  background-color: var(--light-purple);
+  width: 6px;
+  height: 6px;
+  border-radius: 100%;
+  margin-right: 8px;
 }
 
 .item-icon {

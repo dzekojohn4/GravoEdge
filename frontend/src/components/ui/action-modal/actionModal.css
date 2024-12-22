@@ -75,13 +75,6 @@
   gap: 16px;
 }
 
-.modal-btn {
-  padding: 20px 16px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
 .modal-cancel-btn {
   color: var(--primary);
   position: relative;
@@ -143,10 +136,6 @@
   .modal-actions {
     gap: 14px;
   }
-
-  .modal-btn {
-    padding: 10px 10px;
-  }
 }
 
 /* Mobile Styles */
@@ -192,11 +181,6 @@
   .modal-actions {
     gap: 8px;
     justify-content: center;
-  }
-
-  .modal-btn {
-    padding: 20px 8px;
-    font-size: 14px;
   }
 
   .modal-cancel-btn::before {

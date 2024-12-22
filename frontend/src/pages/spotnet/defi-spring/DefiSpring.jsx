@@ -1,27 +1,28 @@
 import React, { useEffect } from 'react';
 import './defi-spring.css';
-import TableOfContents from 'components/table-of-content/TableOfContents';
 import ScrollButton from 'components/ui/scroll-button/ScrollButton';
 import Sections from 'components/layout/sections/Sections';
+import Sidebar from 'components/layout/sidebar/Sidebar';
 
-const Documentation = () => {
+export const DefiSpringPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const tableOfContents = [
-    { title: 'Introduction', link: '#introduction' },
+    { id: 'introduction', name: 'Introduction', link: '#introduction' },
     {
-      title: 'Program overview',
+      id: 'overview',
+      name: 'Program overview',
       link: '#overview',
     },
-    { title: 'Claiming rewards', link: '#claiming-rewards' },
-    { title: 'Important notes', link: '#important-notes' },
-    { title: 'Maximize your profit', link: '#maximize-your-profit' },
-    { title: 'The Hub And Zones', link: '#hub-2' },
-    { title: 'The Hub And Zones', link: '#hub-3' },
-    { title: 'The Hub And Zones', link: '#hub-4' },
-    { title: 'The Hub And Zones', link: '#hub-5' },
+    { id: 'claiming-rewards', name: 'Claiming rewards', link: '#claiming-rewards' },
+    { id: 'important-notes', name: 'Important notes', link: '#important-notes' },
+    { id: 'maximize-your-profit', name: 'Maximize your profit', link: '#maximize-your-profit' },
+    { id: 'hub-2', name: 'The Hub And Zones', link: '#hub-2' },
+    { id: 'hub-3', name: 'The Hub And Zones', link: '#hub-3' },
+    { id: 'hub-4', name: 'The Hub And Zones', link: '#hub-4' },
+    { id: 'hub-5', name: 'The Hub And Zones', link: '#hub-5' },
   ];
 
   const sectionsData = [
@@ -98,12 +99,7 @@ const Documentation = () => {
 
   return (
     <div className="documentation-page">
-      <TableOfContents
-        tabelTitle={'Table Of Content'}
-        defaultActiveId={'introduction'}
-        headerHeight={80}
-        items={tableOfContents}
-      />
+      <Sidebar title="Content" items={tableOfContents} />
 
       <div className="main-content">
         <h1 className="main-title">Defi Spring Documentation</h1>
@@ -114,5 +110,3 @@ const Documentation = () => {
     </div>
   );
 };
-
-export default Documentation;

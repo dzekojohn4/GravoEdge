@@ -1,36 +1,29 @@
 import React, { useEffect } from 'react';
 import './documentation.css';
-import ScrollButton from '../../components/ui/scroll-button/ScrollButton';
+import ScrollButton from 'components/ui/scroll-button/ScrollButton';
 import Sections from 'components/layout/sections/Sections';
-import Sidebar from 'components/ui/Components/Sidebar/Sidebar';
+import Sidebar from 'components/layout/sidebar/Sidebar';
 
 const Documentation = () => {
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-
   const tableOfContents = [
-    { id: 'Introduction', name:'Introduction', link: '#introduction' },
+    { id: 'Introduction', name: 'Introduction', link: '#introduction' },
     {
       id: 'Overview',
       name: 'Overview',
       link: '#overview',
       subItems: [
-        { title: 'Cosmos Overview', link: '#cosmos-1' },
-        { title: 'Cosmos Overview', link: '#cosmos-2' },
-        { title: 'Cosmos Overview', link: '#cosmos-3' },
-        { title: 'Cosmos Overview', link: '#cosmos-4' }
-      ]
+        { id: 'cosmos-1', name: 'Cosmos Overview', link: '#cosmos-1' },
+        { id: 'cosmos-2', name: 'Cosmos Overview', link: '#cosmos-2' },
+        { id: 'cosmos-3', name: 'Cosmos Overview', link: '#cosmos-3' },
+        { id: 'cosmos-4', name: 'Cosmos Overview', link: '#cosmos-4' },
+      ],
     },
-    { title: 'How it performs', link: '#how-it-performs' },
-    { title: 'Getting Started', link: '#getting-started' },
-    { title: 'ZkLend', link: '#zk-lend' },
-    { title: 'The Hub And Zones', link: '#powered-by-starknet' },
-    { title: 'The Hub And Zones', link: '#hub-3' },
-    { title: 'The Hub And Zones', link: '#hub-4' },
-    { title: 'The Hub And Zones', link: '#hub-5' }
+    { id: 'how-it-performs', name: 'How it performs', link: '#how-it-performs' },
+    { id: 'getting-started', name: 'Getting Started', link: '#getting-started' },
   ];
 
   const sectionsData = [
@@ -41,7 +34,7 @@ const Documentation = () => {
         {
           type: 'text',
           value:
-            'Welcome to spotnet Documentation\nspotnet is a decentralized platform designed to [describe purpose, e.g., "empower users to securely manage digital assets and access DeFi tools effortlessly"]. This documentation provides a comprehensive guide on using SpotNet and making the most of its features.',
+            'Welcome to spotnet Documentation \n Spotnet is a decentralized platform designed to [describe purpose, e.g., "empower users to securely manage digital assets and access DeFi tools effortlessly"]. \n This documentation provides a comprehensive guide on using SpotNet and making the most of its features.',
         },
       ],
     },
@@ -93,7 +86,7 @@ const Documentation = () => {
           items: [
             'Health Factor: A measure of how safe your position is (the higher, the better).',
             'Collateral: The value of your assets in the position.',
-            'Borrowed Amount: The total amount you have borrowed.'
+            'Borrowed Amount: The total amount you have borrowed.',
           ],
         },
         {
@@ -102,15 +95,13 @@ const Documentation = () => {
         },
         {
           type: 'list',
-          items:
-            [
-              'If you wish to close your position, simply click on `Reedem` in the Dashboard page. This will allow you to withdraw your collateral and repay the loan.',
-              'Currently, Spotnet only allows you to open a single position.',
-              'If your health ratio level will be zero, you will be liquidated by ZkLend.',
-              'You also have the option to enable notifications on Telegram, so you will be alerted if your health ratio reaches a dangerous level.'
-            ],
+          items: [
+            'If you wish to close your position, simply click on `Reedem` in the Dashboard page. This will allow you to withdraw your collateral and repay the loan.',
+            'Currently, Spotnet only allows you to open a single position.',
+            'If your health ratio level will be zero, you will be liquidated by ZkLend.',
+            'You also have the option to enable notifications on Telegram, so you will be alerted if your health ratio reaches a dangerous level.',
+          ],
         },
-
       ],
     },
     {
@@ -123,20 +114,21 @@ const Documentation = () => {
         },
         {
           type: 'text',
-          value: "Money markets have been a crucial component of financial systems since the Middle Ages, providing short-term funding and liquidity to banks, governments, and corporations. Today, money markets facilitate an estimated $3.2 trillion in daily transactions in the global financial system, making them critical for short-term funding needs. In the context of DeFi, money markets play an essential role in activities such as lending, borrowing, and liquidity provision. At zkLend, our goal is to create a simple, secure, and efficient platform for your liquidity needs. We've built a permissionless lending market where anyone can deposit and borrow digital assets directly from their wallets, at any time. When you deposit assets, you earn interest from borrowers using your funds. You can also use your deposited assets as collateral to borrow other digital assets.",
+          value:
+            "Money markets have been a crucial component of financial systems since the Middle Ages, providing short-term funding and liquidity to banks, governments, and corporations. Today, money markets facilitate an estimated $3.2 trillion in daily transactions in the global financial system, making them critical for short-term funding needs. In the context of DeFi, money markets play an essential role in activities such as lending, borrowing, and liquidity provision. At zkLend, our goal is to create a simple, secure, and efficient platform for your liquidity needs. We've built a permissionless lending market where anyone can deposit and borrow digital assets directly from their wallets, at any time. When you deposit assets, you earn interest from borrowers using your funds. You can also use your deposited assets as collateral to borrow other digital assets.",
         },
 
         {
           type: 'text',
-          value: "Our Alpha version is now available on the mainnet. Rest assured, we've fully audited the platform with reputable firms like ABDK and Nethermind, and the contracts have been formally specified since April 2023."
+          value:
+            "Our Alpha version is now available on the mainnet. Rest assured, we've fully audited the platform with reputable firms like ABDK and Nethermind, and the contracts have been formally specified since April 2023.",
         },
 
         {
           type: 'text',
-          value: "With a focus on safety, ease of use, and cutting-edge blockchain technology, we’re confident that zkLend is on its way to becoming a leading platform in the DeFi space. Join us and experience the future of decentralized finance!"
+          value:
+            'With a focus on safety, ease of use, and cutting-edge blockchain technology, we’re confident that zkLend is on its way to becoming a leading platform in the DeFi space. Join us and experience the future of decentralized finance!',
         },
-
-
       ],
     },
 
@@ -146,12 +138,14 @@ const Documentation = () => {
       content: [
         {
           type: 'text',
-          value: "At zkLend, we believe zk-rollups are the key to unlocking Ethereum's full potential. By using Starknet's Layer 2 (L2) solution, we’re able to bring the speed and efficiency of zk-rollups together with the security and decentralization that Ethereum is known for. Starknet is one of the first zk-rollup platforms designed for general use. It offers fast transactions, low fees, and cutting-edge blockchain features that far exceed the capabilities of traditional networks. Key innovations like account abstraction, trustless bridging, parallel processing, and advanced proof techniques make Starknet stand out.",
+          value:
+            "At zkLend, we believe zk-rollups are the key to unlocking Ethereum's full potential. By using Starknet's Layer 2 (L2) solution, we’re able to bring the speed and efficiency of zk-rollups together with the security and decentralization that Ethereum is known for. Starknet is one of the first zk-rollup platforms designed for general use. It offers fast transactions, low fees, and cutting-edge blockchain features that far exceed the capabilities of traditional networks. Key innovations like account abstraction, trustless bridging, parallel processing, and advanced proof techniques make Starknet stand out.",
         },
 
         {
           type: 'text',
-          value: "With the strong track record of StarkWare and the team behind successful projects like ZCash and StarkEx, Starknet is the perfect platform to power zkLend and ensure we stay ahead of the curve. We're excited to be part of this groundbreaking technology!.",
+          value:
+            "With the strong track record of StarkWare and the team behind successful projects like ZCash and StarkEx, Starknet is the perfect platform to power zkLend and ensure we stay ahead of the curve. We're excited to be part of this groundbreaking technology!.",
         },
       ],
     },
@@ -177,7 +171,7 @@ const Documentation = () => {
 
   return (
     <div className="documentation-page">
-      <Sidebar title={'Table of Contents'} items={tableOfContents} className='sidebar-docs-sticky' />
+      <Sidebar title="Table of Contents" items={tableOfContents} />
 
       <div className="main-content">
         <h1 className="main-title">Spotnet Documentation</h1>
@@ -186,7 +180,6 @@ const Documentation = () => {
 
       <ScrollButton />
     </div>
-
   );
 };
 

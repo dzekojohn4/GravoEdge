@@ -21,11 +21,6 @@ body {
     justify-content: center;
   }
 }
-.sidebar-docs-sticky {
-  margin-top: 5.5rem;
-  height: 100vh;
-  position: fixed;
-}
 
 .dashboard-wrapper {
   position: relative;
@@ -361,6 +356,7 @@ body {
 @media (max-width: 550px) {
   .dashboard-wrapper {
     height: 100%;
+    width: 100%;
   }
   .dashboard-title {
     font-size: 16px;
@@ -380,10 +376,10 @@ body {
     padding-bottom: 40px;
   }
   .dashboard-info-container {
-    width: 100%;
+    /* width: 100%; */
   }
   .dashboard-info-card {
-    background: var(--deep-purple);
+    background: transparent;
     padding: 16px 24px;
     margin: 0px auto;
     width: 100%;
