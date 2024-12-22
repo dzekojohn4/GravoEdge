@@ -337,5 +337,57 @@ class StarknetClient:
             calldata=[],
         )
 
+    async def add_extra_deposit(
+        self, contract_address: str, token_address: str, amount: str
+    ) -> Any:
+        """
+        Adds extra deposit to position.
+
+        :param contract_address: The contract address.
+        :param token_address: The token address.
+        :param amount: The amount to deposit.
+        """
+
+        return await self._func_call(
+            addr=self._convert_address(contract_address),
+            selector="extra_deposit",
+            calldata=[self._convert_address(token_address), amount],
+        )
+
+    async def withdraw_all(self, contract_address: str) -> dict[str, str]:
+        """
+        Withdraws all supported tokens from the contract by calling withdraw with amount=0.
+        
+        :param contract_address: The contract address to withdraw from
+        :return: A dictionary summarizing the results for each token.
+        """
+        contract_addr_int = self._convert_address(contract_address)
+        results = {}
+
+        for token in TokenParams.tokens():
+            token_symbol = token.name
+
+            try:
+                token_addr_int = self._convert_address(token.address)  
+
+            except ValueError as e:
+                logger.error(f"Invalid address format for {token_symbol}: {str(e)}")
+                results[token_symbol] = f"Failed: Invalid address format"
+                continue
+
+            try:
+                logger.info(f"Withdrawing {token_symbol} from contract {contract_address}")
+                await self._func_call(
+                    addr=contract_addr_int,
+                    selector="withdraw",
+                    calldata=[token_addr_int, 0] 
+                )
+                results[token_symbol] = "Success"
+            except Exception as e:
+                logger.error(f"Error withdrawing {token_symbol}: {e}")
+                results[token_symbol] = f"Failed: {e}"
+
+        return results
+
 
 CLIENT = StarknetClient()

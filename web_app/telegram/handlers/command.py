@@ -31,6 +31,7 @@ async def notification_allowed(message: Message, command: CommandObject):
     """
     user_id = command.args
     user = db_connector.get_object(User, user_id)
+    telegram_db.update_telegram_user(str(message.from_user.id), dict(wallet_id=user.wallet_id))
     telegram_db.set_allow_notification(str(message.from_user.id), user.wallet_id)
 
     return await message.answer(
