@@ -276,7 +276,7 @@ fn test_get_vault_token(){
     let token: ContractAddress = deploy_erc20_mock();
     let suite = setup_test_suite(user, token);
     start_cheat_caller_address(suite.vault.contract_address, user);
-    assert(suite.vault.get_vault_token() >= token, 'Vault token mismatch');
+    assert(suite.vault.get_vault_token() == token, 'Vault token mismatch');
     stop_cheat_caller_address(suite.vault.contract_address);
 }
 
@@ -286,7 +286,7 @@ fn test_get_vault_token_fail(){
     let user: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
     let suite = setup_test_suite(user, deploy_erc20_mock());
     start_cheat_caller_address(suite.vault.contract_address, user);
-    assert(suite.vault.get_vault_token() >= tokens::ETH.try_into().unwrap(), 'Vault token mismatch');
+    assert(suite.vault.get_vault_token() == tokens::ETH.try_into().unwrap(), 'Vault token mismatch');
     stop_cheat_caller_address(suite.vault.contract_address);
 }
 
