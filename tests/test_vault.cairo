@@ -269,3 +269,23 @@ fn test_protect_position_user_address_is_zero() {
     suite.vault.protect_position(deposit_address, user, user_amount);
     stop_cheat_caller_address(suite.vault.contract_address);
 }
+
+#[test]
+fn test_get_vault_token(){
+    let user: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
+    let token: ContractAddress = deploy_erc20_mock();
+    let suite = setup_test_suite(user, token);
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    assert(suite.vault.get_vault_token() >= token, 'Vault token mismatch');
+    stop_cheat_caller_address(suite.vault.contract_address);
+}
+
+#[test]
+#[should_panic(expected: ('Vault token mismatch',))]
+fn test_get_vault_token_fail(){
+    let user: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
+    let suite = setup_test_suite(user, deploy_erc20_mock());
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    assert(suite.vault.get_vault_token() >= tokens::ETH.try_into().unwrap(), 'Vault token mismatch');
+    stop_cheat_caller_address(suite.vault.contract_address);
+}
