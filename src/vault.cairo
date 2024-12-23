@@ -262,6 +262,23 @@ mod Vault {
             self.emit(PositionProtected { token, deposit_contract, contract_owner: user, amount });
         }
 
+        /// Return liquidity from the vault by transferring tokens to the user.
+        ///
+        /// # Arguments
+        ///
+        /// * `user` - The address of the withdrawer
+        /// * `amount` - The amount of tokens to withdraw from the vault
+        ///
+        /// # Panics
+        ///
+        /// * When the caller's deposited balance is less than the withdrawal amount
+        ///
+        /// # Events
+        ///
+        /// Emits a `LiquidityReturned` event with:
+        /// * `user` - The address of the withdrawer
+        /// * `token` - The address of the withdrawn token
+        /// * `amount` - The amount of tokens withdrawn
         fn return_liquidity(ref self: ContractState, user: ContractAddress, amount: TokenAmount){
             let caller = get_caller_address();
             let token = self.token.read();
@@ -277,6 +294,7 @@ mod Vault {
             self.emit(LiquidityReturned { user, token, amount });
         }
 
+        /// Returns the token address stored in the vault
         fn get_vault_token(self: @ContractState) -> ContractAddress {
             return self.token.read();
         }
