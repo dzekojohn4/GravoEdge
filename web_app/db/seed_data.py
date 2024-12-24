@@ -5,7 +5,16 @@ Seed data for initializing the database with predefined values.
 import logging
 from decimal import Decimal
 from faker import Faker
-from web_app.db.models import Status, Transaction, TransactionStatus, User, Position, AirDrop, TelegramUser, Vault
+from web_app.db.models import (
+    Status,
+    Transaction,
+    TransactionStatus,
+    User,
+    Position,
+    AirDrop,
+    TelegramUser,
+    Vault,
+)
 from web_app.db.database import SessionLocal
 from web_app.contract_tools.constants import TokenParams
 
@@ -152,6 +161,7 @@ def create_vaults(session: SessionLocal, users: list[User]) -> None:
         logger.info(f"Created {len(vaults)} vaults for {len(users)} users.")
     else:
         logger.info("No vaults created.")
+
 
 def create_transaction(session: SessionLocal, positions: list[Position]) -> None:
     """
