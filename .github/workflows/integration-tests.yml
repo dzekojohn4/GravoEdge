@@ -22,10 +22,8 @@ jobs:
     with:
       python-version: "3.12"
       additional-steps: |
-        [
-          "docker-compose -f docker-compose.dev.yaml up -d --build",
-          "docker-compose exec backend poetry run pytest web_app/test_integration/ -v",
-          "docker-compose down"
-        ]
+        docker-compose -f docker-compose.dev.yaml up -d --build
+        docker-compose exec backend poetry run pytest web_app/test_integration/ -v
+        docker-compose down
     secrets:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
