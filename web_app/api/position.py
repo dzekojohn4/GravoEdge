@@ -153,7 +153,7 @@ async def close_position(position_id: UUID, transaction_hash: str) -> str:
     :raises: HTTPException: If position_id is invalid
     """
     position_status = position_db_connector.close_position(str(position_id))
-    saved = position_db_connector.save_transaction(
+    position_db_connector.save_transaction(
         position_id=position_id,
         status="closed",
         transaction_hash=transaction_hash
