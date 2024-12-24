@@ -68,12 +68,15 @@ async def test_close_position_success(client: TestClient) -> None:
         None
     """
     position_id = str(uuid.uuid4())
+    transaction_hash = "0xabc123"
     with patch(
         "web_app.db.crud.PositionDBConnector.close_position"
     ) as mock_close_position:
         mock_close_position.return_value = "Position successfully closed"
-        response = client.get(f"/api/close-position?position_id={position_id}")
-        assert response.is_success
+        response = client.get(
+            f"/api/close-position?position_id={position_id}&transaction_hash={transaction_hash}"
+        )
+        assert response.status_code == 200
         assert response.json() == "Position successfully closed"
 
 
