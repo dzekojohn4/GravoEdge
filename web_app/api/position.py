@@ -152,6 +152,9 @@ async def close_position(position_id: UUID, transaction_hash: str) -> str:
     :return: str
     :raises: HTTPException: If position_id is invalid
     """
+    if position_id is None or position_id == "undefined":
+        raise HTTPException(status_code=404, detail="Position not Found")
+    
     position_status = position_db_connector.close_position(str(position_id))
     position_db_connector.save_transaction(
         position_id=position_id,
