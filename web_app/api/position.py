@@ -2,7 +2,9 @@
 This module handles position-related API endpoints.
 """
 
+import datetime
 from typing import Optional
+from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Request
 
@@ -18,6 +20,7 @@ from web_app.api.serializers.transaction import (
 from web_app.contract_tools.constants import TokenMultipliers, TokenParams
 from web_app.contract_tools.mixins import DashboardMixin, DepositMixin, PositionMixin
 from web_app.db.crud import PositionDBConnector
+from web_app.db.models import Transaction
 
 router = APIRouter()  # Initialize the router
 position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
@@ -143,7 +146,7 @@ async def get_repay_data(
     summary="Close a position",
     response_description="Returns the position status",
 )
-async def close_position(position_id: str) -> str:
+async def close_position(position_id: str, transaction_hash: str) -> str:
     """
     Close a position.
     :param position_id: contract address
@@ -161,8 +164,8 @@ async def close_position(position_id: str) -> str:
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow()
     )
-    db.add(new_transaction)
-    db.commit()
+    position_db_connector.add(new_transaction)
+    position_db_connector.commit()
         
     return position_status
 
