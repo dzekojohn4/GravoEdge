@@ -286,10 +286,10 @@ mod Vault {
             assert(current_amount >= amount, 'Not enough tokens to withdraw');
 
             // update new amount
-            self.amounts.entry(caller).write(current_amount - amount);
+            self.amounts.entry(user).write(current_amount + amount);
 
             // transfer token to user
-            IERC20Dispatcher { contract_address: token }.transfer(user, amount);
+            IERC20Dispatcher { contract_address: token }.transfer_from(caller, user, amount);
 
             self.emit(LiquidityReturned { user, token, amount });
         }
