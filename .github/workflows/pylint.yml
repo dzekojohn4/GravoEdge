@@ -7,13 +7,17 @@ on:
     branches: [main]
 
 jobs:
-  pylint:
+  build:
     uses: ./.github/workflows/workflow.yml
     with:
-      python-version: "3.12"
-      additional-steps: |
-        [
-          "pylint $(git ls-files '*.py') --disable=all --enable=C0114,C0115,C0116,C0301"
-        ]
-      secrets: |
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      python-version: '3.12'
+
+    steps:
+      - name: Install Pylint
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+
+      - name: Analysing the code with pylint
+        run: |
+          pylint $(git ls-files '*.py') --disable=all --enable=C0114,C0115,C0116,C0301
