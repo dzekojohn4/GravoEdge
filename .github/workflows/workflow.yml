@@ -12,6 +12,7 @@ on:
     secrets:
       POSTGRES_PASSWORD:
         required: false
+        type: string
 
 jobs:
   backend-setup:
@@ -22,6 +23,7 @@ jobs:
         image: postgres:16
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_PASSWORD: ${{ inputs.POSTGRES_PASSWORD }}
         ports:
           - 5433:5432
         options: >-

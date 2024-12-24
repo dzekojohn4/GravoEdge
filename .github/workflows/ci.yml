@@ -16,3 +16,4 @@ jobs:
         docker-compose exec backend poetry run pytest web_app/tests
         docker-compose exec backend poetry run pytest --cov=web_app/tests --cov-fail-under=90
         docker-compose down
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
