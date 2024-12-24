@@ -171,13 +171,12 @@ def create_transaction(session: SessionLocal, positions: list[Position]) -> None
         positions (list): List of Position objects to associate with transactions.
     """
     transactions = []
+    transaction_statuses = [status.value for status in TransactionStatus]
     for position in positions:
-        for _ in range(2):
+        for i in range(len(transaction_statuses)):
             transaction = Transaction(
                 position_id=position.id,
-                status=fake.random_element(
-                    elements=[status.value for status in TransactionStatus]
-                ),
+                status=transaction_statuses[i],
                 transaction_hash=fake.unique.uuid4(),
             )
             transactions.append(transaction)
