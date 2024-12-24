@@ -11,4 +11,9 @@ jobs:
     uses: ./.github/workflows/workflow.yml
     with:
       python-version: "3.12"
-      additional-steps: "pylint $(git ls-files '*.py') --disable=all --enable=C0114,C0115,C0116,C0301"
+      additional-steps: |
+        [
+          "pylint $(git ls-files '*.py') --disable=all --enable=C0114,C0115,C0116,C0301"
+        ]
+      secrets: |
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
