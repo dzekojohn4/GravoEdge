@@ -57,7 +57,6 @@ async def test_open_position_missing_position_data(
     assert response.status_code == 404
     assert response.json() == {"detail": "Position not found"}
 
-
 @pytest.mark.anyio
 async def test_close_position_success(client: TestClient) -> None:
     """
@@ -67,18 +66,19 @@ async def test_close_position_success(client: TestClient) -> None:
     Returns:
         None
     """
-    position_id = str(uuid.uuid4())
+    position_id = str(uuid.uuid4())  
     transaction_hash = "0xabc123"
     with patch(
         "web_app.db.crud.PositionDBConnector.close_position"
     ) as mock_close_position:
         mock_close_position.return_value = "Position successfully closed"
+        
         response = client.get(
             f"/api/close-position?position_id={position_id}&transaction_hash={transaction_hash}"
         )
+        
         assert response.status_code == 200
         assert response.json() == "Position successfully closed"
-
 
 @pytest.mark.anyio
 async def test_close_position_invalid_position_id(client: TestClient) -> None:
