@@ -38,7 +38,9 @@ async def test_open_position_success(client: TestClient) -> None:
         "web_app.db.crud.PositionDBConnector.open_position"
     ) as mock_open_position:
         mock_open_position.return_value = "Position successfully opened"
-        response = client.get(f"/api/open-position?position_id={position_id}&transaction_hash={transaction_hash}")
+        response = client.get(
+            f"/api/open-position?position_id={position_id}&transaction_hash={transaction_hash}"
+		)
         assert response.is_success
         assert response.json() == "Position successfully opened"
 
