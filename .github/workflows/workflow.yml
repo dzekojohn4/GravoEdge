@@ -8,7 +8,7 @@ on:
         type: string
       additional-steps:
         required: false
-        type: array
+        type: string
     secrets:
       POSTGRES_PASSWORD:
         required: false

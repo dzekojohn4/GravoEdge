@@ -12,9 +12,7 @@ jobs:
     with:
       python-version: "3.12"
       additional-steps: |
-        [
-          "docker-compose -f docker-compose.dev.yaml up -d --build",
-          "docker-compose exec backend poetry run pytest web_app/tests",
-          "docker-compose exec backend poetry run pytest --cov=web_app/tests --cov-fail-under=90",
-          "docker-compose down"
-        ]
+        docker-compose -f docker-compose.dev.yaml up -d --build
+        docker-compose exec backend poetry run pytest web_app/tests
+        docker-compose exec backend poetry run pytest --cov=web_app/tests --cov-fail-under=90
+        docker-compose down
