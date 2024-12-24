@@ -154,8 +154,17 @@ async def close_position(position_id: str) -> str:
         raise HTTPException(status_code=404, detail="Position not Found")
 
     position_status = position_db_connector.close_position(position_id)
+    new_transaction = Transaction(
+        position_id=UUID(position_id),
+        status="closed",
+        transaction_hash=transaction_hash,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow()
+    )
+    db.add(new_transaction)
+    db.commit()
+        
     return position_status
-
 
 @router.get(
     "/api/open-position",
