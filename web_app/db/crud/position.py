@@ -124,7 +124,7 @@ class PositionDBConnector(UserDBConnector):
                     .all()
                 )
                 # Convert positions to a list of dictionaries
-                positions_dict = [
+                positions_dicts = [
                     self._position_to_dict(position) for position in positions
                 ]
                 return positions_dict
