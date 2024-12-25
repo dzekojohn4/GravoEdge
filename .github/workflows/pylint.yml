@@ -8,7 +8,7 @@ on:
 
 jobs:
   call-reusable-workflow:
-    uses: ./.github/workflows/workflow.yml@
+    uses: ./.github/workflows/workflow.yml
     with:
       matrix:
         python-version: ["3.12"]

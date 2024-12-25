@@ -10,7 +10,7 @@ on:
 
 jobs:
   call-reusable-workflow:
-    uses: ./.github/workflows/workflow.yml@
+    uses: ./.github/workflows/workflow.yml
 
     services:
       postgres:
