@@ -1,4 +1,4 @@
-name: Workflow
+name: Generic workflow
 
 on: [push, pull_request]
 
