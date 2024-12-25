@@ -255,7 +255,7 @@ To ensure code quality, install pre-commit hooks locally:
 
 1. Install pre-commit:
    ```bash
-   pip install pre-commit
+   pip3 install pre-commit
    ```
 2. Install hooks:
    ```bash
