@@ -269,10 +269,6 @@ mod Vault {
         /// * `user` - The address of the withdrawer
         /// * `amount` - The amount of tokens to withdraw from the vault
         ///
-        /// # Panics
-        ///
-        /// * When the caller's deposited balance is less than the withdrawal amount
-        ///
         /// # Events
         ///
         /// Emits a `LiquidityReturned` event with:
@@ -282,7 +278,6 @@ mod Vault {
         fn return_liquidity(ref self: ContractState, user: ContractAddress, amount: TokenAmount){
             let token = self.token.read();
             let current_amount = self.amounts.entry(user).read();
-            assert(current_amount >= amount, 'Not enough tokens to withdraw');
 
             // update new amount
             self.amounts.entry(user).write(current_amount + amount);
