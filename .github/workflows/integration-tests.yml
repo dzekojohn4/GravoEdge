@@ -20,9 +20,81 @@ env:
   ENV_VERSION: DEV
 
 jobs:
-  call_generic_workflows:
-    uses: ./.github/workflows/workflow.yml@feature/create-generic-workflow
+  call-reusable-workflow:
+    uses: ./.github/workflows/workflow.yml@
     with:
       matrix:
         python-version: ["3.12"]
 
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Create .env file
+        run: |
+          cat << EOF > /home/runner/work/spotnet/spotnet/.env
+          ENV_VERSION=DEV
+          STARKNET_NODE_URL=${{ env.STARKNET_NODE_URL }}
+          DB_USER=${{ env.DB_USER }}
+          DB_PASSWORD=${{ env.DB_PASSWORD }}
+          DB_NAME=${{ env.DB_NAME }}
+          DB_HOST=${{ env.DB_HOST }}
+          DB_PORT=${{ env.DB_PORT }}
+          REDIS_HOST=${{ env.REDIS_HOST }}
+          REDIS_PORT=${{ env.REDIS_PORT }}
+          EOF
+
+      - name: Build and Start Containers
+        run: |
+          docker compose -f docker-compose.dev.yaml up -d --build
+          echo "Waiting for containers to be ready..."
+          sleep 30
+
+      - name: Install Test Dependencies in Container
+        run: |
+          docker exec backend_dev pip install pytest pytest-cov
+          docker exec backend_dev pip freeze  # Debug: show installed packages
+
+      - name: Wait for Backend Service
+        timeout-minutes: 5
+        run: |
+          while ! curl -s http://localhost:8000/health > /dev/null; do
+            echo "Waiting for backend service..."
+            sleep 30
+            
+            # Check if the container is still running before logging
+            if ! docker ps | grep -q backend; then
+              echo "Backend container is not running!"
+              docker compose -f docker-compose.dev.yaml logs backend || true 
+              exit 1
+            fi
+            
+            # Log the backend service status for debugging purposes.
+            docker compose -f docker-compose.dev.yaml logs backend || true 
+          done
+
+      - name: Apply Migrations
+        run: |
+          docker exec backend_dev alembic -c web_app/alembic.ini upgrade head || {
+            echo "Migration failed. Showing backend logs:"
+            docker compose -f docker-compose.dev.yaml logs backend || true
+            exit 1
+          }
+
+      - name: Run Integration Tests with Coverage
+        run: |
+          docker compose exec backend bash -c "cd /app && python -m pytest web_app/test_integration/ -v"
+
+
+      - name: Clean Up
+        if: always()
+        run: |
+          docker compose -f docker-compose.dev.yaml logs > docker-logs.txt || true 
+          docker compose -f docker-compose.dev.yaml down -v
+
+      - name: Upload Docker Logs on Failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-logs
+          path: docker-logs.txt

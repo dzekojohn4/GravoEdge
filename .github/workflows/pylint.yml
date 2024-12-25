@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  call_generic_workflows:
-    uses: ./.github/workflows/workflow.yml@feature/create-generic-workflow
+  call-reusable-workflow:
+    uses: ./.github/workflows/workflow.yml@
     with:
       matrix:
         python-version: ["3.12"]
