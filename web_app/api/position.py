@@ -18,6 +18,7 @@ from web_app.api.serializers.transaction import (
 from web_app.contract_tools.constants import TokenMultipliers, TokenParams
 from web_app.contract_tools.mixins import DashboardMixin, DepositMixin, PositionMixin
 from web_app.db.crud import PositionDBConnector, TransactionDBConnector
+from web_app.db.models import TransactionStatus
 
 router = APIRouter()  # Initialize the router
 position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
@@ -185,7 +186,7 @@ async def open_position(position_id: str, transaction_hash: str) -> str:
         transaction_db_connector.create_transaction(
             position_id,
             transaction_hash,
-            position_status
+            status=TransactionStatus.OPENED.value
         )
         
     return position_status
