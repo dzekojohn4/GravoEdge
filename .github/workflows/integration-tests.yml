@@ -12,6 +12,8 @@ jobs:
   integration-tests:
     uses: ./.github/workflows/test_workflow.yml
     with:
+      python-version: '3.12'
+      package-manager: 'poetry'
       steps_override: |
         - name: Create .env file
           run: |
