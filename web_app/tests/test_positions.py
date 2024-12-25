@@ -19,6 +19,7 @@ from httpx import AsyncClient
 
 from web_app.api.main import app
 from web_app.api.position import add_extra_deposit
+from web_app.db.models import TransactionStatus
 
 app.dependency_overrides.clear()
 
@@ -32,12 +33,25 @@ async def test_open_position_success(client: TestClient) -> None:
     Returns:
         None
     """
-    position_id = "valid_position_id"
-    with patch(
-        "web_app.db.crud.PositionDBConnector.open_position"
-    ) as mock_open_position:
+    position_id = str(uuid.uuid4())
+    transaction_hash = "valid_transaction_hash"
+    with (
+        patch(
+            "web_app.db.crud.PositionDBConnector.open_position"
+        ) as mock_open_position,
+        patch(
+            "web_app.db.crud.TransactionDBConnector.create_transaction"
+        ) as mock_create_transaction,
+    ):
         mock_open_position.return_value = "Position successfully opened"
-        response = client.get(f"/api/open-position?position_id={position_id}")
+        mock_create_transaction.return_value = {
+            "position_id": position_id,
+            "transaction_hash": transaction_hash,
+            "status": TransactionStatus.OPENED.value
+        }
+        response = client.get(
+            f"/api/open-position?position_id={position_id}&transaction_hash={transaction_hash}"
+		)
         assert response.is_success
         assert response.json() == "Position successfully opened"
 
@@ -53,7 +67,7 @@ async def test_open_position_missing_position_data(
     Returns:
         None
     """
-    response = client.get("/api/open-position?position_id=")
+    response = client.get("/api/open-position?position_id=&transaction_hash=")
     assert response.status_code == 404
     assert response.json() == {"detail": "Position not found"}
 
