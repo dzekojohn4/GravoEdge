@@ -49,7 +49,9 @@ async def test_open_position_success(client: TestClient) -> None:
             "transaction_hash": transaction_hash,
             "status": TransactionStatus.OPENED.value
         }
-        response = client.get(f"/api/open-position?position_id={position_id}&transaction_hash={transaction_hash}")
+        response = client.get(
+            f"/api/open-position?position_id={position_id}&transaction_hash={transaction_hash}"
+		)
         assert response.is_success
         assert response.json() == "Position successfully opened"
 
