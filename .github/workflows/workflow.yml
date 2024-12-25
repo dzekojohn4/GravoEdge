@@ -1,11 +1,19 @@
 name: Generic workflow
 
-on: [push, pull_request]
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: 'Python version to use'
+        required: true
+        default: '3.8'
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        python-version: [${{ inputs.python-version }}]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -14,12 +22,12 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pylint
+
       - name: Analysing the code with pylint
         run: |
           pylint $(git ls-files '*.py') --disable=all --enable=C0114,C0115,C0116,C0301
-
-
