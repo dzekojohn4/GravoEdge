@@ -10,7 +10,7 @@ on:
 
 jobs:
   call_generic_workflows:
-    uses: ./spotnet/.github/workflows/workflow.yml
+    uses: ./.github/workflows/workflow.yml@feature/create-generic-workflow
     with:
       matrix:
         python-version: ["3.12"]
