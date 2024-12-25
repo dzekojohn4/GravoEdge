@@ -280,16 +280,15 @@ mod Vault {
         /// * `token` - The address of the withdrawn token
         /// * `amount` - The amount of tokens withdrawn
         fn return_liquidity(ref self: ContractState, user: ContractAddress, amount: TokenAmount){
-            let caller = get_caller_address();
             let token = self.token.read();
-            let current_amount = self.amounts.entry(caller).read();
+            let current_amount = self.amounts.entry(user).read();
             assert(current_amount >= amount, 'Not enough tokens to withdraw');
 
             // update new amount
             self.amounts.entry(user).write(current_amount + amount);
 
             // transfer token to user
-            IERC20Dispatcher { contract_address: token }.transfer_from(caller, user, amount);
+            IERC20Dispatcher { contract_address: token }.transfer_from(get_caller_address(), user, amount);
 
             self.emit(LiquidityReturned { user, token, amount });
         }
