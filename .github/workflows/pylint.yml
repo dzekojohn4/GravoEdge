@@ -2,13 +2,18 @@ name: Pylint
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  call-reusable-workflow:
-    uses: ./.github/workflows/workflow.yml
+  pylint:
+    uses: ./.github/workflows/test_workflow.yml
     with:
-      matrix:
-        python-version: ["3.12"]
+      steps_override: |
+        - name: Install pylint
+          run: pip install pylint
+        - name: Run pylint
+          run: pylint $(git ls-files '*.py') --disable=all --enable=C0114,C0115,C0116,C0301
