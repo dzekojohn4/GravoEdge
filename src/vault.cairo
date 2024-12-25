@@ -266,15 +266,15 @@ mod Vault {
         ///
         /// # Arguments
         ///
-        /// * `user` - The address of the withdrawer
-        /// * `amount` - The amount of tokens to withdraw from the vault
+        /// * `user` - The address of the recipient
+        /// * `amount` - The amount of tokens to send from the vault
         ///
         /// # Events
         ///
         /// Emits a `LiquidityReturned` event with:
-        /// * `user` - The address of the withdrawer
-        /// * `token` - The address of the withdrawn token
-        /// * `amount` - The amount of tokens withdrawn
+        /// * `user` - The address of the recipient
+        /// * `token` - The address of the token
+        /// * `amount` - The amount of tokens that send from the vault
         fn return_liquidity(ref self: ContractState, user: ContractAddress, amount: TokenAmount){
             let token = self.token.read();
             let current_amount = self.amounts.entry(user).read();
