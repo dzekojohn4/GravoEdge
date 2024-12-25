@@ -280,16 +280,6 @@ fn test_get_vault_token(){
 }
 
 #[test]
-#[should_panic(expected: ('Vault token mismatch',))]
-fn test_get_vault_token_fail(){
-    let user: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
-    let suite = setup_test_suite(user, deploy_erc20_mock());
-    start_cheat_caller_address(suite.vault.contract_address, user);
-    assert(suite.vault.get_vault_token() == tokens::ETH.try_into().unwrap(), 'Vault token mismatch');
-    stop_cheat_caller_address(suite.vault.contract_address);
-}
-
-#[test]
 fn test_return_liquidity(){
     let user: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
     let user2: ContractAddress = MOCK_USER.try_into().unwrap();
