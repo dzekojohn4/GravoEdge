@@ -40,8 +40,8 @@ pub struct Claim {
 
 #[derive(Copy, Drop, Serde)]
 pub struct VaultRepayData {
-    vault: ContractAddress,
-    amount: TokenAmount
+    pub vault: ContractAddress,
+    pub amount: TokenAmount
 }
 
 #[derive(Drop, Serde, starknet::Store)]
