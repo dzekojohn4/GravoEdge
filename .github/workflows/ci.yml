@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - feature/create-generic-workflow
   pull_request:
     branches:
       - main
+      - feature/create-generic-workflow
 
 jobs:
   test:
