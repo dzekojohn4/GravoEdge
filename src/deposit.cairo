@@ -1,6 +1,8 @@
 #[starknet::contract]
 mod Deposit {
-    use alexandria_math::fast_power::fast_power;
+    use openzeppelin::access::ownable::interface::OwnableTwoStepABI;
+use super::super::interfaces::IVaultDispatcherTrait;
+use alexandria_math::fast_power::fast_power;
     use core::num::traits::Zero;
 
     use ekubo::{
@@ -17,11 +19,11 @@ mod Deposit {
         constants::{ZK_SCALE_DECIMALS, STRK_ADDRESS},
         interfaces::{
             IMarketDispatcher, IMarketDispatcherTrait, IAirdropDispatcher, IAirdropDispatcherTrait,
-            IDeposit
+            IDeposit, IVaultDispatcher
         },
         types::{
             SwapData, SwapResult, DepositData, Claim, EkuboSlippageLimits, TokenAmount, TokenPrice,
-            DecimalScale
+            DecimalScale, VaultRepayData
         }
     };
 
@@ -171,6 +173,25 @@ mod Deposit {
             ekubo::components::shared_locker::call_core_with_callback(
                 self.ekubo_core.read(), @swap_data
             )
+        }
+        fn repay_vaults(ref self: ContractState, supply_token: ContractAddress, vaults: Span<VaultRepayData>){
+            for vault in vaults {
+                let vault_disp = IVaultDispatcher{contract_address: (*vault).vault};
+                let vault_token = vault_disp.get_vault_token();
+                if vault_token == supply_token {
+                    continue;
+                }
+                let zk_market = self.zk_market.read();
+                let mut amount = (*vault).amount;
+                if amount == 0 {
+                    zk_market.withdraw_all(vault_token);
+                    amount = ERC20ABIDispatcher { contract_address: get_contract_address() }
+                        .balanceOf(self.owner());
+                } else {
+                    zk_market.withdraw(vault_token, amount.try_into().unwrap());
+                }
+                vault_disp.return_liquidity(self.owner(), amount);
+            }
         }
     }
 
@@ -324,7 +345,8 @@ mod Deposit {
             ekubo_limits: EkuboSlippageLimits,
             borrow_portion_percent: u8,
             supply_price: TokenPrice,
-            debt_price: TokenPrice
+            debt_price: TokenPrice,
+            repay_vaults: Span<VaultRepayData>
         ) {
             assert(
                 get_tx_info().unbox().account_contract_address == self.ownable.owner(),
@@ -418,6 +440,7 @@ mod Deposit {
             };
             zk_market.withdraw_all(supply_token);
             zk_market.disable_collateral(supply_token);
+            self.repay_vaults(supply_token, repay_vaults);
             self.is_position_open.write(false);
             let withdrawn_amount = token_disp.balanceOf(contract_address);
             token_disp.transfer(self.ownable.owner(), withdrawn_amount);

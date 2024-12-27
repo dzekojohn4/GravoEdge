@@ -375,7 +375,8 @@ fn test_close_position_usdc_valid_time_passed() {
             get_slippage_limits(pool_key),
             95,
             pool_price,
-            quote_token_price
+            quote_token_price,
+            [].span()
         );
 
     stop_cheat_block_timestamp(contracts::ZKLEND_MARKET.try_into().unwrap());
@@ -432,7 +433,8 @@ fn test_close_position_amounts_cleared() {
             get_slippage_limits(pool_key),
             95,
             pool_price.try_into().unwrap(),
-            quote_token_price
+            quote_token_price,
+            [].span()
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
     let zk_market = IMarketTestingDispatcher {
@@ -506,7 +508,8 @@ fn test_close_position_partial_debt_utilization() {
             get_slippage_limits(pool_key),
             95,
             pool_price,
-            quote_token_price
+            quote_token_price,
+            [].span()
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
     let zk_market = IMarketTestingDispatcher {
@@ -662,7 +665,8 @@ fn test_extra_deposit_supply_token_close_position_fuzz(extra_amount: u32) {
             get_slippage_limits(pool_key),
             95,
             pool_price,
-            quote_token_price.try_into().unwrap()
+            quote_token_price.try_into().unwrap(),
+            [].span()
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
 
@@ -742,7 +746,8 @@ fn test_withdraw_valid_fuzz(amount: u32) {
             get_slippage_limits(pool_key),
             95,
             pool_price,
-            quote_token_price
+            quote_token_price,
+            [].span()
         );
     stop_cheat_account_contract_address(deposit_disp.contract_address);
 
