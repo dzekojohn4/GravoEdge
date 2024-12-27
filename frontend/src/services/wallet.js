@@ -16,10 +16,6 @@ export const checkForCRMToken = async (walletAddress) => {
 
   try {
     const { wallet } = await connect({
-      // connectors: [
-      //   new InjectedConnector({ options: { id: 'argentX' } }),
-      //   new InjectedConnector({ options: { id: 'braavos' } }),
-      // ],
       modalMode: 'alwaysAsk',
     });
 
