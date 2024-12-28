@@ -32,7 +32,7 @@ jobs:
 
       - name: Build and Start Containers
         run: |
-          docker compose -f ./docker/docker-compose.dev.yaml up -d --build
+          docker compose -f docker-compose.dev.yaml up -d --build
           echo "Waiting for containers to be ready..."
           sleep 30
 
