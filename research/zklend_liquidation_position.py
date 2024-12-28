@@ -1,7 +1,3 @@
-SPOTNET_DEPLOYED_CONTRACT = (
-    "0x05685d6b0b493c7c939d65c175305b893870cacad780842c79a611ad9122815f"
-)
-
 """
 Script to verify if a position was liquidated in zkLend.
 
@@ -17,6 +13,9 @@ from starknet_py.net.full_node_client import FullNodeClient
 # Load environment variables
 node_url = "https://starknet-mainnet.public.blastapi.io/rpc/v0_7"
 ZKLEND_CONTRACT_ADDRESS = (
+    "0x05685d6b0b493c7c939d65c175305b893870cacad780842c79a611ad9122815f"
+)
+SPOTNET_DEPLOYED_CONTRACT = (
     "0x05685d6b0b493c7c939d65c175305b893870cacad780842c79a611ad9122815f"
 )
 
@@ -75,8 +74,8 @@ async def check_liquidation_proof(user_address):
         logger.info(f"Event Data: {event.data}")
 
         # Unpack event.data object
-        # sample at https://starkscan.co/event/0x0204f9e81102c2e2f1af181e9a931580da5fa9a80abd21e15116a6175e00b736_10
-        # Liquidation(liquidator,user,debt_token,debt_raw_amount,debt_face_amount,collateral_token,collateral_amount)
+        # sample at 
+        # https://starkscan.co/event/0x0204f9e81102c2e2f1af181e9a931580da5fa9a80abd21e15116a6175e00b736_10
 
         liquidator = event.data[0]
         user = event.data[1]
