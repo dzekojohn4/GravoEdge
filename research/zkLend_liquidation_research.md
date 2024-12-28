@@ -4,7 +4,7 @@ This research explored how to check and verify that zkLend closed a position due
 
 ## Introduction
 
-zkLend liquidation process is triggered when a borrower's Health Factor7 falls to 1 or lower, indicating that
+zkLend liquidation process is triggered when a borrower's Health Factor falls to 1 or lower, indicating that
 the value of their collateral may not be enough to cover their debt, posing risks to the lenders and zkLend
 protocol. The liquidation process incentivises external party(ies) to actively monitor zkLend's loan
 portfolios to seek out borrowings that have Health Factor below 1 and to actively repay these loans to
@@ -12,7 +12,7 @@ ensure liquidity safety and health of the protocol.
 
 A borrower whose outstanding loan exceeds his/her borrowing capacity will be liquidated at market rate.
 Instead of a static close factor, zkLend will implement a variable close factor where liquidators can only
-repay the portion of loan position that has exceeded the borrowing capacity. While the liquidation
+repay the portion (or part) of loan position that has exceeded the borrowing capacity. While the liquidation
 threshold for each borrower varies on his/her assets pledged as well as the borrowing asset, liquidations
 happen when the underlying collateral decreases in value relative to the borrowed asset and/or if the
 outstanding loan value (asset value + accrued interest) now exceeds the borrowing capacity. Examples
@@ -33,5 +33,17 @@ To verify if a position was liquidated in zkLend, the following steps were taken
 
 ### zkLend: Market Contract Activity
 1. **Identify Relevant Events Using Starkscan**: The event logs in "Events" tab of the zkLend: Market contract were examined on Starkscan to identify any liquidation events. Identified `Liquidation` event.
-2. **Analyze Event Data**: Clicked on `Liquidation` event to view its details, and found the following data including liquidator, user , debt_token, debt_raw_amount, debt_face_amount, collateral_token, collateral_amount.
-3. **zkLend: Market Contract Read Functions**: Found and expolored the following view functions to check if our deployed spotnet contract's position in zkLend has been closed; `get_user_debt_for_token(user, token)`, `is_user_undercollateralized(user, apply_borrow_factor)` and `user_has_debt(user)`. 
+2. **Analyze Event Data**: Clicked on `Liquidation` event to view its details, and found the following data including liquidator, user, debt_token, debt_raw_amount, debt_face_amount, collateral_token, collateral_amount.
+3. **zkLend: Market Contract Read Functions**: Found and explored the following view functions to check if our deployed spotnet contract's position in zkLend has been closed; `get_user_debt_for_token(user, token)`, `is_user_undercollateralized(user, apply_borrow_factor)` and `user_has_debt(user)`. `is_user_undercollateralized()` and `user_has_debt()` both returned 1, indicating `true`.
+
+### Portfolio Check
+
+Upon checking the portfolio of the deployed Spotnet contract, it was found that there is a balance of **1.744172753867558899 zSTRK Token**, while `LiquidityLooped` event showed that the user was able to deposit **1.744172753867558898 STRK** with an initial deposit **1 STRK**. This indicates that the position is not fully liquidated, as the user still holds assets in the zkLend protocol.
+
+`LiquidityLooped` event from Spotnet contract showed 473917 amount of token borrowed from USDC token contract. While `get_user_debt_for_token()` on zkLend Market contract returned 475401, 475529.
+
+
+## Conclusion
+
+The zkLend liquidation process is unique compared to other lending protocols, such as Aave. Unlike these protocols, zkLend does not allow liquidators to fully liquidate a position, regardless of how low the health factor is. Instead, the current design permits liquidators to partially liquidate undercollateralized positions, ensuring that the user remains undercollateralized after the liquidation. This means that the health factor should not be exactly 1 or higher after the execution of a liquidation event. This system protects users from unfair liquidations by jut allowing liquidations to be small and progressive, hopefully giving the users more time to act and increase their collateral.
+
