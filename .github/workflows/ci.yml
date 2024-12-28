@@ -13,8 +13,8 @@ jobs:
     uses: ./.github/workflows/shared_workflow.yml
     with:
       python-version: "3.12"
-    env:
-      ENV_VERSION: ${{ secrets.ENV_VERSION }}
+      env-vars: |
+        ENV_VERSION=DEV
 
   test:
     runs-on: ubuntu-latest
@@ -34,57 +34,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Copy .env file
+        run: cp /home/runner/work/spotnet/spotnet/.env .env
+
       - name: Start services
-        run: docker compose -f docker-compose.dev.yaml up -d --build
-        env:
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          STARKNET_NODE_URL: ${{ secrets.STARKNET_NODE_URL }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          ENV_VERSION: ${{ secrets.ENV_VERSION }}
+        run: docker compose -f docker-compose.dev.yaml --env-file .env up -d --build
 
       - name: Run tests
         run: |
           docker compose exec backend poetry run pytest web_app/tests
-        env:
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          STARKNET_NODE_URL: ${{ secrets.STARKNET_NODE_URL }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          ENV_VERSION: ${{ secrets.ENV_VERSION }}
 
       - name: Run tests coverage
         run: |
           docker compose exec backend poetry run pytest --cov=web_app/tests --cov-fail-under=90
-        env:
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          STARKNET_NODE_URL: ${{ secrets.STARKNET_NODE_URL }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          ENV_VERSION: ${{ secrets.ENV_VERSION }}
 
       - name: Tear down
         run: |
           docker compose down
-        env:
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          STARKNET_NODE_URL: ${{ secrets.STARKNET_NODE_URL }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          ENV_VERSION: ${{ secrets.ENV_VERSION }}
