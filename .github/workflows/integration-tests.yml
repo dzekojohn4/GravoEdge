@@ -13,16 +13,16 @@ jobs:
     uses: ./.github/workflows/shared_workflow.yml
     with:
       python-version: "3.x"
-      env-vars: |
-        DB_PORT=${{ secrets.DB_PORT }}
-        DB_NAME=${{ secrets.DB_NAME }}
-        DB_USER=${{ secrets.DB_USER }}
-        DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-        DB_HOST=${{ secrets.DB_HOST }}
-        STARKNET_NODE_URL=${{ secrets.STARKNET_NODE_URL }}
-        REDIS_HOST=${{ secrets.REDIS_HOST }}
-        REDIS_PORT=${{ secrets.REDIS_PORT }}
-        ENV_VERSION=${{ secrets.ENV_VERSION }}
+    env:
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      STARKNET_NODE_URL: ${{ secrets.STARKNET_NODE_URL }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      ENV_VERSION: ${{ secrets.ENV_VERSION }}
 
   integration-tests:
     runs-on: ubuntu-latest

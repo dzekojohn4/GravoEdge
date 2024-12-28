@@ -13,8 +13,8 @@ jobs:
     uses: ./.github/workflows/shared_workflow.yml
     with:
       python-version: "3.12"
-      env-vars: |
-        ENV_VERSION=DEV
+    env:
+      ENV_VERSION: ${{ secrets.ENV_VERSION }}
 
   test:
     runs-on: ubuntu-latest
