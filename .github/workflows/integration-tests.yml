@@ -14,15 +14,15 @@ jobs:
     with:
       python-version: "3.x"
       env-vars: |
-        DB_PORT=5432
-        DB_NAME=spotnet
-        DB_USER=postgres
-        DB_PASSWORD=password
-        DB_HOST=db
-        STARKNET_NODE_URL=http://51.195.57.196:6060/v0_7
-        REDIS_HOST=redis
-        REDIS_PORT=6379
-        ENV_VERSION=DEV
+        DB_PORT=${{ secrets.DB_PORT }}
+        DB_NAME=${{ secrets.DB_NAME }}
+        DB_USER=${{ secrets.DB_USER }}
+        DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+        DB_HOST=${{ secrets.DB_HOST }}
+        STARKNET_NODE_URL=${{ secrets.STARKNET_NODE_URL }}
+        REDIS_HOST=${{ secrets.REDIS_HOST }}
+        REDIS_PORT=${{ secrets.REDIS_PORT }}
+        ENV_VERSION=${{ secrets.ENV_VERSION }}
 
   integration-tests:
     runs-on: ubuntu-latest
