@@ -34,8 +34,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Copy .env file
-        run: cp /home/runner/work/spotnet/spotnet/.env
+      - name: .env file
+        run: /home/runner/work/spotnet/spotnet/.env
 
       - name: Start services
         run: docker compose -f docker-compose.dev.yaml --env-file .env up -d --build
