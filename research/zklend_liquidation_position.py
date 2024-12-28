@@ -13,7 +13,7 @@ from starknet_py.net.full_node_client import FullNodeClient
 # Load environment variables
 node_url = "https://starknet-mainnet.public.blastapi.io/rpc/v0_7"
 ZKLEND_CONTRACT_ADDRESS = (
-    "0x05685d6b0b493c7c939d65c175305b893870cacad780842c79a611ad9122815f"
+    "0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05"
 )
 SPOTNET_DEPLOYED_CONTRACT = (
     "0x05685d6b0b493c7c939d65c175305b893870cacad780842c79a611ad9122815f"
@@ -30,7 +30,7 @@ LIQUIDATION_SELECTOR = (
     "0x238a25785a13ab3138feb8f8f517e5a21a377cc1ad47809e9fd5e76daf01df7"
 )
 
-FROM_BLOCK = 101302
+FROM_BLOCK = 988300
 CHUNK_SIZE = 150
 
 logging.basicConfig(
@@ -56,6 +56,7 @@ async def check_liquidation_proof(user_address):
 
     # Fetch liquidation events
     events_chunk = await client.get_events(
+        address=ZKLEND_CONTRACT_ADDRESS,
         from_block_number=FROM_BLOCK,
         to_block_number="latest",
         follow_continuation_token=True,
@@ -108,7 +109,7 @@ async def check_liquidation_proof(user_address):
                 f"Collateral Token: {collateral_token}, Amount: {collateral_amount}"
             )
 
-    # Log all liquidation results after processing all events
+    # Print all liquidation results after processing all events
     if liquid_results:
         print("Liquidation Results:", liquid_results)
     else:
