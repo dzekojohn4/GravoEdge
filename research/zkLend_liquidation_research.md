@@ -47,3 +47,6 @@ Upon checking the portfolio of the deployed Spotnet contract, it was found that 
 
 The zkLend liquidation process is unique compared to other lending protocols, such as Aave. Unlike these protocols, zkLend does not allow liquidators to fully liquidate a position, regardless of how low the health factor is. Instead, the current design permits liquidators to partially liquidate undercollateralized positions, ensuring that the user remains undercollateralized after the liquidation. This means that the health factor should not be exactly 1 or higher after the execution of a liquidation event. This system protects users from unfair liquidations by jut allowing liquidations to be small and progressive, hopefully giving the users more time to act and increase their collateral.
 
+
+
+## References
