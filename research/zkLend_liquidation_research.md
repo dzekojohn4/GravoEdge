@@ -40,7 +40,7 @@ To verify if a position was liquidated in zkLend, the following steps were taken
 
 Upon checking the portfolio of the deployed Spotnet contract, it was found that there is a balance of **1.744172753867558899 zSTRK Token**, while `LiquidityLooped` event showed that the user was able to deposit **1.744172753867558898 STRK** with an initial deposit **1 STRK**. This indicates that the position is not fully liquidated, as the user still holds assets in the zkLend protocol.
 
-`LiquidityLooped` event from Spotnet contract showed 473917 amount of token borrowed from USDC token contract. While `get_user_debt_for_token()` on zkLend Market contract returned 475401, 475529.
+`LiquidityLooped` event from Spotnet contract showed 473917 amount of token borrowed from USDC token contract. While `get_user_debt_for_token()` on zkLend Market contract returned 475401, and later 475529.
 
 
 ## Conclusion
