@@ -51,19 +51,19 @@ jobs:
             # Check if the container is still running before logging
             if ! docker ps | grep -q backend; then
               echo "Backend container is not running!"
-              docker compose -f ./docker/docker-compose.dev.yaml logs backend || true 
+              docker compose -f docker-compose.dev.yaml logs backend || true 
               exit 1
             fi
             
             # Log the backend service status for debugging purposes.
-            docker compose -f ./docker/docker-compose.dev.yaml logs backend || true 
+            docker compose -f docker-compose.dev.yaml logs backend || true 
           done
 
       - name: Apply Migrations
         run: |
           docker exec backend_dev alembic -c web_app/alembic.ini upgrade head || {
             echo "Migration failed. Showing backend logs:"
-            docker compose -f ./docker/docker-compose.dev.yaml logs backend || true
+            docker compose -f docker-compose.dev.yaml logs backend || true
             exit 1
           }
 
@@ -74,8 +74,8 @@ jobs:
       - name: Clean Up
         if: always()
         run: |
-          docker compose -f ./docker/docker-compose.dev.yaml logs > docker-logs.txt || true 
-          docker compose -f ./docker/docker-compose.dev.yaml down -v
+          docker compose -f docker-compose.dev.yaml logs > docker-logs.txt || true 
+          docker compose -f docker-compose.dev.yaml down -v
 
       - name: Upload Docker Logs on Failure
         if: failure()
