@@ -62,29 +62,6 @@ async def check_liquidation_proof(user_address):
             print(f"Debt Token: {debt_token}, Amount: {debt_amount}")
             print(f"Collateral Token: {collateral_token}, Amount: {collateral_amount}")
 
-            # # Check if zkLend performed the liquidation
-            # if liquidator in ZKLEND_LIQUIDATORS:
-            #     print(f"zkLend has liquidated the position for user {user_address}.")
-
-
-            # Check user's position status
-            # user_debt = await zk_lend_contract.get_user_debt_for_token(user_address, debt_token)
-            # user_collateral = await zk_lend_contract.get_user_debt_for_token(user_address, collateral_token)  # Assuming this function exists
-
-            # # Calculate health factor
-            # health_factor = user_collateral / user_debt if user_debt > 0 else float('inf')
-
-            # if user_debt == 0:
-            #     print(f"The position for user {user_address} has been fully liquidated.")
-            # elif health_factor < 1:
-            #     print(f"The position for user {user_address} is undercollateralized with a health factor of {health_factor}.")
-            # else:
-            #     print(f"The position for user {user_address} is still active with a debt of {user_debt}.")
-    #     print(liquid_results)
-    #     return  # Exit after processing the user's liquidation event
-
-    # print(f"No liquidation events found for user {user_address}.")
-
     # Print all liquidation results after processing all events
     if liquid_results:
         print("Liquidation Results:", liquid_results)
