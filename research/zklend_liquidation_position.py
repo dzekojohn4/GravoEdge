@@ -19,6 +19,7 @@ SPOTNET_DEPLOYED_CONTRACT = (
     "0x05685d6b0b493c7c939d65c175305b893870cacad780842c79a611ad9122815f"
 )
 
+
 # Initialize the StarkNet client
 client = FullNodeClient(node_url=node_url)
 
@@ -30,7 +31,7 @@ LIQUIDATION_SELECTOR = (
     "0x238a25785a13ab3138feb8f8f517e5a21a377cc1ad47809e9fd5e76daf01df7"
 )
 
-FROM_BLOCK = 988300
+FROM_BLOCK = 880000
 CHUNK_SIZE = 150
 
 logging.basicConfig(
@@ -69,13 +70,14 @@ async def check_liquidation_proof(user_address):
 
     liquid_results = []
 
-    # Analyze events for the specific user
+    # Process events for the specific user
     for event in events:
-        logger.info(f"Event Data: {event}")
-        logger.info(f"Event Data: {event.data}")
+        # logger.info(f"Event Data: {event}")
+        # logger.info(f"Event Data: {event.data}")
+        logger.info(f"{user_address}")
 
         # Unpack event.data object
-        # sample at 
+        # sample at
         # https://starkscan.co/event/0x0204f9e81102c2e2f1af181e9a931580da5fa9a80abd21e15116a6175e00b736_10
 
         liquidator = event.data[0]
@@ -87,9 +89,16 @@ async def check_liquidation_proof(user_address):
         collateral_amount = event.data[6]
 
         if user in (
-            "0x065d2b906c64630c29ede47405bb80cf100c7b0599753fde097055d9f6dabe7c",
-            2878494537264244414183093173870516889243601958323233894338514877938199608956,
+            int(
+                "0x5c0846b4a80bb664b2f865e4dbc9a5e5eb3c454d124124ab891acc55a7e6fd",
+                base=16,
+            ),
             int(user_address, base=16),
+            # below is an address of user from Liquidation Event on Starkscan, currently works
+            int(
+                "0x5cd188997504470875595dfcef4660fdd61d3ad2ede3a8013abcb7de122681f",
+                base=16,
+            ),
         ):
 
             liquid_results.append(
@@ -101,6 +110,7 @@ async def check_liquidation_proof(user_address):
             )
 
             # Log the details of the liquidation
+            logger.info(f"Beginning of an Event!!")
             logger.info(
                 f"Liquidation Event: {liquidator} liquidated {user_address}'s position."
             )
