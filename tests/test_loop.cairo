@@ -15,17 +15,23 @@ use snforge_std::cheatcodes::execution_info::block_timestamp::{
 use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address
 };
-use spotnet::constants::ZK_SCALE_DECIMALS;
+use spotnet::constants::{ZK_SCALE_DECIMALS, STRK_ADDRESS};
 use spotnet::interfaces::{
     IDepositDispatcher, IDepositSafeDispatcher, IDepositSafeDispatcherTrait, IDepositDispatcherTrait
 };
-use spotnet::types::DepositData;
+use spotnet::types::{DepositData, VaultRepayData};
 
 use starknet::{ContractAddress, get_block_timestamp};
 use super::constants::{contracts, tokens, HYPOTHETICAL_OWNER_ADDR, pool_key};
 
 use super::interfaces::{IMarketTestingDispatcher, IMarketTestingDispatcherTrait};
-use super::utils::{deploy_deposit_contract, get_asset_price_pragma, get_slippage_limits};
+use super::utils::{
+    deploy_deposit_contract, 
+    get_asset_price_pragma, 
+    get_slippage_limits, 
+    setup_test_suite,
+    assert_vault_amount_bigger_than_zero
+};
 
 fn get_deposit_dispatcher(user: ContractAddress) -> IDepositDispatcher {
     IDepositDispatcher { contract_address: deploy_deposit_contract(user) }
@@ -924,4 +930,95 @@ fn test_transfer_renounced_ownership() {
     stop_cheat_caller_address(deposit_disp.contract_address);
 
     assert(ownable_disp.owner() == new_owner, 'Owner did not change');
+}
+
+#[test]
+#[fork("MAINNET")]
+fn test_repay_vaults_in_close_position(){
+    let usdc_addr: ContractAddress = tokens::USDC.try_into().unwrap();
+    let eth_addr: ContractAddress = tokens::ETH.try_into().unwrap();
+    let strk_addr: ContractAddress = STRK_ADDRESS.try_into().unwrap();
+    let user: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
+    let amount = 1000000;
+
+    let repay_vaults = array![
+        // First will be skip in repay_vaults, because usdc_addr == supply_token
+        VaultRepayData{vault: setup_test_suite(user, usdc_addr).vault.contract_address, amount},
+        VaultRepayData{vault: setup_test_suite(user, eth_addr).vault.contract_address, amount},
+        VaultRepayData{vault: setup_test_suite(user, strk_addr).vault.contract_address, amount}
+    ];
+    
+    let pool_key = PoolKey {
+        token0: eth_addr,
+        token1: usdc_addr,
+        fee: pool_key::FEE,
+        tick_spacing: pool_key::TICK_SPACING,
+        extension: pool_key::EXTENSION.try_into().unwrap()
+    };
+    let quote_token_price = get_asset_price_pragma('ETH/USD').into();
+
+    let usdc_token_disp = ERC20ABIDispatcher { contract_address: usdc_addr };
+    let eth_token_disp = ERC20ABIDispatcher { contract_address: eth_addr };
+    let strk_token_disp = ERC20ABIDispatcher { contract_address: strk_addr };
+
+    let decimals_sum_power: u128 = fast_power(
+        10,
+        (eth_token_disp.decimals() + usdc_token_disp.decimals())
+            .into()
+    );
+    let pool_price = ((1
+        * ZK_SCALE_DECIMALS
+        * decimals_sum_power.into()
+        / get_asset_price_pragma('ETH/USD').into())
+        / ZK_SCALE_DECIMALS)
+        .try_into()
+        .unwrap();
+
+    let deposit_disp = get_deposit_dispatcher(user);
+    let borrow_portion_percent = 90;
+    let multiplier = 35;
+    let limits = get_slippage_limits(pool_key);
+
+    start_cheat_caller_address(usdc_addr, user);
+    usdc_token_disp.approve(deposit_disp.contract_address, amount);
+    stop_cheat_caller_address(usdc_addr);
+
+    start_cheat_caller_address(strk_addr, user);
+    strk_token_disp.approve(deposit_disp.contract_address, amount);
+    stop_cheat_caller_address(strk_addr);
+
+    start_cheat_caller_address(eth_addr, user);
+    eth_token_disp.approve(deposit_disp.contract_address, amount);
+    stop_cheat_caller_address(eth_addr);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    deposit_disp
+        .loop_liquidity(
+            DepositData {
+                token: usdc_addr, amount, 
+                multiplier, borrow_portion_percent
+            },
+            pool_key, limits, pool_price
+        );
+    deposit_disp.extra_deposit(strk_addr, amount);
+    deposit_disp.extra_deposit(eth_addr, amount);
+
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+
+    start_cheat_account_contract_address(deposit_disp.contract_address, user);
+    start_cheat_block_timestamp(
+        contracts::ZKLEND_MARKET.try_into().unwrap(), get_block_timestamp() + 40000000
+    );
+    deposit_disp
+        .close_position(
+            usdc_addr, eth_addr, pool_key, limits,
+            borrow_portion_percent, pool_price, quote_token_price,
+            repay_vaults.span()
+        );
+    stop_cheat_block_timestamp(contracts::ZKLEND_MARKET.try_into().unwrap());
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+
+    for vault in repay_vaults {
+        assert_vault_amount_bigger_than_zero(vault.vault, user);
+    }
 }
