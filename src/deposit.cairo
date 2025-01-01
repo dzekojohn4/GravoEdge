@@ -343,6 +343,7 @@ use alexandria_math::fast_power::fast_power;
         /// * `repay_const`: u8 - Sets how much to borrow from free amount.
         /// * `supply_price`: TokenPrice - Price of `supply` token in terms of `debt` token.
         /// * `debt_price`: TokenPrice - Price of `debt` token in terms of `supply` token.
+        /// * `repay_vaults`: Span<VaultRepayData> - Vaults that need to be repaid.
         fn close_position(
             ref self: ContractState,
             supply_token: ContractAddress,
