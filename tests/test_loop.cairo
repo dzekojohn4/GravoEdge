@@ -1000,10 +1000,12 @@ fn test_repay_vaults_in_close_position(){
             },
             pool_key, limits, pool_price
         );
+    stop_cheat_account_contract_address(deposit_disp.contract_address);
+
+    start_cheat_caller_address(deposit_disp.contract_address, user);
     deposit_disp.extra_deposit(strk_addr, amount);
     deposit_disp.extra_deposit(eth_addr, amount);
-
-    stop_cheat_account_contract_address(deposit_disp.contract_address);
+    stop_cheat_caller_address(deposit_disp.contract_address);
 
     start_cheat_account_contract_address(deposit_disp.contract_address, user);
     start_cheat_block_timestamp(
