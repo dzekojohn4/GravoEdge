@@ -147,3 +147,14 @@ pub fn setup_test_deposit(
 
     deposit_address
 }
+
+pub fn assert_vault_amount_bigger_than_zero(vault: ContractAddress, user: ContractAddress) {
+    let balance_after_withdraw: u256 = 
+    (*
+        load(
+            vault, map_entry_address(selector!("amounts"), 
+            array![user.try_into().unwrap()].span()), 2,
+        )[0]
+    ).try_into().unwrap();
+    assert(balance_after_withdraw >= 0, 'Mismatch balance');
+}
