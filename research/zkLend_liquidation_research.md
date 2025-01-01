@@ -36,7 +36,6 @@ To verify if a position was liquidated in zkLend, the following steps were taken
 ### zkLend: Market Contract Activity
 1. **Identify Relevant Events Using Starkscan**: The event logs in "Events" tab of the zkLend: Market contract were examined on Starkscan to identify any liquidation events. Identified `Liquidation` event.
 2. **Analyze Event Data**: Clicked on `Liquidation` event to view its details, and found the following data including liquidator, user, debt_token, debt_raw_amount, debt_face_amount, collateral_token, collateral_amount.
-It was that the liquidator is not 
 3. **zkLend: Market Contract Read Functions**: Found and explored the following view functions to check if our deployed spotnet contract's position in zkLend has been closed; `is_user_undercollateralized(user, apply_borrow_factor)`, `user_has_debt(user)` and `is_collateral_enabled(user, token)` [with STRK address as token] all returned 1, indicating `true`. Thus, our contract's position is still open.
 
 ### Portfolio Check
@@ -67,7 +66,9 @@ From in-depth [review into zkLend market contract codebase](https://9oelm.github
 1. The zToken of the corresponding collateral (which is zSTRK in our case) repayed by a liquidator would be seized from our collateral balance, and sent to the liquidator. 
 2. A `Liquidation` event.
 
-The liquidators can be anyone (or their bot), and is neither a zklend or zklend related contract. Potential liquidators are monitoring the market closely and frequently, and try to call `liquidate()` earlier than their competitors with suitable amount of gas fee that might get their transaction get through earlier than others. From analysis of [all Starknet Liquidations](https://dune.com/caravanserai/starknet-liquidations); the below are among some of the liqudators for zkLend: 
+The liquidators can be anyone (or their bot), and is neither a zklend or zklend related contract. Potential liquidators are monitoring the market closely and frequently, and try to call `liquidate()` earlier than their competitors with suitable amount of gas fee that might get their transaction get through earlier than others. 
+
+From analysis of [all Starknet Liquidations](https://dune.com/caravanserai/starknet-liquidations); the below are among some of the liqudators for zkLend: 
 - 0x0783e6b26807e9906b084b07cc2fcbb74ab1aec1621b3c7bd7b985c201ff32e5
 - 0x04746c68f5f6d6bff7a16fdad6f543750bd6e46a7c00a9e5bb6820c86347fda0
 - 0x027c8f8a9b51985b629293453d4dfcad356b959d90d00f0253a1f95edbb1ada3
@@ -77,13 +78,18 @@ The liquidators can be anyone (or their bot), and is neither a zklend or zklend 
 ## Conclusion
 
 The zkLend liquidation process is unique compared to other lending protocols, such as Aave. Unlike these protocols, zkLend does not allow liquidators to fully liquidate a position, regardless of how low the health factor is. Instead, the current design permits liquidators to partially liquidate undercollateralized positions, ensuring that the user remains undercollateralized after the liquidation.
-The deployed Spotnet contract is yet to be liquidized by zkLend. And whenever it gets liquidated, the `zkLend_liquidation_position.py` script will give proof that zkLend liquidated our position.
+
+The deployed Spotnet contract is yet to be liquidized by zkLend as evident by:
+1. lack of `Liquidation` event from zkLend Events.
+2. collateral balance remains the same.
+
+And whenever it gets liquidated, the `zkLend_liquidation_position.py` script will give proof that zkLend liquidated our position.
 
 
 ## References
 
-https://github.com/zkLend/zklend-v1-core/blob/master/src/market/internal.cairo
-https://dune.com/caravanserai/starknet-liquidations
-https://medium.com/zklend/zklend-x-zkpad-ama-recap-19-04-2022-b2c925c4d816
-https://9oelm.github.io/2023-10-26-technical-intro-to-defi-lending-protocols-with-zklend-codebase-as-an-example/
-https://medium.com/@kristianaristi/liquidation-bot-on-zklend-starknet-part-1-introduction-who-is-borrowing-4d2631971a3a
+- https://github.com/zkLend/zklend-v1-core/blob/master/src/market/internal.cairo
+- https://dune.com/caravanserai/starknet-liquidations
+- https://medium.com/zklend/zklend-x-zkpad-ama-recap-19-04-2022-b2c925c4d816
+- https://9oelm.github.io/2023-10-26-technical-intro-to-defi-lending-protocols-with-zklend-codebase-as-an-example/
+- https://medium.com/@kristianaristi/liquidation-bot-on-zklend-starknet-part-1-introduction-who-is-borrowing-4d2631971a3a
