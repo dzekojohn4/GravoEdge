@@ -47,7 +47,8 @@ async def check_liquidation_proof(liquidatee_address: str) -> None:
     the liquidation event if found.
 
     Args:
-        liquidatee_address (str): The address of the liquidatee whose liquidation status is to be checked.
+        liquidatee_address (str): The address of the liquidatee whose liquidation
+        status is to be checked.
 
     Returns:
         None: This function does not return a value; it logs the results directly.
