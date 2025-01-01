@@ -2,7 +2,7 @@
 Script to verify if a position was liquidated in zkLend.
 
 This script checks the event logs of the zkLend contract to determine
-if a specific position was liquidated.
+if a specific user position was liquidated.
 """
 
 import asyncio
@@ -23,16 +23,14 @@ SPOTNET_DEPLOYED_CONTRACT = (
 # Initialize the StarkNet client
 client = FullNodeClient(node_url=node_url)
 
-LIQUIDATION_KEY_OUTPUT = [
-    1004689575290523089480265033644810625213175352109340690572687136992269442551
-]
+DEPOSIT_SELECTOR = "0xfa3f9acdb7b24dcf6d40d77ff2f87a87bca64a830a2169aebc9173db23ff41"
 
 LIQUIDATION_SELECTOR = (
     "0x238a25785a13ab3138feb8f8f517e5a21a377cc1ad47809e9fd5e76daf01df7"
 )
 
-FROM_BLOCK = 880000
-CHUNK_SIZE = 150
+FROM_BLOCK = 900000
+CHUNK_SIZE = 1000
 
 logging.basicConfig(
     level=logging.INFO,
@@ -40,16 +38,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-async def check_liquidation_proof(user_address):
+async def check_liquidation_proof(liquidatee_address: str) -> None:
     """
-    Check if a specific user's position was liquidated in the zkLend protocol.
+    Check if a specific liquidatee's position was liquidated in the zkLend protocol.
 
     This function fetches liquidation events from the zkLend market contract and checks
-    if the specified user address has been liquidated. It logs the details of
+    if the specified liquidatee address has been liquidated. It logs the details of
     the liquidation event if found.
 
     Args:
-        user_address (str): The address of the user whose liquidation status is to be checked.
+        liquidatee_address (str): The address of the liquidatee whose liquidation status is to be checked.
 
     Returns:
         None: This function does not return a value; it logs the results directly.
@@ -80,38 +78,22 @@ async def check_liquidation_proof(user_address):
         # https://starkscan.co/event/0x0204f9e81102c2e2f1af181e9a931580da5fa9a80abd21e15116a6175e00b736_10
 
         liquidator = event.data[0]
-        user = event.data[1]
+        liquidatee = event.data[1]
         debt_token = event.data[2]
         debt_raw_amount = event.data[3]
         debt_face_amount = event.data[4]
         collateral_token = event.data[5]
         collateral_amount = event.data[6]
 
-        if user in (
-            int(
-                "0x5c0846b4a80bb664b2f865e4dbc9a5e5eb3c454d124124ab891acc55a7e6fd",
-                base=16,
-            ),
-            int(user_address, base=16),
-            # below is an address of user from Liquidation Event on Starkscan, currently works
-            int(
-                "0x5cd188997504470875595dfcef4660fdd61d3ad2ede3a8013abcb7de122681f",
-                base=16,
-            ),
-        ):
+        if int(liquidatee_address, base=16) == liquidatee:
 
             liquid_results.append(
-                (
-                    user,
-                    debt_face_amount,
-                    collateral_amount,
-                )
+                (liquidator, liquidatee, debt_face_amount, collateral_amount)
             )
-
             # Log the details of the liquidation
             logger.info(f"Beginning of an Event!!")
             logger.info(
-                f"Liquidation Event: {liquidator} liquidated {user_address}'s position."
+                f"Liquidation Event: {liquidator} liquidated {liquidatee}'s position."
             )
             logger.info(f"Debt Token: {debt_token}, Amount: {debt_raw_amount}")
             logger.info(
@@ -122,7 +104,7 @@ async def check_liquidation_proof(user_address):
     if liquid_results:
         print("Liquidation Results:", liquid_results)
     else:
-        print(f"No liquidation events found for user {user_address}.")
+        print(f"No liquidation events found for user {liquidatee_address}.")
 
 
 if __name__ == "__main__":
