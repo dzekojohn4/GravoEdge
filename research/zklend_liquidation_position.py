@@ -11,7 +11,7 @@ import logging
 from starknet_py.net.full_node_client import FullNodeClient
 
 # Load environment variables
-node_url = "https://starknet-mainnet.public.blastapi.io/rpc/v0_7"
+NODE_URL = "https://starknet-mainnet.public.blastapi.io/rpc/v0_7"
 ZKLEND_CONTRACT_ADDRESS = (
     "0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05"
 )
@@ -21,7 +21,7 @@ SPOTNET_DEPLOYED_CONTRACT = (
 
 
 # Initialize the StarkNet client
-client = FullNodeClient(node_url=node_url)
+client = FullNodeClient(node_url=NODE_URL)
 
 DEPOSIT_SELECTOR = "0xfa3f9acdb7b24dcf6d40d77ff2f87a87bca64a830a2169aebc9173db23ff41"
 
@@ -71,9 +71,6 @@ async def check_liquidation_proof(liquidatee_address: str) -> None:
 
     # Process events for the specific user
     for event in events:
-        # logger.info(f"Event Data: {event}")
-        # logger.info(f"Event Data: {event.data}")
-
         # Unpack event.data object
         # sample at
         # https://starkscan.co/event/0x0204f9e81102c2e2f1af181e9a931580da5fa9a80abd21e15116a6175e00b736_10
@@ -103,9 +100,9 @@ async def check_liquidation_proof(liquidatee_address: str) -> None:
 
     # Print all liquidation results after processing all events
     if liquid_results:
-        print("Liquidation Results:", liquid_results)
+        logger.info(f"Liquidation Results: {liquid_results}")
     else:
-        print(f"No liquidation events found for user {liquidatee_address}.")
+        logger.info(f"No liquidation events found for user {liquidatee_address}.")
 
 
 if __name__ == "__main__":

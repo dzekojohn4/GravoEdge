@@ -42,7 +42,7 @@ To verify if a position was liquidated in zkLend, the following steps were taken
 
 Upon checking the portfolio of the deployed Spotnet contract, it was found that there is a balance of **1.744172753867558899 zSTRK Token**. This corresponds with `LiquidityLooped` event that showed the user (through spotnet contract) was able to achieve a collateral of **1.744172753867558898 STRK** from an initial deposit amount of **1 STRK**.
 
-`LiquidityLooped` event also showed that **0.473917 USDC** was borrowed with the 1.744 STRK collateral. The Read function `get_user_debt_for_token(user, token)`, with USDC address as token, on zkLend Market contract returned 0.475401 USDC, 0.475529 USDC at a later time. and currently 0.476299. Checked the `balanceOf(account)` of our contract on zkLend: zSTRK Token contract, which returned 1.744438892223882014. Due to an abscence of a `Liquidation` event for our contract on zkLend, these state (small) changes must be due to market activity, interest on debts or rewards for providing liquidity/collateral.
+`LiquidityLooped` event also showed that **0.473917 USDC** was borrowed with the 1.744 STRK collateral. The Read function `get_user_debt_for_token(user, token)`, with USDC address as token, on zkLend Market contract returned 0.475401 USDC, 0.475529 USDC at a later time, and currently 0.476299. Checked the `balanceOf(account)` of our contract on zkLend: zSTRK Token contract, which returned 1.744438892223882014. Due to an abscence of a `Liquidation` event for our contract on zkLend, these state (small) changes must be due to market activity, interest on debts or rewards for providing liquidity/collateral.
 
 ## Result/Discussion
 
@@ -79,7 +79,7 @@ From analysis of [all Starknet Liquidations](https://dune.com/caravanserai/stark
 
 The zkLend liquidation process is unique compared to other lending protocols, such as Aave. Unlike these protocols, zkLend does not allow liquidators to fully liquidate a position, regardless of how low the health factor is. Instead, the current design permits liquidators to partially liquidate undercollateralized positions, ensuring that the user remains undercollateralized after the liquidation.
 
-The deployed Spotnet contract is yet to be liquidized by zkLend as evident by:
+The deployed Spotnet contract is yet to be liquidated by zkLend as evident by:
 1. lack of `Liquidation` event from zkLend Events.
 2. collateral balance remains the same.
 
