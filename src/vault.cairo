@@ -47,7 +47,8 @@ mod Vault {
         LiquidityAdded: LiquidityAdded,
         LiquidityWithdrawn: LiquidityWithdrawn,
         ContractAdded: ContractAdded,
-        PositionProtected: PositionProtected
+        PositionProtected: PositionProtected,
+        LiquidityReturned: LiquidityReturned
     }
 
     #[derive(Drop, starknet::Event)]
@@ -86,6 +87,15 @@ mod Vault {
         deposit_contract: ContractAddress,
         #[key]
         contract_owner: ContractAddress,
+        amount: TokenAmount,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct LiquidityReturned {
+        #[key]
+        user: ContractAddress,
+        #[key]
+        token: ContractAddress,
         amount: TokenAmount,
     }
 
@@ -250,6 +260,37 @@ mod Vault {
             IDepositDispatcher { contract_address: deposit_contract }.extra_deposit(token, amount);
 
             self.emit(PositionProtected { token, deposit_contract, contract_owner: user, amount });
+        }
+
+        /// Return liquidity from the vault by transferring tokens to the user.
+        ///
+        /// # Arguments
+        ///
+        /// * `user` - The address of the recipient
+        /// * `amount` - The amount of tokens to send from the vault
+        ///
+        /// # Events
+        ///
+        /// Emits a `LiquidityReturned` event with:
+        /// * `user` - The address of the recipient
+        /// * `token` - The address of the token
+        /// * `amount` - The amount of tokens that send from the vault
+        fn return_liquidity(ref self: ContractState, user: ContractAddress, amount: TokenAmount){
+            let token = self.token.read();
+            let current_amount = self.amounts.entry(user).read();
+
+            // update new amount
+            self.amounts.entry(user).write(current_amount + amount);
+
+            // transfer token to user
+            IERC20Dispatcher { contract_address: token }.transfer_from(get_caller_address(), user, amount);
+
+            self.emit(LiquidityReturned { user, token, amount });
+        }
+
+        /// Returns the token address stored in the vault
+        fn get_vault_token(self: @ContractState) -> ContractAddress {
+            return self.token.read();
         }
     }
 }
