@@ -1,16 +1,17 @@
-use openzeppelin::token::erc20::interface::IERC20DispatcherTrait;
-use openzeppelin_token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
+use openzeppelin::token::erc20::interface::{
+    ERC20ABIDispatcher, ERC20ABIDispatcherTrait, IERC20DispatcherTrait,
+};
 use snforge_std::cheatcodes::execution_info::caller_address::{
-    start_cheat_caller_address, stop_cheat_caller_address
+    start_cheat_caller_address, stop_cheat_caller_address,
 };
 use snforge_std::{load, map_entry_address};
-use spotnet::interfaces::{IVaultDispatcherTrait, IMarketDispatcher, IMarketDispatcherTrait};
+use spotnet::interfaces::{IMarketDispatcher, IMarketDispatcherTrait, IVaultDispatcherTrait};
 
 use starknet::ContractAddress;
-use super::constants::{HYPOTHETICAL_OWNER_ADDR, tokens, contracts};
+use super::constants::{HYPOTHETICAL_OWNER_ADDR, contracts, tokens};
 use super::utils::{
-    setup_test_suite, setup_user, assert_vault_amount, deploy_deposit_contract, setup_test_deposit,
-    deploy_erc20_mock
+    assert_vault_amount, deploy_deposit_contract, deploy_erc20_mock, setup_test_deposit,
+    setup_test_suite, setup_user,
 };
 
 const MOCK_USER: felt252 = 0x1234;
@@ -21,7 +22,7 @@ const DEPOSIT_MOCK_USER: felt252 =
 #[test]
 fn test_deploy() {
     let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
-    let token = load(suite.vault.contract_address, selector!("token"), 1,);
+    let token = load(suite.vault.contract_address, selector!("token"), 1);
 
     assert!(*token[0] == suite.token.contract_address.try_into().unwrap(), "token not match");
 }
@@ -130,7 +131,7 @@ fn test_add_deposit_contract() {
     stop_cheat_caller_address(suite.vault.contract_address);
     assert(
         (*activeContracts_after_adding[0]).try_into().unwrap() == deposit_address,
-        'Deposit contract mismatch'
+        'Deposit contract mismatch',
     );
 }
 
@@ -164,7 +165,7 @@ fn test_protect_position_with_owner() {
     assert_vault_amount(suite.vault.contract_address, user, expected_amount_vault);
 
     let z_token_address = IMarketDispatcher {
-        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
+        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap(),
     }
         .get_reserve_data(token)
         .z_token_address;
@@ -199,7 +200,7 @@ fn test_protect_position_with_user() {
     assert_vault_amount(suite_owner.vault.contract_address, owner, expected_amount_owner);
 
     let z_token_address = IMarketDispatcher {
-        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap()
+        contract_address: contracts::ZKLEND_MARKET.try_into().unwrap(),
     }
         .get_reserve_data(token)
         .z_token_address;
@@ -268,4 +269,31 @@ fn test_protect_position_user_address_is_zero() {
     start_cheat_caller_address(suite.vault.contract_address, user);
     suite.vault.protect_position(deposit_address, user, user_amount);
     stop_cheat_caller_address(suite.vault.contract_address);
+}
+
+#[test]
+fn test_get_vault_token() {
+    let user: ContractAddress = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
+    let token: ContractAddress = deploy_erc20_mock();
+    let suite = setup_test_suite(user, token);
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    assert(suite.vault.get_vault_token() == token, 'Vault token mismatch');
+    stop_cheat_caller_address(suite.vault.contract_address);
+}
+
+#[test]
+fn test_return_liquidity() {
+    let user_amount: u256 = 685000000;
+    let return_amount: u256 = 10000;
+    let user = HYPOTHETICAL_OWNER_ADDR.try_into().unwrap();
+    let suite = setup_test_suite(user, deploy_erc20_mock());
+    setup_user(@suite, user, user_amount);
+
+    // Return liquidity to the user
+    start_cheat_caller_address(suite.vault.contract_address, user);
+    suite.vault.return_liquidity(user, return_amount);
+    stop_cheat_caller_address(suite.vault.contract_address);
+
+    // Check final balance of the user
+    assert_vault_amount(suite.vault.contract_address, user, return_amount.try_into().unwrap());
 }
