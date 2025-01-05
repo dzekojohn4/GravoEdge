@@ -6,6 +6,7 @@ import './addDeposit.css';
 import Card from 'components/ui/card/Card';
 import TokenSelector from 'components/ui/token-selector/TokenSelector';
 import { NUMBER_REGEX } from 'utils/regex';
+import { Button } from 'components/ui/custom-button/Button';
 
 export const AddDeposit = () => {
   const [amount, setAmount] = useState('0');
@@ -18,11 +19,6 @@ export const AddDeposit = () => {
     if (NUMBER_REGEX.test(value)) {
       setAmount(value);
     }
-  };
-
-  const handleCancel = () => {
-    setAmount('0');
-    setSelectedToken('STRK');
   };
 
   const handleDeposit = () => {
@@ -43,16 +39,15 @@ export const AddDeposit = () => {
   return (
     <div className="deposit-wrapper">
       <div className="deposit-container">
-        <h1 className="deposit-title1">zkLend Deposit</h1>
+        <h1 className="deposit-title">zkLend Deposit</h1>
         <div className="main-container-deposit">
           <div className="top-cards-deposit">
             <Card label="Health Factor" value="1.47570678" icon={<HealthIcon className="icon" />} />
             <Card label="Borrow Balance" value="$-55.832665" icon={<EthIcon className="icon" />} />
           </div>
         </div>
-        <h1 className="deposit-title2">Pls make a deposit</h1>
+        <h1 className="deposit-title2">Please make a deposit</h1>
         <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
-
         <div className="amount-input-deposit" aria-labelledby="amount-input-label">
           <input
             type="text"
@@ -70,14 +65,9 @@ export const AddDeposit = () => {
           </span>
         </div>
 
-        <div className="dep-button">
-          <button className="deposit-cancel-button" onClick={handleCancel} disabled={isLoading}>
-            Cancel
-          </button>
-          <button className="deposit-button" onClick={handleDeposit} disabled={isLoading || amount === '0'}>
-            {isLoading ? 'Processing...' : 'Deposit'}
-          </button>
-        </div>
+        <Button size="lg" variant="primary" onClick={handleDeposit} disabled={isLoading || amount === '0'}>
+          {isLoading ? 'Processing...' : 'Deposit'}
+        </Button>
       </div>
     </div>
   );

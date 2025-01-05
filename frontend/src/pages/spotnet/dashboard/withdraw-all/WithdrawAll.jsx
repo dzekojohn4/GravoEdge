@@ -2,7 +2,7 @@ import React from 'react';
 import BalanceCards from 'components/ui/balance-cards/BalanceCards';
 import './withdraw_all.css';
 import { useWalletStore } from 'stores/useWalletStore';
-import { Button } from 'components/ui/button/Button';
+import { Button } from 'components/ui/custom-button/Button';
 import useWithdrawAll from 'hooks/useWithdrawAll';
 
 const WithdrawAll = () => {
