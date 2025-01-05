@@ -16,6 +16,7 @@
   flex-direction: column;
   gap: 10px;
   padding-bottom: 60px;
+  width: 626px;
 }
 
 .form-title h1 {

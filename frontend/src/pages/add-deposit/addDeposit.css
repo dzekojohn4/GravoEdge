@@ -5,8 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 1rem;
-  padding-top: 24px;
+  padding-top: 32px;
   transition: all 0.2s ease-in-out;
   padding-bottom: 4rem;
 }
@@ -20,15 +19,15 @@
   transition: all 0.3s ease-in-out;
 }
 
-.deposit-title1 {
+.deposit-title {
   font-size: 24px;
   font-weight: 600;
   color: #ffffff;
   text-align: center;
+  margin-bottom: 0;
 }
 
 .main-container-deposit {
-  width: 642px;
   gap: 2px;
   padding-top: 24px;
   border-radius: 8px;
@@ -54,6 +53,7 @@
   color: var(--primary);
   text-align: center;
   margin-top: 2rem;
+  margin-bottom: 0px;
 }
 
 .card-header {
@@ -84,7 +84,7 @@
 .currency-deposit {
   position: absolute;
   color: var(--dark-gray);
-  right: 27%;
+  /* right: 23%; */
   top: 18%;
   transform: translateY(-50%);
   opacity: 0.5;
@@ -95,7 +95,7 @@
 
 .amount-input-deposit {
   position: relative;
-  width: 100%;
+  width: 146px;
   max-width: 400px;
   margin: 2rem auto;
   text-align: center;
@@ -195,81 +195,26 @@
   height: 16px;
 }
 
-.deposit-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 8px;
-  border-radius: 8px;
-  padding: 2px;
-  background: var(--blue-pink-gradient);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: destination-out;
-  mask-composite: exclude;
-  z-index: -1;
-}
-
 .mobile-screen-btns {
   display: none;
 }
 
-@media (max-width: 1024px) {
-  .deposit-container {
-    width: 642px;
-    margin-left: 0;
-  }
-}
-
 @media (max-width: 768px) {
+  .deposit-wrapper {
+    padding-top: 24px;
+  }
+
+  .deposit-title {
+    font-size: 16px;
+  }
+
+  .deposit-title2 {
+    margin-top: 0px;
+  }
+
   .deposit-container {
-    margin-left: 0px;
-  }
-
-  .dep-button {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  .deposit-cancel-button {
-    position: relative;
-    font-weight: 600;
-    width: 167px;
-    height: 60px;
-    background: none;
-    color: var(--primary);
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 8px;
-    border: 1px solid;
-    border-color: #36294e;
-    border-radius: 8px;
-    padding: 16px 24px 16px 24px;
-    z-index: 1;
-    overflow: hidden;
-  }
-
-  .deposit-button {
-    position: relative;
-    font-weight: 600;
-    width: 167px;
-    height: 60px;
-    background: none;
-    color: var(--primary);
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    padding: 16px 24px 16px 24px;
-    z-index: 1;
-    overflow: hidden;
+    margin-left: 0;
+    gap: 20px;
   }
 }
 
@@ -281,7 +226,6 @@
   }
 
   .main-container-deposit {
-    width: 500px;
     margin: auto;
     padding-top: 0px;
   }
@@ -293,39 +237,5 @@
     /* gap: 8px; */
     height: 88px;
     margin-top: -6px;
-  }
-}
-
-@media (min-width: 768px) {
-  .deposit-button {
-    position: relative;
-    display: inline-block;
-    font-weight: 600;
-    width: 100%;
-    height: 60px;
-    background: none;
-    color: var(--primary);
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    padding: 16px 24px 16px 24px;
-    z-index: 1;
-    overflow: hidden;
-  }
-
-  .deposit-cancel-button {
-    position: relative;
-    display: none;
-    font-weight: 600;
-    width: 100%;
-    height: 60px;
-    background: none;
-    color: var(--primary);
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    padding: 16px 24px 16px 24px;
-    z-index: 1;
-    overflow: hidden;
   }
 }

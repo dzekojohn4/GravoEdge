@@ -4,7 +4,7 @@ import STRK from '../../assets/icons/strk.svg';
 import USDCc from '../../assets/icons/apy_icon.svg';
 import './stake.css';
 import { VaultLayout } from '../../components/vault/VaultLayout';
-import { Button } from 'components/ui/button/Button';
+import { Button } from 'components/ui/custom-button/Button';
 import GasFee from '../../components/vault/gas-fee/GasFee';
 import BalanceCards from '../../components/ui/balance-cards/BalanceCards';
 

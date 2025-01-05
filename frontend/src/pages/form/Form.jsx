@@ -5,7 +5,7 @@ import MultiplierSelector from 'components/ui/multiplier-selector/MultiplierSele
 import { handleTransaction } from 'services/transaction';
 import Spinner from 'components/ui/spinner/Spinner';
 import './form.css';
-import { Button } from 'components/ui/button/Button';
+import { Button } from 'components/ui/custom-button/Button';
 import { useWalletStore } from '../../stores/useWalletStore';
 import { useConnectWallet } from '../../hooks/useConnectWallet';
 import { useCheckPosition } from '../../hooks/useClosePosition';

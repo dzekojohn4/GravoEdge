@@ -25,21 +25,19 @@ const TokenSelector = ({ selectedToken, setSelectedToken }) => {
             key={token.id}
             onClick={() => handleTokenChange(token)}
           >
-            <div className="token-container-deposit">
-              <input
-                type="radio"
-                id={token.id}
-                checked={selectedToken === token.label}
-                name="token-options"
-                value={token.label}
-                onChange={() => handleTokenChange(token)}
-                className="token-radio"
-              />
-              <label htmlFor={token.id}>
-                <h5>
-                  <span className="token-icon-deposit">{token.component}</span>
-                  {token.label}
-                </h5>
+            <input
+              type="radio"
+              id={token.id}
+              checked={selectedToken === token.label}
+              name="token-options"
+              value={token.label}
+              onChange={() => handleTokenChange(token)}
+              className="token-radio"
+            />
+            <div className="token-name-wrapper">
+              <span className="token-selector-icon">{token.component}</span>
+              <label htmlFor={token.id} className="token-card-label">
+                {token.label}
               </label>
             </div>
           </div>
