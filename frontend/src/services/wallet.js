@@ -15,9 +15,7 @@ export const checkForCRMToken = async (walletAddress) => {
   }
 
   try {
-    const { wallet } = await connect({
-      modalMode: 'alwaysAsk',
-    });
+    const { wallet } = await connect();
 
     if (!wallet.isConnected) {
       throw new Error('Wallet not connected');
@@ -48,8 +46,7 @@ export const connectWallet = async () => {
     console.log('Attempting to connect to wallet...');
 
     const { wallet } = await connect({
-      modalMode: 'alwaysAsk',
-      modalTheme: 'light',
+      modalMode: 'canAsk',
     });
 
     if (!wallet) {
@@ -79,7 +76,7 @@ export function logout() {
 export async function getTokenBalances(walletAddress) {
   try {
     const { wallet } = await connect({
-      modalMode: 'alwaysAsk',
+      modalMode: 'neverAsk',
     });
     if (!wallet.isConnected) {
       throw new Error('Wallet not connected');
