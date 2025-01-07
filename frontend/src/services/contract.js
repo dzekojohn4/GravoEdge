@@ -1,4 +1,4 @@
-import { connect } from 'starknetkit';
+import { getWallet } from './wallet';
 import { getDeployContractData } from '../utils/constants';
 import { axiosInstance } from '../utils/axios';
 import { notify, ToastWithLink } from '../components/layout/notifier/Notifier';
@@ -6,13 +6,7 @@ import { notify, ToastWithLink } from '../components/layout/notifier/Notifier';
 export async function deployContract(walletId) {
   try {
     // Connect to Starknet wallet
-    const { wallet } = await connect({
-      modalMode: 'neverAsk',
-    });
-
-    if (!wallet.isConnected) {
-      throw new Error('Wallet not connected');
-    }
+    const wallet = await getWallet();
 
     // Prepare the deploy contract transaction object
     const deployContractTransaction = getDeployContractData(walletId);
