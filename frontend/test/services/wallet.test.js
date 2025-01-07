@@ -95,7 +95,7 @@ describe('Wallet Services', () => {
 
       expect(connect).toHaveBeenCalledWith(
         expect.objectContaining({
-          modalMode: 'alwaysAsk',
+          modalMode: 'canAsk',
         })
       );
       expect(mockStarknet.wallet.enable).toHaveBeenCalled();
