@@ -8,7 +8,7 @@ import { ReactComponent as TelegramIcon } from '../../assets/icons/telegram_dash
 import Spinner from '../../components/ui/spinner/Spinner';
 import useDashboardData from '../../hooks/useDashboardData';
 import { useClosePosition, useCheckPosition } from '../../hooks/useClosePosition';
-import { Button } from 'components/ui/button/Button';
+import { Button } from 'components/ui/custom-button/Button';
 import { useWalletStore } from '../../stores/useWalletStore';
 import { ActionModal } from '../../components/ui/action-modal';
 import useTelegramNotification from '../../hooks/useTelegramNotification';
@@ -155,13 +155,13 @@ export default function Component({ telegramId }) {
     {
       id: 'deposit ',
       name: 'Add Deposit',
-      link: '/add-deposit',
+      link: '/dashboard/deposit',
       icon: depositIcon,
     },
     {
       id: 'withdraw ',
       name: 'Withdraw All',
-      link: '/dashboard/withdraw-all',
+      link: '/dashboard/withdraw',
       icon: withdrawIcon,
     },
   ];
