@@ -15,7 +15,7 @@ export const useClosePosition = () => {
             }
             const response = await axiosInstance.get(`/api/get-repay-data?wallet_id=${walletId}`);
             const transactionResult = await closePosition(response.data);
-            
+            console.log("TransactionResult", transactionResult)
             await axiosInstance.post(`/api/close-position`, {
                 position_id: response.data.position_id,
                 transaction_hash: transactionResult.transaction_hash

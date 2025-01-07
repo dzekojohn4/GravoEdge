@@ -97,7 +97,6 @@ async def create_position_with_transaction_data(
         position_db_connector.get_contract_address_by_wallet_id(form_data.wallet_id)
     )
     deposit_data["position_id"] = str(position.id)
-
     return LoopLiquidityData(**deposit_data)
 
 
@@ -156,7 +155,7 @@ async def close_position(position_id: UUID, transaction_hash: str) -> str:
     """
     if position_id is None or position_id == "undefined":
         raise HTTPException(status_code=404, detail="Position not Found")
-    
+
     position_status = position_db_connector.close_position(str(position_id))
     position_db_connector.save_transaction(
         position_id=position_id,
@@ -176,6 +175,8 @@ async def open_position(position_id: str, transaction_hash: str) -> str:
     """
     Open a position.
     :param position_id: contract address
+    :return: str
+    :param transaction_hash: transaction hash for the position opening
     :return: str
     :raises: HTTPException :return: Dict containing status code and detail
     """
