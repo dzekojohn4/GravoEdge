@@ -61,7 +61,7 @@ class PositionDBConnector(UserDBConnector):
         return self.get_user_by_wallet_id(wallet_id)
 
     def get_positions_by_wallet_id(
-        self, wallet_id: str, start: int, limit: int
+        self, wallet_id: str, start: int=0, limit: int=10
     ) -> list:
         """
         Retrieves paginated positions for a user by their wallet ID
