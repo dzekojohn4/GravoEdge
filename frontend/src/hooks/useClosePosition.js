@@ -13,12 +13,18 @@ export const useClosePosition = () => {
                 console.error('closePositionEvent: walletId is undefined');
                 return;
             }
-            const response = await axiosInstance.get(`/api/get-repay-data?wallet_id=${walletId}`);
+            const response = await axiosInstance.get("/api/get-repay-data", {
+                params: {
+                    wallet_id: walletId
+                },
+            });
             const transactionResult = await closePosition(response.data);
             console.log("TransactionResult", transactionResult)
-            await axiosInstance.post(`/api/close-position`, {
-                position_id: response.data.position_id,
-                transaction_hash: transactionResult.transaction_hash
+            await axiosInstance.get("/api/close-position", {
+                params: {
+                    position_id: response.data.position_id,
+                    transaction_hash: transactionResult.transaction_hash
+                },
             });
         },
         onError: (error) => {
