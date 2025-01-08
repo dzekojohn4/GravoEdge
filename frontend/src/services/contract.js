@@ -1,23 +1,21 @@
-import { connect } from 'get-starknet';
+import { getWallet } from './wallet';
 import { getDeployContractData } from '../utils/constants';
 import { axiosInstance } from '../utils/axios';
+import { notify, ToastWithLink } from '../components/layout/notifier/Notifier';
 
 export async function deployContract(walletId) {
   try {
     // Connect to Starknet wallet
-    const starknet = await connect();
-    if (!starknet.isConnected) {
-      throw new Error('Wallet not connected');
-    }
+    const wallet = await getWallet();
 
     // Prepare the deploy contract transaction object
     const deployContractTransaction = getDeployContractData(walletId);
 
     // Execute the deployment transaction
-    // const result = await starknet.account.execute([deployContractTransaction]);
-    const result = await starknet.account.deployContract(deployContractTransaction);
+    // const result = await wallet.account.execute([deployContractTransaction]);
+    const result = await wallet.account.deployContract(deployContractTransaction);
     console.log('Contract deployed successfully:', result);
-    await starknet.account.waitForTransaction(result.transaction_hash);
+    await wallet.account.waitForTransaction(result.transaction_hash);
     return {
       transactionHash: result.transaction_hash,
       contractAddress: result.contract_address,
@@ -39,6 +37,14 @@ export async function checkAndDeployContract(walletId) {
       const result = await deployContract(walletId);
       const contractAddress = result.contractAddress;
 
+      notify(
+        ToastWithLink(
+          'Contract Deployed Successfully',
+          `https://starkscan.co/tx/${result.transactionHash}`,
+          'Transaction ID'
+        ),
+        'success'
+      );
       console.log('Contract address:', contractAddress);
 
       // Update the backend with transaction hash and wallet ID

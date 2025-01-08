@@ -11,7 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from web_app.db.database import SQLALCHEMY_DATABASE_URL
-from web_app.db.models import Base
+from web_app.db.models import AirDrop, Base
 
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)
@@ -130,3 +130,13 @@ class DBConnector:
 
         finally:
             db.close()
+
+    def create_empty_claim(self, user_id: uuid.UUID) -> AirDrop:
+        """
+        Creates a new empty AirDrop instance for the given user_id.
+        :param user_id: uuid.UUID
+        :return: AirDrop
+        """
+        airdrop = AirDrop(user_id=user_id)
+        self.write_to_db(airdrop)
+        return airdrop

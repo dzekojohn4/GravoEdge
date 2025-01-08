@@ -3,7 +3,6 @@ import QueryKeys from 'QueryKeys/QueryKeys';
 import { axiosInstance } from 'utils/axios';
 import { useWalletStore } from 'stores/useWalletStore';
 
-
 export const fetchDashboardData = async (walletId) => {
   if (!walletId) {
     throw new Error('Wallet ID is undefined');
@@ -13,7 +12,7 @@ export const fetchDashboardData = async (walletId) => {
 };
 
 const useDashboardData = () => {
-   const walletId = useWalletStore((state) => state.walletId);
+  const walletId = useWalletStore((state) => state.walletId);
   return useQuery({
     queryKey: [QueryKeys.DashboardData, walletId],
     queryFn: () => fetchDashboardData(walletId),

@@ -14,10 +14,9 @@ import starknet_py.cairo.felt
 import starknet_py.hash.selector
 import starknet_py.net.client_models
 import starknet_py.net.networks
+from .constants import MULTIPLIER_POWER, ZKLEND_MARKET_ADDRESS, TokenParams
 from starknet_py.contract import Contract
 from starknet_py.net.full_node_client import FullNodeClient
-
-from .constants import ZKLEND_MARKET_ADDRESS, TokenParams, MULTIPLIER_POWER
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +25,7 @@ class RepayDataException(Exception):
     """
     Custom RepayDataException for handling errors while repaying data
     """
+
     pass
 
 
@@ -101,7 +101,9 @@ class StarknetClient:
             }
 
         """
-        token0, token1 = sorted(map(lambda x: StarknetClient._convert_address(x), (token0, token1)))
+        token0, token1 = sorted(
+            map(lambda x: StarknetClient._convert_address(x), (token0, token1))
+        )
         return {
             "token0": token0,
             "token1": token1,
@@ -111,7 +113,9 @@ class StarknetClient:
         }
 
     @staticmethod
-    async def _get_pool_price(pool_key, is_token1: bool, ekubo_contract: "Contract") -> Decimal:
+    async def _get_pool_price(
+        pool_key, is_token1: bool, ekubo_contract: "Contract"
+    ) -> Decimal:
         """
         Calculate Ekubo pool price.
 
@@ -258,7 +262,9 @@ class StarknetClient:
         }
 
         pool_price = floor(
-            await self._get_pool_price(pool_key, deposit_token == pool_key["token1"], ekubo_contract)
+            await self._get_pool_price(
+                pool_key, deposit_token == pool_key["token1"], ekubo_contract
+            )
         )
         return {
             "pool_price": pool_price,
@@ -271,7 +277,9 @@ class StarknetClient:
             "caller": wallet_id,
         }
 
-    async def get_repay_data(self, deposit_token: str, borrowing_token: str, ekubo_contract: "Contract") -> dict:
+    async def get_repay_data(
+        self, deposit_token: str, borrowing_token: str, ekubo_contract: "Contract"
+    ) -> dict:
         """
         Get data for Spotnet position closing.
 
@@ -289,7 +297,9 @@ class StarknetClient:
         ), self._convert_address(borrowing_token)
 
         is_token1 = deposit_token == pool_key["token1"]
-        supply_price = floor(await self._get_pool_price(pool_key, is_token1, ekubo_contract))
+        supply_price = floor(
+            await self._get_pool_price(pool_key, is_token1, ekubo_contract)
+        )
 
         try:
             debt_price = floor(Decimal((1 / supply_price)) * 10**decimals_sum)
@@ -326,5 +336,87 @@ class StarknetClient:
             calldata=[],
         )
 
+    async def add_extra_deposit(
+        self, contract_address: str, token_address: str, amount: str
+    ) -> Any:
+        """
+        Adds extra deposit to position.
+
+        :param contract_address: The contract address.
+        :param token_address: The token address.
+        :param amount: The amount to deposit.
+        """
+
+        return await self._func_call(
+            addr=self._convert_address(contract_address),
+            selector="extra_deposit",
+            calldata=[self._convert_address(token_address), amount],
+        )
+
+    async def withdraw_all(self, contract_address: str) -> dict[str, str]:
+        """
+        Withdraws all supported tokens from the contract by calling withdraw with amount=0.
+
+        :param contract_address: The contract address to withdraw from
+        :return: A dictionary summarizing the results for each token.
+        """
+        contract_addr_int = self._convert_address(contract_address)
+        results = {}
+
+        for token in TokenParams.tokens():
+            token_symbol = token.name
+
+            try:
+                token_addr_int = self._convert_address(token.address)
+
+            except ValueError as e:
+                logger.error(f"Invalid address format for {token_symbol}: {str(e)}")
+                results[token_symbol] = f"Failed: Invalid address format"
+                continue
+
+            try:
+                logger.info(
+                    f"Withdrawing {token_symbol} from contract {contract_address}"
+                )
+                await self._func_call(
+                    addr=contract_addr_int,
+                    selector="withdraw",
+                    calldata=[token_addr_int, 0],
+                )
+                results[token_symbol] = "Success"
+            except Exception as e:
+                logger.error(f"Error withdrawing {token_symbol}: {e}")
+                results[token_symbol] = f"Failed: {e}"
+
+        return results
+
+    async def fetch_portfolio(self, contract_address: str) -> dict:
+        """
+        Fetches the portfolio of the contract
+
+        :param contract_address: the contract address to fetch the portfolio from.
+        :return: A dictionary containing dictionaries of available tokens in the contract address,
+                and the balance
+        """
+        results = {}
+        z_addresses = await self.get_z_addresses()
+
+        for key, value in z_addresses.items():
+            decimals, z_address = value
+            balance: int = await self.get_balance(z_address, contract_address)
+
+            key = f"z{key}"
+            results[key] = {"balance": balance, "decimals": decimals}
+
+        return results
+
 
 CLIENT = StarknetClient()
+
+if __name__ == "__main__":
+    call = CLIENT
+    spotnet_address = (
+        "0x05685d6b0b493c7c939d65c175305b893870cacad780842c79a611ad9122815f"
+    )
+    res = asyncio.run(call.fetch_portfolio(spotnet_address))
+    print(res)
