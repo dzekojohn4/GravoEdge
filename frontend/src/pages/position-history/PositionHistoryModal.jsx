@@ -46,7 +46,7 @@ function PositionHistoryModal({ position, onClose, index, tokenIcon, statusStyle
           </div>
           <div className="position-detail-row">
             <p>
-              Closed At <span>{position.datetime_liquidation}</span>
+              Closed At <span>{position.closed_at}</span>
             </p>
           </div>
         </div>

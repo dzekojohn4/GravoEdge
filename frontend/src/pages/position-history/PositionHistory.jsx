@@ -114,7 +114,7 @@ function PositionHistory() {
                           <td>{data.start_price}</td>
                           <td>{data.multiplier}</td>
                           <td>{data.is_liquidated}</td>
-                          <td>{data.datetime_liquidation}</td>
+                          <td>{data.closed_at}</td>
                           <td className="action-column">
                             <span className="action-button" onClick={() => setSelectedPosition({ data, index })}>
                               &#x22EE;
