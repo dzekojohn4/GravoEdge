@@ -1,4 +1,4 @@
-import { connect } from 'starknetkit';
+import { getWallet } from './wallet';
 import { CallData } from 'starknet';
 import { erc20abi } from '../abis/erc20';
 import { abi } from '../abis/abi';
@@ -8,13 +8,7 @@ import { notify, ToastWithLink } from '../components/layout/notifier/Notifier';
 
 export async function sendTransaction(loopLiquidityData, contractAddress) {
   try {
-    const { wallet } = await connect({
-      modalMode: 'alwaysAsk',
-    });
-
-    if (!wallet.isConnected) {
-      throw new Error('Wallet not connected');
-    }
+    const wallet = await getWallet();
 
     if (!loopLiquidityData.pool_key || !loopLiquidityData.deposit_data) {
       throw new Error('Missing or invalid loop_liquidity_data fields');
@@ -58,9 +52,8 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
 }
 /* eslint-disable-next-line no-unused-vars */
 async function waitForTransaction(txHash) {
-  const { wallet } = await connect({
-    modalMode: 'neverAsk',
-  });
+  const wallet = await getWallet();
+
   let receipt = null;
   while (receipt === null) {
     try {
@@ -76,9 +69,8 @@ async function waitForTransaction(txHash) {
 export async function closePosition(transactionData) {
   const callData = new CallData(abi);
   const compiled = callData.compile('close_position', transactionData);
-  const { wallet } = await connect({
-    modalMode: 'neverAsk',
-  });
+  const wallet = await getWallet();
+
   let result = await wallet.account.execute([
     { contractAddress: transactionData.contract_address, entrypoint: 'close_position', calldata: compiled },
   ]);
@@ -114,6 +106,7 @@ export const handleTransaction = async (connectedWalletId, formData, setTokenAmo
       params: { position_id: transactionData.position_id, transaction_hash },
     });
 
+    // FIXME: this is a hack to eslint (no-unused-vars)
     openPositionResponse == openPositionResponse;
 
     setTokenAmount('');
