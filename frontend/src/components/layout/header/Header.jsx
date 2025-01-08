@@ -18,8 +18,9 @@ function Header({ onConnectWallet, onLogout }) {
     '/documentation',
     '/dashboard',
     '/dashboard/position-history',
+    '/dashboard/deposit',
     '/stake',
-    '/withdraw',
+    '/dashboard/withdraw',
   ].includes(location.pathname);
 
   // Blocking screen scroll if menu is open

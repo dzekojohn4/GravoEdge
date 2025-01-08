@@ -1,18 +1,37 @@
+.withdraw {
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  width: calc(100vw - 372px);
+  margin-left: 372px;
+}
+
+@media (max-width: 1024px) {
+  .withdraw {
+    width: 100%;
+    margin-left: 0;
+    justify-content: center;
+  }
+}
+
 .withdrawall-wrapper {
   position: relative;
   min-height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 1rem 0;
+  align-items: center;
+  width: calc(100vw - 500px);
 }
 
 .withdrawall-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 10px;
+  gap: 32px;
+  padding: 0 26px;
   padding-top: 20px;
+  width: fit-content;
 }
 
 .withdrawall-content {
