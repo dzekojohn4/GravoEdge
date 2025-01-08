@@ -1,6 +1,6 @@
 """
 This module contains SQLAlchemy models for the application, including
-User, Position, and TelegramUser. Each model represents a
+User, Position, AirDrop, and TelegramUser. Each model represents a
 table in the database and defines the structure and relationships
 between the data entities.
 """
@@ -84,6 +84,23 @@ class Position(Base):
     datetime_liquidation = Column(DateTime, nullable=True)
 
 
+class AirDrop(Base):
+    """
+    SQLAlchemy model for the airdrop table.
+    """
+
+    __tablename__ = "airdrop"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("user.id"), index=True, nullable=False
+    )
+    created_at = Column(DateTime, nullable=False, default=func.now())
+    amount = Column(DECIMAL, nullable=True)
+    is_claimed = Column(Boolean, default=False, index=True)
+    claimed_at = Column(DateTime, nullable=True)
+
+
 class TelegramUser(Base):
     """
     SQLAlchemy model for the telegram_user table.
@@ -122,4 +139,50 @@ class Vault(Base):
     created_at = Column(DateTime, nullable=False, default=func.now())
     updated_at = Column(
         DateTime, nullable=False, default=func.now(), onupdate=func.now()
+    )
+
+class TransactionStatus(PyEnum):
+    """
+    Enum for the transaction status.
+    """
+    OPENED = "opened"
+    CLOSED = "closed"
+
+    @classmethod
+    def choices(cls):
+        """
+        Returns the list of transaction status choices.
+        """
+        return [status.value for status in cls]
+
+class Transaction(Base):
+    """
+    SQLAlchemy model for the transaction table.
+    Stores transaction information related to positions.
+    """
+    __tablename__ = "transaction"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    position_id = Column(
+        UUID(as_uuid=True), 
+        ForeignKey("position.id"), 
+        index=True, 
+        nullable=False
+    )
+    status = Column(
+        Enum(
+            TransactionStatus, 
+            name="transaction_status_enum", 
+            values_callable=lambda x: [e.value for e in x]
+        ),
+        nullable=False,
+        default="opened",
+    )
+    transaction_hash = Column(String, nullable=False, unique=True, index=True)
+    created_at = Column(DateTime, nullable=False, default=func.now())
+    updated_at = Column(
+        DateTime, 
+        nullable=False, 
+        default=func.now(), 
+        onupdate=func.now()
     )

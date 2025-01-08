@@ -1,6 +1,6 @@
 use ekubo::types::keys::PoolKey;
 use spotnet::types::{
-    MarketReserveData, DepositData, Claim, EkuboSlippageLimits, TokenPrice, TokenAmount
+    MarketReserveData, DepositData, Claim, EkuboSlippageLimits, TokenPrice, TokenAmount, VaultRepayData
 };
 use starknet::ContractAddress;
 
@@ -22,7 +22,8 @@ pub trait IDeposit<TContractState> {
         ekubo_limits: EkuboSlippageLimits,
         borrow_portion_percent: u8,
         supply_price: TokenPrice,
-        debt_price: TokenPrice
+        debt_price: TokenPrice,
+        repay_vaults: Span<VaultRepayData>
     );
 
     fn claim_reward(
@@ -65,5 +66,14 @@ pub trait IAirdrop<TContractState> {
 pub trait IVault<TContractState> {
     fn store_liquidity(ref self: TContractState, amount: TokenAmount);
     fn withdraw_liquidity(ref self: TContractState, amount: TokenAmount);
+    fn add_deposit_contract(ref self: TContractState, deposit_contract: ContractAddress);
+    fn protect_position(
+        ref self: TContractState,
+        deposit_contract: ContractAddress,
+        user: ContractAddress,
+        amount: TokenAmount
+    );
+    fn return_liquidity(ref self: TContractState, user: ContractAddress, amount: TokenAmount);
+    fn get_vault_token(self: @TContractState) -> ContractAddress;
 }
 
