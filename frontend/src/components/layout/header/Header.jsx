@@ -13,7 +13,15 @@ function Header({ onConnectWallet, onLogout }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation(); // Getting object of currant route
 
-  const makeNavStick = ['/overview', '/documentation', '/dashboard', '/stake', '/withdraw'].includes(location.pathname);
+  const makeNavStick = [
+    '/overview',
+    '/documentation',
+    '/dashboard',
+    '/dashboard/position-history',
+    '/dashboard/deposit',
+    '/stake',
+    '/dashboard/withdraw',
+  ].includes(location.pathname);
 
   // Blocking screen scroll if menu is open
   useLockBodyScroll(isMenuOpen);

@@ -1,22 +1,37 @@
-.deposit-wrapper {
-  background-size: cover;
-  background-position: center 39%;
+.deposit {
   min-height: 100vh;
+  height: 100%;
+  display: flex;
+  width: calc(100vw - 372px);
+  margin-left: 372px;
+}
+
+@media (max-width: 1024px) {
+  .deposit {
+    width: 100%;
+    margin-left: 0;
+    justify-content: center;
+  }
+}
+
+.deposit-wrapper {
+  position: relative;
+  min-height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding-top: 32px;
-  transition: all 0.2s ease-in-out;
-  padding-bottom: 4rem;
+  align-items: center;
+  width: calc(100vw - 500px);
 }
 
 .deposit-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 24px;
-  margin-left: 200px;
-  transition: all 0.3s ease-in-out;
+  gap: 32px;
+  padding: 0 26px;
+  padding-top: 20px;
+  width: fit-content;
 }
 
 .deposit-title {
