@@ -17,11 +17,12 @@ import asyncio
 import pytest
 from typing import Dict, Any
 from datetime import datetime
-from web_app.db.crud import PositionDBConnector
+from web_app.db.crud import PositionDBConnector, AirDropDBConnector
 from web_app.contract_tools.mixins.dashboard import DashboardMixin
 from web_app.db.models import Status
 
 position_db = PositionDBConnector()
+airdrop = AirDropDBConnector()
 
 
 class TestPositionCreation:
@@ -105,5 +106,6 @@ class TestPositionCreation:
         print(f"Position {position.id} successfully opened.")
 
         user = position_db.get_user_by_wallet_id(wallet_id)
+        airdrop.delete_all_users_airdrop(user.id)
         position_db.delete_all_user_positions(user.id)
         position_db.delete_user_by_wallet_id(wallet_id)

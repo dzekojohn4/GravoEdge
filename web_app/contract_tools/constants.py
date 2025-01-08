@@ -15,6 +15,9 @@ ZKLEND_MARKET_ADDRESS: str = (
     "0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05"
 )
 MULTIPLIER_POWER = 99
+ETH = "ETH"
+STRK = "STRK"
+USDC = "USDC"
 
 
 @dataclass(frozen=True)
@@ -47,21 +50,21 @@ class TokenParams:
     """
 
     ETH = TokenConfig(
-        name="ETH",
+        name=ETH,
         address="0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
         decimals=Decimal("18"),
         collateral_factor=Decimal("0.80"),
         borrow_factor=Decimal("1"),
     )
     STRK = TokenConfig(
-        name="STRK",
+        name=STRK,
         address="0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
         decimals=Decimal("18"),
         collateral_factor=Decimal("0.50"),
         borrow_factor=Decimal("1"),
     )
     USDC = TokenConfig(
-        name="USDC",
+        name=USDC,
         address="0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
         decimals=Decimal("6"),
         collateral_factor=Decimal("0.80"),

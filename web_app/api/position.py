@@ -2,23 +2,31 @@
 This module handles position-related API endpoints.
 """
 
+from typing import Optional
+from uuid import UUID
+
 from fastapi import APIRouter, HTTPException, Request
 
+from web_app.api.serializers.position import (
+    PositionFormData,
+    TokenMultiplierResponse,
+    UserPositionResponse,
+)
 from web_app.api.serializers.transaction import (
     LoopLiquidityData,
     RepayTransactionDataResponse,
 )
-from web_app.api.serializers.position import PositionFormData
-from web_app.contract_tools.constants import (
-    TokenParams,
-    TokenMultipliers,
-)
-from web_app.api.serializers.position import TokenMultiplierResponse
-from web_app.contract_tools.mixins import DepositMixin, DashboardMixin, PositionMixin
-from web_app.db.crud import PositionDBConnector
+from web_app.contract_tools.constants import TokenMultipliers, TokenParams
+from web_app.contract_tools.mixins import DashboardMixin, DepositMixin, PositionMixin
+from web_app.db.crud import PositionDBConnector, TransactionDBConnector
+from web_app.db.models import TransactionStatus
 
 router = APIRouter()  # Initialize the router
 position_db_connector = PositionDBConnector()  # Initialize the PositionDBConnector
+transaction_db_connector = TransactionDBConnector()
+
+# Constants
+PAGINATION_STEP = 10
 
 
 @router.get(
@@ -89,7 +97,6 @@ async def create_position_with_transaction_data(
         position_db_connector.get_contract_address_by_wallet_id(form_data.wallet_id)
     )
     deposit_data["position_id"] = str(position.id)
-    
     return LoopLiquidityData(**deposit_data)
 
 
@@ -114,14 +121,18 @@ async def get_repay_data(
     if not wallet_id:
         raise HTTPException(status_code=404, detail="Wallet not found")
 
-    contract_address, position_id, token_symbol = position_db_connector.get_repay_data(wallet_id)
-    is_opened_position =  await PositionMixin.is_opened_position(contract_address)
+    contract_address, position_id, token_symbol = position_db_connector.get_repay_data(
+        wallet_id
+    )
+    is_opened_position = await PositionMixin.is_opened_position(contract_address)
     if not is_opened_position:
         raise HTTPException(status_code=400, detail="Position was closed")
     if not position_id:
         raise HTTPException(status_code=404, detail="Position not found or closed")
 
-    repay_data = await DepositMixin.get_repay_data(token_symbol, request.app.state.ekubo_contract)
+    repay_data = await DepositMixin.get_repay_data(
+        token_symbol, request.app.state.ekubo_contract
+    )
     repay_data["contract_address"] = contract_address
     repay_data["position_id"] = str(position_id)
     return repay_data
@@ -134,19 +145,24 @@ async def get_repay_data(
     summary="Close a position",
     response_description="Returns the position status",
 )
-async def close_position(position_id: str) -> str:
+async def close_position(position_id: UUID, transaction_hash: str) -> str:
     """
     Close a position.
-    :param position_id: contract address
+    :param position_id: contract address (UUID)
+    :param transaction_hash: transaction hash for the position closure
     :return: str
-    :raises: HTTPException :return: Dict containing status code and detail
+    :raises: HTTPException: If position_id is invalid
     """
     if position_id is None or position_id == "undefined":
         raise HTTPException(status_code=404, detail="Position not Found")
 
-    position_status = position_db_connector.close_position(position_id)
+    position_status = position_db_connector.close_position(str(position_id))
+    position_db_connector.save_transaction(
+        position_id=position_id,
+        status="closed",
+        transaction_hash=transaction_hash
+    )
     return position_status
-
 
 @router.get(
     "/api/open-position",
@@ -155,10 +171,12 @@ async def close_position(position_id: str) -> str:
     summary="Open a position",
     response_description="Returns the positions status",
 )
-async def open_position(position_id: str) -> str:
+async def open_position(position_id: str, transaction_hash: str) -> str:
     """
     Open a position.
     :param position_id: contract address
+    :return: str
+    :param transaction_hash: transaction hash for the position opening
     :return: str
     :raises: HTTPException :return: Dict containing status code and detail
     """
@@ -166,5 +184,73 @@ async def open_position(position_id: str) -> str:
         raise HTTPException(status_code=404, detail="Position not found")
 
     current_prices = await DashboardMixin.get_current_prices()
-    position_status = position_db_connector.open_position(position_id, current_prices)
+    position_status = position_db_connector.open_position(
+        position_id,
+        current_prices
+    )
+    
+    if transaction_hash:
+        transaction_db_connector.create_transaction(
+            position_id,
+            transaction_hash,
+            status=TransactionStatus.OPENED.value
+        )
+        
     return position_status
+
+
+@router.post(
+    "/api/add-extra-deposit/{position_id}",
+    tags=["Position Operations"],
+    summary="Add extra deposit to a user position",
+    response_description="Returns the result of extra deposit",
+)
+async def add_extra_deposit(position_id: int, amount: str):
+    """
+    This endpoint adds extra deposit to a user position.
+
+    ### Parameters:
+    - **position_id**: The position ID.
+    - **amount**: The amount of the token being deposited.
+    """
+
+    if not position_id:
+        raise HTTPException(status_code=404, detail="Position ID is required")
+
+    if not amount:
+        raise HTTPException(status_code=404, detail="Amount is required")
+
+    position = position_db_connector.get_position_by_id(position_id)
+
+    if not position:
+        raise HTTPException(status_code=404, detail="Position not found")
+
+    position_db_connector.add_extra_deposit_to_position(position, amount)
+
+    return {"detail": "Successfully added extra deposit"}
+
+
+@router.get(
+    "/api/user-positions/{wallet_id}",
+    tags=["Position Operations"],
+    response_model=list[UserPositionResponse],
+    summary="Get all positions for a user",
+    response_description="Returns paginated list of positions for the given wallet ID",
+)
+async def get_user_positions(wallet_id: str, start: Optional[int] = None) -> list:
+    """
+    Get all positions for a specific user by their wallet ID.
+    :param wallet_id: The wallet ID of the user
+    :param start: Optional starting index for pagination (0-based). If not provided, defaults to 0
+    :return: UserPositionsListResponse containing paginated list of positions
+    :raises: HTTPException: If wallet ID is empty or invalid
+    """
+    if not wallet_id:
+        raise HTTPException(status_code=400, detail="Wallet ID is required")
+
+    start_index = max(0, start) if start is not None else 0
+
+    positions = position_db_connector.get_all_positions_by_wallet_id(
+        wallet_id, start_index, PAGINATION_STEP
+    )
+    return positions

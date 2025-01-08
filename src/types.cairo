@@ -38,6 +38,12 @@ pub struct Claim {
     pub amount: u128
 }
 
+#[derive(Copy, Drop, Serde)]
+pub struct VaultRepayData {
+    pub vault: ContractAddress,
+    pub amount: TokenAmount
+}
+
 #[derive(Drop, Serde, starknet::Store)]
 pub struct MarketReserveData {
     pub enabled: bool,

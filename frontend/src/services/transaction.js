@@ -1,16 +1,14 @@
-import { connect } from 'get-starknet';
+import { getWallet } from './wallet';
 import { CallData } from 'starknet';
 import { erc20abi } from '../abis/erc20';
 import { abi } from '../abis/abi';
 import { axiosInstance } from '../utils/axios';
-import {checkAndDeployContract} from './contract';
+import { checkAndDeployContract } from './contract';
+import { notify, ToastWithLink } from '../components/layout/notifier/Notifier';
 
 export async function sendTransaction(loopLiquidityData, contractAddress) {
   try {
-    const starknet = await connect();
-    if (!starknet.isConnected) {
-      throw new Error('Wallet not connected');
-    }
+    const wallet = await getWallet();
 
     if (!loopLiquidityData.pool_key || !loopLiquidityData.deposit_data) {
       throw new Error('Missing or invalid loop_liquidity_data fields');
@@ -22,7 +20,7 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
       entrypoint: 'approve',
       calldata: approveCalldata.compile('approve', [contractAddress, loopLiquidityData.deposit_data.amount]),
     };
-    console.log(loopLiquidityData)
+    console.log(loopLiquidityData);
     const callData = new CallData(abi);
     const compiled = callData.compile('loop_liquidity', loopLiquidityData);
     const depositTransaction = {
@@ -31,9 +29,19 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
       calldata: compiled,
     };
     console.log(depositTransaction);
-    let result = await starknet.account.execute([approveTransaction, depositTransaction]);
+    let result = await wallet.account.execute([approveTransaction, depositTransaction]);
+
     console.log('Resp: ');
     console.log(result);
+    notify(
+      ToastWithLink(
+        'Transaction successfully sent',
+        `https://starkscan.co/tx/${result.transaction_hash}`,
+        'Transaction ID'
+      ),
+      'success'
+    );
+
     return {
       loopTransaction: result.transaction_hash,
     };
@@ -44,11 +52,12 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
 }
 /* eslint-disable-next-line no-unused-vars */
 async function waitForTransaction(txHash) {
-  const starknet = await connect();
+  const wallet = await getWallet();
+
   let receipt = null;
   while (receipt === null) {
     try {
-      receipt = await starknet.provider.getTransactionReceipt(txHash);
+      receipt = await wallet.provider.getTransactionReceipt(txHash);
     } catch (error) {
       console.log('Waiting for transaction to be accepted...');
       await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before trying again
@@ -60,24 +69,29 @@ async function waitForTransaction(txHash) {
 export async function closePosition(transactionData) {
   const callData = new CallData(abi);
   const compiled = callData.compile('close_position', transactionData);
-  console.log(compiled);
-  const starknet = await connect();
-  console.log(transactionData.contract_address);
-  await starknet.account.execute([
+  const wallet = await getWallet();
+
+  let result = await wallet.account.execute([
     { contractAddress: transactionData.contract_address, entrypoint: 'close_position', calldata: compiled },
   ]);
+  notify(
+    ToastWithLink(
+      'Close position successfully sent',
+      `https://starkscan.co/tx/${result.transaction_hash}`,
+      'Transaction ID'
+    ),
+    'success'
+  );
+  return result;
 }
 
-export const handleTransaction = async (connectedWalletId, formData, setError, setTokenAmount, setLoading, setSuccessful) => {
-
+export const handleTransaction = async (connectedWalletId, formData, setTokenAmount, setLoading) => {
   setLoading(true);
-  setError('');
-  try{
+  try {
     await checkAndDeployContract(connectedWalletId);
   } catch (error) {
     console.error('Error deploying contract:', error);
-    setError('Error deploying contract. Please try again.');
-    setSuccessful(false)
+    notify('Error deploying contract. Please try again.', 'error');
     setLoading(false);
     return;
   }
@@ -85,21 +99,20 @@ export const handleTransaction = async (connectedWalletId, formData, setError, s
     const response = await axiosInstance.post(`/api/create-position`, formData);
 
     const transactionData = response.data;
-    await sendTransaction(transactionData, transactionData.contract_address);
+    const { loopTransaction: transaction_hash } = await sendTransaction(transactionData, transactionData.contract_address);
     console.log('Transaction executed successfully');
 
     const openPositionResponse = await axiosInstance.get(`/api/open-position`, {
-      params: { position_id: transactionData.position_id },
+      params: { position_id: transactionData.position_id, transaction_hash },
     });
 
-    openPositionResponse == openPositionResponse
+    // FIXME: this is a hack to eslint (no-unused-vars)
+    openPositionResponse == openPositionResponse;
 
-    // Reset form data
     setTokenAmount('');
   } catch (err) {
     console.error('Failed to create position:', err);
-    setError('Failed to create position. Please try again.');
-    setSuccessful(false)
+    notify(`Error sending transaction: ${err}`, 'error');
   } finally {
     setLoading(false);
   }

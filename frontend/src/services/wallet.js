@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'get-starknet';
+import { connect, disconnect } from 'starknetkit';
 import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../utils/constants';
 import { ReactComponent as ETH } from 'assets/icons/ethereum.svg';
 import { ReactComponent as USDC } from 'assets/icons/borrow_usdc.svg';
@@ -15,17 +15,14 @@ export const checkForCRMToken = async (walletAddress) => {
   }
 
   try {
-    const starknet = await connect();
-    if (!starknet.isConnected) {
-      throw new Error('Wallet not connected');
-    }
+    const wallet = await getWallet();
 
-    const response = await starknet.provider.callContract({
+    console.log('Checking CRM token balance for wallet:', wallet);
+    const response = await wallet.provider.callContract({
       contractAddress: CRM_TOKEN_ADDRESS,
       entrypoint: 'balanceOf',
       calldata: [walletAddress],
     });
-
     const balance = BigInt(response.result[0]).toString();
 
     if (Number(balance) > 0) {
@@ -40,25 +37,36 @@ export const checkForCRMToken = async (walletAddress) => {
   }
 };
 
+export const getWallet = async () => {
+  const { wallet } = await connect({ modalMode: "neverAsk" });
+  if (wallet) {
+    await wallet.enable();
+  }
+  if (!wallet || !wallet.isConnected) {
+    throw new Error('Wallet not connected');
+  }
+  return wallet;
+}
+
 export const connectWallet = async () => {
   try {
     console.log('Attempting to connect to wallet...');
 
-    const starknet = await connect({
-      include: ['argentX', 'braavos'],
+    const { wallet } = await connect({
+      // include: ['argentX', 'braavos'],
       modalMode: "alwaysAsk",
       modalTheme: "light",
     });
 
-    if (!starknet) {
-      console.error('No StarkNet object found');
+    if (!wallet) {
+      console.error('No wallet object found');
       throw new Error('Failed to connect to wallet');
     }
 
-    await starknet.enable();
+    await wallet.enable();
 
-    if (starknet.isConnected) {
-      const address = starknet.selectedAddress;
+    if (wallet.isConnected) {
+      const address = wallet.selectedAddress;
       console.log('Wallet successfully connected. Address:', address);
       return address;
     } else {
@@ -72,19 +80,18 @@ export const connectWallet = async () => {
 
 export function logout() {
   localStorage.removeItem('wallet_id');
+  disconnect();
 }
 
 export async function getTokenBalances(walletAddress) {
   try {
-    const starknet = await connect();
-    if (!starknet.isConnected) {
-      throw new Error('Wallet not connected');
-    }
+    const wallet = await getWallet();
+    console.log("Wallet info", wallet);
 
     const tokenBalances = {
-      ETH: await getTokenBalance(starknet, walletAddress, ETH_ADDRESS),
-      USDC: await getTokenBalance(starknet, walletAddress, USDC_ADDRESS),
-      STRK: await getTokenBalance(starknet, walletAddress, STRK_ADDRESS),
+      ETH: await getTokenBalance(wallet, walletAddress, ETH_ADDRESS),
+      USDC: await getTokenBalance(wallet, walletAddress, USDC_ADDRESS),
+      STRK: await getTokenBalance(wallet, walletAddress, STRK_ADDRESS),
     };
 
     return tokenBalances;
@@ -94,9 +101,9 @@ export async function getTokenBalances(walletAddress) {
   }
 }
 
-async function getTokenBalance(starknet, walletAddress, tokenAddress) {
+async function getTokenBalance(wallet, walletAddress, tokenAddress) {
   try {
-    const response = await starknet.provider.callContract({
+    const response = await wallet.provider.callContract({
       contractAddress: tokenAddress,
       entrypoint: 'balanceOf',
       calldata: [walletAddress],
@@ -111,7 +118,6 @@ async function getTokenBalance(starknet, walletAddress, tokenAddress) {
     return '0';
   }
 }
-
 
 export const getBalances = async (walletId, setBalances) => {
   if (!walletId) return;
