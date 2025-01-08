@@ -124,10 +124,9 @@ class PositionDBConnector(UserDBConnector):
                     .all()
                 )
                 # Convert positions to a list of dictionaries
-                positions_dicts = [
+                return [
                     self._position_to_dict(position) for position in positions
                 ]
-                return positions_dict
 
             except SQLAlchemyError as e:
                 logger.error(f"Failed to retrieve positions: {str(e)}")

@@ -59,7 +59,7 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
 /* eslint-disable-next-line no-unused-vars */
 async function waitForTransaction(txHash) {
   const { wallet } = await connect({
-    modalMode: 'alwaysAsk',
+    modalMode: 'neverAsk',
   });
   let receipt = null;
   while (receipt === null) {
@@ -76,11 +76,9 @@ async function waitForTransaction(txHash) {
 export async function closePosition(transactionData) {
   const callData = new CallData(abi);
   const compiled = callData.compile('close_position', transactionData);
-  console.log(compiled);
   const { wallet } = await connect({
-    modalMode: 'alwaysAsk',
+    modalMode: 'neverAsk',
   });
-  console.log(transactionData.contract_address);
   let result = await wallet.account.execute([
     { contractAddress: transactionData.contract_address, entrypoint: 'close_position', calldata: compiled },
   ]);
@@ -92,6 +90,7 @@ export async function closePosition(transactionData) {
     ),
     'success'
   );
+  return result;
 }
 
 export const handleTransaction = async (connectedWalletId, formData, setTokenAmount, setLoading) => {

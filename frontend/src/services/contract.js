@@ -7,7 +7,7 @@ export async function deployContract(walletId) {
   try {
     // Connect to Starknet wallet
     const { wallet } = await connect({
-      modalMode: 'alwaysAsk',
+      modalMode: 'neverAsk',
     });
 
     if (!wallet.isConnected) {

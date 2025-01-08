@@ -16,9 +16,9 @@ export const checkForCRMToken = async (walletAddress) => {
 
   try {
     const { wallet } = await connect({
-      modalMode: 'alwaysAsk',
+      modalMode: 'neverAsk',
     });
-
+    console.log('Checking CRM token balance for wallet:', wallet);
     if (!wallet.isConnected) {
       throw new Error('Wallet not connected');
     }
@@ -28,7 +28,6 @@ export const checkForCRMToken = async (walletAddress) => {
       entrypoint: 'balanceOf',
       calldata: [walletAddress],
     });
-
     const balance = BigInt(response.result[0]).toString();
 
     if (Number(balance) > 0) {
@@ -48,8 +47,7 @@ export const connectWallet = async () => {
     console.log('Attempting to connect to wallet...');
 
     const { wallet } = await connect({
-      modalMode: 'alwaysAsk',
-      modalTheme: 'light',
+      modalMode: 'canAsk',
     });
 
     if (!wallet) {
@@ -79,8 +77,9 @@ export function logout() {
 export async function getTokenBalances(walletAddress) {
   try {
     const { wallet } = await connect({
-      modalMode: 'alwaysAsk',
+      modalMode: 'neverAsk',
     });
+    console.log("Wallet info", wallet);
     if (!wallet.isConnected) {
       throw new Error('Wallet not connected');
     }
