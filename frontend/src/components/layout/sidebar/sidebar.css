@@ -19,7 +19,7 @@
   top: 0px;
   height: calc(100vh - 50px);
   overflow-y: auto;
-  width: 20%;
+  width: 12%;
 }
 
 .sidebar-title {
@@ -38,6 +38,10 @@
   display: flex;
   flex-direction: column;
   padding: 24px 24px 0px 104px;
+}
+
+.narrow-sidebar .sidebar-nav {
+  padding-left: 80px;
 }
 
 /* Item styles */

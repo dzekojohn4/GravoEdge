@@ -18,6 +18,10 @@
   z-index: 10;
 }
 
+.narrow-sidebar .sidebar {
+  width: 320px;
+}
+
 .list-label-container {
   padding: 10px 0;
   color: white;

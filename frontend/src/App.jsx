@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './globals.css';
 import Header from './components/layout/header/Header';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -30,6 +30,7 @@ function App() {
   const { setWalletId, removeWalletId } = useWalletStore();
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMobileRestrictionModalOpen, setisMobileRestrictionModalOpen] = useState(true);
   const isMobile = useCheckMobile();
 
@@ -79,8 +80,11 @@ function App() {
     }
   }, [window.Telegram?.WebApp?.initDataUnsafe]);
 
+  const narrowSidebarPaths = ['/dashboard', '/dashboard/position-history', '/dashboard/deposit', '/dashboard/withdraw'];
+  const isNarrowSidebar = narrowSidebarPaths.includes(location.pathname);
+
   return (
-    <div className={`${location.pathname === '/' ? 'home' : 'App'}`}>
+    <div className={`${location.pathname === '/' ? 'home' : isNarrowSidebar ? 'App narrow-sidebar' : 'App'}`}>
       <Notifier />
       {showModal &&
         createPortal(
