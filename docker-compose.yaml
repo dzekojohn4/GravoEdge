@@ -21,8 +21,7 @@ services:
       - app_network
   backend:
     build: .
-    command:
-      - bash /app/entrypoint.sh
+    command: ["bash", "/app/entrypoint.sh"]
     restart: always
     volumes:
       - ./entrypoint.sh:/app/entrypoint.sh
