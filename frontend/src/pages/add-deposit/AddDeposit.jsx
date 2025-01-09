@@ -12,10 +12,12 @@ import clockIcon from 'assets/icons/clock.svg';
 import computerIcon from 'assets/icons/computer-icon.svg';
 import depositIcon from 'assets/icons/deposit.svg';
 import withdrawIcon from 'assets/icons/withdraw.svg';
+import useDashboardData from 'hooks/useDashboardData';
 
 export const AddDeposit = () => {
   const [amount, setAmount] = useState('0');
   const [selectedToken, setSelectedToken] = useState('STRK');
+  const { data: dashboardData } = useDashboardData();
 
   const { mutate: addDeposit, isLoading } = useAddDeposit();
 
@@ -29,6 +31,7 @@ export const AddDeposit = () => {
   const handleDeposit = () => {
     addDeposit(
       {
+        positionId: dashboardData.position_id,
         amount,
         tokenSymbol: selectedToken,
       },

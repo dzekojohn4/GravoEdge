@@ -1,21 +1,21 @@
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from 'utils/axios';
 import { notify } from 'components/layout/notifier/Notifier';
-import useDashboardData from './useDashboardData';
 
 export const useAddDeposit = () => {
-  const { data: dashboardData } = useDashboardData();
   const mutation = useMutation({
     mutationFn: async ({ positionId, amount, tokenSymbol }) => {
-      if (!dashboardData?.position_id) {
+      if (!positionId) {
         return notify('No position found', 'error');
-      }
-
+      }           
+      
+      // Send transaction hash to backend
       const { data } = await axiosInstance.post(`/api/add-extra-deposit/${positionId}`, {
-        position_id: dashboardData.position_id,
-        amount: parseFloat(amount),
+        amount: amount,                 
         token_symbol: tokenSymbol,
+        // transaction_hash: transaction_hash
       });
+
       return data;
     },
     onSuccess: () => {
