@@ -1,6 +1,5 @@
 .deposit {
   min-height: 100vh;
-  height: 100%;
   display: flex;
   width: calc(100vw - 372px);
   margin-left: 372px;
@@ -16,8 +15,6 @@
 
 .deposit-wrapper {
   position: relative;
-  min-height: 100vh;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
