@@ -69,7 +69,10 @@ class Position(Base):
     token_symbol = Column(String, nullable=False)
     amount = Column(String, nullable=False)
     multiplier = Column(NUMERIC, nullable=False)
+
     created_at = Column(DateTime, nullable=False, default=func.now())
+    closed_at = Column(DateTime, nullable=True)
+    
     status = Column(
         Enum(
             Status, name="status_enum", values_callable=lambda x: [e.value for e in x]
