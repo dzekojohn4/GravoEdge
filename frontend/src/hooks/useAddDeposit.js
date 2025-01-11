@@ -11,6 +11,11 @@ export const useAddDeposit = () => {
         return notify('No position found', 'error');
       }
 
+      if (dashboardData?.position_id) {
+        notify('You already have an open position. Please close it before adding a new deposit.', 'error');
+        throw new Error('Open position exists');
+      }
+
       const { data } = await axiosInstance.post(`/api/add-extra-deposit/${positionId}`, {
         position_id: dashboardData.position_id,
         amount: parseFloat(amount),
