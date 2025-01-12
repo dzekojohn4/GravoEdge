@@ -50,6 +50,64 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
     throw error;
   }
 }
+
+export async function sendExtraDepositTransaction(deposit_data, userContractAddress) {
+  try {
+    const wallet = await getWallet();
+
+    // Prepare calldata
+    const token_address = deposit_data.token_address;
+    const token_amount = deposit_data.token_amount;
+    const extraDepositCalldata = new CallData(abi);
+
+    const approveCalldata = new CallData(erc20abi);
+    const compiledApproveCalldata = approveCalldata.compile('approve', [
+      userContractAddress, 
+      token_amount
+    ]); 
+
+    const compiledExtraDepositCalldata = extraDepositCalldata.compile('extra_deposit', [
+      token_address, 
+      token_amount
+    ]);
+
+    const approveTransaction = {  
+      contractAddress: token_address,
+      entrypoint: 'approve',                
+      calldata: compiledApproveCalldata
+    };
+
+    const extraDepositTransaction = {  
+      contractAddress: userContractAddress,
+      entrypoint: 'extra_deposit',                
+      calldata: compiledExtraDepositCalldata
+    };
+    
+    // Execute transaction
+    const result = await wallet.account.execute([
+      approveTransaction,
+      extraDepositTransaction
+    ]);
+
+    // Notify user
+    notify(
+      ToastWithLink(
+        'Extra Deposit Transaction successfully sent',
+        `https://starkscan.co/tx/${result.transaction_hash}`,
+        'Transaction ID'
+      ),
+      'success'
+    );
+
+    return {
+      transaction_hash: result.transaction_hash,
+    };
+  } catch (error) {
+    console.error('Error sending extra deposit transaction:', error);
+    throw error;
+  }
+}
+
 /* eslint-disable-next-line no-unused-vars */
 async function waitForTransaction(txHash) {
   const wallet = await getWallet();

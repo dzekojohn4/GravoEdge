@@ -2,7 +2,7 @@
 This module handles position-related API endpoints.
 """
 
-from decimal import InvalidOperation
+from decimal import Decimal, InvalidOperation
 from typing import Optional
 from uuid import UUID
 
@@ -201,6 +201,39 @@ async def open_position(position_id: str, transaction_hash: str) -> str:
     return position_status
 
 
+@router.get(
+    "/api/add-extra-deposit/{position_id}",
+    tags=["Position Operations"],
+    summary="Add extra deposit to a user position",
+    response_description="Returns the result of extra deposit",
+)
+async def add_extra_deposit(position_id: UUID, amount: str, token_symbol: str):
+    """
+    This endpoint prepares data for extra deposit to a user position.
+    ### Parameters:
+    - **position_id**: The position ID.
+    - **amount**: The amount of the token being deposited.
+    """
+    if not amount:
+        raise HTTPException(status_code=400, detail="Amount is required")
+
+    position = position_db_connector.get_position_by_id(position_id)
+    if not position:
+        raise HTTPException(status_code=404, detail="Position not found")
+    
+    try:
+        token_address = TokenParams.get_token_address(token_symbol)
+        token_amount = int(Decimal(amount) * 10 ** TokenParams.get_token_decimals(token_address))
+    except InvalidOperation:
+        raise HTTPException(status_code=400, detail="Amount is not a number")
+    
+    return {
+        "deposit_data": {
+            "token_address": token_address,
+            "token_amount": token_amount
+        }                   
+    }
+
 @router.post(
     "/api/add-extra-deposit/{position_id}",
     tags=["Position Operations"],
@@ -213,29 +246,28 @@ async def add_extra_deposit(position_id: UUID, data: AddPositionDepositData):
     ### Parameters:
     - **position_id**: The position ID.
     - **amount**: The amount of the token being deposited.
+    - **token_symbol**: The symbol of the token being deposited.
+    - **transaction_hash**: The transaction hash for the extra deposit.
     """
     if not data.amount:
         raise HTTPException(status_code=400, detail="Amount is required")
+
+    if not data.transaction_hash:
+        raise HTTPException(status_code=400, detail="Transaction hash is required")
 
     position = position_db_connector.get_position_by_id(position_id)
     if not position:
         raise HTTPException(status_code=404, detail="Position not found")
     
-    if position.token_symbol != data.token_symbol:
-        raise HTTPException(status_code=400, detail="Token symbol does not match")
-    
-    try:
+    if data.token_symbol == position.token_symbol:
         position_db_connector.add_extra_deposit_to_position(position, data.amount)
-        
-        # Save transaction if transaction_hash is provided
-        if data.transaction_hash:
-            transaction_db_connector.create_transaction(
-                position_id,
-                data.transaction_hash,
-                status=TransactionStatus.EXTRA_DEPOSIT.value
-            )
-    except InvalidOperation:
-        raise HTTPException(status_code=400, detail="Amount is not a number")
+
+    if data.transaction_hash:
+        transaction_db_connector.create_transaction(
+            position_id,
+            data.transaction_hash,
+            status=TransactionStatus.EXTRA_DEPOSIT.value
+        )
     
     return {"detail": "Successfully added extra deposit"}
 
