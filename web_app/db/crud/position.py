@@ -42,6 +42,9 @@ class PositionDBConnector(UserDBConnector):
             "created_at": (
                 position.created_at.isoformat() if position.created_at else None
             ),
+            "closed_at": (
+                position.closed_at.isoformat() if position.closed_at else None
+            ),
             "start_price": position.start_price,
             "status": position.status,
             "is_liquidated": position.is_liquidated,
@@ -83,6 +86,7 @@ class PositionDBConnector(UserDBConnector):
                         Position.user_id == user.id,
                         Position.status == Status.OPENED.value,
                     )
+                    .order_by(Position.created_at.desc())
                     .offset(start)
                     .limit(limit)
                     .all()
@@ -119,6 +123,7 @@ class PositionDBConnector(UserDBConnector):
                     .filter(
                         Position.user_id == user.id,
                     )
+                    .order_by(Position.created_at.desc())
                     .offset(start)
                     .limit(limit)
                     .all()
@@ -249,6 +254,7 @@ class PositionDBConnector(UserDBConnector):
         position = self.get_object(Position, position_id)
         if position:
             position.status = Status.CLOSED.value
+            position.closed_at = datetime.now()
             self.write_to_db(position)
         return position.status
 
@@ -272,15 +278,18 @@ class PositionDBConnector(UserDBConnector):
 
     def get_repay_data(self, wallet_id: str) -> tuple:
         """
-        Retrieves the repay data for a user.
+        Retrieves the repay data for a user. (Return first opened position)
         :param wallet_id:
-        :return:
+        :return: contract_address, position_id, token_symbol
         """
         with self.Session() as db:
             result = (
                 db.query(User.contract_address, Position.id, Position.token_symbol)
                 .join(Position, Position.user_id == User.id)
-                .filter(User.wallet_id == wallet_id)
+                .filter(
+                    User.wallet_id == wallet_id,
+                    Position.status == Status.OPENED.value,
+                )
                 .first()
             )
 
@@ -390,8 +399,11 @@ class PositionDBConnector(UserDBConnector):
         with self.Session() as db:
             try:
                 liquidated_positions = (
-                    db.query(Position).filter(Position.is_liquidated == True).all()
-                ).scalar()
+                    db.query(Position)
+                    .filter(Position.is_liquidated == True)
+                    .order_by(Position.created_at.desc())
+                    .all()
+                )
 
                 # Convert ORM objects to dictionaries for return
                 return [
