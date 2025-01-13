@@ -4,61 +4,56 @@ import ScrollButton from 'components/ui/scroll-button/ScrollButton';
 import Sections from 'components/layout/sections/Sections';
 import Sidebar from 'components/layout/sidebar/Sidebar';
 
-const OverviewPage = () => {
+const TermsAndConditionsPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const tableOfContents = [
-    { id: 'welcome', name: 'Welcome', link: '#welcome' },
     {
-      id: 'how-it-works',
-      name: 'How it works',
-      link: '#how-it-works',
+      id: 'risks',
+      name: 'Risks',
+      link: '#risks',
       children: [
-        { id: 'connect-wallet', name: 'Connect Your Wallet', link: '#connect-wallet' },
-        { id: 'choose-service', name: 'Choose A Service', link: '#choose-service' },
-        { ud: 'transact-seamlessly', name: 'Transact Seamlessly', link: '#transact-seamlessly' },
+        { id: 'smart-contract-risks', name: 'Smart Contract Risks', link: '#smart-contract-risks' },
+        { id: 'market-volatility', name: 'Market Volatility', link: '#market-volatility' },
+        { id: 'liquidity-risks', name: 'Liquidity Risks', link: '#liquidity-risks' },
+        { id: 'third-party-integrations', name: 'Third-Party Integrations', link: '#third-party-integrations' },
       ],
     },
-    { id: 'supported-chains', name: 'Supported Chains', link: '#supported-chains' },
+    { id: 'terms-and-conditions', name: 'Terms and Conditions', link: '#terms-and-conditions' },
   ];
 
   const sectionsData = [
     {
-      id: 'welcome',
-      title: 'Welcome',
+      id: 'risks',
+      title: 'Risks',
       content: [
         {
           type: 'text',
           value:
-            'Welcome to Spotnet, the decentralized platform designed to empower you with seamless access to the Web3 ecosystem. Built on blockchain technology, Spotnet provides a secure, transparent, and user-friendly experience for managing your digital assets, accessing decentralized finance (DeFi) services, and engaging with the broader Web3 community.',
+            'Using zkLend involves certain risks. Please review and understand these risks before interacting with the platform.',
         },
         {
-          type: 'text',
-          value: 'Key Features:',
-        },
-        {
-          type: 'list',
+          type: 'orderedList',
           items: [
-            'Secure Asset Management: Store, track, and manage your digital assets with a security-first approach, utilizing smart contracts to protect your funds.',
-            'DeFi Integration: Access a suite of decentralized finance tools, including staking, lending, and borrowing, all from one intuitive interface.',
-            'Cross-Chain Compatibility: Interact with assets across multiple blockchain networks without needing to switch platforms.',
-            'Personalized Notifications: Enable real-time notifications for essential updates, such as changes in your health factor, to stay informed on your account status.',
+            'Smart Contract Risks. Transactions on [Product Name] are governed by smart contracts. Once confirmed, smart contract transactions cannot be reversed. While our contracts are thoroughly audited, there may still be unforeseen issues. Users should review contract code and understand that they are solely responsible for any losses due to contract bugs or exploits.',
+            'Market Volatility. Digital assets are subject to high price volatility. Values can fluctuate significantly in a short period, potentially leading to substantial losses. Users should be cautious and only invest funds they can afford to lose.',
+            'Liquidity Risks. Some DeFi pools may have low liquidity, affecting users’ ability to withdraw funds immediately. This may result in delays or loss in value due to slippage during transactions.',
+            'Third-Party Integrations. zkLend may integrate with third-party protocols, dApps, or platforms. These third-party services come with their own risks, and [Product Name] is not responsible for issues arising from third-party integrations, including security vulnerabilities or loss of funds.',
+            'Privacy and Security. Users are responsible for securing their private keys and wallet credentials. Loss or compromise of these credentials may result in a total loss of funds, as zkLend cannot recover lost private keys. It is advised to use a secure, trusted wallet and enable additional security measures when available.',
           ],
         },
       ],
     },
     {
-      id: 'how-it-works',
-      title: 'How It Works',
+      id: 'terms-and-conditions',
+      title: 'Terms & Conditions',
       content: [
         {
           type: 'orderedList',
           items: [
-            'Connect Your Wallet: Use any Web3-compatible wallet, such as MetaMask, to connect to Spotnet securely and begin exploring the platform.',
-            'Choose A Service: Select from the various DeFi services, asset management tools, and community engagement features.',
-            'Transact Seamlessly: Every transaction is processed transparently on-chain, giving you control and visibility over your digital activities.',
+            'Acceptance of Terms. By using [Product Name], you agree to these Terms and Conditions. If you do not agree, please refrain from using the platform.',
           ],
         },
       ],
@@ -68,11 +63,11 @@ const OverviewPage = () => {
   return (
     <div className="overview-container">
       <div>
-        <Sidebar items={tableOfContents} title={'Overview'} />
+        <Sidebar items={tableOfContents} title={'Content'} />
       </div>
 
       <div className="content">
-        <h1 className="content-title">Overview</h1>
+        <h1 className="content-title">Terms & Conditions</h1>
         <div className="section">
           <Sections sections={sectionsData} />
         </div>
@@ -83,4 +78,4 @@ const OverviewPage = () => {
   );
 };
 
-export default OverviewPage;
+export default TermsAndConditionsPage;

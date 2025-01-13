@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { ReactComponent as TwitterIcon } from '../../../assets/icons/new-twitter.svg';
 import { ReactComponent as TelegramIcon } from '../../../assets/icons/telegram.svg';
@@ -58,8 +57,30 @@ function Footer() {
         >
           Overview
         </NavLink>
-        <Link to="/terms">Terms & Conditions</Link>
-        <Link to="/defispring">Defi Spring Rewards</Link>
+        <NavLink
+          to="/terms-and-conditions"
+          className={({ isActive }) => (isActive ? 'footer-link-active' : '')}
+          onClick={(e) => {
+            if (window.location.pathname === '/terms-and-conditions') {
+              e.preventDefault();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        >
+          Terms & Conditions
+        </NavLink>
+        <NavLink
+          to="/defispring"
+          className={({ isActive }) => (isActive ? 'footer-link-active' : '')}
+          onClick={(e) => {
+            if (window.location.pathname === '/defispring') {
+              e.preventDefault();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        >
+          Defi Spring Rewards
+        </NavLink>
       </nav>
       <div className="footer-social">
         {socialLinks.map(({ name, href, icon: Icon }) => (

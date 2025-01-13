@@ -10,7 +10,7 @@ import { createPortal } from 'react-dom';
 import { logout } from './services/wallet';
 import { getTelegramUserWalletId } from './services/telegram';
 import Documentation from './pages/documentation/Documentation';
-import TermsAndConditions from './pages/terms-and-conditions/TermsAndConditions';
+import TermsAndConditionsPage from './pages/terms-and-conditions/TermsAndConditions';
 
 import Withdraw from './pages/withdraw/Withdraw';
 import { useWalletStore } from './stores/useWalletStore';
@@ -111,7 +111,7 @@ function App() {
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/form" element={<Form />} />
           <Route path="/documentation" element={<Documentation />} />
-          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
           <Route path="/stake" element={<Stake />} />
           <Route path="/defispring" element={<DefiSpringPage />} />
         </Routes>

@@ -19,7 +19,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   color: var(--secondary);
   text-align: center;
   width: 100%;
