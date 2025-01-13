@@ -523,7 +523,7 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
             },
             {
                 "deposit_data": {
-                    "token_address": "0x049d36570d4e46f48e99674bd3fdf9f6b3a4c7f5ec8033c81c6c1965e2fd4c8c1",
+                    "token_address": "0x049d36570d4e46f48",
                     "token_amount": 3.1 * 10 ** 18
                 }
             }
@@ -540,7 +540,7 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
             },
             {
                 "deposit_data": {
-                    "token_address": "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5b6f8ab7d9c3f5f7",
+                    "token_address": "0x053c91253bc9682c0492",
                     "token_amount": 50.5 * 10 ** 6
                 }
             }
@@ -557,7 +557,7 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
             },
             {
                 "deposit_data": {
-                    "token_address": "0x04718f5a0fc34cc1af16a1cdee98ffb20c3f5c0cb7d64c0c1c50274f1b3b53ca",
+                    "token_address": "0x04718f5a0fc34cc1af1",
                     "token_amount": 75.25 * 10 ** 18
                 }
             }
@@ -589,7 +589,10 @@ async def test_add_extra_deposit_success(
     ):
         mock_get_position.return_value = dict_to_object(mock_position)
         mock_get_token_address.return_value = expected_response["deposit_data"]["token_address"]
-        mock_get_token_decimals.return_value = 18 if token_symbol == "ETH" or token_symbol == "STRK" else 6
+        if token_symbol == "ETH" or token_symbol == "STRK":
+            mock_get_token_decimals.return_value = 18
+        else:
+            mock_get_token_decimals.return_value = 6
 
         response = client.get(
             f"/api/add-extra-deposit/{position_id}",
