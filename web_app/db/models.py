@@ -149,6 +149,7 @@ class TransactionStatus(PyEnum):
     Enum for the transaction status.
     """
     OPENED = "opened"
+    EXTRA_DEPOSIT = "extra_deposit"
     CLOSED = "closed"
 
     @classmethod

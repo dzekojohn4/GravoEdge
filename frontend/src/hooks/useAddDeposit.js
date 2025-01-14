@@ -1,27 +1,38 @@
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from 'utils/axios';
 import { notify } from 'components/layout/notifier/Notifier';
-import useDashboardData from './useDashboardData';
+import { getWallet } from '../services/wallet';
+import { sendExtraDepositTransaction } from '../services/transaction';
 
 export const useAddDeposit = () => {
-  const { data: dashboardData } = useDashboardData();
   const mutation = useMutation({
     mutationFn: async ({ positionId, amount, tokenSymbol }) => {
-      if (!dashboardData?.position_id) {
+      if (!positionId) {
         return notify('No position found', 'error');
-      }
+      }           
+    
+      // Get wallet and check/deploy contract
+      const wallet = await getWallet();
+      const walletId = wallet.selectedAddress;
+      const { data: contractAddress } = await axiosInstance.get(`/api/get-user-contract?wallet_id=${walletId}`);
 
-      if (dashboardData?.position_id) {
-        notify('You already have an open position. Please close it before adding a new deposit.', 'error');
-        throw new Error('Open position exists');
-      }
-
-      const { data } = await axiosInstance.post(`/api/add-extra-deposit/${positionId}`, {
-        position_id: dashboardData.position_id,
-        amount: parseFloat(amount),
-        token_symbol: tokenSymbol,
+      // Prepare extra deposit data
+      const {data: prepare_data} = await axiosInstance.get(`/api/add-extra-deposit/${positionId}`, {
+        params: {
+          amount: amount,
+          token_symbol: tokenSymbol
+        }
       });
-      return data;
+
+      // Send transaction
+      const { transaction_hash } = await sendExtraDepositTransaction(prepare_data.deposit_data, contractAddress);
+
+      // Send transaction hash to backend
+      return await axiosInstance.post(`/api/add-extra-deposit/${positionId}`, {
+        transaction_hash: transaction_hash,
+        token_symbol: tokenSymbol,
+        amount: amount
+      });
     },
     onSuccess: () => {
       notify('Successfully deposited!', 'success');

@@ -12,6 +12,22 @@ from web_app.db.crud import DBConnector, PositionDBConnector, UserDBConnector
 from web_app.db.database import get_database
 
 
+def dict_to_object(data: dict, **kwargs) -> object:
+    """
+    Convert a dictionary to an attribute object
+    :param data: dict
+    :return: object
+    """
+    class Object:
+        """
+        Object class
+        """
+        def __init__(self, **_kwargs):
+            self.__dict__.update(_kwargs)
+
+    return Object(**data, **kwargs)
+
+
 @pytest.fixture(scope="module")
 def client() -> None:
     """

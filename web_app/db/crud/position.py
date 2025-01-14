@@ -454,5 +454,5 @@ class PositionDBConnector(UserDBConnector):
         :param amount: str
         :return: None
         """
-        position.amount = str(int(position.amount) + int(amount))
+        position.amount = str(Decimal(position.amount) + Decimal(amount))
         self.write_to_db(position)
