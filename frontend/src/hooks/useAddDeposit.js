@@ -7,17 +7,16 @@ import { sendExtraDepositTransaction } from '../services/transaction';
 export const useAddDeposit = () => {
   const mutation = useMutation({
     mutationFn: async ({ positionId, amount, tokenSymbol }) => {
-      if (!positionId) {
+      if (!positionId || positionId === '0') {
         return notify('No position found', 'error');
-      }           
-    
+      }
       // Get wallet and check/deploy contract
       const wallet = await getWallet();
       const walletId = wallet.selectedAddress;
       const { data: contractAddress } = await axiosInstance.get(`/api/get-user-contract?wallet_id=${walletId}`);
 
       // Prepare extra deposit data
-      const {data: prepare_data} = await axiosInstance.get(`/api/add-extra-deposit/${positionId}`, {
+      const {data: prepare_data} = await axiosInstance.get(`/api/get-add-deposit-data/${positionId}`, {
         params: {
           amount: amount,
           token_symbol: tokenSymbol

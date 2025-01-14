@@ -202,7 +202,7 @@ async def open_position(position_id: str, transaction_hash: str) -> str:
 
 
 @router.get(
-    "/api/add-extra-deposit/{position_id}",
+    "/api/get-add-deposit-data/{position_id}",
     tags=["Position Operations"],
     summary="Add extra deposit to a user position",
     response_description="Returns the result of extra deposit",
