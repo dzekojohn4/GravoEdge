@@ -21,6 +21,8 @@ function Header({ onConnectWallet, onLogout }) {
     '/dashboard/deposit',
     '/stake',
     '/dashboard/withdraw',
+    '/terms-and-conditions',
+    '/defispring',
   ].includes(location.pathname);
 
   // Blocking screen scroll if menu is open

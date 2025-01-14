@@ -18,7 +18,7 @@ const OverviewPage = () => {
       children: [
         { id: 'connect-wallet', name: 'Connect Your Wallet', link: '#connect-wallet' },
         { id: 'choose-service', name: 'Choose A Service', link: '#choose-service' },
-        { ud: 'transact-seamlessly', name: 'Transact Seamlessly', link: '#transact-seamlessly' },
+        { id: 'transact-seamlessly', name: 'Transact Seamlessly', link: '#transact-seamlessly' },
       ],
     },
     { id: 'supported-chains', name: 'Supported Chains', link: '#supported-chains' },
