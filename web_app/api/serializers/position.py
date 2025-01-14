@@ -71,6 +71,7 @@ class UserPositionResponse(BaseModel):
     created_at: datetime
     start_price: float
     is_liquidated: bool
+    closed_at: Optional[datetime] = None
     datetime_liquidation: Optional[datetime] = None
 
 
