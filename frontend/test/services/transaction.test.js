@@ -1,20 +1,15 @@
-import { connect } from 'starknetkit';
+import { getWallet } from '../../src/services/wallet';
 import { sendTransaction, closePosition, handleTransaction } from '../../src/services/transaction';
 import { axiosInstance } from '../../src/utils/axios';
 import { mockBackendUrl } from '../constants';
+import { checkAndDeployContract } from '../../src/services/contract';
 
-jest.mock('starknetkit', () => ({
-  connect: jest.fn(),
+jest.mock('../../src/services/wallet', () => ({
+  getWallet: jest.fn(),
 }));
-jest.mock('../../src/utils/axios');
 
-jest.mock(
-  'starknetkit/injected',
-  () => ({
-    InjectedConnector: jest.fn(),
-  }),
-  { virtual: true }
-);
+jest.mock('../../src/utils/axios');
+jest.mock('../../src/services/contract');
 
 jest.mock('starknet', () => ({
   CallData: class MockCallData {
@@ -36,24 +31,20 @@ describe('Transaction Functions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    const mockStarknet = {
-      wallet: {
-        isConnected: true,
-        account: {
-          execute: jest.fn().mockResolvedValue({
-            transaction_hash: mockTransactionHash,
-          }),
-        },
-        enable: jest.fn(),
-        provider: {
-          getTransactionReceipt: jest.fn().mockResolvedValue({
-            status: 'ACCEPTED',
-          }),
-        },
+    const mockWallet = {
+      account: {
+        execute: jest.fn().mockResolvedValue({
+          transaction_hash: mockTransactionHash,
+        }),
+      },
+      provider: {
+        getTransactionReceipt: jest.fn().mockResolvedValue({
+          status: 'ACCEPTED',
+        }),
       },
     };
 
-    connect.mockResolvedValue(mockStarknet);
+    getWallet.mockResolvedValue(mockWallet);
 
     process.env.REACT_APP_BACKEND_URL = mockBackendUrl;
   });
@@ -74,18 +65,23 @@ describe('Transaction Functions', () => {
     it('should successfully send a transaction', async () => {
       const result = await sendTransaction(validLoopLiquidityData, mockContractAddress);
 
-      expect(connect).toHaveBeenCalled();
+      expect(getWallet).toHaveBeenCalled();
+      const mockWallet = await getWallet();
+      expect(mockWallet.account.execute).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            contractAddress: validLoopLiquidityData.deposit_data.token,
+            entrypoint: 'approve',
+          }),
+          expect.objectContaining({
+            contractAddress: mockContractAddress,
+            entrypoint: 'loop_liquidity',
+          }),
+        ])
+      );
       expect(result).toEqual({
         loopTransaction: mockTransactionHash,
       });
-    });
-
-    it('should throw error if wallet is not connected', async () => {
-      connect.mockResolvedValueOnce({ wallet: { isConnected: false, enable: jest.fn() } });
-
-      await expect(sendTransaction(validLoopLiquidityData, mockContractAddress)).rejects.toThrow(
-        'Wallet not connected'
-      );
     });
 
     it('should throw error if loop_liquidity_data is invalid', async () => {
@@ -98,15 +94,12 @@ describe('Transaction Functions', () => {
 
     it('should handle transaction errors correctly', async () => {
       const mockError = new Error('Transaction failed');
-      connect.mockResolvedValueOnce({
-        wallet: {
-          isConnected: true,
-          account: {
-            execute: jest.fn().mockRejectedValue(mockError),
-          },
-          enable: jest.fn(),
+      const mockWallet = {
+        account: {
+          execute: jest.fn().mockRejectedValue(mockError),
         },
-      });
+      };
+      getWallet.mockResolvedValue(mockWallet);
 
       console.error = jest.fn();
 
@@ -123,29 +116,27 @@ describe('Transaction Functions', () => {
     };
 
     it('should successfully close a position', async () => {
-      await closePosition(mockTransactionData);
+      const result = await closePosition(mockTransactionData);
 
-      expect(connect).toHaveBeenCalled();
-      const mockStarknet = await connect();
-      expect(mockStarknet.wallet.account.execute).toHaveBeenCalledWith([
+      expect(getWallet).toHaveBeenCalled();
+      const mockWallet = await getWallet();
+      expect(mockWallet.account.execute).toHaveBeenCalledWith([
         expect.objectContaining({
           contractAddress: mockContractAddress,
           entrypoint: 'close_position',
         }),
       ]);
+      expect(result).toEqual({ transaction_hash: mockTransactionHash });
     });
 
     it('should handle close position errors', async () => {
       const mockError = new Error('Close position failed');
-      connect.mockResolvedValueOnce({
-        wallet: {
-          isConnected: true,
-          account: {
-            execute: jest.fn().mockRejectedValue(mockError),
-          },
-          enable: jest.fn(),
+      const mockWallet = {
+        account: {
+          execute: jest.fn().mockRejectedValue(mockError),
         },
-      });
+      };
+      getWallet.mockResolvedValue(mockWallet);
 
       await expect(closePosition(mockTransactionData)).rejects.toThrow('Close position failed');
     });
@@ -155,24 +146,24 @@ describe('Transaction Functions', () => {
     const mockSetTokenAmount = jest.fn();
     const mockSetLoading = jest.fn();
     const mockFormData = { position_id: 1 };
+    const mockTransactionData = {
+      position_id: 1,
+      contract_address: mockContractAddress,
+      pool_key: '0x123',
+      deposit_data: {
+        token: '0x456',
+        amount: '1000',
+      },
+    };
 
     beforeEach(() => {
       mockSetTokenAmount.mockClear();
       mockSetLoading.mockClear();
+      axiosInstance.post.mockResolvedValue({ data: mockTransactionData });
+      checkAndDeployContract.mockResolvedValue();
     });
 
     it('should handle successful transaction flow', async () => {
-      const mockTransactionData = {
-        position_id: 1,
-        contract_address: mockContractAddress,
-        pool_key: '0x123',
-        deposit_data: {
-          token: '0x456',
-          amount: '1000',
-        },
-      };
-
-      axiosInstance.post.mockResolvedValueOnce({ data: mockTransactionData });
       axiosInstance.get.mockResolvedValueOnce({
         data: { status: 'open' },
       });
@@ -180,6 +171,7 @@ describe('Transaction Functions', () => {
       await handleTransaction(mockWalletId, mockFormData, mockSetTokenAmount, mockSetLoading);
 
       expect(mockSetLoading).toHaveBeenCalledWith(true);
+      expect(checkAndDeployContract).toHaveBeenCalledWith(mockWalletId);
       expect(axiosInstance.post).toHaveBeenCalledWith('/api/create-position', mockFormData);
       expect(axiosInstance.get).toHaveBeenCalledWith('/api/open-position', {
         params: { position_id: mockTransactionData.position_id, transaction_hash: mockTransactionHash },
@@ -188,9 +180,21 @@ describe('Transaction Functions', () => {
       expect(mockSetLoading).toHaveBeenCalledWith(false);
     });
 
+    it('should handle contract deployment error', async () => {
+      const mockError = new Error('Contract deployment failed');
+      checkAndDeployContract.mockRejectedValue(mockError);
+
+      console.error = jest.fn();
+
+      await handleTransaction(mockWalletId, mockFormData, mockSetTokenAmount, mockSetLoading);
+
+      expect(console.error).toHaveBeenCalledWith('Error deploying contract:', mockError);
+      expect(mockSetLoading).toHaveBeenCalledWith(false);
+    });
+
     it('should handle create position error', async () => {
       const mockError = new Error('Create position failed');
-      axiosInstance.post.mockRejectedValueOnce(mockError);
+      axiosInstance.post.mockRejectedValue(mockError);
 
       console.error = jest.fn();
 

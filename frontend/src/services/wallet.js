@@ -16,7 +16,9 @@ export const checkForCRMToken = async (walletAddress) => {
   }
 
   try {
-    const wallet = await getWallet();
+    const { wallet } = await connect({
+      modalMode: "neverAsk",
+    });
 
     console.log('Checking CRM token balance for wallet:', wallet);
     const response = await wallet.provider.callContract({
@@ -84,7 +86,9 @@ export function logout() {
 
 export async function getTokenBalances(walletAddress) {
   try {
-    const wallet = await getWallet();
+    const { wallet } = await connect({
+      modalMode: "neverAsk",
+    });
     console.log("Wallet info", wallet);
 
     const tokenBalances = {
@@ -100,7 +104,7 @@ export async function getTokenBalances(walletAddress) {
   }
 }
 
-async function getTokenBalance(wallet, walletAddress, tokenAddress) {
+export async function getTokenBalance(wallet, walletAddress, tokenAddress) {
   try {
     const response = await wallet.provider.callContract({
       contractAddress: tokenAddress,
