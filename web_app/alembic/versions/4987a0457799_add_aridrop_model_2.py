@@ -11,6 +11,9 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.engine.reflection import Inspector
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 # revision identifiers, used by Alembic.
 revision = '4987a0457799'
