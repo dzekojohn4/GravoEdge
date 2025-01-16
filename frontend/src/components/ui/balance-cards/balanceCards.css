@@ -89,11 +89,20 @@
 
 /* Responsiveness */
 /* Mobile */
+@media (max-width: 1150px) {
+  .balance-card-withdraw {
+    width: 530px;
+  }
+
+  .balance-container {
+    gap: 8px;
+  }
+}
+
 @media (max-width: 768px) {
   .balance-container {
     flex-direction: row;
     justify-content: flex-start;
-    gap: 1rem;
     align-items: center;
     margin-bottom: 0;
     overflow-x: auto;
@@ -104,6 +113,10 @@
     -ms-overflow-style: none;
   }
 
+  .balance-card-withdraw {
+    width: 480px;
+  }
+
   .balance-item {
     height: fit-content;
     padding: 16px 8px;
@@ -112,14 +125,6 @@
     align-items: center;
     margin-right: 0;
     border-radius: 16px;
-  }
-
-  .balance-item:first-child {
-    margin-left: 20px;
-  }
-
-  .balance-item:last-child {
-    margin-right: 20px;
   }
 
   .balance-item .balance-title {

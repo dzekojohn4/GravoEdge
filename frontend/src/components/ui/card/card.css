@@ -38,6 +38,15 @@
   color: var(--second-primary);
 }
 
+@media (max-width: 1300px) {
+  .card {
+    width: 260px;
+  }
+  .top-cards-dashboard {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 768px) {
   .card {
     height: 90px;

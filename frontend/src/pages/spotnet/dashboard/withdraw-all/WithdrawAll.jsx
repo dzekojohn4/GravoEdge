@@ -31,7 +31,7 @@ const WithdrawAll = () => {
       <Sidebar items={dashboardItems} />
       <div className="withdrawall-wrapper">
         <div className="withdrawall-container">
-          <BalanceCards />
+          <BalanceCards className="balance-card-withdraw" />
           <div className="withdrawall-content">
             <div className="withdrawall-title">
               <h1>Please take special note</h1>
@@ -41,7 +41,14 @@ const WithdrawAll = () => {
               Clicking on the `Withdraw All` button means you are agreeing to close all positions and get all tokens
               transferred to your wallet.
             </div>
-            <Button variant="primary" size="lg" type="button" onClick={handleWithdrawAll} disabled={isLoading}>
+            <Button
+              variant="primary"
+              className="withdraw-all-btn"
+              size="lg"
+              type="button"
+              onClick={handleWithdrawAll}
+              disabled={isLoading}
+            >
               {isLoading ? 'Processing...' : 'Withdraw All'}
             </Button>
           </div>

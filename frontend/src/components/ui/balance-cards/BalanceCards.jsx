@@ -7,7 +7,7 @@ import { ReactComponent as USDC } from '../../../assets/icons/borrow_usdc.svg';
 import { ReactComponent as STRK } from '../../../assets/icons/strk.svg';
 import './balanceCards.css';
 
-const BalanceCards = () => {
+const BalanceCards = ({ className }) => {
   const { walletId } = useWalletStore();
 
   const isMobile = useMatchMedia('(max-width: 768px)');
@@ -23,7 +23,7 @@ const BalanceCards = () => {
   ]);
 
   return (
-    <div className="balance-card">
+    <div className={`balance-card ${className}`}>
       <div className="balance-container">
         {balances.map((balance) =>
           isMobile ? (

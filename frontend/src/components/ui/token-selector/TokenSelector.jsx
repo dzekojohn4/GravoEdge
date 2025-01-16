@@ -10,13 +10,13 @@ const Tokens = [
   { id: 'strkOption', component: <STRK />, label: 'STRK' },
 ];
 
-const TokenSelector = ({ selectedToken, setSelectedToken }) => {
+const TokenSelector = ({ selectedToken, setSelectedToken, className }) => {
   const handleTokenChange = (token) => {
     setSelectedToken(token.label);
   };
 
   return (
-    <div className="token-selector-container">
+    <div className={`token-selector-container ${className}`}>
       <span className="token-select-label">Select Token</span>
       <div className="token-options">
         {Tokens.map((token) => (

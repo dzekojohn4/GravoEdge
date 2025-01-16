@@ -15,6 +15,12 @@ import withdrawIcon from 'assets/icons/withdraw.svg';
 import useDashboardData from 'hooks/useDashboardData';
 
 export const AddDeposit = () => {
+  const formatNumber = (value, currency = false) => {
+    const number = parseFloat(value);
+    if (isNaN(number)) return currency ? '$0.00' : '0';
+    return currency ? `$${number.toFixed(2)}` : number.toFixed();
+  };
+
   const [amount, setAmount] = useState('0');
   const [selectedToken, setSelectedToken] = useState('STRK');
   const { data: dashboardData } = useDashboardData();
@@ -59,12 +65,24 @@ export const AddDeposit = () => {
           <h1 className="deposit-title">zkLend Deposit</h1>
           <div className="main-container-deposit">
             <div className="top-cards-deposit">
-              <Card label="Health Factor" value="1.47570678" icon={<HealthIcon className="icon" />} />
-              <Card label="Borrow Balance" value="$-55.832665" icon={<EthIcon className="icon" />} />
+              <Card
+                label="Health Factor"
+                value={formatNumber(dashboardData?.health_ratio, false)}
+                icon={<HealthIcon className="icon" />}
+              />
+              <Card
+                label="Borrow Balance"
+                value={formatNumber(dashboardData?.borrowed, true)}
+                icon={<EthIcon className="icon" />}
+              />
             </div>
           </div>
           <h1 className="deposit-title2">Please make a deposit</h1>
-          <TokenSelector selectedToken={selectedToken} setSelectedToken={setSelectedToken} />
+          <TokenSelector
+            selectedToken={selectedToken}
+            setSelectedToken={setSelectedToken}
+            className="deposit-token-selector"
+          />
           <div className="amount-input-deposit" aria-labelledby="amount-input-label">
             <input
               type="text"
@@ -82,7 +100,13 @@ export const AddDeposit = () => {
             </span>
           </div>
 
-          <Button size="lg" variant="primary" onClick={handleDeposit} disabled={isLoading || amount === '0'}>
+          <Button
+            size="lg"
+            className="deposit-btn"
+            variant="primary"
+            onClick={handleDeposit}
+            disabled={isLoading || amount === '0'}
+          >
             {isLoading ? 'Processing...' : 'Deposit'}
           </Button>
         </div>
