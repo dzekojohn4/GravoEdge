@@ -1,21 +1,22 @@
 import { connect } from 'starknetkit';
+import { getWallet } from '../../src/services/wallet';
 import { axiosInstance } from '../../src/utils/axios';
 import { deployContract, checkAndDeployContract } from '../../src/services/contract';
 import { getDeployContractData } from '../../src/utils/constants';
 
+// Mock dependencies
 jest.mock('starknetkit', () => ({
   connect: jest.fn(),
 }));
-jest.mock(
-  'starknetkit/injected',
-  () => ({
-    InjectedConnector: jest.fn(),
-  }),
-  { virtual: true }
-);
-
+jest.mock('../../src/services/wallet', () => ({
+  getWallet: jest.fn(),
+}));
 jest.mock('../../src/utils/axios');
 jest.mock('../../src/utils/constants');
+jest.mock('../../src/components/layout/notifier/Notifier', () => ({
+  notify: jest.fn(),
+  ToastWithLink: jest.fn(),
+}));
 
 describe('Contract Deployment Tests', () => {
   const mockWalletId = '0x123...';
@@ -24,7 +25,7 @@ describe('Contract Deployment Tests', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
+    
     getDeployContractData.mockReturnValue({
       contractData: 'mockContractData',
     });
@@ -32,29 +33,25 @@ describe('Contract Deployment Tests', () => {
 
   describe('deployContract', () => {
     it('should successfully deploy contract', async () => {
-      jest.setTimeout(10000);
-      const mockStarknet = {
-        wallet: {
-          isConnected: true,
-          account: {
-            deployContract: jest.fn().mockResolvedValue({
-              transaction_hash: mockTransactionHash,
-              contract_address: mockContractAddress,
-            }),
-            waitForTransaction: jest.fn().mockResolvedValue(true),
-          },
-          enable: jest.fn(),
+      const mockWallet = {
+        account: {
+          deployContract: jest.fn().mockResolvedValue({
+            transaction_hash: mockTransactionHash,
+            contract_address: mockContractAddress,
+          }),
+          waitForTransaction: jest.fn().mockResolvedValue(true),
         },
       };
-      connect.mockResolvedValue(mockStarknet);
+
+      getWallet.mockResolvedValue(mockWallet);
 
       const result = await deployContract(mockWalletId);
 
-      expect(connect).toHaveBeenCalled();
-      expect(mockStarknet.wallet.account.deployContract).toHaveBeenCalledWith({
+      expect(getWallet).toHaveBeenCalled();
+      expect(mockWallet.account.deployContract).toHaveBeenCalledWith({
         contractData: 'mockContractData',
       });
-      expect(mockStarknet.wallet.account.waitForTransaction).toHaveBeenCalledWith(mockTransactionHash);
+      expect(mockWallet.account.waitForTransaction).toHaveBeenCalledWith(mockTransactionHash);
 
       expect(result).toEqual({
         transactionHash: mockTransactionHash,
@@ -62,57 +59,59 @@ describe('Contract Deployment Tests', () => {
       });
     });
 
-    it('should throw error if wallet is not connected', async () => {
-      const mockStarknet = {
-        wallet: {
-          isConnected: false,
-          enable: jest.fn(),
-        },
-      };
-      connect.mockResolvedValue(mockStarknet);
-
-      await expect(deployContract(mockWalletId)).rejects.toThrow('Wallet not connected');
-    });
-
     it('should handle deployment errors correctly', async () => {
       const mockError = new Error('Deployment failed');
-      connect.mockRejectedValue(mockError);
+      getWallet.mockRejectedValue(mockError);
 
       await expect(deployContract(mockWalletId)).rejects.toThrow('Deployment failed');
+    });
+
+    it('should handle transaction waiting errors', async () => {
+      const mockWallet = {
+        account: {
+          deployContract: jest.fn().mockResolvedValue({
+            transaction_hash: mockTransactionHash,
+            contract_address: mockContractAddress,
+          }),
+          waitForTransaction: jest.fn().mockRejectedValue(new Error('Transaction failed')),
+        },
+      };
+
+      getWallet.mockResolvedValue(mockWallet);
+
+      await expect(deployContract(mockWalletId)).rejects.toThrow('Transaction failed');
     });
   });
 
   describe('checkAndDeployContract', () => {
     it('should deploy contract if not already deployed', async () => {
+      // Mock the API check for undeployed contract
       axiosInstance.get.mockResolvedValue({
         data: { is_contract_deployed: false },
       });
 
-      const mockStarknet = {
-        wallet: {
-          isConnected: true,
-          account: {
-            deployContract: jest.fn().mockResolvedValue({
-              transaction_hash: mockTransactionHash,
-              contract_address: mockContractAddress,
-            }),
-            waitForTransaction: jest.fn().mockResolvedValue(true),
-          },
-          enable: jest.fn(),
+      // Mock successful wallet and deployment
+      const mockWallet = {
+        account: {
+          deployContract: jest.fn().mockResolvedValue({
+            transaction_hash: mockTransactionHash,
+            contract_address: mockContractAddress,
+          }),
+          waitForTransaction: jest.fn().mockResolvedValue(true),
         },
       };
-      connect.mockResolvedValue(mockStarknet);
 
+      getWallet.mockResolvedValue(mockWallet);
       axiosInstance.post.mockResolvedValue({ data: 'success' });
 
       await checkAndDeployContract(mockWalletId);
 
       expect(axiosInstance.get).toHaveBeenCalledWith(`/api/check-user?wallet_id=${mockWalletId}`);
-      expect(connect).toHaveBeenCalled();
-      expect(mockStarknet.wallet.account.deployContract).toHaveBeenCalledWith({
+      expect(getWallet).toHaveBeenCalled();
+      expect(mockWallet.account.deployContract).toHaveBeenCalledWith({
         contractData: 'mockContractData',
       });
-      expect(axiosInstance.post).toHaveBeenCalledWith(`/api/update-user-contract`, {
+      expect(axiosInstance.post).toHaveBeenCalledWith('/api/update-user-contract', {
         wallet_id: mockWalletId,
         contract_address: mockContractAddress,
       });
@@ -126,7 +125,7 @@ describe('Contract Deployment Tests', () => {
       await checkAndDeployContract(mockWalletId);
 
       expect(axiosInstance.get).toHaveBeenCalled();
-      expect(connect).not.toHaveBeenCalled();
+      expect(getWallet).not.toHaveBeenCalled();
       expect(axiosInstance.post).not.toHaveBeenCalled();
     });
 
@@ -142,25 +141,24 @@ describe('Contract Deployment Tests', () => {
     });
 
     it('should handle contract update error correctly after deployment', async () => {
+      // Mock API check and successful deployment
       axiosInstance.get.mockResolvedValue({
         data: { is_contract_deployed: false },
       });
 
-      const mockStarknet = {
-        wallet: {
-          isConnected: true,
-          account: {
-            deployContract: jest.fn().mockResolvedValue({
-              transaction_hash: mockTransactionHash,
-              contract_address: mockContractAddress,
-            }),
-            waitForTransaction: jest.fn().mockResolvedValue(true),
-          },
-          enable: jest.fn(),
+      const mockWallet = {
+        account: {
+          deployContract: jest.fn().mockResolvedValue({
+            transaction_hash: mockTransactionHash,
+            contract_address: mockContractAddress,
+          }),
+          waitForTransaction: jest.fn().mockResolvedValue(true),
         },
       };
-      connect.mockResolvedValue(mockStarknet);
 
+      getWallet.mockResolvedValue(mockWallet);
+
+      // Mock backend update failure
       const mockUpdateError = new Error('Update failed');
       axiosInstance.post.mockRejectedValue(mockUpdateError);
 
