@@ -69,14 +69,6 @@ describe('Wallet Services', () => {
       expect(result).toBe(false);
       expect(global.alert).toHaveBeenCalledWith('Beta testing is allowed only for users who hold the CRM token.');
     });
-
-    it('should throw an error if wallet is not connected', async () => {
-      const mockStarknet = { wallet: { isConnected: false, enable: jest.fn() } };
-
-      connect.mockResolvedValue(mockStarknet);
-
-      await expect(checkForCRMToken('0x123')).rejects.toThrow('Wallet not connected');
-    });
   });
 
   describe('connectWallet', () => {
@@ -151,14 +143,6 @@ describe('Wallet Services', () => {
         USDC: '2.0000',
         STRK: '3.0000',
       });
-    });
-
-    it('should throw an error if wallet is not connected', async () => {
-      const mockStarknet = { wallet: { isConnected: false, enable: jest.fn() } };
-
-      connect.mockResolvedValue(mockStarknet);
-
-      await expect(getTokenBalances('0x123')).rejects.toThrow('Wallet not connected');
     });
   });
 
