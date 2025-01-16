@@ -9,7 +9,6 @@ that all edge cases and error scenarios are appropriately handled.
 
 import uuid
 from datetime import datetime
-from decimal import Decimal
 from unittest.mock import Mock, patch
 
 import pytest
@@ -18,8 +17,7 @@ from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
 from web_app.api.main import app
-from web_app.api.position import add_extra_deposit
-from web_app.db.models import Position, TransactionStatus
+from web_app.db.models import TransactionStatus
 from web_app.tests.conftest import dict_to_object
 
 app.dependency_overrides.clear()
@@ -595,7 +593,7 @@ async def test_add_extra_deposit_success(
             mock_get_token_decimals.return_value = 6
 
         response = client.get(
-            f"/api/add-extra-deposit/{position_id}",
+            f"/api/get-add-deposit-data/{position_id}",
             params={
                 "amount": amount,
                 "token_symbol": token_symbol
@@ -666,7 +664,7 @@ async def test_add_extra_deposit_failure(
             mock_get_position.return_value = None
 
         response = client.get(
-            f"/api/add-extra-deposit/{position_id}",
+            f"/api/get-add-deposit-data/{position_id}",
             params={
                 "amount": amount,
                 "token_symbol": token_symbol
