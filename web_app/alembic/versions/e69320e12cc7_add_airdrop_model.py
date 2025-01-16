@@ -13,7 +13,7 @@ from alembic import op
 from sqlalchemy.engine.reflection import Inspector
 
 revision = "e69320e12cc7"
-down_revision = "8a132b70dc8b"
+down_revision = "a009512f5362"
 branch_labels = None
 depends_on = None
 
