@@ -166,6 +166,30 @@ async def close_position(position_id: UUID, transaction_hash: str) -> str:
     )
     return position_status
 
+
+@router.get(
+    "/api/get-withdraw-all-data"
+)
+async def get_withdraw_data(wallet_id: str, request: Request):
+    contract_address, position_id, token_symbol = position_db_connector.get_repay_data(
+        wallet_id
+    )
+
+    if not await PositionMixin.is_opened_position(contract_address):
+        raise HTTPException(status_code=400, detail="Position was closed")
+    if not position_id:
+        raise HTTPException(status_code=404, detail="Position not found or closed")
+
+    repay_data = await DepositMixin.get_repay_data(
+        token_symbol, request.app.state.ekubo_contract
+    )
+    return {
+        "contract_address": contract_address,
+        "repay_data": repay_data,
+        "tokens": []  # TODO: Add extra tokens
+    }
+
+
 @router.get(
     "/api/open-position",
     tags=["Position Operations"],

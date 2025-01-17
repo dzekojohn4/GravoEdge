@@ -51,6 +51,26 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
   }
 }
 
+export async function sendWithdrawAllTransaction(data, userContractAddress) {
+  try {
+    const wallet = await getWallet();
+    const contractCalldata = new CallData(abi);
+
+    // Compile for close_position with data.repay_data
+
+    // For each token in data.tokens compile with [token, 0] to extract all tokens
+
+    // wallet.account.execute([close_position_call, ..withdraw_calls])
+
+    // Call structure(check lower func for example):
+    // * contractAddress: userContractAddress
+    // * entrypoint: contract entrypoint to call(close_position and withdraw) in our case
+    // * calldata: compiled calldata
+  } catch (error) {
+    throw error
+  }
+}
+
 export async function sendExtraDepositTransaction(deposit_data, userContractAddress) {
   try {
     const wallet = await getWallet();
