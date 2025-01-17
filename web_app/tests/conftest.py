@@ -10,7 +10,8 @@ from fastapi.testclient import TestClient
 from web_app.api.main import app
 from web_app.db.crud import DBConnector, PositionDBConnector, UserDBConnector
 from web_app.db.database import get_database
-
+import uuid
+from web_app.db.models import ExtraDeposit
 
 def dict_to_object(data: dict, **kwargs) -> object:
     """
@@ -84,3 +85,28 @@ def mock_position_db_connector() -> None:
     """
     mock_position_connector = MagicMock(spec=PositionDBConnector)
     yield mock_position_connector
+
+
+@pytest.fixture
+def mock_extra_deposit():
+    """Fixture for mocking ExtraDeposit instances"""
+    return ExtraDeposit(
+        id=uuid.uuid4(),
+        token_symbol="ETH",
+        amount="1.0",
+        position_id=uuid.uuid4()
+    )
+
+
+@pytest.fixture
+def mock_db_session(monkeypatch):
+    """Fixture for mocking database session"""
+    mock_session = MagicMock()
+    mock_session.__enter__.return_value = mock_session
+    mock_session.__exit__.return_value = None
+    
+    def mock_get_session():
+        return mock_session
+    
+    monkeypatch.setattr("sqlalchemy.orm.Session", mock_get_session)
+    return mock_session
