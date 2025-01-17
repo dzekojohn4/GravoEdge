@@ -13,7 +13,7 @@ from web_app.contract_tools.blockchain_call import CLIENT
 from web_app.db.crud.position import PositionDBConnector
 
 logger = logging.getLogger(__name__)
-position_db_connector = PositionDBConnector() 
+position_db_connector = PositionDBConnector()
 
 
 # example of ARGENT_X_POSITION_URL
@@ -107,17 +107,17 @@ class DashboardMixin:
     async def get_current_position_sum(cls, position: dict) -> Decimal:
         """
         Calculate the total position value including extra deposits.
-        
+
         Args:
             position: Position object containing base amount and token information
-            
+
         Returns:
             Decimal representing total position value including extra deposits
         """
         total_amount = Decimal(position["amount"])
         extra_deposits = position_db_connector.get_extra_deposits_data(position["id"])
         current_prices = await cls.get_current_prices()
-        
+
         for token, amount in extra_deposits.items():
             if token in current_prices:
                 deposit_amount = Decimal(amount)
@@ -125,7 +125,7 @@ class DashboardMixin:
                     deposit_amount *= Decimal(current_prices[token])
                     deposit_amount /= Decimal(current_prices[position["token_symbol"]])
                 total_amount += deposit_amount
-        
+
         return total_amount
 
     @classmethod

@@ -72,7 +72,7 @@ class Position(Base):
 
     created_at = Column(DateTime, nullable=False, default=func.now())
     closed_at = Column(DateTime, nullable=True)
-    
+
     status = Column(
         Enum(
             Status, name="status_enum", values_callable=lambda x: [e.value for e in x]
@@ -144,10 +144,12 @@ class Vault(Base):
         DateTime, nullable=False, default=func.now(), onupdate=func.now()
     )
 
+
 class TransactionStatus(PyEnum):
     """
     Enum for the transaction status.
     """
+
     OPENED = "opened"
     EXTRA_DEPOSIT = "extra_deposit"
     CLOSED = "closed"
@@ -159,25 +161,24 @@ class TransactionStatus(PyEnum):
         """
         return [status.value for status in cls]
 
+
 class Transaction(Base):
     """
     SQLAlchemy model for the transaction table.
     Stores transaction information related to positions.
     """
+
     __tablename__ = "transaction"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     position_id = Column(
-        UUID(as_uuid=True), 
-        ForeignKey("position.id"), 
-        index=True, 
-        nullable=False
+        UUID(as_uuid=True), ForeignKey("position.id"), index=True, nullable=False
     )
     status = Column(
         Enum(
-            TransactionStatus, 
-            name="transaction_status_enum", 
-            values_callable=lambda x: [e.value for e in x]
+            TransactionStatus,
+            name="transaction_status_enum",
+            values_callable=lambda x: [e.value for e in x],
         ),
         nullable=False,
         default="opened",
@@ -185,10 +186,7 @@ class Transaction(Base):
     transaction_hash = Column(String, nullable=False, unique=True, index=True)
     created_at = Column(DateTime, nullable=False, default=func.now())
     updated_at = Column(
-        DateTime, 
-        nullable=False, 
-        default=func.now(), 
-        onupdate=func.now()
+        DateTime, nullable=False, default=func.now(), onupdate=func.now()
     )
 
 
@@ -198,8 +196,9 @@ class ExtraDeposit(Base):
     Tracks additional deposits made to existing positions with unique
     constraints on token symbol and position combinations.
     """
+
     __tablename__ = "extra_deposits"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     token_symbol = Column(String, nullable=False, unique=True)
     amount = Column(String, nullable=False)

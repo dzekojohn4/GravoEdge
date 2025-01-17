@@ -66,7 +66,7 @@ class PositionDBConnector(UserDBConnector):
         return self.get_user_by_wallet_id(wallet_id)
 
     def get_positions_by_wallet_id(
-        self, wallet_id: str, start: int=0, limit: int=10
+        self, wallet_id: str, start: int = 0, limit: int = 10
     ) -> list:
         """
         Retrieves paginated positions for a user by their wallet ID
@@ -93,7 +93,7 @@ class PositionDBConnector(UserDBConnector):
                     .limit(limit)
                     .all()
                 )
-            
+
                 positions_dict = [
                     self._position_to_dict(position) for position in positions
                 ]
@@ -130,10 +130,8 @@ class PositionDBConnector(UserDBConnector):
                     .limit(limit)
                     .all()
                 )
-              
-                return [
-                    self._position_to_dict(position) for position in positions
-                ]
+
+                return [self._position_to_dict(position) for position in positions]
 
             except SQLAlchemyError as e:
                 logger.error(f"Failed to retrieve positions: {str(e)}")
@@ -182,7 +180,6 @@ class PositionDBConnector(UserDBConnector):
             logger.error(f"User with wallet ID {wallet_id} not found")
             return None
 
-       
         with self.Session() as session:
             existing_position = (
                 session.query(Position)
@@ -192,27 +189,24 @@ class PositionDBConnector(UserDBConnector):
                 .one_or_none()
             )
 
-        
             if existing_position:
                 existing_position.token_symbol = token_symbol
                 existing_position.amount = amount
                 existing_position.multiplier = multiplier
                 existing_position.start_price = PositionDBConnector.START_PRICE
-                session.commit() 
-                session.refresh(existing_position) 
+                session.commit()
+                session.refresh(existing_position)
                 return existing_position
 
-         
             position = Position(
                 user_id=user.id,
                 token_symbol=token_symbol,
                 amount=amount,
                 multiplier=multiplier,
-                status=Status.PENDING.value, 
+                status=Status.PENDING.value,
                 start_price=PositionDBConnector.START_PRICE,
             )
 
-       
             position = self.write_to_db(position)
             return position
 
@@ -309,7 +303,7 @@ class PositionDBConnector(UserDBConnector):
         """
         with self.Session() as db:
             try:
-                
+
                 token_amounts = (
                     db.query(
                         Position.token_symbol,
@@ -319,7 +313,7 @@ class PositionDBConnector(UserDBConnector):
                     .group_by(Position.token_symbol)
                     .all()
                 )
-           
+
                 return {token: Decimal(str(amount)) for token, amount in token_amounts}
 
             except SQLAlchemyError as e:
@@ -373,7 +367,7 @@ class PositionDBConnector(UserDBConnector):
         """
         with self.Session() as db:
             try:
-              
+
                 position = db.query(Position).filter(Position.id == position_id).first()
 
                 if not position:
@@ -407,7 +401,6 @@ class PositionDBConnector(UserDBConnector):
                     .all()
                 )
 
-         
                 return [
                     {
                         "user_id": position.user_id,
@@ -449,7 +442,9 @@ class PositionDBConnector(UserDBConnector):
             except SQLAlchemyError as e:
                 logger.error(f"Error deleting positions for user {user_id}: {str(e)}")
 
-    def add_extra_deposit_to_position(self, position: Position, token_symbol: str, amount: str) -> None:
+    def add_extra_deposit_to_position(
+        self, position: Position, token_symbol: str, amount: str
+    ) -> None:
         """
         Add or update an extra deposit for a position.
         If the token already exists for this position, update its amount.
@@ -459,20 +454,15 @@ class PositionDBConnector(UserDBConnector):
             session.execute(
                 insert(ExtraDeposit)
                 .values(
-                    position_id=position.id,
-                    token_symbol=token_symbol,
-                    amount=amount
-                ).on_conflict_do_update(
-                    index_elements=['id'],
-                    set_={
-                        'amount': ExtraDeposit.amount + amount
-                    }
+                    position_id=position.id, token_symbol=token_symbol, amount=amount
+                )
+                .on_conflict_do_update(
+                    index_elements=["id"], set_={"amount": ExtraDeposit.amount + amount}
                 )
             )
-            
+
             session.commit()
 
-    
     def get_extra_deposits_data(self, position_id: UUID) -> dict[str, str]:
         """
         Get all extra deposits for a position.
@@ -484,15 +474,10 @@ class PositionDBConnector(UserDBConnector):
                 .filter(ExtraDeposit.position_id == position_id)
                 .all()
             )
-            return {
-                deposit.token_symbol: deposit.amount 
-                for deposit in deposits
-            }
+            return {deposit.token_symbol: deposit.amount for deposit in deposits}
 
     def get_current_position_sum(
-        self, 
-        position_id: UUID, 
-        current_prices: dict[str, Decimal]
+        self, position_id: UUID, current_prices: dict[str, Decimal]
     ) -> Decimal:
         """
         Calculates the sum of the current prices for a position including extra deposits.
@@ -503,7 +488,7 @@ class PositionDBConnector(UserDBConnector):
         """
         with self.Session() as db:
             try:
-     
+
                 position = db.query(Position).filter(Position.id == position_id).first()
                 if not position:
                     return Decimal(0)
@@ -519,7 +504,7 @@ class PositionDBConnector(UserDBConnector):
                     .filter(ExtraDeposit.position_id == position_id)
                     .all()
                 )
-          
+
                 for deposit in extra_deposits:
                     price = current_prices.get(deposit.token_symbol)
                     if price:
@@ -531,7 +516,9 @@ class PositionDBConnector(UserDBConnector):
                 logger.error(f"Error calculating current position sum: {str(e)}")
                 return Decimal(0)
 
-    def get_all_extra_deposit_positions(self, position_id) -> dict[str, dict | list[dict]]:
+    def get_all_extra_deposit_positions(
+        self, position_id
+    ) -> dict[str, dict | list[dict]]:
         with self.Session() as db:
             extra_deposits = (
                 db.query(ExtraDeposit)
@@ -543,7 +530,4 @@ class PositionDBConnector(UserDBConnector):
                 .filter(ExtraDeposit.position_id == position_id)
                 .first()
             )
-            return {
-                "main": main_deposit,
-                "extra_deposits": extra_deposits
-            }
+            return {"main": main_deposit, "extra_deposits": extra_deposits}

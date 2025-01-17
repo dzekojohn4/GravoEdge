@@ -13,16 +13,19 @@ from web_app.db.database import get_database
 import uuid
 from web_app.db.models import ExtraDeposit
 
+
 def dict_to_object(data: dict, **kwargs) -> object:
     """
     Convert a dictionary to an attribute object
     :param data: dict
     :return: object
     """
+
     class Object:
         """
         Object class
         """
+
         def __init__(self, **_kwargs):
             self.__dict__.update(_kwargs)
 
@@ -91,10 +94,7 @@ def mock_position_db_connector() -> None:
 def mock_extra_deposit():
     """Fixture for mocking ExtraDeposit instances"""
     return ExtraDeposit(
-        id=uuid.uuid4(),
-        token_symbol="ETH",
-        amount="1.0",
-        position_id=uuid.uuid4()
+        id=uuid.uuid4(), token_symbol="ETH", amount="1.0", position_id=uuid.uuid4()
     )
 
 
@@ -104,9 +104,9 @@ def mock_db_session(monkeypatch):
     mock_session = MagicMock()
     mock_session.__enter__.return_value = mock_session
     mock_session.__exit__.return_value = None
-    
+
     def mock_get_session():
         return mock_session
-    
+
     monkeypatch.setattr("sqlalchemy.orm.Session", mock_get_session)
     return mock_session

@@ -42,13 +42,20 @@ class DepositMixin:
         amount = int(Decimal(amount) * 10**decimal)
 
         loop_liquidity_data = await CLIENT.get_loop_liquidity_data(
-            deposit_token_address, amount, multiplier, wallet_id, borrowing_token, ekubo_contract
+            deposit_token_address,
+            amount,
+            multiplier,
+            wallet_id,
+            borrowing_token,
+            ekubo_contract,
         )
 
         return loop_liquidity_data
 
     @classmethod
-    async def get_repay_data(cls, supply_token: str, ekubo_contract: "Contract") -> dict:
+    async def get_repay_data(
+        cls, supply_token: str, ekubo_contract: "Contract"
+    ) -> dict:
         """
         Get transaction data for the repay.
         :param supply_token: Deposit token

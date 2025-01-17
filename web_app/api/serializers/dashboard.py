@@ -4,7 +4,7 @@ This module defines the serializers for the dashboard data.
 
 from datetime import datetime
 from decimal import Decimal
-from typing import Dict, Any
+from typing import Dict
 
 from pydantic import BaseModel, Field
 
@@ -13,6 +13,7 @@ class DashboardResponse(BaseModel):
     """
     DashboardResponse class for dashboard details.
     """
+
     health_ratio: str = Field(
         ..., example="2.0", description="The health ratio of the user."
     )

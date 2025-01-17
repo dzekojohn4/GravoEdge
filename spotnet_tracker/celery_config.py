@@ -43,6 +43,3 @@ app.conf.beat_schedule = {
 }
 
 app.conf.broker_connection_retry_on_startup = True
-
-
-from .tasks import check_users_health_ratio
