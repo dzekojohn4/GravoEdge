@@ -15,18 +15,15 @@
 ## **How to Open Position**
 
 1. **Navigate to the Dashboard**  
-   Open the platform and go to the **Position** section to start the process.
+   Open the platform and go to the **Form** section to start the process.
 
 2. **Deposit Collateral**  
    Select **ETH** as your collateral and deposit it into the **ZkLend** lending protocol.
 
-3. **Swap ETH for USDC**  
-   Your **ETH** collateral will be swapped for **USDC**, which will then be used as collateral for a loan within the **ZkLend** position.
-
-4. **Choose Leverage Multiplier**  
+3. **Choose Leverage Multiplier**  
    Select a leverage multiplier (e.g., 2x, 3x, or 5x). The chosen multiplier will determine how many times you can repeat the process, thereby increasing both your collateral and borrowing capacity.
 
-5. **View Your Position on Dashboard**  
+4. **View Your Position on Dashboard**  
    Once your position is opened, you can monitor it on the **Dashboard** page. Here, you’ll see key metrics like:
    - **Health Factor**: A measure of the safety of your position (higher values are better).
    - **Collateral**: The value of your assets in the position.
