@@ -457,7 +457,7 @@ class PositionDBConnector(UserDBConnector):
                     position_id=position.id, token_symbol=token_symbol, amount=amount
                 )
                 .on_conflict_do_update(
-                    index_elements=["token_symbol"], set_={"amount": ExtraDeposit.amount + amount}
+                    index_elements=["token_symbol"], set_={"amount": ExtraDeposit.amount.concat(amount)}
                 )
             )
 
