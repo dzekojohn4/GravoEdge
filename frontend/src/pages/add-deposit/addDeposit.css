@@ -25,10 +25,12 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 32px;
   padding: 0 26px;
   padding-top: 20px;
   width: fit-content;
+  margin: 100px 0 50px 0;
 }
 
 .deposit-title {
@@ -96,7 +98,6 @@
 .currency-deposit {
   position: absolute;
   color: var(--dark-gray);
-  /* right: 23%; */
   top: 18%;
   transform: translateY(-50%);
   opacity: 0.5;
@@ -211,6 +212,12 @@
   display: none;
 }
 
+@media (max-width: 1300px) {
+  .deposit-btn {
+    width: 530px;
+  }
+}
+
 @media (max-width: 768px) {
   .deposit-wrapper {
     padding-top: 24px;
@@ -237,17 +244,41 @@
     gap: 6px;
   }
 
-  .main-container-deposit {
-    margin: auto;
-    padding-top: 0px;
+  .deposit-btn {
+    width: 500px;
+  }
+}
+
+@media (max-width: 550px) {
+  .top-cards-deposit,
+  .deposit-btn {
+    width: 480px;
   }
 }
 
 @media (max-width: 480px) {
+  .deposit-btn {
+    width: 420px;
+  }
   .top-cards-deposit {
-    width: 380px;
-    /* gap: 8px; */
+    width: 420px;
+    gap: 8px;
     height: 88px;
     margin-top: -6px;
+  }
+  .deposit-container {
+    margin: 50px 0 50px 0;
+  }
+
+  @media (max-width: 420px) {
+    .top-cards-deposit,
+    .deposit-btn {
+      width: 350px;
+    }
+  }
+
+  .main-container-deposit {
+    margin: auto;
+    padding-top: 0px;
   }
 }

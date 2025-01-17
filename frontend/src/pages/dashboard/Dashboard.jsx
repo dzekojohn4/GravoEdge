@@ -214,6 +214,7 @@ export default function Component({ telegramId }) {
                 )}
               </div>
               <Button
+                className="redeem-btn"
                 variant="primary"
                 size="lg"
                 onClick={() => closePositionEvent()}
