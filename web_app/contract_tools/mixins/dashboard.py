@@ -10,8 +10,10 @@ from decimal import Decimal
 from web_app.contract_tools.constants import TokenParams, MULTIPLIER_POWER
 from web_app.contract_tools.api_request import APIRequest
 from web_app.contract_tools.blockchain_call import CLIENT
+from web_app.db.crud.position import PositionDBConnector
 
 logger = logging.getLogger(__name__)
+position_db_connector = PositionDBConnector() 
 
 
 # example of ARGENT_X_POSITION_URL
@@ -49,7 +51,6 @@ class DashboardMixin:
                         )
                         symbol = TokenParams.get_token_symbol(address_with_leading_zero)
                         if symbol:
-                            # Convert to Decimal for precise calculations
                             prices[symbol] = Decimal(str(current_price))
                 except (AttributeError, TypeError, ValueError) as e:
                     logger.debug(f"Error parsing price for {address}: {str(e)}")
@@ -105,15 +106,27 @@ class DashboardMixin:
     @classmethod
     async def get_current_position_sum(cls, position: dict) -> Decimal:
         """
-        Calculate the current position sum.
-        :param position: Position data
-        :return: current sum
+        Calculate the total position value including extra deposits.
+        
+        Args:
+            position: Position object containing base amount and token information
+            
+        Returns:
+            Decimal representing total position value including extra deposits
         """
+        total_amount = Decimal(position["amount"])
+        extra_deposits = position_db_connector.get_extra_deposits_data(position["id"])
         current_prices = await cls.get_current_prices()
-        price = current_prices.get(position.get("token_symbol"), Decimal(0))
-        amount = Decimal(position.get("amount", 0) or 0)
-        multiplier = Decimal(position.get("multiplier", 0) or 0)
-        return cls._calculate_sum(price, amount, multiplier)
+        
+        for token, amount in extra_deposits.items():
+            if token in current_prices:
+                deposit_amount = Decimal(amount)
+                if token != position["token_symbol"]:
+                    deposit_amount *= Decimal(current_prices[token])
+                    deposit_amount /= Decimal(current_prices[position["token_symbol"]])
+                total_amount += deposit_amount
+        
+        return total_amount
 
     @classmethod
     async def get_start_position_sum(

@@ -4,7 +4,8 @@ This module defines the serializers for the position data.
 
 from pydantic import BaseModel, field_validator
 from datetime import datetime
-from typing import List, Optional, Dict, Any                
+from typing import List, Optional   
+from uuid import UUID             
 
 
 class PositionFormData(BaseModel):
@@ -63,7 +64,7 @@ class UserPositionResponse(BaseModel):
     """
     Represents a single position in the user's position list.
     """
-    id: str
+    id: UUID
     token_symbol: str
     amount: str
     multiplier: float
@@ -90,3 +91,15 @@ class AddPositionDepositData(BaseModel):
     amount: str
     token_symbol: str
     transaction_hash: Optional[str] = None
+    
+    
+class UserExtraDeposit(BaseModel):
+    id: UUID
+    position_id: UUID
+    token_symbol: str
+    amount: str
+    added_at: datetime
+    
+class UserPositionExtraDepositsResponse(BaseModel):
+    main: UserPositionResponse
+    extra_deposits: list[UserExtraDeposit]

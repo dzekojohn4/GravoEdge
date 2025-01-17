@@ -7,11 +7,13 @@ import uuid
 from datetime import datetime
 from decimal import Decimal
 from typing import TypeVar
+from uuid import UUID
 
 from sqlalchemy import Numeric, cast, func
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import SQLAlchemyError
 
-from web_app.db.models import Base, Position, Status, Transaction, User
+from web_app.db.models import Base, Position, Status, Transaction, User, ExtraDeposit
 
 from .user import UserDBConnector
 
@@ -91,7 +93,7 @@ class PositionDBConnector(UserDBConnector):
                     .limit(limit)
                     .all()
                 )
-                # Convert positions to a list of dictionaries
+            
                 positions_dict = [
                     self._position_to_dict(position) for position in positions
                 ]
@@ -128,7 +130,7 @@ class PositionDBConnector(UserDBConnector):
                     .limit(limit)
                     .all()
                 )
-                # Convert positions to a list of dictionaries
+              
                 return [
                     self._position_to_dict(position) for position in positions
                 ]
@@ -180,7 +182,7 @@ class PositionDBConnector(UserDBConnector):
             logger.error(f"User with wallet ID {wallet_id} not found")
             return None
 
-        # Check if a position with status 'pending' already exists for this user
+       
         with self.Session() as session:
             existing_position = (
                 session.query(Position)
@@ -190,27 +192,27 @@ class PositionDBConnector(UserDBConnector):
                 .one_or_none()
             )
 
-            # If a pending position exists, update its values
+        
             if existing_position:
                 existing_position.token_symbol = token_symbol
                 existing_position.amount = amount
                 existing_position.multiplier = multiplier
                 existing_position.start_price = PositionDBConnector.START_PRICE
-                session.commit()  # Commit the changes to the database
-                session.refresh(existing_position)  # Refresh to get updated values
+                session.commit() 
+                session.refresh(existing_position) 
                 return existing_position
 
-            # Create a new position since none with 'pending' status exists
+         
             position = Position(
                 user_id=user.id,
                 token_symbol=token_symbol,
                 amount=amount,
                 multiplier=multiplier,
-                status=Status.PENDING.value,  # Set status as 'pending' by default
+                status=Status.PENDING.value, 
                 start_price=PositionDBConnector.START_PRICE,
             )
 
-            # Write the new position to the database
+       
             position = self.write_to_db(position)
             return position
 
@@ -307,7 +309,7 @@ class PositionDBConnector(UserDBConnector):
         """
         with self.Session() as db:
             try:
-                # Group by token symbol and sum amounts
+                
                 token_amounts = (
                     db.query(
                         Position.token_symbol,
@@ -317,7 +319,7 @@ class PositionDBConnector(UserDBConnector):
                     .group_by(Position.token_symbol)
                     .all()
                 )
-                # Convert to dictionary
+           
                 return {token: Decimal(str(amount)) for token, amount in token_amounts}
 
             except SQLAlchemyError as e:
@@ -371,7 +373,7 @@ class PositionDBConnector(UserDBConnector):
         """
         with self.Session() as db:
             try:
-                # Fetch the position by ID
+              
                 position = db.query(Position).filter(Position.id == position_id).first()
 
                 if not position:
@@ -400,12 +402,12 @@ class PositionDBConnector(UserDBConnector):
             try:
                 liquidated_positions = (
                     db.query(Position)
-                    .filter(Position.is_liquidated == True)
+                    .filter(Position.is_liquidated.is_(True))
                     .order_by(Position.created_at.desc())
                     .all()
                 )
 
-                # Convert ORM objects to dictionaries for return
+         
                 return [
                     {
                         "user_id": position.user_id,
@@ -447,12 +449,101 @@ class PositionDBConnector(UserDBConnector):
             except SQLAlchemyError as e:
                 logger.error(f"Error deleting positions for user {user_id}: {str(e)}")
 
-    def add_extra_deposit_to_position(self, position: Position, amount: str) -> None:
+    def add_extra_deposit_to_position(self, position: Position, token_symbol: str, amount: str) -> None:
         """
-        Adds extra deposit to a position in the database.
-        :param position: Position
-        :param amount: str
-        :return: None
+        Add or update an extra deposit for a position.
+        If the token already exists for this position, update its amount.
+        Otherwise, create a new extra deposit entry.
         """
-        position.amount = str(Decimal(position.amount) + Decimal(amount))
-        self.write_to_db(position)
+        with self.Session() as session:
+            session.execute(
+                insert(ExtraDeposit)
+                .values(
+                    position_id=position.id,
+                    token_symbol=token_symbol,
+                    amount=amount
+                ).on_conflict_do_update(
+                    index_elements=['id'],
+                    set_={
+                        'amount': ExtraDeposit.amount + amount
+                    }
+                )
+            )
+            
+            session.commit()
+
+    
+    def get_extra_deposits_data(self, position_id: UUID) -> dict[str, str]:
+        """
+        Get all extra deposits for a position.
+        Returns a dictionary of token_symbol: amount pairs.
+        """
+        with self.Session() as db:
+            deposits = (
+                db.query(ExtraDeposit)
+                .filter(ExtraDeposit.position_id == position_id)
+                .all()
+            )
+            return {
+                deposit.token_symbol: deposit.amount 
+                for deposit in deposits
+            }
+
+    def get_current_position_sum(
+        self, 
+        position_id: UUID, 
+        current_prices: dict[str, Decimal]
+    ) -> Decimal:
+        """
+        Calculates the sum of the current prices for a position including extra deposits.
+
+        :param position_id: UUID of the position
+        :param current_prices: Dictionary of token symbols and their current prices
+        :return: Decimal sum of the current prices
+        """
+        with self.Session() as db:
+            try:
+     
+                position = db.query(Position).filter(Position.id == position_id).first()
+                if not position:
+                    return Decimal(0)
+
+                total_sum = Decimal(0)
+
+                base_price = current_prices.get(position.token_symbol)
+                if base_price:
+                    total_sum += Decimal(str(position.amount)) * base_price
+
+                extra_deposits = (
+                    db.query(ExtraDeposit)
+                    .filter(ExtraDeposit.position_id == position_id)
+                    .all()
+                )
+          
+                for deposit in extra_deposits:
+                    price = current_prices.get(deposit.token_symbol)
+                    if price:
+                        total_sum += Decimal(str(deposit.amount)) * price
+
+                return total_sum
+
+            except SQLAlchemyError as e:
+                logger.error(f"Error calculating current position sum: {str(e)}")
+                return Decimal(0)
+
+    def get_all_extra_deposit_positions(self, position_id) -> dict[str, dict | list[dict]]:
+        with self.Session() as db:
+            extra_deposits = (
+                db.query(ExtraDeposit)
+                .filter(ExtraDeposit.position_id == position_id)
+                .all()
+            )
+            main_deposit = (
+                db.query(Position)
+                .filter(ExtraDeposit.position_id == position_id)
+                .first()
+            )
+            return {
+                "main": main_deposit,
+                "extra_deposits": extra_deposits
+            }
