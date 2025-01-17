@@ -5,7 +5,6 @@ import { notify } from 'components/layout/notifier/Notifier';
 const useWithdrawAll = () => {
   const mutation = useMutation({
     mutationFn: async (walletId) => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       if (!walletId) throw new Error('Wallet ID is required.');
       await axiosInstance.post(`/api/withdraw-all?wallet_id=${walletId}`);
     },
