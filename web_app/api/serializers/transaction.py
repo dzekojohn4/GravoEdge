@@ -1,6 +1,7 @@
 """
 This module defines the serializers for the transaction data.
 """
+
 from decimal import Decimal
 from pydantic import BaseModel, field_validator
 
@@ -89,6 +90,7 @@ class RepayTransactionDataResponse(BaseModel):
         :return: str
         """
         return str(value)
+
 
 class UpdateUserContractRequest(BaseModel):
     """

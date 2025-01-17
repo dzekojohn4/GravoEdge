@@ -89,7 +89,7 @@ async def check_liquidation_proof(liquidatee_address: str) -> None:
                 (liquidator, liquidatee, debt_face_amount, collateral_amount)
             )
             # Log the details of the liquidation
-            logger.info(f"Beginning of an Event!!")
+            logger.info("Beginning of an Event!!")
             logger.info(
                 f"Liquidation Event: {liquidator} liquidated {liquidatee}'s position."
             )

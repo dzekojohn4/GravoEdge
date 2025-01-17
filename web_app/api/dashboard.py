@@ -54,9 +54,7 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         return default_dashboard_response
 
     # Fetching first 10 positions at the moment
-    opened_positions = position_db_connector.get_positions_by_wallet_id(
-        wallet_id
-    )
+    opened_positions = position_db_connector.get_positions_by_wallet_id(wallet_id)
 
     # At the moment, we only support one position per wallet
     first_opened_position = (
@@ -71,7 +69,7 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         health_ratio, tvl = await HealthRatioMixin.get_health_ratio_and_tvl(
             contract_address
         )
-    except (IndexError, DivisionByZero) as e:
+    except (IndexError, DivisionByZero):
         return default_dashboard_response
 
     position_multiplier = first_opened_position["multiplier"]

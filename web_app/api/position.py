@@ -13,7 +13,7 @@ from web_app.api.serializers.position import (
     PositionFormData,
     TokenMultiplierResponse,
     UserPositionResponse,
-    UserPositionExtraDepositsResponse
+    UserPositionExtraDepositsResponse,
 )
 from web_app.api.serializers.transaction import (
     LoopLiquidityData,
@@ -25,7 +25,7 @@ from web_app.db.crud import PositionDBConnector, TransactionDBConnector
 from web_app.db.models import TransactionStatus
 
 router = APIRouter()  # Initialize the router
-position_db_connector = PositionDBConnector()  
+position_db_connector = PositionDBConnector()
 transaction_db_connector = TransactionDBConnector()
 
 # Constants
@@ -76,7 +76,7 @@ async def create_position_with_transaction_data(
     ### Returns:
     The created position's details and transaction data.
     """
-  
+
     position = position_db_connector.create_position(
         form_data.wallet_id,
         form_data.token_symbol,
@@ -87,7 +87,6 @@ async def create_position_with_transaction_data(
     if form_data.token_symbol == TokenParams.USDC.name:
         borrowing_token = TokenParams.ETH.address
 
-  
     deposit_data = await DepositMixin.get_transaction_data(
         form_data.token_symbol,
         form_data.amount,
@@ -161,11 +160,10 @@ async def close_position(position_id: UUID, transaction_hash: str) -> str:
 
     position_status = position_db_connector.close_position(str(position_id))
     position_db_connector.save_transaction(
-        position_id=position_id,
-        status="closed",
-        transaction_hash=transaction_hash
+        position_id=position_id, status="closed", transaction_hash=transaction_hash
     )
     return position_status
+
 
 @router.get(
     "/api/open-position",
@@ -187,18 +185,13 @@ async def open_position(position_id: str, transaction_hash: str) -> str:
         raise HTTPException(status_code=404, detail="Position not found")
 
     current_prices = await DashboardMixin.get_current_prices()
-    position_status = position_db_connector.open_position(
-        position_id,
-        current_prices
-    )
-    
+    position_status = position_db_connector.open_position(position_id, current_prices)
+
     if transaction_hash:
         transaction_db_connector.create_transaction(
-            position_id,
-            transaction_hash,
-            status=TransactionStatus.OPENED.value
+            position_id, transaction_hash, status=TransactionStatus.OPENED.value
         )
-        
+
     return position_status
 
 
@@ -211,37 +204,37 @@ async def open_position(position_id: str, transaction_hash: str) -> str:
 async def get_add_deposit_data(position_id: UUID, amount: str, token_symbol: str):
     """
     Prepare data for adding an extra deposit to a position.
-    
+
     Args:
         position_id: UUID of the position
         amount: Amount of tokens to deposit
         token_symbol: Symbol of the token being deposited
-        
+
     Returns:
         Dict containing deposit data with token address and amount
     """
     if not amount:
         raise HTTPException(status_code=400, detail="Amount is required")
-    
+
     if not token_symbol:
         raise HTTPException(status_code=400, detail="Token symbol is required")
 
     position = position_db_connector.get_position_by_id(position_id)
     if not position:
         raise HTTPException(status_code=404, detail="Position not found")
-    
+
     try:
         token_address = TokenParams.get_token_address(token_symbol)
-        token_amount = int(Decimal(amount) * 10 ** TokenParams.get_token_decimals(token_address))
+        token_amount = int(
+            Decimal(amount) * 10 ** TokenParams.get_token_decimals(token_address)
+        )
     except InvalidOperation:
         raise HTTPException(status_code=400, detail="Amount is not a number")
-    
+
     return {
-        "deposit_data": {
-            "token_address": token_address,
-            "token_amount": token_amount
-        }                   
+        "deposit_data": {"token_address": token_address, "token_amount": token_amount}
     }
+
 
 @router.post("/api/add-extra-deposit/{position_id}")
 async def add_extra_deposit(position_id: UUID, data: AddPositionDepositData):
@@ -259,21 +252,15 @@ async def add_extra_deposit(position_id: UUID, data: AddPositionDepositData):
     position = position_db_connector.get_position_by_id(position_id)
     if not position:
         raise HTTPException(status_code=404, detail="Position not found")
-    
-  
-    position_db_connector.add_extra_deposit_to_position(
-        position,
-        data.token_symbol,
-        data.amount
-    )
 
+    position_db_connector.add_extra_deposit_to_position(
+        position, data.token_symbol, data.amount
+    )
 
     transaction_db_connector.create_transaction(
-        position_id,
-        data.transaction_hash,
-        status=TransactionStatus.EXTRA_DEPOSIT.value
+        position_id, data.transaction_hash, status=TransactionStatus.EXTRA_DEPOSIT.value
     )
-    
+
     return {"detail": "Successfully added extra deposit"}
 
 
