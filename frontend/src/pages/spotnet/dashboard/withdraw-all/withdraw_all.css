@@ -1,7 +1,7 @@
 .withdraw {
   min-height: 100vh;
   display: flex;
-  width: calc(100vw - 372px);
+  width: 100%;
   margin-left: 372px;
 }
 
@@ -25,10 +25,12 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 32px;
   padding: 0 26px;
   padding-top: 20px;
   width: fit-content;
+  margin: 100px 0 50px 0;
 }
 
 .withdrawall-content {
@@ -71,31 +73,46 @@
   margin-bottom: 10px;
 }
 
+@media (max-width: 1150px) {
+  .withdrawall-info-card,
+  .withdraw-all-btn {
+    width: 530px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .withdrawall-info-card {
+    padding: 16px 24px;
+    height: 168px;
+    font-size: 400;
+    border-radius: 8px;
+    gap: 0;
+  }
+
+  .withdrawall-container {
+    margin-top: 80px;
+  }
+}
+
 @media (max-width: 768px) {
   .withdrawall-wrapper {
     padding: 1rem 0;
   }
 
   .withdrawall-container {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    box-sizing: border-box;
+    margin: 80px 0 50px 0;
   }
 
   .withdrawall-content {
-    width: 100%;
-    max-width: 100%;
     padding: 0.5rem 24px;
     gap: 16px;
+    width: 480px;
   }
 
   .withdrawall-info-card {
-    height: 98px;
-    border-radius: 8px;
-    width: 100%;
-    margin-top: 52px;
-    margin-bottom: 52px;
+    width: 480px;
+    margin-top: 35px;
+    margin-bottom: 35px;
   }
 
   .withdrawall-title h1 {
@@ -103,6 +120,10 @@
     font-weight: normal;
     font-size: 1rem;
     margin-bottom: 20px;
+  }
+
+  .withdraw-all-btn {
+    width: 480px;
   }
 }
 
@@ -119,6 +140,7 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    width: 100%;
   }
   .withdrawall-info-container {
     display: grid;
@@ -128,44 +150,43 @@
   .withdrawall-info-container {
     width: 100%;
   }
-  .withdrawall-info-card {
-    padding: 16px 24px;
-    height: 168px;
-    font-size: 400;
-    width: 100%;
-    border-radius: 8px;
-    gap: 0;
-  }
 }
 
 @media (max-width: 480px) {
   .withdrawall-info-container {
     width: 100%;
   }
+
   .withdrawall-info-card {
-    padding: 32px 8px;
-    width: 100%;
+    width: 380px;
   }
 
   .tab {
     padding: 6px 0px;
     font-size: 12px;
   }
+
+  .withdraw-all-btn {
+    width: 380px;
+  }
 }
 
 @media (max-width: 400px) {
-  .withdrawall-info-container {
-    width: 100%;
+  .withdrawall-info-card {
+    width: 350px;
   }
 
-  .withdrawall-info-card {
-    padding: 16px 24px;
-    width: 100%;
+  .withdraw-all-btn {
+    width: 350px !important;
   }
 }
 
 @media (max-width: 350px) {
   .withdrawall-info-card {
-    width: 100%;
+    width: 320px;
+  }
+
+  .withdraw-all-btn {
+    width: 320px !important;
   }
 }

@@ -29,6 +29,7 @@
   padding: 0 26px;
   padding-top: 20px;
   width: fit-content;
+  margin: 100px 0 50px 0;
 }
 
 .position-title {
@@ -64,6 +65,7 @@
   font-size: 14px;
   color: var(--primary);
   margin-bottom: 16px;
+  padding-left: 8px;
 }
 
 .position-table {
@@ -87,6 +89,10 @@
   text-align: center;
   font-size: 14px;
   color: var(--primary);
+}
+
+.position-table th:first-child {
+  padding-left: 2px;
 }
 
 .position-table th {
@@ -229,16 +235,46 @@
 }
 
 @media (max-width: 768px) {
+  .position-top-cards {
+    width: 500px;
+  }
+}
+
+@media (max-width: 550px) {
+  .position-top-cards {
+    width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .position-top-cards {
+    width: 380px;
+  }
+}
+
+@media (max-width: 400px) {
+  .position-top-cards {
+    width: 350px;
+  }
+}
+
+@media (max-width: 350px) {
+  .position-top-cards {
+    width: 320px;
+  }
+}
+
+@media (max-width: 1300px) {
+  .position-table th:nth-child(3),
   .position-table th:nth-child(4),
   .position-table th:nth-child(6),
   .position-table th:nth-child(7),
   .position-table th:nth-child(8),
-  .position-table th:nth-child(9),
+  .position-table th:nth-child(3),
   .position-table td:nth-child(4),
   .position-table td:nth-child(6),
   .position-table td:nth-child(7),
-  .position-table td:nth-child(8),
-  .position-table td:nth-child(9) {
+  .position-table td:nth-child(8) {
     display: none;
   }
 

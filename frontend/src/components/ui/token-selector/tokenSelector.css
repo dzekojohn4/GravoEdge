@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 }
 
 .token-select-label {
@@ -74,11 +75,41 @@ input[type='radio'] {
   box-sizing: border-box;
 }
 
+@media (max-width: 1300px) {
+  .deposit-token-selector {
+    width: 530px;
+  }
+}
+
+@media (max-width: 680px) {
+  .deposit-token-selector {
+    width: 500px;
+  }
+}
+
+@media (max-width: 550px) {
+  .deposit-token-selector {
+    width: 480px;
+  }
+}
+
+@media (max-width: 480px) {
+  .deposit-token-selector {
+    width: 420px;
+  }
+}
+
+@media (max-width: 420px) {
+  .deposit-token-selector {
+    width: 350px;
+  }
+}
+
 @media (max-width: 768px) {
   .token-select-label {
     font-size: 12px;
   }
-  
+
   .token-name-wrapper {
     padding-block: 12px;
   }

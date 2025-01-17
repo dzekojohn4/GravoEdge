@@ -320,6 +320,7 @@
     width: 238px;
     height: 48px;
     border-radius: 900px;
+    left: 0px;
   }
 
   .logout-button::before {
