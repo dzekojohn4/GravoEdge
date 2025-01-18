@@ -55,18 +55,41 @@ export async function sendWithdrawAllTransaction(data, userContractAddress) {
   try {
     const wallet = await getWallet();
     const contractCalldata = new CallData(abi);
+    const closeCalldata = contractCalldata.compile("close_position", data.repay_data);
+    const withdrawCalls = [];
 
-    // Compile for close_position with data.repay_data
+    data.tokens.forEach((token) => {
+      withdrawCalls.push(
+          {
+            contractAddress: userContractAddress,
+            entrypoint: "withdraw",
+            calldata: contractCalldata.compile("withdraw", {token: token, amount: 0})
+          }
+      );
+    });
+    let result = await wallet.account.execute(
+        [
+            {contractAddress: userContractAddress, entrypoint: "close_position", calldata: closeCalldata},
+            ...withdrawCalls
+        ]
+    )
+    console.log("RESULT");
+    console.log(result);
+    notify(
+    ToastWithLink(
+        'Withdraw all successfully sent',
+        `https://starkscan.co/tx/${result.transaction_hash}`,
+        'Transaction ID'
+      ),
+      'success'
+    );
 
-    // For each token in data.tokens compile with [token, 0] to extract all tokens
+    return {
+      transaction_hash: result.transaction_hash,
+    };
 
-    // wallet.account.execute([close_position_call, ..withdraw_calls])
-
-    // Call structure(check lower func for example):
-    // * contractAddress: userContractAddress
-    // * entrypoint: contract entrypoint to call(close_position and withdraw) in our case
-    // * calldata: compiled calldata
   } catch (error) {
+    console.log('Error sending withdraw transaction', error)
     throw error
   }
 }
