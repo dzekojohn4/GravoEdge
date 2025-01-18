@@ -9,7 +9,7 @@ import hmac
 import json
 import secrets
 import time
-from typing import Any, Dict, Generator, Optional, Union
+from typing import Any, Dict, Generator
 
 from aiogram import Bot
 from aiogram.methods import TelegramMethod
@@ -60,9 +60,7 @@ def check_telegram_authorization(
 
 
 def generate_multipart_telegram_response(
-    bot: Bot, 
-    result: TelegramMethod[TelegramType], 
-    boundary: str
+    bot: Bot, result: TelegramMethod[TelegramType], boundary: str
 ) -> Generator[bytes, None, None]:
     """
     Generate a multipart/form-data response for Telegram webhook.
@@ -77,75 +75,72 @@ def generate_multipart_telegram_response(
     """
     # Prepare a dictionary to store file attachments
     files: Dict[str, InputFile] = {}
-    
+
     # Prepare method and its parameters
     method_data = result.model_dump(warnings=False)
-    
+
     # Yield method part
     method_part = (
-        f'--{boundary}\r\n'
+        f"--{boundary}\r\n"
         'Content-Disposition: form-data; name="method"\r\n'
-        'Content-Type: text/plain; charset=utf-8\r\n\r\n'
-        f'{result.__api_method__}\r\n'
+        "Content-Type: text/plain; charset=utf-8\r\n\r\n"
+        f"{result.__api_method__}\r\n"
     )
-    yield method_part.encode('utf-8')
+    yield method_part.encode("utf-8")
 
     # Process non-file parameters
     for key, value in method_data.items():
         # Prepare the value, converting it to a format suitable for sending
         prepared_value = bot.session.prepare_value(value, bot=bot, files=files)
-        
+
         if prepared_value is not None:
             # Convert value to string for text parts
             if isinstance(prepared_value, (dict, list)):
                 prepared_value = json.dumps(prepared_value)
-            
+
             part = (
-                f'--{boundary}\r\n'
+                f"--{boundary}\r\n"
                 f'Content-Disposition: form-data; name="{key}"\r\n'
-                'Content-Type: text/plain; charset=utf-8\r\n\r\n'
-                f'{prepared_value}\r\n'
+                "Content-Type: text/plain; charset=utf-8\r\n\r\n"
+                f"{prepared_value}\r\n"
             )
-            yield part.encode('utf-8')
+            yield part.encode("utf-8")
 
     # Process file attachments
     for key, file in files.items():
         # Read file content
         file_content = file.read(bot)
-        
+
         # Yield file part headers
         file_part_header = (
-            f'--{boundary}\r\n'
+            f"--{boundary}\r\n"
             f'Content-Disposition: form-data; name="{key}"; filename="{file.filename}"\r\n'
-            f'Content-Type: application/octet-stream\r\n\r\n'
+            f"Content-Type: application/octet-stream\r\n\r\n"
         )
-        yield file_part_header.encode('utf-8')
-        
+        yield file_part_header.encode("utf-8")
+
         # Yield file content
         yield file_content
-        yield b'\r\n'
+        yield b"\r\n"
 
     # Final boundary
-    yield f'--{boundary}--\r\n'.encode('utf-8')
+    yield f"--{boundary}--\r\n".encode("utf-8")
 
 
-def build_multipart_response(
-    bot: Bot, 
-    result: Any
-) -> Response:
+def build_multipart_response(bot: Bot, result: Any) -> Response:
     """
     Build a multipart response for Telegram webhook.
     """
     # if not result return empty response
     if not result or not isinstance(result, TelegramMethod):
         return Response(status_code=200)
-    
+
     # generate boundary
     boundary = f"webhookBoundary{secrets.token_urlsafe(16)}"
-    
+
     # return streaming response
     return StreamingResponse(
-        generate_multipart_telegram_response(bot, result, boundary), 
+        generate_multipart_telegram_response(bot, result, boundary),
         media_type=f"multipart/form-data; boundary={boundary}",
-        status_code=200
+        status_code=200,
     )

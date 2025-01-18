@@ -371,7 +371,7 @@ class StarknetClient:
 
             except ValueError as e:
                 logger.error(f"Invalid address format for {token_symbol}: {str(e)}")
-                results[token_symbol] = f"Failed: Invalid address format"
+                results[token_symbol] = "Failed: Invalid address format"
                 continue
 
             try:

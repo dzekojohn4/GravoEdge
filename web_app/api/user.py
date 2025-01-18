@@ -1,4 +1,3 @@
-
 """
 This module handles user-related API endpoints.
 """
@@ -6,7 +5,7 @@ This module handles user-related API endpoints.
 import logging
 from decimal import Decimal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from web_app.api.serializers.transaction import UpdateUserContractRequest
 from web_app.api.serializers.user import (
     CheckUserResponse,
@@ -14,7 +13,6 @@ from web_app.api.serializers.user import (
     GetUserContractAddressResponse,
     SubscribeToNotificationRequest,
     UpdateUserContractResponse,
-    UserHistoryResponse,
 )
 from web_app.contract_tools.mixins import PositionMixin, DashboardMixin
 from web_app.db.crud import (
@@ -175,7 +173,7 @@ async def subscribe_to_notification(
     if telegram_id:
         telegram_db.set_allow_notification(telegram_id, data.wallet_id)
         return {"detail": "User subscribed to notifications successfully"}
-    
+
     # If no Telegram ID is available, raise
     raise HTTPException(
         status_code=400, detail="Failed to subscribe user to notifications"
@@ -276,11 +274,11 @@ async def withdraw_all(wallet_id: str) -> dict:
     # Get user's contract address
     contract_address = user_db.get_contract_address_by_wallet_id(wallet_id)
     if not contract_address:
-       raise HTTPException(status_code=404, detail="Contract not found")
+        raise HTTPException(status_code=404, detail="Contract not found")
 
     # Perform withdrawals
     results = await CLIENT.withdraw_all(contract_address)
     return {
-           "detail": "Successfully initiated withdrawals for all tokens",
-           "results": results
+        "detail": "Successfully initiated withdrawals for all tokens",
+        "results": results,
     }
