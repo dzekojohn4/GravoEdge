@@ -97,6 +97,9 @@ class AddPositionDepositData(BaseModel):
 
 
 class UserExtraDeposit(BaseModel):
+    """
+    Data model representing extra deposit
+    """
     id: UUID
     position_id: UUID
     token_symbol: str
@@ -105,5 +108,8 @@ class UserExtraDeposit(BaseModel):
 
 
 class UserPositionExtraDepositsResponse(BaseModel):
+    """
+    Response model representing user's position and list of all extra deposits
+    """
     main: UserPositionResponse
     extra_deposits: list[UserExtraDeposit]

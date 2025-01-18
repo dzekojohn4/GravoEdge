@@ -17,7 +17,8 @@ from web_app.api.serializers.position import (
 )
 from web_app.api.serializers.transaction import (
     LoopLiquidityData,
-    RepayTransactionDataResponse, WithdrawAllData,
+    RepayTransactionDataResponse,
+    WithdrawAllData,
 )
 from web_app.contract_tools.constants import TokenMultipliers, TokenParams
 from web_app.contract_tools.mixins import DashboardMixin, DepositMixin, PositionMixin
@@ -165,6 +166,7 @@ async def close_position(position_id: UUID, transaction_hash: str) -> str:
     )
     return position_status
 
+
 @router.get(
     "/api/open-position",
     tags=["Position Operations"],
@@ -200,9 +202,16 @@ async def open_position(position_id: str, transaction_hash: str) -> str:
     tags=["Position Operations"],
     summary="Get data to close position and withdraw all tokens",
     response_model=WithdrawAllData,
-    response_description="Object containing data for close position and a list of tokens to withdraw"
+    response_description="Object containing data to withdraw all from the position",
 )
 async def get_withdraw_data(wallet_id: str, request: Request) -> WithdrawAllData:
+    """
+    Prepare data to withdraw all and close a position.
+
+    :param wallet_id: address of the user's wallet
+    :param request: request object
+    :return: Dict containing repay data with list of token addresses
+    """
     contract_address, position_id, token_symbol = position_db_connector.get_repay_data(
         wallet_id
     )
@@ -220,7 +229,11 @@ async def get_withdraw_data(wallet_id: str, request: Request) -> WithdrawAllData
 
     data = WithdrawAllData(
         repay_data=RepayTransactionDataResponse(**repay_data),
-        tokens=[TokenParams.get_token_address(symbol) for symbol in extra_tokens if symbol != token_symbol]
+        tokens=[
+            TokenParams.get_token_address(symbol)
+            for symbol in extra_tokens
+            if symbol != token_symbol
+        ],
     )
     return data
 
@@ -327,7 +340,9 @@ async def get_user_positions(wallet_id: str, start: Optional[int] = None) -> lis
     response_model=UserPositionExtraDepositsResponse,
     summary="Get all extra positions for a user",
 )
-async def get_list_of_deposited_tokens(position_id: UUID) -> dict[str, dict | list[dict]]:
+async def get_list_of_deposited_tokens(
+    position_id: UUID,
+) -> dict[str, dict | list[dict]]:
     """
     Get position and extra position by position id
 
