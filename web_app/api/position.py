@@ -247,7 +247,6 @@ async def get_add_deposit_data(position_id: UUID, amount: str, token_symbol: str
         raise HTTPException(status_code=400, detail="Token symbol is required")
 
     position = position_db_connector.get_position_by_id(position_id)
-    print(position_db_connector.get_extra_deposits_data(position_id))
     if not position:
         raise HTTPException(status_code=404, detail="Position not found")
 
