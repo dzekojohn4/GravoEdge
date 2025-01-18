@@ -20,6 +20,7 @@ from .celery_config import app
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 @app.task(name="check_users_health_ratio")
 def check_users_health_ratio() -> None:
     """
@@ -43,7 +44,7 @@ def claim_airdrop_task() -> None:
     """
     try:
         logger.info("Running claim_airdrop_task.")
-        logger.info("Task started at: ",time.strftime("%a, %d %b %Y %H:%M:%S"))
+        logger.info("Task started at: ", time.strftime("%a, %d %b %Y %H:%M:%S"))
         airdrop_claimer = AirdropClaimer()
         asyncio.run(airdrop_claimer.claim_airdrops())
         logger.info("Task started at: ", time.strftime("%a, %d %b %Y %H:%M:%S"))

@@ -8,12 +8,11 @@ import uuid
 from unittest.mock import MagicMock, patch
 
 import pytest
-from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
 from web_app.api.main import app
-from web_app.db.crud import DepositDBConnector, UserDBConnector
+from web_app.db.crud import UserDBConnector
 
 client = TestClient(app)
 

@@ -4,6 +4,7 @@ Handles Telegram webhook integration for the web application.
 Provides FastAPI endpoints for setting up webhooks and processing updates
 using aiogram and a database connector.
 """
+
 import os
 from typing import Literal
 
@@ -12,7 +13,6 @@ from aiogram.utils.deep_linking import create_start_link
 from aiogram.utils.web_app import check_webapp_signature
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import StreamingResponse
 
 from web_app.api.serializers.telegram import TelegramUserAuth, TelegramUserCreate
 from web_app.db.crud import DBConnector, TelegramUserDBConnector, UserDBConnector
@@ -98,7 +98,7 @@ async def telegram_webhook(update: Update):
         return b"", 200
 
 
-@router.post( # FIXME REMOVE IT (delete and frontend, not used)
+@router.post(  # FIXME REMOVE IT (delete and frontend, not used)
     "/api/telegram/save-user",
     tags=["Telegram Operations"],
     summary="Save or update Telegram user information",
