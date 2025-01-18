@@ -16,10 +16,10 @@ Test Cases:
 """
 
 import logging
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from requests.exceptions import ConnectionError, Timeout
+from requests.exceptions import Timeout
 from sqlalchemy.exc import SQLAlchemyError
 
 from web_app.tasks.claim_airdrops import AirdropClaimer

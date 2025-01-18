@@ -18,7 +18,7 @@ from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
 
-from web_app.api.dashboard import get_dashboard, position_db_connector, router
+from web_app.api.dashboard import get_dashboard, router
 from web_app.api.serializers.dashboard import DashboardResponse
 from web_app.contract_tools.mixins import HealthRatioMixin
 from web_app.contract_tools.mixins.dashboard import DashboardMixin

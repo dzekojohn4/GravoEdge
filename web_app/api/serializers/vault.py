@@ -3,7 +3,6 @@ Pydantic schemas for vault deposit operations.
 Defines request and response models for the vault deposit API endpoints.
 """
 
-from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field

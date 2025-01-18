@@ -20,6 +20,7 @@ cmd_router = Router()
 telegram_db = TelegramUserDBConnector()
 db_connector = DBConnector()
 
+
 @cmd_router.message(CommandStart(deep_link=True, deep_link_encoded=True))
 async def notification_allowed(message: Message, command: CommandObject):
     """
@@ -31,7 +32,9 @@ async def notification_allowed(message: Message, command: CommandObject):
     """
     user_id = command.args
     user = db_connector.get_object(User, user_id)
-    telegram_db.update_telegram_user(str(message.from_user.id), dict(wallet_id=user.wallet_id))
+    telegram_db.update_telegram_user(
+        str(message.from_user.id), dict(wallet_id=user.wallet_id)
+    )
     telegram_db.set_allow_notification(str(message.from_user.id), user.wallet_id)
 
     return await message.answer(

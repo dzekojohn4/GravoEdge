@@ -1,6 +1,7 @@
 """
 Mixins for position related methods
 """
+
 from web_app.contract_tools.blockchain_call import CLIENT
 
 
