@@ -73,8 +73,6 @@ export async function sendWithdrawAllTransaction(data, userContractAddress) {
             ...withdrawCalls
         ]
     )
-    console.log("RESULT");
-    console.log(result);
     notify(
     ToastWithLink(
         'Withdraw all successfully sent',
