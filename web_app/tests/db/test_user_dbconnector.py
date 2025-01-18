@@ -89,6 +89,7 @@ def test_get_unique_users_count(mock_user_db_connector):
 
     assert result == 5
 
+
 def test_create_user(user_db):
     """
     Test creating a user.
@@ -98,11 +99,14 @@ def test_create_user(user_db):
         assert user.wallet_id == "wallet_123"
         mock_write.assert_called_once()
 
+
 def test_update_user_contract(user_db):
     """
     Test updating a user contract.
     """
-    user = User(wallet_id="wallet_123", contract_address=None, is_contract_deployed=False)
+    user = User(
+        wallet_id="wallet_123", contract_address=None, is_contract_deployed=False
+    )
     with patch.object(user_db, "write_to_db") as mock_write:
         user_db.update_user_contract(user, "0xABC")
         assert user.contract_address == "0xABC"
@@ -117,11 +121,9 @@ def test_get_users_for_notifications(user_db):
     mock_session = MagicMock()
     mock_context = mock_session.__enter__.return_value
     mock_query = mock_context.query.return_value
-    (mock_query.join.return_value
-               .join.return_value
-               .filter.return_value
-               .distinct.return_value
-               .all.return_value) = [
+    (
+        mock_query.join.return_value.join.return_value.filter.return_value.distinct.return_value.all.return_value
+    ) = [
         ("0x123", "tg_id_1"),
         ("0x456", "tg_id_2"),
     ]
@@ -130,6 +132,7 @@ def test_get_users_for_notifications(user_db):
         result = user_db.get_users_for_notifications()
 
     assert result == [("0x123", "tg_id_1"), ("0x456", "tg_id_2")]
+
 
 def test_fetch_user_history(user_db):
     """
@@ -140,7 +143,13 @@ def test_fetch_user_history(user_db):
     mock_query = mock_context.query.return_value
 
     mock_positions = [
-        MagicMock(status="OPENED", created_at="2024-01-01", start_price=100, amount=2, multiplier=5)
+        MagicMock(
+            status="OPENED",
+            created_at="2024-01-01",
+            start_price=100,
+            amount=2,
+            multiplier=5,
+        )
     ]
     mock_query.filter.return_value.all.return_value = mock_positions
 
@@ -150,6 +159,7 @@ def test_fetch_user_history(user_db):
     assert len(result) == 1
     assert result[0]["status"] == "OPENED"
     assert result[0]["start_price"] == 100
+
 
 def test_delete_user_by_wallet_id(user_db):
     """
@@ -165,6 +175,7 @@ def test_delete_user_by_wallet_id(user_db):
 
     mock_context.delete.assert_called_once_with(mock_user)
     mock_context.commit.assert_called_once()
+
 
 def test_delete_user_by_wallet_id_not_found(user_db):
     """

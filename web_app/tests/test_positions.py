@@ -46,11 +46,11 @@ async def test_open_position_success(client: TestClient) -> None:
         mock_create_transaction.return_value = {
             "position_id": position_id,
             "transaction_hash": transaction_hash,
-            "status": TransactionStatus.OPENED.value
+            "status": TransactionStatus.OPENED.value,
         }
         response = client.get(
             f"/api/open-position?position_id={position_id}&transaction_hash={transaction_hash}"
-		)
+        )
         assert response.is_success
         assert response.json() == "Position successfully opened"
 
@@ -70,6 +70,7 @@ async def test_open_position_missing_position_data(
     assert response.status_code == 404
     assert response.json() == {"detail": "Position not found"}
 
+
 @pytest.mark.anyio
 async def test_close_position_success(client: TestClient) -> None:
     """
@@ -79,19 +80,20 @@ async def test_close_position_success(client: TestClient) -> None:
     Returns:
         None
     """
-    position_id = str(uuid.uuid4())  
+    position_id = str(uuid.uuid4())
     transaction_hash = "0xabc123"
     with patch(
         "web_app.db.crud.PositionDBConnector.close_position"
     ) as mock_close_position:
         mock_close_position.return_value = "Position successfully closed"
-        
+
         response = client.get(
             f"/api/close-position?position_id={position_id}&transaction_hash={transaction_hash}"
         )
-        
+
         assert response.status_code == 200
         assert response.json() == "Position successfully closed"
+
 
 @pytest.mark.anyio
 async def test_close_position_invalid_position_id(client: TestClient) -> None:
@@ -412,7 +414,7 @@ async def test_create_position_success(
         ), f"Expected status code 200 but got {response.status_code}"
         assert (
             response.json() == expected_response
-        ), f"Response JSON does not match expected response"
+        ), "Response JSON does not match expected response"
 
 
 @pytest.mark.parametrize(
@@ -506,6 +508,7 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
         data = response.json()
         assert data == []
 
+
 @pytest.mark.parametrize(
     "position_id, amount, token_symbol, mock_position, expected_response",
     [
@@ -517,14 +520,14 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
                 "id": "520e8441-de08-463b-864a-deccf517f0ce",
                 "token_symbol": "ETH",
                 "amount": "4",
-                "status": "opened"
+                "status": "opened",
             },
             {
                 "deposit_data": {
                     "token_address": "0x049d36570d4e46f48",
-                    "token_amount": 3.1 * 10 ** 18
+                    "token_amount": 3.1 * 10**18,
                 }
-            }
+            },
         ),
         (
             "0ae52807-6a32-4a68-b9b5-7d3b002b7189",
@@ -534,14 +537,14 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
                 "id": "0ae52807-6a32-4a68-b9b5-7d3b002b7189",
                 "token_symbol": "USDC",
                 "amount": "500",
-                "status": "opened"
+                "status": "opened",
             },
             {
                 "deposit_data": {
                     "token_address": "0x053c91253bc9682c0492",
-                    "token_amount": 50.5 * 10 ** 6
+                    "token_amount": 50.5 * 10**6,
                 }
-            }
+            },
         ),
         (
             "579af7e9-6759-4285-b346-f3461dc42b1d",
@@ -551,14 +554,14 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
                 "id": "579af7e9-6759-4285-b346-f3461dc42b1d",
                 "token_symbol": "STRK",
                 "amount": "750",
-                "status": "opened"
+                "status": "opened",
             },
             {
                 "deposit_data": {
                     "token_address": "0x04718f5a0fc34cc1af1",
-                    "token_amount": 75.25 * 10 ** 18
+                    "token_amount": 75.25 * 10**18,
                 }
-            }
+            },
         ),
     ],
 )
@@ -586,7 +589,9 @@ async def test_add_extra_deposit_success(
         ) as mock_get_token_decimals,
     ):
         mock_get_position.return_value = dict_to_object(mock_position)
-        mock_get_token_address.return_value = expected_response["deposit_data"]["token_address"]
+        mock_get_token_address.return_value = expected_response["deposit_data"][
+            "token_address"
+        ]
         if token_symbol == "ETH" or token_symbol == "STRK":
             mock_get_token_decimals.return_value = 18
         else:
@@ -594,12 +599,9 @@ async def test_add_extra_deposit_success(
 
         response = client.get(
             f"/api/get-add-deposit-data/{position_id}",
-            params={
-                "amount": amount,
-                "token_symbol": token_symbol
-            }
+            params={"amount": amount, "token_symbol": token_symbol},
         )
-        
+
         assert response.status_code == 200
         assert response.json() == expected_response
 
@@ -607,33 +609,21 @@ async def test_add_extra_deposit_success(
 @pytest.mark.parametrize(
     "position_id, amount, token_symbol, error_status, error_detail",
     [
-        (
-            None,
-            "100.0",
-            "ETH",
-            404,
-            "Position not found"
-        ),
-        (
-            "579af7e9-6759-4285-b346-f3461dc42b1d",
-            "",
-            "ETH",
-            400,
-            "Amount is required"
-        ),
+        (None, "100.0", "ETH", 404, "Position not found"),
+        ("579af7e9-6759-4285-b346-f3461dc42b1d", "", "ETH", 400, "Amount is required"),
         (
             "0ae52807-6a32-4a68-b9b5-7d3b002b7189",
             "invalid",
             "ETH",
             400,
-            "Amount is not a number"
+            "Amount is not a number",
         ),
         (
             "520e8441-de08-463b-864a-deccf517f0ce",
             "100.0",
             "",
             400,
-            "Token symbol is required"
+            "Token symbol is required",
         ),
     ],
 )
@@ -654,10 +644,7 @@ async def test_add_extra_deposit_failure(
     ) as mock_get_position:
         if position_id is not None:
             mock_get_position.return_value = dict_to_object(
-                {
-                    "id": position_id,
-                    "token_symbol": token_symbol
-                }
+                {"id": position_id, "token_symbol": token_symbol}
             )
         else:
             position_id = str(uuid.uuid4())
@@ -665,12 +652,9 @@ async def test_add_extra_deposit_failure(
 
         response = client.get(
             f"/api/get-add-deposit-data/{position_id}",
-            params={
-                "amount": amount,
-                "token_symbol": token_symbol
-            }
+            params={"amount": amount, "token_symbol": token_symbol},
         )
-        
+
         assert response.status_code == error_status
         assert error_detail in response.json()["detail"]
 
@@ -683,45 +667,45 @@ async def test_add_extra_deposit_failure(
             {
                 "amount": "100.0",
                 "token_symbol": "ETH",
-                "transaction_hash": "0x123456789abcdef"
+                "transaction_hash": "0x123456789abcdef",
             },
             {
                 "id": "520e8441-de08-463b-864a-deccf517f0ce",
                 "token_symbol": "ETH",
                 "amount": "1000",
-                "status": "opened"
+                "status": "opened",
             },
-            {"detail": "Successfully added extra deposit"}
+            {"detail": "Successfully added extra deposit"},
         ),
         (
             "0ae52807-6a32-4a68-b9b5-7d3b002b7189",
             {
                 "amount": "50.5",
                 "token_symbol": "USDC",
-                "transaction_hash": "0xabcdef123456789"
+                "transaction_hash": "0xabcdef123456789",
             },
             {
                 "id": "0ae52807-6a32-4a68-b9b5-7d3b002b7189",
                 "token_symbol": "USDC",
                 "amount": "500",
-                "status": "opened"
+                "status": "opened",
             },
-            {"detail": "Successfully added extra deposit"}
+            {"detail": "Successfully added extra deposit"},
         ),
         (
             "579af7e9-6759-4285-b346-f3461dc42b1d",
             {
                 "amount": "75.25",
                 "token_symbol": "STRK",
-                "transaction_hash": "0xdef123456789abc"
+                "transaction_hash": "0xdef123456789abc",
             },
             {
                 "id": "579af7e9-6759-4285-b346-f3461dc42b1d",
                 "token_symbol": "STRK",
                 "amount": "750",
-                "status": "opened"
+                "status": "opened",
             },
-            {"detail": "Successfully added extra deposit"}
+            {"detail": "Successfully added extra deposit"},
         ),
     ],
 )
@@ -752,22 +736,19 @@ async def test_add_extra_deposit_transaction_success(
         mock_add_extra_deposit.return_value = None
         mock_create_transaction.return_value = None
 
-        response = client.post(
-            f"/api/add-extra-deposit/{position_id}",
-            json=data
-        )
-        
+        response = client.post(f"/api/add-extra-deposit/{position_id}", json=data)
+
         assert response.status_code == 200
         assert response.json() == expected_response
-        
-        # FIXME: temp fix
-        # if data["token_symbol"] == mock_position["token_symbol"]:
-            # mock_add_extra_deposit.assert_called_once_with(mock_position_obj, data["amount"])
-        # mock_create_transaction.assert_called_once_with(
-        #     mock_position["id"],
-        #     data["transaction_hash"],
-        #     status=TransactionStatus.EXTRA_DEPOSIT.value
-        # )
+
+        mock_add_extra_deposit.assert_called_once_with(
+            mock_position_obj, data["token_symbol"], data["amount"]
+        )
+        mock_create_transaction.assert_called_once_with(
+            mock_position["id"],
+            data["transaction_hash"],
+            status=TransactionStatus.EXTRA_DEPOSIT.value,
+        )
 
 
 @pytest.mark.parametrize(
@@ -778,31 +759,27 @@ async def test_add_extra_deposit_transaction_success(
             {
                 "amount": "100.0",
                 "token_symbol": "ETH",
-                "transaction_hash": "0x123456789abcdef"
+                "transaction_hash": "0x123456789abcdef",
             },
             404,
-            "Position not found"
+            "Position not found",
         ),
         (
             "579af7e9-6759-4285-b346-f3461dc42b1d",
             {
                 "amount": "",
                 "token_symbol": "ETH",
-                "transaction_hash": "0x123456789abcdef"
+                "transaction_hash": "0x123456789abcdef",
             },
             400,
-            "Amount is required"
+            "Amount is required",
         ),
         (
             "0ae52807-6a32-4a68-b9b5-7d3b002b7189",
-            {
-                "amount": "100.0",
-                "token_symbol": "ETH",
-                "transaction_hash": ""
-            },
+            {"amount": "100.0", "token_symbol": "ETH", "transaction_hash": ""},
             400,
-            "Transaction hash is required"
-        )
+            "Transaction hash is required",
+        ),
     ],
 )
 @pytest.mark.anyio
@@ -821,19 +798,13 @@ async def test_add_extra_deposit_transaction_failure(
     ) as mock_get_position:
         if position_id is not None:
             mock_get_position.return_value = dict_to_object(
-                {
-                    "id": position_id,
-                    "token_symbol": "ETH"
-                }
+                {"id": position_id, "token_symbol": "ETH"}
             )
         else:
             position_id = str(uuid.uuid4())
             mock_get_position.return_value = None
 
-        response = client.post(
-            f"/api/add-extra-deposit/{position_id}",
-            json=data
-        )
-        
+        response = client.post(f"/api/add-extra-deposit/{position_id}", json=data)
+
         assert response.status_code == error_status
         assert error_detail in response.json()["detail"]
