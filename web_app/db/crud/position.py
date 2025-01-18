@@ -462,7 +462,7 @@ class PositionDBConnector(UserDBConnector):
                     position_id=position.id, token_symbol=token_symbol, amount=amount
                 )
                 .on_conflict_do_update(
-                    index_elements=["token_symbol"], 
+                    index_elements=["position_id", "token_symbol"],
                     set_={"amount": cast(ExtraDeposit.amount, DECIMAL) + Decimal(amount)}
                 )
             )
