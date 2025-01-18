@@ -112,19 +112,9 @@ class DashboardMixin:
         :param position: Position object containing base amount and token information
         :return: Decimal representing total position value including extra deposits
         """
-        total_amount = Decimal(position["amount"])
-        extra_deposits = position_db_connector.get_extra_deposits_data(position["id"])
-        current_prices = await cls.get_current_prices()
-
-        for token, amount in extra_deposits.items():
-            if token in current_prices:
-                deposit_amount = Decimal(amount)
-                if token != position["token_symbol"]:
-                    deposit_amount *= Decimal(current_prices[token])
-                    deposit_amount /= Decimal(current_prices[position["token_symbol"]])
-                total_amount += deposit_amount
-
-        return total_amount
+        return position_db_connector.get_current_position_sum_with_extra_deposits(
+            position["id"], await cls.get_current_prices()
+        )
 
     @classmethod
     async def get_start_position_sum(

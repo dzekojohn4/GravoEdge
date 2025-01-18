@@ -484,7 +484,7 @@ class PositionDBConnector(UserDBConnector):
             )
             return {deposit.token_symbol: deposit.amount for deposit in deposits}
 
-    def get_current_position_sum(
+    def get_current_position_sum_with_extra_deposits(
         self, position_id: UUID, current_prices: dict[str, Decimal]
     ) -> Decimal:
         """
@@ -496,8 +496,7 @@ class PositionDBConnector(UserDBConnector):
         """
         with self.Session() as db:
             try:
-
-                position = db.query(Position).filter(Position.id == position_id).first()
+                position: Position = db.query(Position).filter(Position.id == position_id).first()
                 if not position:
                     return Decimal(0)
 
@@ -507,16 +506,19 @@ class PositionDBConnector(UserDBConnector):
                 if base_price:
                     total_sum += Decimal(str(position.amount)) * base_price
 
-                extra_deposits = (
+                extra_deposits: list[ExtraDeposit] = (
                     db.query(ExtraDeposit)
                     .filter(ExtraDeposit.position_id == position_id)
                     .all()
                 )
 
-                for deposit in extra_deposits:
-                    price = current_prices.get(deposit.token_symbol)
-                    if price:
-                        total_sum += Decimal(str(deposit.amount)) * price
+                for extra_deposit in extra_deposits:
+                    if extra_deposit.token_symbol in current_prices:
+                        deposit_amount = Decimal(extra_deposit.amount)
+                        if extra_deposit.token_symbol != position.token_symbol:
+                            deposit_amount *= Decimal(current_prices[extra_deposit.token_symbol])
+                            deposit_amount /= Decimal(current_prices[position.token_symbol])
+                        total_sum += deposit_amount
 
                 return total_sum
 
