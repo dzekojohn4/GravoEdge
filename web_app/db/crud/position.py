@@ -12,6 +12,7 @@ from uuid import UUID
 from sqlalchemy import Numeric, cast, func
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import DECIMAL
 
 from web_app.db.models import Base, Position, Status, Transaction, User, ExtraDeposit
 
@@ -457,7 +458,8 @@ class PositionDBConnector(UserDBConnector):
                     position_id=position.id, token_symbol=token_symbol, amount=amount
                 )
                 .on_conflict_do_update(
-                    index_elements=["token_symbol"], set_={"amount": ExtraDeposit.amount.concat(amount)}
+                    index_elements=["token_symbol"], 
+                    set_={"amount": cast(ExtraDeposit.amount, DECIMAL) + Decimal(amount)}
                 )
             )
 
