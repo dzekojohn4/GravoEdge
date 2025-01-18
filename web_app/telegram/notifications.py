@@ -1,6 +1,7 @@
 """
 This module provides functionalities to send telegram notifications
 """
+
 import asyncio
 from decimal import Decimal
 

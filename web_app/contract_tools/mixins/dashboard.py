@@ -10,8 +10,10 @@ from decimal import Decimal
 from web_app.contract_tools.constants import TokenParams, MULTIPLIER_POWER
 from web_app.contract_tools.api_request import APIRequest
 from web_app.contract_tools.blockchain_call import CLIENT
+from web_app.db.crud.position import PositionDBConnector
 
 logger = logging.getLogger(__name__)
+position_db_connector = PositionDBConnector()
 
 
 # example of ARGENT_X_POSITION_URL
@@ -105,15 +107,14 @@ class DashboardMixin:
     @classmethod
     async def get_current_position_sum(cls, position: dict) -> Decimal:
         """
-        Calculate the current position sum.
-        :param position: Position data
-        :return: current sum
+        Calculate the total position value including extra deposits.
+
+        :param position: Position object containing base amount and token information
+        :return: Decimal representing total position value including extra deposits
         """
-        current_prices = await cls.get_current_prices()
-        price = current_prices.get(position.get("token_symbol"), Decimal(0))
-        amount = Decimal(position.get("amount", 0) or 0)
-        multiplier = Decimal(position.get("multiplier", 0) or 0)
-        return cls._calculate_sum(price, amount, multiplier)
+        return position_db_connector.get_current_position_sum_with_extra_deposits(
+            position["id"], await cls.get_current_prices()
+        )
 
     @classmethod
     async def get_start_position_sum(
