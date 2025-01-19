@@ -81,10 +81,10 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         position_amount,
         position_multiplier,
     )
-    position_balance = await DashboardMixin.get_position_balance(
+    position_balance, extra_deposit_balance = await DashboardMixin.get_position_balance(
         first_opened_position["id"]
     )
-    total_balance = await DashboardMixin.calculate_position_balance(position_balance, position_multiplier)
+    total_position_balance = await DashboardMixin.calculate_position_balance(position_balance, position_multiplier)
     token_symbol = first_opened_position["token_symbol"]
     return DashboardResponse(
         health_ratio=health_ratio,
@@ -93,6 +93,6 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         current_sum=current_sum,
         start_sum=start_sum,
         borrowed=str(start_sum * Decimal(tvl)),
-        balance=str(total_balance),
+        balance=str(total_position_balance + extra_deposit_balance),
         position_id=first_opened_position["id"],
     )

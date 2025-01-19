@@ -146,7 +146,7 @@ class DashboardMixin:
         )
 
     @classmethod
-    async def get_position_balance(cls, position_id: int) -> Decimal:
+    async def get_position_balance(cls, position_id: int) -> tuple:
         """
         Calculate the position balance.
         :param position_id: Position ID
@@ -156,9 +156,10 @@ class DashboardMixin:
             position_id
         )
         main_position = position_balances.get("main")
-        total_balance = main_position and Decimal(main_position.amount) or Decimal(0)
+        main_position_balance = main_position and main_position.amount or "0"
 
+        total_extra_balance = Decimal("0")
         extra_deposits = position_balances.get("extra_deposits", [])
         for extra_deposit in extra_deposits:
-            total_balance += Decimal(extra_deposit.amount)
-        return total_balance
+            total_extra_balance += Decimal(extra_deposit.amount)
+        return main_position_balance, total_extra_balance
