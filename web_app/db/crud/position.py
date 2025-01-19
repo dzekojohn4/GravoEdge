@@ -503,8 +503,9 @@ class PositionDBConnector(UserDBConnector):
                     return Decimal(0)
 
                 base_price = current_prices.get(position.token_symbol)
+                print(f'BasePrice: {base_price}')
                 if base_price:
-                    total_sum += Decimal(str(position.amount)) * base_price
+                    total_sum += Decimal(str(position.amount)) * base_price * Decimal(str(position.multiplier))
 
                 extra_deposits: list[ExtraDeposit] = (
                     db.query(ExtraDeposit)
