@@ -18,6 +18,7 @@ from web_app.api.serializers.position import (
 from web_app.api.serializers.transaction import (
     LoopLiquidityData,
     RepayTransactionDataResponse,
+    WithdrawAllData,
 )
 from web_app.contract_tools.constants import TokenMultipliers, TokenParams
 from web_app.contract_tools.mixins import DashboardMixin, DepositMixin, PositionMixin
@@ -76,7 +77,7 @@ async def create_position_with_transaction_data(
     ### Returns:
     The created position's details and transaction data.
     """
-
+    # Create a new position in the database
     position = position_db_connector.create_position(
         form_data.wallet_id,
         form_data.token_symbol,
@@ -87,6 +88,7 @@ async def create_position_with_transaction_data(
     if form_data.token_symbol == TokenParams.USDC.name:
         borrowing_token = TokenParams.ETH.address
 
+    # Get the transaction data for the deposit
     deposit_data = await DepositMixin.get_transaction_data(
         form_data.token_symbol,
         form_data.amount,
@@ -196,6 +198,47 @@ async def open_position(position_id: str, transaction_hash: str) -> str:
 
 
 @router.get(
+    "/api/get-withdraw-all-data",
+    tags=["Position Operations"],
+    summary="Get data to close position and withdraw all tokens",
+    response_model=WithdrawAllData,
+    response_description="Object containing data to withdraw all from the position",
+)
+async def get_withdraw_data(wallet_id: str, request: Request) -> WithdrawAllData:
+    """
+    Prepare data to withdraw all and close a position.
+
+    :param wallet_id: address of the user's wallet
+    :param request: request object
+    :return: Dict containing repay data with list of token addresses
+    """
+    contract_address, position_id, token_symbol = position_db_connector.get_repay_data(
+        wallet_id
+    )
+    if not await PositionMixin.is_opened_position(contract_address):
+        raise HTTPException(status_code=400, detail="Position was closed")
+    if not position_id:
+        raise HTTPException(status_code=404, detail="Position not found or closed")
+
+    repay_data = await DepositMixin.get_repay_data(
+        token_symbol, request.app.state.ekubo_contract
+    )
+    extra_tokens = position_db_connector.get_extra_deposits_data(position_id).keys()
+    repay_data["position_id"] = str(position_id)
+    repay_data["contract_address"] = contract_address
+
+    data = WithdrawAllData(
+        repay_data=RepayTransactionDataResponse(**repay_data),
+        tokens=[
+            TokenParams.get_token_address(symbol)
+            for symbol in extra_tokens
+            if symbol != token_symbol
+        ],
+    )
+    return data
+
+
+@router.get(
     "/api/get-add-deposit-data/{position_id}",
     tags=["Position Operations"],
     summary="Add extra deposit to a user position",
@@ -239,7 +282,7 @@ async def add_extra_deposit(position_id: UUID, data: AddPositionDepositData):
     Add extra deposit to a user position.
     All deposits are now handled through ExtraDeposit table,
     regardless of token type.
-    
+
     :param position_id: UUID of the position
     :param data: Deposit data to create extra deposit
     :return Dict containing detail
@@ -297,10 +340,12 @@ async def get_user_positions(wallet_id: str, start: Optional[int] = None) -> lis
     response_model=UserPositionExtraDepositsResponse,
     summary="Get all extra positions for a user",
 )
-async def get_list_of_deposited_tokens(position_id: UUID) -> dict[str, dict | list[dict]]:
+async def get_list_of_deposited_tokens(
+    position_id: UUID,
+) -> dict[str, dict | list[dict]]:
     """
     Get position and extra position by position id
-    
+
     :param position_id: UUID of the position
     :return Dict containing main position and extra positions
     """

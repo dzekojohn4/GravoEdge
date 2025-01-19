@@ -5,6 +5,7 @@ Revises: 8a132b70dc8b
 Create Date: 2025-01-16 19:03:11.460822
 
 """
+
 import logging
 
 import sqlalchemy as sa
@@ -16,8 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 # revision identifiers, used by Alembic.
-revision = '4987a0457799'
-down_revision = '8a132b70dc8b'
+revision = "4987a0457799"
+down_revision = "8a132b70dc8b"
 branch_labels = None
 depends_on = None
 
@@ -91,4 +92,3 @@ def downgrade() -> None:
         logger.info("Table 'airdrop' and its indexes were dropped successfully.")
     else:
         logger.info("Table 'airdrop' does not exist, skipping drop.")
-

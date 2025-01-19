@@ -51,6 +51,47 @@ export async function sendTransaction(loopLiquidityData, contractAddress) {
   }
 }
 
+export async function sendWithdrawAllTransaction(data, userContractAddress) {
+  try {
+    const wallet = await getWallet();
+    const contractCalldata = new CallData(abi);
+    const closeCalldata = contractCalldata.compile("close_position", data.repay_data);
+    const withdrawCalls = [];
+
+    data.tokens.forEach((token) => {
+      withdrawCalls.push(
+          {
+            contractAddress: userContractAddress,
+            entrypoint: "withdraw",
+            calldata: contractCalldata.compile("withdraw", {token: token, amount: 0})
+          }
+      );
+    });
+    let result = await wallet.account.execute(
+        [
+            {contractAddress: userContractAddress, entrypoint: "close_position", calldata: closeCalldata},
+            ...withdrawCalls
+        ]
+    )
+    notify(
+    ToastWithLink(
+        'Withdraw all successfully sent',
+        `https://starkscan.co/tx/${result.transaction_hash}`,
+        'Transaction ID'
+      ),
+      'success'
+    );
+
+    return {
+      transaction_hash: result.transaction_hash,
+    };
+
+  } catch (error) {
+    console.log('Error sending withdraw transaction', error)
+    throw error
+  }
+}
+
 export async function sendExtraDepositTransaction(deposit_data, userContractAddress) {
   try {
     const wallet = await getWallet();
