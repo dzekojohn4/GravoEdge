@@ -132,7 +132,7 @@ class DashboardMixin:
         )
 
     @classmethod
-    async def get_position_balance(cls, amount: str, multiplier: str) -> Decimal:
+    async def calculate_position_balance(cls, amount: str, multiplier: str) -> Decimal:
         """
         Calculate the position balance.
         :param amount: Position amount
@@ -144,3 +144,21 @@ class DashboardMixin:
             * Decimal(multiplier)
             * (Decimal(100) / Decimal(MULTIPLIER_POWER))
         )
+
+    @classmethod
+    async def get_position_balance(cls, position_id: int) -> Decimal:
+        """
+        Calculate the position balance.
+        :param position_id: Position ID
+        :return: Position balance
+        """
+        position_balances = position_db_connector.get_all_extra_deposit_positions(
+            position_id
+        )
+        main_position = position_balances.get("main")
+        total_balance = main_position and Decimal(main_position.amount) or Decimal(0)
+
+        extra_deposits = position_balances.get("extra_deposits", [])
+        for extra_deposit in extra_deposits:
+            total_balance += Decimal(extra_deposit.amount)
+        return total_balance
