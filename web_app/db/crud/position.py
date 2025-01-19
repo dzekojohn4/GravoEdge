@@ -494,13 +494,13 @@ class PositionDBConnector(UserDBConnector):
         :param current_prices: Dictionary of token symbols and their current prices
         :return: Decimal sum of the current prices
         """
+        total_sum = Decimal(0)
+
         with self.Session() as db:
             try:
                 position: Position = db.query(Position).filter(Position.id == position_id).first()
                 if not position:
                     return Decimal(0)
-
-                total_sum = Decimal(0)
 
                 base_price = current_prices.get(position.token_symbol)
                 if base_price:
@@ -543,7 +543,7 @@ class PositionDBConnector(UserDBConnector):
             )
             main_deposit = (
                 db.query(Position)
-                .filter(ExtraDeposit.position_id == position_id)
-                .first()
+                .filter(Position.id == position_id)
+                .scalar()
             )
             return {"main": main_deposit, "extra_deposits": extra_deposits}
