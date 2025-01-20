@@ -2,9 +2,11 @@
 Test cases for TelegramUserDBConnector
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
+
+import pytest
+
 from web_app.db.crud import TelegramUserDBConnector
 from web_app.db.models import TelegramUser
 

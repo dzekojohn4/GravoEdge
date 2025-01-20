@@ -6,8 +6,9 @@ import logging
 from decimal import Decimal
 from typing import TypeVar
 
-from .base import DBConnector
 from web_app.db.models import Base, User, Vault
+
+from .base import DBConnector
 
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)
