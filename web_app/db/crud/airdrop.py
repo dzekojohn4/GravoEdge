@@ -11,6 +11,7 @@ from typing import List, TypeVar
 from sqlalchemy.exc import SQLAlchemyError
 
 from web_app.db.models import AirDrop, Base
+
 from .base import DBConnector
 
 logger = logging.getLogger(__name__)

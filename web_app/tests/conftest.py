@@ -2,15 +2,16 @@
 This module contains the fixtures for the tests.
 """
 
+import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.orm import scoped_session
 
 from web_app.api.main import app
 from web_app.db.crud import DBConnector, PositionDBConnector, UserDBConnector
 from web_app.db.database import get_database
-import uuid
 from web_app.db.models import ExtraDeposit
 
 
@@ -98,15 +99,12 @@ def mock_extra_deposit():
     )
 
 
-@pytest.fixture
-def mock_db_session(monkeypatch):
-    """Fixture for mocking database session"""
-    mock_session = MagicMock()
-    mock_session.__enter__.return_value = mock_session
-    mock_session.__exit__.return_value = None
-
-    def mock_get_session():
-        return mock_session
-
-    monkeypatch.setattr("sqlalchemy.orm.Session", mock_get_session)
-    return mock_session
+@pytest.fixture(scope="function")
+def mock_db_session():
+    """Fixture to create a mock database session."""
+    with patch.object(scoped_session, "__call__") as mock_scoped_session_call:
+        mock_db_session = MagicMock()
+        mock_db_session.__enter__.return_value = mock_db_session
+        mock_db_session.__exit__.return_value = None
+        mock_scoped_session_call.return_value = mock_db_session
+        yield mock_db_session

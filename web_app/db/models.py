@@ -5,23 +5,25 @@ table in the database and defines the structure and relationships
 between the data entities.
 """
 
+from datetime import datetime
 from enum import Enum as PyEnum
 from uuid import uuid4
 
 from sqlalchemy import (
     DECIMAL,
+    NUMERIC,
     Boolean,
     Column,
     DateTime,
     Enum,
+    Float,
     ForeignKey,
-    NUMERIC,
     String,
-    Float, UniqueConstraint,
+    UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
-from datetime import datetime
+
 from web_app.db.database import Base
 
 
@@ -204,4 +206,6 @@ class ExtraDeposit(Base):
     amount = Column(String, nullable=False)
     added_at = Column(DateTime, default=datetime.utcnow)
     position_id = Column(UUID(as_uuid=True), ForeignKey("position.id"))
-    __table_args__ = (UniqueConstraint('position_id', 'token_symbol', name='_position_token_uc'),)
+    __table_args__ = (
+        UniqueConstraint("position_id", "token_symbol", name="_position_token_uc"),
+    )
