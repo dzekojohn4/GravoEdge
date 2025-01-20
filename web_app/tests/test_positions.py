@@ -745,7 +745,7 @@ async def test_add_extra_deposit_transaction_success(
             mock_position_obj, data["token_symbol"], data["amount"]
         )
         mock_create_transaction.assert_called_once_with(
-            mock_position["id"],
+            uuid.UUID(mock_position["id"]),
             data["transaction_hash"],
             status=TransactionStatus.EXTRA_DEPOSIT.value,
         )

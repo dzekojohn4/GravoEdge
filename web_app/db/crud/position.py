@@ -9,12 +9,11 @@ from decimal import Decimal
 from typing import TypeVar
 from uuid import UUID
 
-from sqlalchemy import Numeric, cast, func
+from sqlalchemy import DECIMAL, Numeric, cast, func
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import DECIMAL
 
-from web_app.db.models import Base, Position, Status, Transaction, User, ExtraDeposit
+from web_app.db.models import Base, ExtraDeposit, Position, Status, Transaction, User
 
 from .user import UserDBConnector
 
@@ -463,7 +462,9 @@ class PositionDBConnector(UserDBConnector):
                 )
                 .on_conflict_do_update(
                     index_elements=["position_id", "token_symbol"],
-                    set_={"amount": cast(ExtraDeposit.amount, DECIMAL) + Decimal(amount)}
+                    set_={
+                        "amount": cast(ExtraDeposit.amount, DECIMAL) + Decimal(amount)
+                    },
                 )
             )
 
@@ -472,7 +473,7 @@ class PositionDBConnector(UserDBConnector):
     def get_extra_deposits_data(self, position_id: UUID) -> dict[str, str]:
         """
         Get all extra deposits for a position.
-        
+
         :param position_id: UUID of the position
         :return: a dictionary of token_symbol: amount pairs.
         """
@@ -498,14 +499,20 @@ class PositionDBConnector(UserDBConnector):
 
         with self.Session() as db:
             try:
-                position: Position = db.query(Position).filter(Position.id == position_id).first()
+                position: Position = (
+                    db.query(Position).filter(Position.id == position_id).first()
+                )
                 if not position:
                     return Decimal(0)
 
                 base_price = current_prices.get(position.token_symbol)
-                print(f'BasePrice: {base_price}')
+                print(f"BasePrice: {base_price}")
                 if base_price:
-                    total_sum += Decimal(str(position.amount)) * base_price * Decimal(str(position.multiplier))
+                    total_sum += (
+                        Decimal(str(position.amount))
+                        * base_price
+                        * Decimal(str(position.multiplier))
+                    )
 
                 extra_deposits: list[ExtraDeposit] = (
                     db.query(ExtraDeposit)
@@ -517,8 +524,12 @@ class PositionDBConnector(UserDBConnector):
                     if extra_deposit.token_symbol in current_prices:
                         deposit_amount = Decimal(extra_deposit.amount)
                         if extra_deposit.token_symbol != position.token_symbol:
-                            deposit_amount *= Decimal(current_prices[extra_deposit.token_symbol])
-                            deposit_amount /= Decimal(current_prices[position.token_symbol])
+                            deposit_amount *= Decimal(
+                                current_prices[extra_deposit.token_symbol]
+                            )
+                            deposit_amount /= Decimal(
+                                current_prices[position.token_symbol]
+                            )
                         total_sum += deposit_amount
 
                 return total_sum
@@ -543,8 +554,6 @@ class PositionDBConnector(UserDBConnector):
                 .all()
             )
             main_deposit = (
-                db.query(Position)
-                .filter(Position.id == position_id)
-                .scalar()
+                db.query(Position).filter(Position.id == position_id).scalar()
             )
             return {"main": main_deposit, "extra_deposits": extra_deposits}

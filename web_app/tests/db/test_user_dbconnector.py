@@ -2,8 +2,9 @@
 Unit tests for the UserDBConnector module.
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 from web_app.db.crud import UserDBConnector
 from web_app.db.models import User
@@ -122,8 +123,7 @@ def test_get_users_for_notifications(user_db):
     mock_context = mock_session.__enter__.return_value
     mock_query = mock_context.query.return_value
     (
-        mock_query.join.return_value.join.return_value.filter
-        .return_value.distinct.return_value.all.return_value
+        mock_query.join.return_value.join.return_value.filter.return_value.distinct.return_value.all.return_value
     ) = [
         ("0x123", "tg_id_1"),
         ("0x456", "tg_id_2"),

@@ -5,8 +5,9 @@ This module contains the transaction database configuration.
 import uuid
 from typing import TypeVar
 
-from .base import DBConnector
 from web_app.db.models import Base, Transaction, TransactionStatus
+
+from .base import DBConnector
 
 ModelType = TypeVar("ModelType", bound=Base)
 

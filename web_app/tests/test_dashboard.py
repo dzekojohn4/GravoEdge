@@ -8,6 +8,7 @@ IDs and service failures, to confirm that the dashboard endpoint behaves reliabl
 under various conditions.
 """
 
+import uuid
 from datetime import datetime
 from decimal import Decimal
 from unittest.mock import AsyncMock, patch
@@ -73,6 +74,11 @@ async def test_get_dashboard_success():
     """Test successful retrieval of dashboard data."""
 
     wallet_id = "0x1234567890abcdef"
+    id = uuid.uuid4()
+    mock_position_balance = 500
+    mock_extra_deposit = 700
+    multiplier = 1
+
     with patch(
         "web_app.api.dashboard.position_db_connector.get_contract_address_by_wallet_id"
     ) as mock_get_contract_address_by_wallet_id, patch(
@@ -88,17 +94,24 @@ async def test_get_dashboard_success():
     ) as mock_get_current_position_sum, patch(
         "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_start_position_sum",
         new_callable=AsyncMock,
-    ) as mock_get_start_position_sum:
+    ) as mock_get_start_position_sum, patch(
+        "web_app.contract_tools.mixins.dashboard.DashboardMixin.get_position_balance",
+        new_callable=AsyncMock,
+    ) as mock_get_position_balance:
 
+        mock_get_position_balance.return_value = (
+            mock_position_balance,
+            mock_extra_deposit,
+        )
         mock_get_contract_address_by_wallet_id.return_value = "0xabcdef1234567890"
         mock_get_positions_by_wallet_id.return_value = [
             {
-                "multiplier": 1,
+                "multiplier": multiplier,
                 "created_at": "2024-01-01T00:00:00",
                 "start_price": "100.0",
                 "amount": "2.0",
                 "token_symbol": "ETH",
-                "id": "0",
+                "id": str(id),
             }
         ]
         mock_get_health_ratio_and_tvl.return_value = ("1.2", "1000.0")
@@ -108,6 +121,14 @@ async def test_get_dashboard_success():
         }
         mock_get_current_position_sum.return_value = Decimal("200.0")
         mock_get_start_position_sum.return_value = Decimal("200.0")
+
+        # balance from DashboardMixin.calculate_position_balance
+        total_position_balance = (
+            Decimal(mock_position_balance)
+            * Decimal(multiplier)
+            * (Decimal(100) / Decimal(99))
+        )
+        balance = total_position_balance + mock_extra_deposit
 
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url=BASE_URL
@@ -123,9 +144,9 @@ async def test_get_dashboard_success():
             "current_sum": "200.0",
             "start_sum": "200.0",
             "borrowed": "200000.00",
-            "balance": "2.020202020202020202020202020",
+            "balance": str(balance),
             "health_ratio": "1.2",
-            "position_id": "0",
+            "position_id": str(id),
         }
 
 
