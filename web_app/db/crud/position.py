@@ -9,12 +9,11 @@ from decimal import Decimal
 from typing import TypeVar
 from uuid import UUID
 
-from sqlalchemy import Numeric, cast, func
+from sqlalchemy import DECIMAL, Numeric, cast, func
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import DECIMAL
 
-from web_app.db.models import Base, Position, Status, Transaction, User, ExtraDeposit
+from web_app.db.models import Base, ExtraDeposit, Position, Status, Transaction, User
 
 from .user import UserDBConnector
 
@@ -463,7 +462,9 @@ class PositionDBConnector(UserDBConnector):
                 )
                 .on_conflict_do_update(
                     index_elements=["position_id", "token_symbol"],
-                    set_={"amount": cast(ExtraDeposit.amount, DECIMAL) + Decimal(amount)}
+                    set_={
+                        "amount": cast(ExtraDeposit.amount, DECIMAL) + Decimal(amount)
+                    },
                 )
             )
 
@@ -472,7 +473,7 @@ class PositionDBConnector(UserDBConnector):
     def get_extra_deposits_data(self, position_id: UUID) -> dict[str, str]:
         """
         Get all extra deposits for a position.
-        
+
         :param position_id: UUID of the position
         :return: a dictionary of token_symbol: amount pairs.
         """

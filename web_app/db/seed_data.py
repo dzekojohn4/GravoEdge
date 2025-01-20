@@ -4,19 +4,21 @@ Seed data for initializing the database with predefined values.
 
 import logging
 from decimal import Decimal
+
 from faker import Faker
+
+from web_app.contract_tools.constants import TokenParams
+from web_app.db.database import SessionLocal
 from web_app.db.models import (
+    AirDrop,
+    Position,
     Status,
+    TelegramUser,
     Transaction,
     TransactionStatus,
     User,
-    Position,
-    AirDrop,
-    TelegramUser,
     Vault,
 )
-from web_app.db.database import SessionLocal
-from web_app.contract_tools.constants import TokenParams
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

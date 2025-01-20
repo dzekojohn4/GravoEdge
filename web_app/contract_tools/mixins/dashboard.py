@@ -120,18 +120,28 @@ class DashboardMixin:
         base_price = current_prices.get(main_position.token_symbol)
         total_sum = Decimal(0)
         if base_price:
-            total_sum += cls._calculate_sum(base_price, Decimal(main_position.amount), Decimal(main_position.multiplier))
-        
-        extra_deposits = position_db_connector.get_extra_deposits_by_position_id(position["id"])
-        
+            total_sum += cls._calculate_sum(
+                base_price,
+                Decimal(main_position.amount),
+                Decimal(main_position.multiplier),
+            )
+
+        extra_deposits = position_db_connector.get_extra_deposits_by_position_id(
+            position["id"]
+        )
+
         for extra_deposit in extra_deposits:
             if extra_deposit.token_symbol in current_prices:
                 deposit_amount = Decimal(extra_deposit.amount)
                 if extra_deposit.token_symbol != main_position.token_symbol:
-                    deposit_amount *= Decimal(current_prices[extra_deposit.token_symbol])
-                    deposit_amount /= Decimal(current_prices[main_position.token_symbol])
+                    deposit_amount *= Decimal(
+                        current_prices[extra_deposit.token_symbol]
+                    )
+                    deposit_amount /= Decimal(
+                        current_prices[main_position.token_symbol]
+                    )
                 total_sum += deposit_amount
-        
+
         return total_sum
 
     @classmethod
@@ -171,7 +181,9 @@ class DashboardMixin:
         :return: Position balance
         """
         main_position = position_db_connector.get_position_by_id(position_id)
-        extra_deposits = position_db_connector.get_extra_deposits_by_position_id(position_id)
+        extra_deposits = position_db_connector.get_extra_deposits_by_position_id(
+            position_id
+        )
         main_position_balance = main_position and main_position.amount or "0"
         total_extra_balance = Decimal("0")
         for extra_deposit in extra_deposits:

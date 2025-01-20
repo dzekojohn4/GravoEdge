@@ -3,12 +3,13 @@ This module contains the user database configuration.
 """
 
 import logging
-from typing import List, TypeVar, Tuple
+from typing import List, Tuple, TypeVar
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from web_app.db.models import Base, Position, Status, TelegramUser, User
+
 from .base import DBConnector
-from web_app.db.models import Base, Position, Status, User, TelegramUser
 
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)
