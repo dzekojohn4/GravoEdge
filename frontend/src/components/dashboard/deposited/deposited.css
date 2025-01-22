@@ -44,3 +44,29 @@
     margin: 0 1rem;
 }
 
+@media (max-width: 768px) {
+    .icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 4px;
+        padding: 3px;
+    }
+
+    .tab-content {
+        width: 100%;
+        height: auto;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tab-content {
+        width: fit-content;
+        font-size: 14px;
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+    }
+}
