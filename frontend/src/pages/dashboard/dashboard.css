@@ -116,6 +116,10 @@ body {
   color: #ff35d3;
 }
 
+.tab.active.deposited {
+  color: var(--nav-button-hover)
+}
+
 .tab-indicator-container {
   position: absolute;
   bottom: -16px;
@@ -140,7 +144,12 @@ body {
 }
 
 .tab-indicator.borrow {
-  background: linear-gradient(90deg, rgba(40, 16, 41, 0) 0%, #ff35d3 100%);
+  background: linear-gradient(90deg, rgba(40, 16, 41, 0) 0%, #ff35d3 100%, rgba(40, 16, 41, 0) 0%,);
+  transform: translateX(0);
+}
+
+.tab-indicator.deposited {
+  background: linear-gradient(90deg, rgba(40, 16, 41, 0) 0%, #74d6fd 100%);
   transform: translateX(0);
 }
 
