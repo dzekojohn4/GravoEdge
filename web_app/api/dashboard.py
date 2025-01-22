@@ -51,7 +51,7 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         borrowed="0",
         balance="0",
         position_id="0",
-        deposit_data={"token": "", "amount": "0"},
+        deposit_data=[],
     )
     if not contract_address:
         return default_dashboard_response
@@ -91,15 +91,14 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         position_balance, position_multiplier
     )
     token_symbol = first_opened_position["token_symbol"]
-    extra_deposits = position_db_connector.get_extra_deposits_data(
+    extra_deposits = position_db_connector.get_extra_deposits_by_position_id(
         first_opened_position["id"]
     )
+    deposit_data = [
+        {"token": deposit.token_symbol, "amount": deposit.amount}
+        for deposit in extra_deposits
+    ]
 
-    # symbol = extra_deposits.get("token_symbol")
-    deposit_data = {
-        "token": token_symbol,
-        "amount": str(Decimal(position_balance) + Decimal(extra_deposit_balance)),
-    }
     return DashboardResponse(
         health_ratio=health_ratio,
         multipliers={token_symbol: str(position_multiplier)},
