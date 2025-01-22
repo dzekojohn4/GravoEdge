@@ -198,7 +198,7 @@ export default function Component({ telegramId }) {
 
                   <button
                     onClick={() => setActiveTab("borrow")}
-                    className={`tab ${activeTab === "borrow" ? 'active borrow' : ''}`}
+                    className={`tab ${activeTab === "borrow" ? 'active' : ''}`}
                   >
                     <BorrowIcon className="tab-icon" />
                     <span className="tab-title">Borrow</span>
@@ -208,7 +208,7 @@ export default function Component({ telegramId }) {
 
                   <button
                     onClick={() => setActiveTab("deposited")}
-                    className={`tab ${activeTab === "deposited" ? 'active deposited' : ''}`}
+                    className={`tab ${activeTab === "deposited" ? 'active' : ''}`}
                   >
                     <DepositIcon className="tab-icon" />
                     <span className="tab-title">Deposited</span>
