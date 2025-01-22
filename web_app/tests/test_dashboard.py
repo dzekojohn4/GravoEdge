@@ -305,6 +305,7 @@ async def test_empty_positions(
         "balance": "0",
         "health_ratio": "0",
         "position_id": "0",
+        "deposit_data": {"token": "", "amount": "0"},
     }
 
 
