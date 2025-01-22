@@ -25,7 +25,7 @@ position_db_connector = PositionDBConnector()
 async def get_dashboard(wallet_id: str) -> DashboardResponse:
     """
     This endpoint fetches the user's dashboard data,
-    including balances, multipliers, start dates, and ZkLend position.
+    including balances, multipliers, start dates, deposit_data and ZkLend position.
 
     ### Parameters:
     - **wallet_id**: User's wallet ID
@@ -36,6 +36,8 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
     - **multipliers**: Multipliers applied to each asset (e.g., ETH).
     - **start_dates**: Start dates for each asset's position.
     - **zklend_position**: Details of the ZkLend positions.
+    - **deposit_data**: Deposit data including token and amount.
+
     """
     contract_address = position_db_connector.get_contract_address_by_wallet_id(
         wallet_id
@@ -49,6 +51,7 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         borrowed="0",
         balance="0",
         position_id="0",
+        deposit_data={},
     )
     if not contract_address:
         return default_dashboard_response
@@ -88,6 +91,10 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         position_balance, position_multiplier
     )
     token_symbol = first_opened_position["token_symbol"]
+    deposit_data = {
+        "token": token_symbol,
+        "amount": str(Decimal(position_balance) + Decimal(extra_deposit_balance)),
+    }
     return DashboardResponse(
         health_ratio=health_ratio,
         multipliers={token_symbol: str(position_multiplier)},
@@ -97,4 +104,5 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         borrowed=str(start_sum * Decimal(tvl)),
         balance=str(total_position_balance + extra_deposit_balance),
         position_id=first_opened_position["id"],
+        deposit_data=deposit_data,
     )
