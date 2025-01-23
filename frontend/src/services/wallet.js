@@ -38,7 +38,7 @@ export const checkForCRMToken = async (walletAddress) => {
   }
 };
 
-const getConnectors = () => !localStorage.getItem("starknetLastConnectedWallet") ? [
+export const getConnectors = () => !localStorage.getItem("starknetLastConnectedWallet") ? [
   new InjectedConnector({ options: { id: "argentX" }}),
   new InjectedConnector({ options: { id: "braavos" }}),
 ] : [
