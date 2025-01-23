@@ -8,8 +8,12 @@ import useLockBodyScroll from '../../../hooks/useLockBodyScroll';
 import MobDropdownMenu from '../mob-dropdown-menu/MobDropdownMenu';
 import './header.css';
 import '../../../globals.css';
+import { ReportBugButton } from 'components/report-button/ReportBugButton';
+import { useModal } from 'context/ModalProvider';
+import { ReportBugModal } from 'components/report-modal/ReportBugModal';
 
 function Header({ onConnectWallet, onLogout }) {
+  const { openModal, closeModal } = useModal();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation(); // Getting object of currant route
 
@@ -56,7 +60,7 @@ function Header({ onConnectWallet, onLogout }) {
   };
 
   return (
-    <nav className={makeNavStick ? 'header-nav-sticky' : 'header-nav'}>
+    <><nav className={makeNavStick ? 'header-nav-sticky' : 'header-nav'}>
       <div className="list-items">
         <div className="logo">
           <NavLink to="/">
@@ -73,6 +77,8 @@ function Header({ onConnectWallet, onLogout }) {
         </div>
       </div>
     </nav>
+      <ReportBugButton onClick={() => openModal(<ReportBugModal isOpen={true} onClose={closeModal} />)} />
+    </>
   );
 }
 

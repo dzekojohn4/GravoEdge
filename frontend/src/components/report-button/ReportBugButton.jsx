@@ -1,0 +1,25 @@
+import React from "react"
+import "./ReportBugButton.css"
+import ReportBugIcon from "../../assets/icons/customer-service-01.png"
+
+export function ReportBugButton({ onClick }) {
+    return (
+        <button className="report-button" onClick={(e) => {
+            console.log("first")
+            e.stopPropagation();
+            onClick();
+        }}>
+
+            <img
+                src={ReportBugIcon}
+                alt="bug-icon"
+                className="bug-icon"
+            />
+
+            <p className="bug-text">Report Bug</p>
+
+
+        </button>
+    )
+}
+

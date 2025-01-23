@@ -284,6 +284,7 @@
     height: 48px;
     font-size: 14px;
   }
+
   .Toastify__toast {
     left: 50px;
     height: 60px;
@@ -351,6 +352,7 @@
   .header-nav {
     height: 80px;
   }
+
   .list-items {
     padding: 0 25px;
   }
@@ -391,4 +393,12 @@
     left: 130px;
     width: 180px;
   }
+}
+
+.report-btn-cont {
+  display: flex;
+  width: 100%;
+  padding: 10px 30px;
+  justify-content: end;
+  height: fit-content;
 }
