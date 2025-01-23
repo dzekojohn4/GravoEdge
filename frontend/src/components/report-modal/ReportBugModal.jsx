@@ -1,6 +1,6 @@
 import React from "react"
 import "./ReportBugModal.css"
-import telegramIcon from "../../assets/icons/telegram icon.png"
+import telegramIcon from "../../assets/icons/telegram.svg"
 import bg from "../../assets/images/background-form.png"
 import { Button } from "components/ui/custom-button/Button"
 
