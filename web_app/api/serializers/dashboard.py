@@ -52,6 +52,9 @@ class DashboardResponse(BaseModel):
     )
     deposit_data: List[Dict[str, str]] = Field(
         ...,
-        example={"token": "ETH", "amount": "100.0"},
+        example=[
+            {"token": "ETH", "amount": "100.0"},
+            {"token": "STK", "amount": "50.0"},
+        ],
         description="The deposit data including token and amount.",
     )
