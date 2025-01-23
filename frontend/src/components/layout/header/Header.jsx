@@ -13,7 +13,7 @@ import { useModal } from 'context/ModalProvider';
 import { ReportBugModal } from 'components/report-modal/ReportBugModal';
 
 function Header({ onConnectWallet, onLogout }) {
-  const { openModal, closeModal } = useModal();
+  const { openModal, closeModal, isModalOpen } = useModal();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation(); // Getting object of currant route
 
@@ -77,7 +77,7 @@ function Header({ onConnectWallet, onLogout }) {
         </div>
       </div>
     </nav>
-      <ReportBugButton onClick={() => openModal(<ReportBugModal isOpen={true} onClose={closeModal} />)} />
+      {!isModalOpen && <ReportBugButton onClick={() => openModal(<ReportBugModal isOpen={true} onClose={closeModal} />)} />}
     </>
   );
 }
