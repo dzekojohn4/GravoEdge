@@ -23,11 +23,11 @@ import computerIcon from 'assets/icons/computer-icon.svg';
 import depositIcon from 'assets/icons/deposit.svg';
 import withdrawIcon from 'assets/icons/withdraw.svg';
 import Deposited from 'components/dashboard/deposited/Deposited';
-import DashboardTab from 'components/dashboard/dashboard-tab/DashboardTab';
+import DashboardTabs from 'components/dashboard/dashboard-tab/DashboardTabs';
+import { DASHBOARD_TABS } from 'utils/constants';
 
 export default function Component({ telegramId }) {
   const { walletId } = useWalletStore();
-  const [activeTab, setActiveTab] = useState(DashboardTabs.COLLATERAL);
   const [showModal, setShowModal] = useState(false);
   const handleOpen = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -41,6 +41,7 @@ export default function Component({ telegramId }) {
   const { subscribe } = useTelegramNotification();
 
   const hasOpenedPosition = positionData?.has_opened_position;
+  const { COLLATERAL, BORROW, DEPOSITED } = DASHBOARD_TABS;
 
   const handleSubscribe = () => subscribe({ telegramId, walletId });
 
@@ -65,6 +66,7 @@ export default function Component({ telegramId }) {
   const [startSum, setStartSum] = useState(0);
   const [currentSum, setCurrentSum] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState(COLLATERAL);
 
   useEffect(() => {
     console.log('Fetching data for walletId:', walletId);
@@ -168,13 +170,7 @@ export default function Component({ telegramId }) {
     },
   ];
 
-  const DashboardTabs = {
-    COLLATERAL: 'collateral',
-    BORROW: 'borrow',
-    DEPOSITED: 'deposited'
-  }
-
-  const depositedData = {eth: 1, strk: 12, usdc: 4, usdt: 9};
+  const depositedData = { eth: 1, strk: 12, usdc: 4, usdt: 9 };
 
   return (
     <div className="dashboard">
@@ -190,25 +186,20 @@ export default function Component({ telegramId }) {
             </div>
             <div className="dashboard-info-container">
               <div className="dashboard-info-card">
+                <DashboardTabs activeTab={activeTab} switchTab={setActiveTab} />
 
-              <DashboardTab activeTab={activeTab} switchTab={setActiveTab} tabs={DashboardTabs}/>
-
-                {activeTab === DashboardTabs.COLLATERAL && (
+                {activeTab === COLLATERAL && (
                   <Collateral
                     getCurrentSumColor={getCurrentSumColor}
                     startSum={startSum}
                     currentSum={currentSum}
                     data={cardData}
                   />
-                )} 
-
-                {activeTab === DashboardTabs.BORROW && (
-                  <Borrow data={cardData} />
                 )}
 
-                {activeTab === DashboardTabs.DEPOSITED && (
-                  <Deposited data={depositedData} />
-                )}
+                {activeTab === BORROW && <Borrow data={cardData} />}
+
+                {activeTab === DEPOSITED && <Deposited data={depositedData} />}
               </div>
               <Button
                 className="redeem-btn"
