@@ -83,16 +83,18 @@ describe('Wallet Services', () => {
 
       connect.mockResolvedValue(mockStarknet);
 
-      const address = await connectWallet();
+      const wallet = await connectWallet();
 
       expect(connect).toHaveBeenCalledWith(
         expect.objectContaining({
+          connectors: expect.any(Array),
           modalMode: 'alwaysAsk',
-          modalTheme: 'light'
+          modalTheme: 'dark'
         })
       );
       expect(mockStarknet.wallet.enable).toHaveBeenCalled();
-      expect(address).toBe('0x123');
+      expect(wallet.selectedAddress).toBe('0x123');
+      expect(wallet.isConnected).toBe(true);
     });
 
     it('should throw error when StarkNet object is not found', async () => {
