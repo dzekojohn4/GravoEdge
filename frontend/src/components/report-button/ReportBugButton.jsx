@@ -1,6 +1,6 @@
 import React from "react"
 import "./ReportBugButton.css"
-import ReportBugIcon from "../../assets/icons/customer-service-01.png"
+import ReportBugIcon from "../../assets/icons/customer-service-01.svg"
 
 export function ReportBugButton({ onClick }) {
     return (
