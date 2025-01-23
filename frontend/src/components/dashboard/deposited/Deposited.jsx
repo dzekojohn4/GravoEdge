@@ -1,4 +1,4 @@
-import "./dashboard.css";
+import "./deposited.css";
 import { ReactComponent as EthIcon } from '../../../assets/icons/ethereum.svg';
 import { ReactComponent as StrkIcon } from '../../../assets/icons/strk.svg';
 import { ReactComponent as UsdIcon } from '../../../assets/icons/usd_coin.svg';
