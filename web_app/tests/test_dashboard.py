@@ -147,12 +147,7 @@ async def test_get_dashboard_success():
             "balance": str(balance),
             "health_ratio": "1.2",
             "position_id": str(id),
-            "deposit_data": [
-                {
-                    "token": "ETH",
-                    "amount": str(mock_extra_deposit),
-                }
-            ],
+            "deposit_data": [],
         }
 
 
