@@ -7,38 +7,67 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: var(--spinner-bgn);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 9999;
+    /* background-image: url('./background-img-form.png'); */
+    z-index: 10100;
+    background-repeat: no-repeat;
+    background-size: contain;
+
 }
 
-.modal-content {
-    background-color: #1a1625;
-    border: 1px solid rgba(147, 51, 234, 0.2);
-    border-radius: 16px;
-    padding: 24px;
-    width: 100%;
-    max-width: 600px;
-    color: white;
+.report-bug-form {
+    width: 500px;
+    background-color: #120721;
 }
+
 
 .modal-content h2 {
-    font-size: 24px;
-    font-weight: normal;
-    margin-bottom: 24px;
-    color: rgba(255, 255, 255, 0.9);
+
+    font-family: Open Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #798795
 }
 
-.modal-content p {
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 16px;
+.line {
+    border: 1px solid #22153A;
+}
+
+.modal-header {
+    font-family: Open Sans;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #798795
+}
+
+.modal-paragraph-text {
+    font-family: Open Sans;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #f0f0f0
+}
+
+.telegram-icon {
+    width: 20px;
+    height: 20px;
+
 }
 
 .bug-textarea {
     width: 100%;
-    min-height: 200px;
-    background-color: #231f31;
+    min-height: 135px;
+    background-color: #22153a;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 12px;
@@ -71,35 +100,7 @@
 }
 
 .button-group {
+    margin-top: 20px;
     display: flex;
     gap: 16px;
-}
-
-.cancel-button,
-.submit-button {
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.cancel-button {
-    background-color: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-.cancel-button:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-.submit-button {
-    background: linear-gradient(to right, #9333ea, #3b82f6);
-    border: none;
-    color: white;
-}
-
-.submit-button:hover {
-    background: linear-gradient(to right, #7e22ce, #2563eb);
 }

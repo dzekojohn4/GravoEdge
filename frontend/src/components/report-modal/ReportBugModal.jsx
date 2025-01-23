@@ -1,5 +1,9 @@
 import React from "react"
 import "./ReportBugModal.css"
+import telegramIcon from "../../assets/icons/telegram icon.png"
+import bg from "../../assets/images/background-form.png"
+import { Button } from "components/ui/custom-button/Button"
+
 
 export function ReportBugModal({ onClose }) {
     const handleSubmit = (e) => {
@@ -8,31 +12,38 @@ export function ReportBugModal({ onClose }) {
     }
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <h2>Report Bug</h2>
-                <form onSubmit={handleSubmit}>
+        <div onClick={onClose} style={{ backgroundImage: `url(${bg})`, backgroundSize: 'contain' }} className="modal-overlay">
+            <form className="report-bug-form" onClick={(e) => {
+                e.stopPropagation();
+            }} onSubmit={handleSubmit} >
+                <div className="modal-content">
+                    <h2 >Report Bug</h2>
+
+
                     <p>Please describe the bug you've encountered</p>
                     <textarea placeholder="The bug I'm experiencing..." className="bug-textarea" />
 
-                    <div className="dev-group-link">
-                        <svg className="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M22 2L11 13"></path>
-                            <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
-                        </svg>
-                        Ask in our Dev group
-                    </div>
+                    <a className="dev-group-link" href="https://t.me/spotnet_dev">
 
-                    <div className="button-group">
-                        <button type="button" className="cancel-button" onClick={onClose}>
-                            Cancel
-                        </button>
-                        <button type="submit" className="submit-button">
-                            Send Report
-                        </button>
-                    </div>
-                </form>
-            </div>
+                        <img src={telegramIcon} alt="telegram-icon" className="telegram-icon" />
+                        Ask in our Dev group
+                    </a>
+                </div>
+                <div className="button-group">
+                    <Button variant="secondary" type="button" className="cancel-button" onClick={(e) => {
+                        e.stopPropagation();
+                        onClose();
+                    }}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" type="submit" className="submit-button">
+                        Send Report
+                    </Button>
+                </div>
+
+
+            </form>
         </div>
+
     )
 }
