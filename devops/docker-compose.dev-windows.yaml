@@ -8,14 +8,14 @@ networks:
 services:
   backend:
     build: 
-      context: .
+      context: ..
       dockerfile: Dockerfile.windows
     command: ["/bin/bash", "-c", "chmod +x /app/entrypoint.sh && /app/entrypoint.sh"]
     container_name: backend_dev
     volumes:
-      - .:/app
+      - ..:/app
     env_file:
-      - .env.dev
+      - ../.env.dev
     ports:
       - "8000:8000"
     networks:
@@ -38,7 +38,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
-      - ./init-db:/docker-entrypoint-initdb.d
+      - ../init-db:/docker-entrypoint-initdb.d
     networks:
       - app_network
     ports:
@@ -51,11 +51,11 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
       dockerfile: Dockerfile.dev
     container_name: frontend_dev
     volumes:
-      - ./frontend:/app
+      - ../frontend:/app
     ports:
       - "3000:80"
     networks:

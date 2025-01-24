@@ -20,9 +20,48 @@ This guide explains how to start the development environment for the project usi
 
 ## Prerequisites
 
-- Docker installed on your machine (v19.03+ recommended).
-- Docker Compose installed (v1.27+ recommended).
+- Docker installed on your machine (2.10+ recommended).
+- Docker Compose installed (v2.0+ recommended).
 - Ensure port **5433** is available for the PostgreSQL container.
+
+### Version Requirements
+
+1. **Check Docker version:**
+   ```sh
+   docker --version
+   # Should output something like: Docker version 24.0.7, build afdd53b
+   ```
+   If your version is below 20.10.0, please update Docker following the [official upgrade guide](https://docs.docker.com/engine/install/).
+
+2. **Check Docker Compose version:**
+   ```sh
+   # For Docker Compose V2
+   docker compose version
+   # Should output something like: Docker Compose version v2.21.0
+   ```
+
+   If you get a "command not found" error, you might have the older version. Check with:
+   ```sh
+   docker-compose version
+   ```
+
+### Installing/Updating Docker
+
+1. **For Ubuntu/Debian:**
+   ```sh
+   # Remove old versions
+   sudo apt-get remove docker docker-engine docker.io containerd runc
+
+   # Install latest version
+   curl -fsSL https://get.docker.com -o get-docker.sh
+   sudo sh get-docker.sh
+   ```
+
+2. **For Windows/Mac:**
+   - Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+3. **For other systems:**
+   - Follow the [official Docker installation guide](https://docs.docker.com/engine/install/)
 
 ## Starting the Development Environment
 
@@ -38,13 +77,13 @@ This guide explains how to start the development environment for the project usi
    To build and run the entire development environment, use the following command:
 
    ```sh
-   docker-compose -f docker-compose.dev.yaml up --build
+   docker compose -f devops/docker-compose.dev.yaml up --build
    ```
 
    For Windows users, use this command to build and start the development environment:
 
    ```sh
-   docker-compose -f docker-compose.dev-windows.yaml up --build
+   docker compose -f devops/docker-compose.dev-windows.yaml up --build
    ```
 
    This command will:
@@ -110,13 +149,13 @@ To simplify repetitive tasks and ensure consistency, a `Makefile` is included in
 - **Docker Build Issues**: If changes in dependencies are not reflected, you may need to clear Docker's cache:
 
   ```sh
-  docker-compose -f docker-compose.dev.yaml build --no-cache
+  docker compose -f devops/docker-compose.dev.yaml build --no-cache
   ```
 
   Windows users:
 
   ```sh
-  docker-compose -f docker-compose.dev-windows.yaml build --no-cache
+  docker compose -f devops/docker-compose.dev-windows.yaml build --no-cache
   ```
 
 ## How to run test cases
@@ -144,13 +183,13 @@ poetry run pytest
 To stop the environment and remove containers, use:
 
 ```sh
-docker-compose -f docker-compose.dev.yaml down
+docker compose -f devops/docker-compose.dev.yaml down
 ```
 
 windows users:
 
 ```sh
-docker-compose -f docker-compose.dev-windows.yaml down
+docker compose -f devops/docker-compose.dev-windows.yaml down
 ```
 
 This command stops all running containers and removes them, but the data volumes will persist.
@@ -160,13 +199,13 @@ This command stops all running containers and removes them, but the data volumes
 If you have made changes to the code or Docker configuration, rebuild the containers:
 
 ```sh
-docker-compose -f docker-compose.dev.yaml up --build
+docker compose -f devops/docker-compose.dev.yaml up --build
 ```
 
 windows users:
 
 ```sh
-docker-compose -f docker-compose.dev-windows.yaml up --build
+docker compose -f devops/docker-compose.dev-windows.yaml up --build
 ```
 
 ## About Celery
@@ -184,7 +223,7 @@ This project utilizes Celery to handle asynchronous tasks. The Celery workers an
 To start the Celery worker and Celery Beat services, use the following command in the terminal within your project directory:
 
 ```bash
-docker-compose up -d celery celery_beat
+docker compose up -d celery celery_beat
 ```
 
 ### Stopping Celery
@@ -200,7 +239,7 @@ docker-compose stop celery celery_beat
 If you want to purge all tasks from the Celery queue, you can do this by executing
 
 ```bash
-docker-compose run --rm celery celery -A spotnet_tracker.celery_config purge
+docker compose run --rm celery celery -A spotnet_tracker.celery_config purge
 ```
 
 ## How to add test data
@@ -208,13 +247,13 @@ docker-compose run --rm celery celery -A spotnet_tracker.celery_config purge
 1. Run dev container
 
 ```
-docker-compose -f docker-compose.dev.yaml up --build
+docker compose -f devops/docker-compose.dev.yaml up --build
 ```
 
 windows only:
 
 ```
-docker-compose -f docker-compose.dev-windows.yaml up --build
+docker compose -f devops/docker-compose.dev-windows.yaml up --build
 ```
 
 2. In new terminal window run command to populate db
@@ -228,13 +267,13 @@ docker exec -ti backend_dev python -m web_app.db.seed_data
 Run up docker containers
 
 ```bash
-docker-compose -f docker-compose.dev.yaml up --build
+docker compose -f docker-compose.dev.yaml up --build
 ```
 
 Windows users:
 
 ```bash
-docker-compose -f docker-compose.dev-windows.yaml up --build
+docker compose -f devops/docker-compose.dev-windows.yaml up --build
 ```
 
 Go to backend container in new terminal window
