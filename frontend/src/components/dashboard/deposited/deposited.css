@@ -75,8 +75,8 @@
 
 @media (max-width: 480px) {
   .tab-content {
-    width: fit-content;
     font-size: 14px;
+    padding: 0px 0px 0px 0px;
   }
 
   .icon {
