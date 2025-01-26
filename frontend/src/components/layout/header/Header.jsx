@@ -89,12 +89,12 @@ function Header({ onConnectWallet, onLogout }) {
         </div>
       </nav>
 
-      {/* Report Bug Button */}
+     
       {!isModalOpen && <ReportBugButton onClick={openModal} />}
 
-      {/* Report Bug Modal */}
+    
       {isModalOpen && (
-        <ReportBugModal isOpen={true} onClose={closeModal} />
+        <ReportBugModal onClose={closeModal} />
       )}
     </>
   );
