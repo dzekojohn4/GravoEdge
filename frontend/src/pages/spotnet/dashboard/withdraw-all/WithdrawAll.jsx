@@ -10,10 +10,6 @@ import computerIcon from '../../../../assets/icons/computer-icon.svg';
 import depositIcon from '../../../../assets/icons/deposit.svg';
 import withdrawIcon from '../../../../assets/icons/withdraw.svg';
 import DashboardLayout from '../../../DashboardLayout';
-import BalanceCards from 'components/ui/balance-cards/BalanceCards';
-import { useWalletStore } from 'stores/useWalletStore';
-import { Button } from 'components/ui/custom-button/Button';
-import useWithdrawAll from 'hooks/useWithdrawAll';
 import './withdraw_all.css';
 
 const WithdrawAll = () => {
