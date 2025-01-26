@@ -22,9 +22,9 @@ import Stake from './pages/stake/Stake';
 import { TELEGRAM_BOT_LINK } from './utils/constants';
 import { useCheckMobile } from './hooks/useCheckMobile';
 import PositionHistory from './pages/position-history/PositionHistory';
-import WithdrawAll from 'pages/spotnet/dashboard/withdraw-all/WithdrawAll';
-import { DefiSpringPage } from 'pages/spotnet/defi-spring/DefiSpring';
-import { AddDeposit } from 'pages/add-deposit/AddDeposit';
+import WithdrawAll from './pages/spotnet/dashboard/withdraw-all/WithdrawAll';
+import { DefiSpringPage } from './pages/spotnet/defi-spring/DefiSpring';
+import { AddDeposit } from './pages/add-deposit/AddDeposit';
 
 function App() {
   const { setWalletId, removeWalletId } = useWalletStore();
@@ -34,7 +34,7 @@ function App() {
   const [isMobileRestrictionModalOpen, setisMobileRestrictionModalOpen] = useState(true);
   const isMobile = useCheckMobile();
 
-  const disableDesktopOnMobile = process.env.REACT_APP_DISABLE_DESKTOP_ON_MOBILE !== 'false';
+  const disableDesktopOnMobile = import.meta.env.REACT_APP_DISABLE_DESKTOP_ON_MOBILE !== 'false';
 
   const connectWalletMutation = useConnectWallet(setWalletId);
 

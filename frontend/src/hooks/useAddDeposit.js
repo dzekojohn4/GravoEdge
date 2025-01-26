@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { axiosInstance } from 'utils/axios';
-import { notify } from 'components/layout/notifier/Notifier';
+import { axiosInstance } from '../utils/axios';
+import { notify } from '../components/layout/notifier/Notifier';
 import { getWallet } from '../services/wallet';
 import { sendExtraDepositTransaction } from '../services/transaction';
 
@@ -16,11 +16,11 @@ export const useAddDeposit = () => {
       const { data: contractAddress } = await axiosInstance.get(`/api/get-user-contract?wallet_id=${walletId}`);
 
       // Prepare extra deposit data
-      const {data: prepare_data} = await axiosInstance.get(`/api/get-add-deposit-data/${positionId}`, {
+      const { data: prepare_data } = await axiosInstance.get(`/api/get-add-deposit-data/${positionId}`, {
         params: {
           amount: amount,
-          token_symbol: tokenSymbol
-        }
+          token_symbol: tokenSymbol,
+        },
       });
 
       // Send transaction
@@ -30,7 +30,7 @@ export const useAddDeposit = () => {
       return await axiosInstance.post(`/api/add-extra-deposit/${positionId}`, {
         transaction_hash: transaction_hash,
         token_symbol: tokenSymbol,
-        amount: amount
+        amount: amount,
       });
     },
     onSuccess: () => {

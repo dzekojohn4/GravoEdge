@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import { ReactComponent as Logo } from '../../../assets/icons/spotnet-logo.svg';
+import Logo from '../../../assets/icons/spotnet-logo.svg?react';
 import WalletSection from '../wallet-section/WalletSection';
 import NavigationLinks from '../navigation-links/NavigationLinks';
 import useLockBodyScroll from '../../../hooks/useLockBodyScroll';
