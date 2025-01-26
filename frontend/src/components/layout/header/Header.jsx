@@ -8,14 +8,13 @@ import useLockBodyScroll from '../../../hooks/useLockBodyScroll';
 import MobDropdownMenu from '../mob-dropdown-menu/MobDropdownMenu';
 import './header.css';
 import '../../../globals.css';
-import { ReportBugButton } from 'components/report-button/ReportBugButton';
-import { ReportBugModal } from 'components/report-modal/ReportBugModal';
+import { ReportBugButton } from '../../../components/report-button/ReportBugButton';
+import { ReportBugModal } from '../../../components/report-modal/ReportBugModal';
 
 function Header({ onConnectWallet, onLogout }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-
 
   const makeNavStick = [
     '/overview',
@@ -59,11 +58,9 @@ function Header({ onConnectWallet, onLogout }) {
     setIsMenuOpen(false);
   };
 
-
   const openModal = () => {
     setIsModalOpen(true);
   };
-
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -89,13 +86,9 @@ function Header({ onConnectWallet, onLogout }) {
         </div>
       </nav>
 
-     
       {!isModalOpen && <ReportBugButton onClick={openModal} />}
 
-    
-      {isModalOpen && (
-        <ReportBugModal onClose={closeModal} />
-      )}
+      {isModalOpen && <ReportBugModal onClose={closeModal} />}
     </>
   );
 }
