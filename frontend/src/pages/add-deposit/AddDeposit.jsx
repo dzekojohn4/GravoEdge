@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
-import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
-import { useAddDeposit } from 'hooks/useAddDeposit';
+import HealthIcon from '../../assets/icons/health.svg?react';
+import EthIcon from '../../assets/icons/ethereum.svg?react';
+import { useAddDeposit } from '../../hooks/useAddDeposit';
 import './addDeposit.css';
-import Card from 'components/ui/card/Card';
-import TokenSelector from 'components/ui/token-selector/TokenSelector';
-import { NUMBER_REGEX } from 'utils/regex';
-import { Button } from 'components/ui/custom-button/Button';
-import Sidebar from 'components/layout/sidebar/Sidebar';
-import clockIcon from 'assets/icons/clock.svg';
-import computerIcon from 'assets/icons/computer-icon.svg';
-import depositIcon from 'assets/icons/deposit.svg';
-import withdrawIcon from 'assets/icons/withdraw.svg';
-import useDashboardData from 'hooks/useDashboardData';
+import Card from '../../components/ui/card/Card';
+import TokenSelector from '../../components/ui/token-selector/TokenSelector';
+import { NUMBER_REGEX } from '../../utils/regex';
+import { Button } from '../../components/ui/custom-button/Button';
+import Sidebar from '../../components/layout/sidebar/Sidebar';
+import clockIcon from '../../assets/icons/clock.svg';
+import computerIcon from '../../assets/icons/computer-icon.svg';
+import depositIcon from '../../assets/icons/deposit.svg';
+import withdrawIcon from '../../assets/icons/withdraw.svg';
+import useDashboardData from '../../hooks/useDashboardData';
 
 export const AddDeposit = () => {
   const formatNumber = (value, currency = false) => {
@@ -65,11 +65,7 @@ export const AddDeposit = () => {
           <h1 className="deposit-title">zkLend Deposit</h1>
           <div className="main-container-deposit">
             <div className="top-cards-deposit">
-              <Card
-                label="Health Factor"
-                value={dashboardData?.health_ratio}
-                icon={<HealthIcon className="icon" />}
-              />
+              <Card label="Health Factor" value={dashboardData?.health_ratio} icon={<HealthIcon className="icon" />} />
               <Card
                 label="Borrow Balance"
                 value={formatNumber(dashboardData?.borrowed, true)}
