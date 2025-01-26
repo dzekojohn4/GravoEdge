@@ -35,13 +35,13 @@ describe('Wallet Services', () => {
 
   describe('checkForCRMToken', () => {
     it('should return true in development mode', async () => {
-      import.meta.env.REACT_APP_IS_DEV = 'true';
+      process.env.VITE_APP_IS_DEV = 'true';
       const result = await checkForCRMToken('0x123');
       expect(result).toBe(true);
     });
 
     it('should validate CRM token and return true if wallet has tokens', async () => {
-      import.meta.env.REACT_APP_IS_DEV = 'false';
+      process.env.VITE_APP_IS_DEV = 'false';
       const mockStarknet = {
         wallet: {
           isConnected: true,
@@ -59,7 +59,7 @@ describe('Wallet Services', () => {
     });
 
     it('should return false and alert if wallet lacks CRM tokens', async () => {
-      import.meta.env.IS_DEV = 'false';
+      process.env.VITE_IS_DEV = 'false';
       const mockStarknet = {
         wallet: {
           isConnected: true,

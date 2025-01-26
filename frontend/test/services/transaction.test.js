@@ -46,11 +46,11 @@ describe('Transaction Functions', () => {
 
     getWallet.mockResolvedValue(mockWallet);
 
-    import.meta.env.REACT_APP_BACKEND_URL = mockBackendUrl;
+    process.env.VITE_APP_BACKEND_URL = mockBackendUrl;
   });
 
   afterEach(() => {
-    delete import.meta.env.REACT_APP_BACKEND_URL;
+    delete process.env.VITE_APP_BACKEND_URL;
   });
 
   describe('sendTransaction', () => {
