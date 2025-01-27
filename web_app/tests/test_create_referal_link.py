@@ -42,3 +42,4 @@ async def test_create_referal_link_user_not_found(client, mock_db):
         assert response.status_code == 404
         data = response.json()
         assert data["detail"] == "User with the provided wallet_id does not exist"
+
