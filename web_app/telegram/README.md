@@ -1,5 +1,3 @@
-# Telegram Bot Setup
-
 This document provides instructions on how to set up and run the Telegram bot, as well as how to configure webhooks.
 
 ## Prerequisites
@@ -9,14 +7,11 @@ This document provides instructions on how to set up and run the Telegram bot, a
 ## Setting Up the Environment
 
 2. **Create a `.env` file in the root directory and add your environment variables:**
-
    ```env
    TELEGRAM_TOKEN=<your-telegram-bot-token>
    TELEGRAM_WEBAPP_URL=<your-webapp-url>
-
-   APP_BOT_ID=<your-telegram-bot-id>
+   REACT_APP_BOT_ID=<your-telegram-bot-id>
    ```
-
    Note: You can obtain the bot ID directly from your Telegram bot token in the format `bot_id:secret`.
 
 ## Running the Bot
@@ -40,14 +35,7 @@ To set the webhook for your Telegram bot, follow these steps:
    This will set the webhook URL to the current request URL.
 
 3. Ensure that your server is publicly accessible so that Telegram can send updates to your webhook.
-
-## Additional Configuration In [BotFather](https://core.telegram.org/bots#botfather)
-
-- **Domain:** You need to set a domain for the bot to work properly with the Telegram widget login(frontend).
-- **Photo** You need to upload your site's logo, as it will be displayed when users log in through the Telegram login widget![alt text](./assets/image.png)
-- **Configure MiniApp URL:** This is optional but recommended for better integration.
-
-## Notes
+   @@ -48,4 +52,4 @@ To set the webhook for your Telegram bot, follow these steps:
 
 - Make sure your server is running and accessible to Telegram for the webhook to function correctly.
 - You can test the bot by sending the `/start` command after setting up the webhook.
