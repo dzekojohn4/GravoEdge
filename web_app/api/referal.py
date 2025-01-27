@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, FastAPI, Query
 import random
 import string
+
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query
 from sqlalchemy.orm import Session
-from fastapi import Depends
+
 from web_app.db.database import get_db
 from web_app.db.models import User
 
@@ -15,7 +16,8 @@ router = APIRouter(
 
 
 def generate_random_string(length=16):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    return "".join(random.choices(string.ascii_letters + string.digits, k=length))
+
 
 @router.get("/create_referal_link")
 async def create_referal_link(
@@ -34,12 +36,13 @@ async def create_referal_link(
     Raises:
         HTTPException: If the user is not found in the database
     """
-    
+
     user = db.query(User).filter(User.wallet_id == wallet_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="User with the provided wallet_id does not exist")
+        raise HTTPException(
+            status_code=404, detail="User with the provided wallet_id does not exist"
+        )
 
-    
     referral_code = generate_random_string()
     return {"wallet_id": wallet_id, "referral_code": referral_code}
 
