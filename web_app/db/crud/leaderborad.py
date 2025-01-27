@@ -7,7 +7,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 class LeaderboardCRUD:
+    """
+    A class used to perform CRUD operations related to the leaderboard.
+    """
     def __init__(self, session: Session):
+        """
+        Initializes a new instance of the class.
+
+        Args:
+            session (Session): The database session to be used for database operations.
+        """
         self.Session = session
 
     def get_top_users_by_positions(self) -> list[dict]:

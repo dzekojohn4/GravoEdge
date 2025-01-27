@@ -8,10 +8,23 @@ from web_app.db.session import get_db
 router = APIRouter()
 
 class UserLeaderboardItem(BaseModel):
+    """
+    Args:
+        db (Session): Database session dependency.
+
+    Returns:
+        UserLeaderboardResponse: Response containing the leaderboard data.
+    """
     wallet_id: str
     positions_number: int
 
 class UserLeaderboardResponse(BaseModel):
+    """
+    UserLeaderboardResponse is a model representing the response for a user leaderboard.
+
+    Attributes:
+        leaderboard (List[UserLeaderboardItem]): A list of user leaderboard items.
+    """
     leaderboard: List[UserLeaderboardItem]
 
 @router.get(
