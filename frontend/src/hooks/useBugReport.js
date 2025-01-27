@@ -1,8 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from 'utils/axios';
-// import { generateTelegramLink } from 'services/telegram';
 import { notify } from 'components/layout/notifier/Notifier';
-import { sendExtraDepositTransaction } from 'services/transaction';
 
 export const useBugReport = (walletId, bugDescription, onClose) => {
   const mutation = useMutation({
