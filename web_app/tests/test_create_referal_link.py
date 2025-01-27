@@ -14,7 +14,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from fastapi.testclient import TestClient
 
-from web_app import app
+from web_app.api import app 
 from web_app.db.models import User
 
 
