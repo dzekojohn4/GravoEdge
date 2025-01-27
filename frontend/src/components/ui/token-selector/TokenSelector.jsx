@@ -1,7 +1,7 @@
 import React from 'react';
-import ETH from '../../../assets/icons/ethereum.svg?react';
-import USDC from '../../../assets/icons/borrow_usdc.svg?react';
-import STRK from '../../../assets/icons/strk.svg?react';
+import ETH from '@/assets/icons/ethereum.svg?react';
+import USDC from '@/assets/icons/borrow_usdc.svg?react';
+import STRK from '@/assets/icons/strk.svg?react';
 import './tokenSelector.css';
 
 const Tokens = [

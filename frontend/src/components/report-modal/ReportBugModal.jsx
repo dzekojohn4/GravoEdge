@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './ReportBugModal.css';
-import telegramIcon from '../../assets/icons/telegram.svg';
-import { Button } from '../../components/ui/custom-button/Button';
-import { useWalletStore } from '../../stores/useWalletStore';
-import { useBugReport } from '../../hooks/useBugReport';
+import telegramIcon from '@/assets/icons/telegram.svg';
+import { Button } from '@/components/ui/custom-button/Button';
+import { useWalletStore } from '@/stores/useWalletStore';
+import { useBugReport } from '@/hooks/useBugReport';
 
 export function ReportBugModal({ onClose }) {
   const { walletId } = useWalletStore();

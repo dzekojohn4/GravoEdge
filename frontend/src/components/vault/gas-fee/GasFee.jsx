@@ -1,5 +1,5 @@
 import React from 'react';
-import SettingIcon from '../../../assets/icons/settings.svg?react';
+import SettingIcon from '@/assets/icons/settings.svg?react';
 import './gasFee.css';
 
 export default function GasFee() {

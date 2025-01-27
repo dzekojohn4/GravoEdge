@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import SmallStar from '../../../assets/particles/small_star.svg?react';
-import StarMaker from '../../layout/star-maker/StarMaker';
-import Decoration from '../../../assets/particles/deco.svg?react';
-import Starknet from '../../../assets/particles/starknet.svg?react';
-import Rocket from '../../../assets/icons/rocket.svg?react';
+import SmallStar from '@/assets/particles/small_star.svg?react';
+import StarMaker from '@/components/layout/star-maker/StarMaker';
+import Decoration from '@/assets/particles/deco.svg?react';
+import Starknet from '@/assets/particles/starknet.svg?react';
+import Rocket from '@/assets/icons/rocket.svg?react';
 import './home.css';
-import { useWalletStore } from '../../../stores/useWalletStore';
-import { notify } from '../../layout/notifier/Notifier';
+import { useWalletStore } from '@/stores/useWalletStore';
+import { notify } from '@/components/layout/notifier/Notifier';
 
 function Home() {
   const { walletId } = useWalletStore();

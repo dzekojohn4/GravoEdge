@@ -1,8 +1,8 @@
 import './dashboardTabs.css';
-import DepositIcon from '../../../assets/icons/deposited_dynamic.svg?react';
-import CollateralIcon from '../../../assets/icons/collateral_dynamic.svg?react';
-import BorrowIcon from '../../../assets/icons/borrow_dynamic.svg?react';
-import { DASHBOARD_TABS } from '../../../utils/constants';
+import DepositIcon from '@/assets/icons/deposited_dynamic.svg?react';
+import CollateralIcon from '@/assets/icons/collateral_dynamic.svg?react';
+import BorrowIcon from '@/assets/icons/borrow_dynamic.svg?react';
+import { DASHBOARD_TABS } from '@/utils/constants';
 
 function DashboardTabs({ activeTab, switchTab }) {
   const { COLLATERAL, BORROW, DEPOSITED } = DASHBOARD_TABS;

@@ -1,10 +1,10 @@
 import React from 'react';
-import Sidebar from '../components/layout/sidebar/Sidebar';
+import Sidebar from '@/components/layout/sidebar/Sidebar';
 import './DashboardLayout.css';
-import clockIcon from '../assets/icons/clock.svg';
-import computerIcon from '../assets/icons/computer-icon.svg';
-import depositIcon from '../assets/icons/deposit.svg';
-import withdrawIcon from '../assets/icons/withdraw.svg';
+import clockIcon from '@/assets/icons/clock.svg';
+import computerIcon from '@/assets/icons/computer-icon.svg';
+import depositIcon from '@/assets/icons/deposit.svg';
+import withdrawIcon from '@/assets/icons/withdraw.svg';
 
 const dashboardItems = [
   {

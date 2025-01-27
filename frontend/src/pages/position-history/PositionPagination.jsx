@@ -1,6 +1,6 @@
 import React from 'react';
-import ArrowLeftIcon from '../../assets/icons/arrow-left.svg?react';
-import ArrowRightIcon from '../../assets/icons/arrow-right.svg?react';
+import ArrowLeftIcon from '@/assets/icons/arrow-left.svg?react';
+import ArrowRightIcon from '@/assets/icons/arrow-right.svg?react';
 import './positionPagination.css';
 
 export default function PositionPagination({ currentPage, setCurrentPage, isPending, tableData, positionsOnPage }) {

@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
-import HealthIcon from '../../assets/icons/health.svg?react';
-import EthIcon from '../../assets/icons/ethereum.svg?react';
-import { useAddDeposit } from '../../hooks/useAddDeposit';
+import EthIcon from '@/assets/icons/ethereum.svg?react';
+import HealthIcon from '@/assets/icons/health.svg?react';
+import Card from '@/components/ui/card/Card';
+import { Button } from '@/components/ui/custom-button/Button';
+import TokenSelector from '@/components/ui/token-selector/TokenSelector';
+import { useAddDeposit } from '@/hooks/useAddDeposit';
+import useDashboardData from '@/hooks/useDashboardData';
+import { NUMBER_REGEX } from '@/utils/regex';
+import { useState } from 'react';
 import DashboardLayout from '../DashboardLayout';
 import './addDeposit.css';
-import Card from '../../components/ui/card/Card';
-import TokenSelector from '../../components/ui/token-selector/TokenSelector';
-import { NUMBER_REGEX } from '../../utils/regex';
-import { Button } from '../../components/ui/custom-button/Button';
-import Sidebar from '../../components/layout/sidebar/Sidebar';
-import clockIcon from '../../assets/icons/clock.svg';
-import computerIcon from '../../assets/icons/computer-icon.svg';
-import depositIcon from '../../assets/icons/deposit.svg';
-import withdrawIcon from '../../assets/icons/withdraw.svg';
-import useDashboardData from '../../hooks/useDashboardData';
 
 export const AddDeposit = () => {
   const formatNumber = (value, currency = false) => {

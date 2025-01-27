@@ -1,6 +1,6 @@
 import React from 'react';
 import './collateral.css';
-import CollateralIcon from '../../../assets/icons/collateral_dynamic.svg?react';
+import CollateralIcon from '@/assets/icons/collateral_dynamic.svg?react';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 function Collateral({ data, startSum, currentSum, getCurrentSumColor }) {

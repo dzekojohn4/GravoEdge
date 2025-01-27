@@ -1,8 +1,8 @@
 import React from 'react';
-import ArrowDownIcon from '../../../assets/icons/dropdown-arrow.svg?react';
-import ReloadIcon from '../../../assets/icons/reload.svg?react';
-import OpenBotIcon from '../../../assets/icons/bot.svg?react';
-import TermsIcon from '../../../assets/icons/terms.svg?react';
+import ArrowDownIcon from '@/assets/icons/dropdown-arrow.svg?react';
+import ReloadIcon from '@/assets/icons/reload.svg?react';
+import OpenBotIcon from '@/assets/icons/bot.svg?react';
+import TermsIcon from '@/assets/icons/terms.svg?react';
 import './mobDropdownMenu.css';
 
 const menuItems = [
