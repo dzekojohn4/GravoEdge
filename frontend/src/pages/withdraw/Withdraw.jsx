@@ -1,10 +1,10 @@
 import React from 'react';
 import './withdraw.css';
-import DiamondIcon from '../../assets/icons/diamond.svg?react';
-import TimeIcon from '../../assets/icons/time.svg?react';
-import SettingIcon from '../../assets/icons/settings.svg?react';
-import MetricCard from '../../components/vault/metric-card/MetricCard';
-import { VaultLayout } from '../../components/vault/VaultLayout';
+import DiamondIcon from '@/assets/icons/diamond.svg?react';
+import TimeIcon from '@/assets/icons/time.svg?react';
+import SettingIcon from '@/assets/icons/settings.svg?react';
+import MetricCard from '@/components/vault/metric-card/MetricCard';
+import { VaultLayout } from '@/components/vault/VaultLayout';
 
 export default function Withdraw() {
   return (

@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import TwitterIcon from '../../../assets/icons/new-twitter.svg?react';
-import TelegramIcon from '../../../assets/icons/telegram.svg?react';
-import GithubIcon from '../../../assets/icons/github.svg?react';
-import DashboardIcon from '../../../assets/icons/dashboard-icon.svg?react';
-import FormIcon from '../../../assets/icons/form-icon.svg?react';
+import TwitterIcon from '@/assets/icons/new-twitter.svg?react';
+import TelegramIcon from '@/assets/icons/telegram.svg?react';
+import GithubIcon from '@/assets/icons/github.svg?react';
+import DashboardIcon from '@/assets/icons/dashboard-icon.svg?react';
+import FormIcon from '@/assets/icons/form-icon.svg?react';
 
 import './footer.css';
 

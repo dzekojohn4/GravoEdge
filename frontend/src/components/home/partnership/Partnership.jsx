@@ -1,8 +1,8 @@
 import React from 'react';
 import './partnership.css';
-import ZklendLogo from '../../../assets/images/zklend_logo.svg?react';
-import EkuboLogo from '../../../assets/images/ekubo_logo.svg?react';
-import Star from '../../../assets/particles/star.svg?react';
+import ZklendLogo from '@/assets/images/zklend_logo.svg?react';
+import EkuboLogo from '@/assets/images/ekubo_logo.svg?react';
+import Star from '@/assets/particles/star.svg?react';
 
 const Partnership = () => {
   const logos = [];

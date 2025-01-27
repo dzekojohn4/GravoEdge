@@ -1,4 +1,4 @@
-import addSquare from '../../../assets/icons/add-square.svg?react';
+import addSquare from '@/assets/icons/add-square.svg?react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export const SidebarItem = ({ item: { icon, name }, isExpanded, hasChildren, isNested }) => {
