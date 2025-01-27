@@ -1,3 +1,6 @@
+"""
+This module defines the API endpoints and serializers for the leaderboard functionality.
+"""
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from typing import List
@@ -11,7 +14,7 @@ class UserLeaderboardItem(BaseModel):
     """
     Args:
         db (Session): Database session dependency.
-
+        
     Returns:
         UserLeaderboardResponse: Response containing the leaderboard data.
     """

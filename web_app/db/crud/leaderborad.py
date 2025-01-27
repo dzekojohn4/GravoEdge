@@ -1,3 +1,7 @@
+"""
+This module provides CRUD operations for the leaderboard, retrieving the top users by positions.
+
+"""
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
