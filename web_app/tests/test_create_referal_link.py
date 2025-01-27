@@ -15,7 +15,6 @@ import pytest
 from fastapi.testclient import TestClient
 
 from web_app.api.referal import app
-from web_app.db.models import User
 
 
 @pytest.fixture
@@ -24,20 +23,20 @@ def client():
     with TestClient(app) as client:
         yield client
 
+
 @pytest.mark.asyncio
 async def test_create_referal_link_missing_wallet_id(client):
     """Test error when wallet ID is missing in the request."""
     response = client.get("/api/create_referal_link")
     assert response.status_code == 422
     data = response.json()
-    assert data["detail"][0]["msg"] == "Field required"  
+    assert data["detail"][0]["msg"] == "Field required"
+
 
 @pytest.mark.asyncio
-async def test_create_referal_link_user_not_found(client):
+async def test_create_referal_link_user_not_found(client, mock_db):
     """Test error when the user is not found in the database."""
-    with patch("web_app.db.database.get_database") as mock_get_db:  
-        mock_db = MagicMock()
-        mock_get_db.return_value = mock_db
+    with patch("web_app.db.database.get_database", return_value=mock_db):
         mock_db.query().filter().first.return_value = None
         response = client.get("/api/create_referal_link?wallet_id=wallet789")
         assert response.status_code == 404

@@ -19,8 +19,8 @@ import string
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from web_app.db.database import get_database
-from web_app.db.models import User
+from web_app.db.database import Base, get_database
+from web_app.db.models import UserDBConnector
 
 app = FastAPI()
 router = APIRouter(
@@ -28,6 +28,11 @@ router = APIRouter(
     tags=["referral"],
     responses={404: {"description": "Not found"}},
 )
+
+
+class ReferralResponse(Base):
+    wallet_id: str
+    referral_code: str
 
 
 def generate_random_string(length=16):
@@ -62,14 +67,14 @@ async def create_referal_link(
         HTTPException: If the user is not found in the database
     """
 
-    user = db.query(User).filter(User.wallet_id == wallet_id).first()
+    user = UserDBConnector.get_user_by_wallet_id(db, wallet_id)
     if not user:
         raise HTTPException(
             status_code=404, detail="User with the provided wallet_id does not exist"
         )
 
     referral_code = generate_random_string()
-    return {"wallet_id": wallet_id, "referral_code": referral_code}
+    return ReferralResponse(wallet_id=wallet_id, referral_code=referral_code)
 
 
 app.include_router(router)
