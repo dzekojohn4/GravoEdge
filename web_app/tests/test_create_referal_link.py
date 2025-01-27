@@ -9,7 +9,7 @@ Tests include:
 Uses pytest, unittest.mock for mocking, and FastAPI's TestClient for testing the API.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, Mock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -22,6 +22,13 @@ def client():
     """Fixture for creating a TestClient instance for API testing."""
     with TestClient(app) as client:
         yield client
+
+@pytest.fixture
+def mock_db():
+    mock_db = Mock()
+    mock_db.query().filter().first.return_value = None 
+    return mock_db
+
 
 
 @pytest.mark.asyncio
