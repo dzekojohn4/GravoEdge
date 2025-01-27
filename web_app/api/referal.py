@@ -1,3 +1,18 @@
+"""
+FastAPI app for generating referral links based on wallet IDs.
+
+Endpoint:
+- GET /api/create_referal_link: Creates a referral link with a random code for a user.
+
+Dependencies:
+- SQLAlchemy: For user lookup in the database.
+- FastAPI: For handling API requests.
+- random and string: For generating referral codes.
+
+Errors:
+- 404: If the user with the provided wallet ID does not exist.
+"""
+
 import random
 import string
 
@@ -16,6 +31,16 @@ router = APIRouter(
 
 
 def generate_random_string(length=16):
+    """
+    Generate a random string of letters and digits with the given length.
+
+    Args:
+        length (int): Length of the string (default is 16).
+
+    Returns:
+        str: Randomly generated string.
+    """
+
     return "".join(random.choices(string.ascii_letters + string.digits, k=length))
 
 
