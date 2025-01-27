@@ -8,6 +8,7 @@ Tests include:
 
 Uses pytest, unittest.mock for mocking, and FastAPI's TestClient for testing the API.
 """
+
 from unittest.mock import MagicMock, patch
 
 import pytest
