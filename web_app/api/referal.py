@@ -20,7 +20,7 @@ from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from web_app.db.database import Base, get_database
-from web_app.db.models import UserDBConnector
+from web_app.db.crud import UserDBConnector
 
 app = FastAPI()
 router = APIRouter(
