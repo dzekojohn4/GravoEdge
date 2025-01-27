@@ -21,6 +21,7 @@ from sqlalchemy.orm import Session
 
 from web_app.db.database import Base, get_database
 from web_app.db.crud import UserDBConnector
+from pydantic import BaseModel
 
 app = FastAPI()
 router = APIRouter(
@@ -30,7 +31,7 @@ router = APIRouter(
 )
 
 
-class ReferralResponse(Base):
+class ReferralResponse(BaseModel):
     """ 
     Response model
     """
