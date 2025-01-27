@@ -1,5 +1,5 @@
 import EthIcon from '@/assets/icons/ethereum.svg?react';
-import filterIcon from '@/assets/icons/filter-horizontal.svg?react';
+import filterIcon from '@/assets/icons/filter-horizontal.svg';
 import HealthIcon from '@/assets/icons/health.svg?react';
 import StrkIcon from '@/assets/icons/strk.svg?react';
 import UsdIcon from '@/assets/icons/usd_coin.svg?react';
