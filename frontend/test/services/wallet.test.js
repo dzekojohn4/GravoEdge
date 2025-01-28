@@ -6,6 +6,7 @@ import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../../src/utils/constan
 jest.mock('starknetkit', () => ({
   connect: jest.fn(),
   disconnect: jest.fn(),
+  getSelectedConnectorWallet: jest.fn(),
 }));
 
 jest.mock(

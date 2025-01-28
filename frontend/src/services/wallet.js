@@ -1,6 +1,5 @@
 import React from 'react';
-import { connect, disconnect } from 'starknetkit';
-import { getSelectedConnectorWallet } from 'starknetkit';
+import { connect, disconnect, getSelectedConnectorWallet } from 'starknetkit';
 import { InjectedConnector } from 'starknetkit/injected';
 import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../utils/constants';
 import { ReactComponent as ETH } from 'assets/icons/ethereum.svg';
