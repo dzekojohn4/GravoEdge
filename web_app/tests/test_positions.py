@@ -469,17 +469,22 @@ async def test_get_user_positions_success(client: TestClient) -> None:
             "is_liquidated": False,
         }
     ]
+    mock_total_count = len(mock_positions)
 
     with patch(
         "web_app.db.crud.PositionDBConnector.get_all_positions_by_wallet_id"
-    ) as mock_get_positions:
+    ) as mock_get_positions, patch(
+            "web_app.db.crud.PositionDBConnector.get_count_positions_by_wallet_id"
+    ) as mock_get_count_positions:
         mock_get_positions.return_value = mock_positions
+        mock_get_count_positions.return_value = mock_total_count
+
         response = client.get(f"/api/user-positions/{wallet_id}")
 
         assert response.status_code == 200
         data = response.json()
         assert len(data["positions"]) == len(mock_positions)
-        assert data["total_count"] == len(mock_positions)
+        assert data["total_count"] == mock_total_count
         assert data["positions"][0]["token_symbol"] == mock_positions[0]["token_symbol"]
         assert data["positions"][0]["amount"] == mock_positions[0]["amount"]
 
