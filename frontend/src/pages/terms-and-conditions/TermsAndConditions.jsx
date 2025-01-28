@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import './terms-and-conditions.css';
-import ScrollButton from 'components/ui/scroll-button/ScrollButton';
-import Sections from 'components/layout/sections/Sections';
-import Sidebar from 'components/layout/sidebar/Sidebar';
+import ScrollButton from '@/components/ui/scroll-button/ScrollButton';
+import Sections from '@/components/layout/sections/Sections';
+import Sidebar from '@/components/layout/sidebar/Sidebar';
 
 const TermsAndConditionsPage = () => {
   useEffect(() => {
