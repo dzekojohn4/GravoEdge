@@ -478,9 +478,10 @@ async def test_get_user_positions_success(client: TestClient) -> None:
 
         assert response.status_code == 200
         data = response.json()
-        assert len(data) == len(mock_positions)
-        assert data[0]["token_symbol"] == mock_positions[0]["token_symbol"]
-        assert data[0]["amount"] == mock_positions[0]["amount"]
+        assert len(data["positions"]) == len(mock_positions)
+        assert data["total_count"] == len(mock_positions)
+        assert data["positions"][0]["token_symbol"] == mock_positions[0]["token_symbol"]
+        assert data["positions"][0]["amount"] == mock_positions[0]["amount"]
 
 
 @pytest.mark.asyncio
@@ -506,7 +507,7 @@ async def test_get_user_positions_no_positions(client: AsyncClient) -> None:
 
         assert response.status_code == 200
         data = response.json()
-        assert data == []
+        assert data == {"positions": [], "total_count": 0}
 
 
 @pytest.mark.parametrize(
