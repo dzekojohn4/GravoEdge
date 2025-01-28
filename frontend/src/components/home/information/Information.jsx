@@ -1,7 +1,7 @@
 import './information.css';
 import React, { useEffect, useState } from 'react';
-import StarMaker from '../../layout/star-maker/StarMaker';
-import { axiosInstance } from 'utils/axios';
+import StarMaker from '@/components/layout/star-maker/StarMaker';
+import { axiosInstance } from '@/utils/axios';
 
 const Information = () => {
   const [data, setData] = useState({ total_opened_amount: 0, unique_users: 0 });

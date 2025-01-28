@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { axiosInstance } from 'utils/axios';
-import { notify } from 'components/layout/notifier/Notifier';
+import { axiosInstance } from '@/utils/axios';
+import { notify } from '@/components/layout/notifier/Notifier';
 
 export const useBugReport = (walletId, bugDescription, onClose) => {
   const mutation = useMutation({
@@ -9,7 +9,7 @@ export const useBugReport = (walletId, bugDescription, onClose) => {
       const data = {
         wallet_id: walletId,
         bug_description: bugDescription,
-      }
+      };
       if (user_id) data.telegram_id = user_id;
       return await axiosInstance.post(`/api/save-bug-report`, data);
     },
