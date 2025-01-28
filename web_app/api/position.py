@@ -315,12 +315,17 @@ async def add_extra_deposit(position_id: UUID, data: AddPositionDepositData):
     summary="Get all positions for a user",
     response_description="Returns paginated list of positions for the given wallet ID",
 )
-async def get_user_positions(wallet_id: str, start: Optional[int] = None, limit: int = Query(PAGINATION_STEP, ge=1, le=100)) -> list:
+async def get_user_positions(
+    wallet_id: str,
+    start: Optional[int] = None,
+    limit: int = Query(PAGINATION_STEP, ge=1, le=100),
+) -> list:
     """
     Get all positions for a specific user by their wallet ID.
     :param wallet_id: The wallet ID of the user
     :param start: Optional starting index for pagination (0-based). If not provided, defaults to 0
-    :param limit: Optional number of records to return. min 1, max 100. If not provided, defaults to PAGINATION_STEP
+    :param limit: Optional number of records to return. min 1, max 100. 
+        If not provided, defaults to PAGINATION_STEP
     :return: UserPositionsListResponse containing paginated list of positions
     :raises: HTTPException: If wallet ID is empty or invalid
     """
@@ -349,8 +354,7 @@ async def get_list_of_deposited_tokens(position_id: UUID):
     :return Dict containing main position and extra positions
     """
     main_position = position_db_connector.get_position_by_id(position_id)
-    extra_deposits = position_db_connector.get_extra_deposits_by_position_id(position_id)
-    return {
-        "main": main_position,
-        "extra_deposits": extra_deposits
-    }
+    extra_deposits = position_db_connector.get_extra_deposits_by_position_id(
+        position_id
+    )
+    return {"main": main_position, "extra_deposits": extra_deposits}
