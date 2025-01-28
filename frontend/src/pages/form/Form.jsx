@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import TokenSelector from 'components/ui/token-selector/TokenSelector';
-import BalanceCards from 'components/ui/balance-cards/BalanceCards';
-import MultiplierSelector from 'components/ui/multiplier-selector/MultiplierSelector';
-import { handleTransaction } from 'services/transaction';
-import Spinner from 'components/ui/spinner/Spinner';
+import TokenSelector from '@/components/ui/token-selector/TokenSelector';
+import BalanceCards from '@/components/ui/balance-cards/BalanceCards';
+import MultiplierSelector from '@/components/ui/multiplier-selector/MultiplierSelector';
+import { handleTransaction } from '@/services/transaction';
+import Spinner from '@/components/ui/spinner/Spinner';
 import './form.css';
-import { Button } from 'components/ui/custom-button/Button';
-import { useWalletStore } from '../../stores/useWalletStore';
-import { useConnectWallet } from '../../hooks/useConnectWallet';
-import { useCheckPosition } from '../../hooks/useClosePosition';
+import { Button } from '@/components/ui/custom-button/Button';
+import { useWalletStore } from '@/stores/useWalletStore';
+import { useConnectWallet } from '@/hooks/useConnectWallet';
+import { useCheckPosition } from '@/hooks/useClosePosition';
 import { useNavigate } from 'react-router-dom';
-import { ActionModal } from '../../components/ui/action-modal';
-import { useHealthFactor } from '../../hooks/useHealthRatio';
-import { notify } from '../../components/layout/notifier/Notifier';
+import { ActionModal } from '@/components/ui/action-modal';
+import { useHealthFactor } from '@/hooks/useHealthRatio';
+import { notify } from '@/components/layout/notifier/Notifier';
 
 const Form = () => {
   const navigate = useNavigate();
@@ -78,7 +78,6 @@ const Form = () => {
   return (
     <div className="form-content-wrapper">
       <BalanceCards className="balance-card" />
-
 
       {isClosePositionOpen && (
         <ActionModal

@@ -47,7 +47,6 @@
 }
 
 @media (max-width: 768px) {
-  
   .withdrawall-info-card {
     width: 480px;
     margin-top: 35px;
@@ -68,12 +67,12 @@
 
 @media (max-width: 550px) {
   /* .withdrawall-wrapper {
-    background: url('../../../../../public/mobile-background.png') no-repeat;
+    background: url('@/assets../../public/mobile-background.png') no-repeat;
     background-size: cover;
     background-position: 50% 40%;
     height: 100%;
   } */
-  
+
   .withdrawall-info-container {
     display: grid;
     gap: 30px;

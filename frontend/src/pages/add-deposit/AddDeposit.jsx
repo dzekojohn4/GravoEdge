@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { ReactComponent as HealthIcon } from 'assets/icons/health.svg';
-import { ReactComponent as EthIcon } from 'assets/icons/ethereum.svg';
-import { useAddDeposit } from 'hooks/useAddDeposit';
+import EthIcon from '@/assets/icons/ethereum.svg?react';
+import HealthIcon from '@/assets/icons/health.svg?react';
+import Card from '@/components/ui/card/Card';
+import { Button } from '@/components/ui/custom-button/Button';
+import TokenSelector from '@/components/ui/token-selector/TokenSelector';
+import { useAddDeposit } from '@/hooks/useAddDeposit';
+import useDashboardData from '@/hooks/useDashboardData';
+import { NUMBER_REGEX } from '@/utils/regex';
+import { useState } from 'react';
 import DashboardLayout from '../DashboardLayout';
 import './addDeposit.css';
-import Card from 'components/ui/card/Card';
-import TokenSelector from 'components/ui/token-selector/TokenSelector';
-import { NUMBER_REGEX } from 'utils/regex';
-import { Button } from 'components/ui/custom-button/Button';
-import useDashboardData from 'hooks/useDashboardData';
 
 export const AddDeposit = () => {
   const formatNumber = (value, currency = false) => {
@@ -50,11 +50,7 @@ export const AddDeposit = () => {
     <DashboardLayout title="Add Deposit">
       <div className="main-container-deposit">
         <div className="top-cards-dashboard">
-          <Card
-            label="Health Factor"
-            value={dashboardData?.health_ratio}
-            icon={<HealthIcon className="icon" />}
-          />
+          <Card label="Health Factor" value={dashboardData?.health_ratio} icon={<HealthIcon className="icon" />} />
           <Card
             label="Borrow Balance"
             value={formatNumber(dashboardData?.borrowed, true)}
