@@ -36,6 +36,7 @@ class LeaderboardCRUD:
                         func.count(Position.id).label("positions_number")
                     )
                     .join(Position, Position.user_id == User.id)
+                    .filter(Position.status.in_(["closed", "opened"]))
                     .group_by(User.wallet_id)
                     .order_by(func.count(Position.id).desc())
                     .limit(10)
