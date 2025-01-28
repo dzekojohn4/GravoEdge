@@ -3,7 +3,7 @@ import { sendTransaction, closePosition, handleTransaction } from '../../src/ser
 import { axiosInstance } from '../../src/utils/axios';
 import { mockBackendUrl } from '../constants';
 import { checkAndDeployContract } from '../../src/services/contract';
-import { vi } from 'vitest';
+import { expect, describe, it, beforeEach, vi } from 'vitest';
 
 vi.mock('../../src/services/wallet', () => ({
   getWallet: vi.fn(),

@@ -3,7 +3,7 @@ import { getWallet } from '../../src/services/wallet';
 import { axiosInstance } from '../../src/utils/axios';
 import { deployContract, checkAndDeployContract } from '../../src/services/contract';
 import { getDeployContractData } from '../../src/utils/constants';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 // Mock dependencies
 vi.mock('starknetkit', () => ({
@@ -24,36 +24,40 @@ describe('Contract Deployment Tests', () => {
   const mockTransactionHash = '0xabc...';
   const mockContractAddress = '0xdef...';
 
-  beforeEach(() => {
-    jest.clearAllMocks();
+  // Common mock wallet setup
+  const createMockWallet = (overrides = {}) => ({
+    account: {
+      deployContract: vi.fn().mockResolvedValue({
+        transaction_hash: mockTransactionHash,
+        contract_address: mockContractAddress,
+      }),
+      waitForTransaction: vi.fn().mockResolvedValue(true),
+      ...overrides,
+    },
+  });
 
+  beforeEach(() => {
+    vi.clearAllMocks();
     getDeployContractData.mockReturnValue({
       contractData: 'mockContractData',
     });
+    // Reset axios mocks
+    vi.mocked(axiosInstance.get).mockReset();
+    vi.mocked(axiosInstance.post).mockReset();
   });
 
   describe('deployContract', () => {
     it('should successfully deploy contract', async () => {
-      const mockWallet = {
-        account: {
-          deployContract: vi.fn().mockResolvedValue({
-            transaction_hash: mockTransactionHash,
-            contract_address: mockContractAddress,
-          }),
-          waitForTransaction: vi.fn().mockResolvedValue(true),
-        },
-      };
-
+      const mockWallet = createMockWallet();
       getWallet.mockResolvedValue(mockWallet);
 
       const result = await deployContract(mockWalletId);
 
-      expect(getWallet).toHaveBeenCalled();
+      expect(getWallet).toHaveBeenCalledWith(mockWalletId);
       expect(mockWallet.account.deployContract).toHaveBeenCalledWith({
         contractData: 'mockContractData',
       });
       expect(mockWallet.account.waitForTransaction).toHaveBeenCalledWith(mockTransactionHash);
-
       expect(result).toEqual({
         transactionHash: mockTransactionHash,
         contractAddress: mockContractAddress,
@@ -68,7 +72,7 @@ describe('Contract Deployment Tests', () => {
     });
 
     it('should handle transaction waiting errors', async () => {
-      const mockWallet = {
+      const mockWallet = createMockWallet({
         account: {
           deployContract: vi.fn().mockResolvedValue({
             transaction_hash: mockTransactionHash,
@@ -76,7 +80,7 @@ describe('Contract Deployment Tests', () => {
           }),
           waitForTransaction: vi.fn().mockRejectedValue(new Error('Transaction failed')),
         },
-      };
+      });
 
       getWallet.mockResolvedValue(mockWallet);
 
@@ -86,29 +90,18 @@ describe('Contract Deployment Tests', () => {
 
   describe('checkAndDeployContract', () => {
     it('should deploy contract if not already deployed', async () => {
-      // Mock the API check for undeployed contract
-      axiosInstance.get.mockResolvedValue({
+      vi.mocked(axiosInstance.get).mockResolvedValue({
         data: { is_contract_deployed: false },
       });
 
-      // Mock successful wallet and deployment
-      const mockWallet = {
-        account: {
-          deployContract: vi.fn().mockResolvedValue({
-            transaction_hash: mockTransactionHash,
-            contract_address: mockContractAddress,
-          }),
-          waitForTransaction: vi.fn().mockResolvedValue(true),
-        },
-      };
-
+      const mockWallet = createMockWallet();
       getWallet.mockResolvedValue(mockWallet);
-      axiosInstance.post.mockResolvedValue({ data: 'success' });
+      vi.mocked(axiosInstance.post).mockResolvedValue({ data: 'success' });
 
       await checkAndDeployContract(mockWalletId);
 
       expect(axiosInstance.get).toHaveBeenCalledWith(`/api/check-user?wallet_id=${mockWalletId}`);
-      expect(getWallet).toHaveBeenCalled();
+      expect(getWallet).toHaveBeenCalledWith(mockWalletId);
       expect(mockWallet.account.deployContract).toHaveBeenCalledWith({
         contractData: 'mockContractData',
       });
@@ -119,55 +112,46 @@ describe('Contract Deployment Tests', () => {
     });
 
     it('should skip deployment if contract already exists', async () => {
-      axiosInstance.get.mockResolvedValue({
+      vi.mocked(axiosInstance.get).mockResolvedValue({
         data: { is_contract_deployed: true },
       });
 
       await checkAndDeployContract(mockWalletId);
 
-      expect(axiosInstance.get).toHaveBeenCalled();
+      expect(axiosInstance.get).toHaveBeenCalledWith(`/api/check-user?wallet_id=${mockWalletId}`);
       expect(getWallet).not.toHaveBeenCalled();
       expect(axiosInstance.post).not.toHaveBeenCalled();
     });
 
     it('should handle backend check errors correctly', async () => {
       const mockError = new Error('Backend error');
-      axiosInstance.get.mockRejectedValue(mockError);
+      vi.mocked(axiosInstance.get).mockRejectedValue(mockError);
 
-      console.error = vi.fn();
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       await checkAndDeployContract(mockWalletId);
 
-      expect(console.error).toHaveBeenCalledWith('Error checking contract status:', mockError);
+      expect(consoleSpy).toHaveBeenCalledWith('Error checking contract status:', mockError);
+      consoleSpy.mockRestore();
     });
 
     it('should handle contract update error correctly after deployment', async () => {
-      // Mock API check and successful deployment
-      axiosInstance.get.mockResolvedValue({
+      vi.mocked(axiosInstance.get).mockResolvedValue({
         data: { is_contract_deployed: false },
       });
 
-      const mockWallet = {
-        account: {
-          deployContract: vi.fn().mockResolvedValue({
-            transaction_hash: mockTransactionHash,
-            contract_address: mockContractAddress,
-          }),
-          waitForTransaction: vi.fn().mockResolvedValue(true),
-        },
-      };
-
+      const mockWallet = createMockWallet();
       getWallet.mockResolvedValue(mockWallet);
 
-      // Mock backend update failure
       const mockUpdateError = new Error('Update failed');
-      axiosInstance.post.mockRejectedValue(mockUpdateError);
+      vi.mocked(axiosInstance.post).mockRejectedValue(mockUpdateError);
 
-      console.error = vi.fn();
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       await checkAndDeployContract(mockWalletId);
 
-      expect(console.error).toHaveBeenCalledWith('Error checking contract status:', mockUpdateError);
+      expect(consoleSpy).toHaveBeenCalledWith('Error checking contract status:', mockUpdateError);
+      consoleSpy.mockRestore();
     });
   });
 });

@@ -10,7 +10,7 @@ import {
   getConnectors,
 } from '../../src/services/wallet';
 import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../../src/utils/constants';
-import { vi } from 'vitest';
+import { expect, describe, it, beforeEach, vi } from 'vitest';
 
 vi.mock('starknetkit', () => ({
   connect: vi.fn(),
