@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect, disconnect } from 'starknetkit';
+import { getSelectedConnectorWallet } from 'starknetkit';
 import { InjectedConnector } from 'starknetkit/injected';
 import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../utils/constants';
 import { ReactComponent as ETH } from 'assets/icons/ethereum.svg';
@@ -46,6 +47,13 @@ export const getConnectors = () => !localStorage.getItem("starknetLastConnectedW
 ];
 
 export const getWallet = async () => {
+  const connectedWallet = await getSelectedConnectorWallet();
+
+  if (connectedWallet && connectedWallet.isConnected) {
+    console.log('found existing wallet:', connectedWallet);
+    return connectedWallet;
+  }
+  
   const { wallet } = await connect({
     connectors: getConnectors(),
     modalMode: "neverAsk",
