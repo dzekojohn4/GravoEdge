@@ -6,7 +6,7 @@ from decimal import Decimal, InvalidOperation
 from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Query, Request
 
 from web_app.api.serializers.position import (
     AddPositionDepositData,
@@ -315,11 +315,12 @@ async def add_extra_deposit(position_id: UUID, data: AddPositionDepositData):
     summary="Get all positions for a user",
     response_description="Returns paginated list of positions for the given wallet ID",
 )
-async def get_user_positions(wallet_id: str, start: Optional[int] = None) -> list:
+async def get_user_positions(wallet_id: str, start: Optional[int] = None, limit: int = Query(PAGINATION_STEP, ge=1, le=100)) -> list:
     """
     Get all positions for a specific user by their wallet ID.
     :param wallet_id: The wallet ID of the user
     :param start: Optional starting index for pagination (0-based). If not provided, defaults to 0
+    :param limit: Optional number of records to return. min 1, max 100. If not provided, defaults to PAGINATION_STEP
     :return: UserPositionsListResponse containing paginated list of positions
     :raises: HTTPException: If wallet ID is empty or invalid
     """
@@ -329,7 +330,7 @@ async def get_user_positions(wallet_id: str, start: Optional[int] = None) -> lis
     start_index = max(0, start) if start is not None else 0
 
     positions = position_db_connector.get_all_positions_by_wallet_id(
-        wallet_id, start_index, PAGINATION_STEP
+        wallet_id, start_index, limit
     )
     return positions
 
