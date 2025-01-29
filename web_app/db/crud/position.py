@@ -103,7 +103,7 @@ class PositionDBConnector(UserDBConnector):
             except SQLAlchemyError as e:
                 logger.error(f"Failed to retrieve positions: {str(e)}")
                 return []
-
+      
     def get_all_positions_by_wallet_id(
         self, wallet_id: str, start: int, limit: int
     ) -> list[dict]:
@@ -523,3 +523,5 @@ class PositionDBConnector(UserDBConnector):
                 .all()
             )
             return extra_deposits
+
+
