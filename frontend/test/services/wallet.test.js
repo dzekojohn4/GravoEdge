@@ -9,6 +9,9 @@ import {
   getWallet,
   getConnectors,
 } from '../../src/services/wallet';
+
+import * as walletService from '../../src/services/wallet';
+
 import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../../src/utils/constants';
 import { expect, describe, it, beforeEach, vi } from 'vitest';
 
@@ -292,16 +295,19 @@ describe('Wallet Services', () => {
   });
 
   describe('getBalances', () => {
+    const mockTokenBalances = [
+      { name: 'ETH', balance: '1.0000', icon: 'ETH-icon' },
+      { name: 'USDC', balance: '2.0000', icon: 'USDC-icon' },
+      { name: 'STRK', balance: '3.0000', icon: 'STRK-icon' },
+    ];
+
     it('should update balances state with token balances', async () => {
       const mockSetBalances = vi.fn();
       const mockWalletId = '0x123';
-      const mockTokenBalances = [
-        { name: 'ETH', balance: '1.0000', icon: 'ETH-icon' },
-        { name: 'USDC', balance: '2.0000', icon: 'USDC-icon' },
-        { name: 'STRK', balance: '3.0000', icon: 'STRK-icon' },
-      ];
 
-      vi.spyOn(require('../../src/services/wallet'), 'getTokenBalances').mockResolvedValue(mockTokenBalances);
+      // vi.spyOn(require('../../src/services/wallet'), 'getTokenBalances').mockResolvedValue(mockTokenBalances);
+
+      vi.spyOn(walletService, 'getTokenBalances').mockResolvedValue(mockTokenBalances);
 
       await getBalances(mockWalletId, mockSetBalances);
       await mockSetBalances(mockTokenBalances);
@@ -311,7 +317,9 @@ describe('Wallet Services', () => {
 
     it('should not fetch balances if wallet ID is not provided', async () => {
       const mockSetBalances = vi.fn();
-      const mockGetTokenBalances = vi.spyOn(require('../../src/services/wallet'), 'getTokenBalances');
+      // const mockGetTokenBalances = vi.spyOn(require('../../src/services/wallet'), 'getTokenBalances');
+
+      const mockGetTokenBalances = vi.spyOn(walletService, 'getTokenBalances').mockResolvedValue(mockTokenBalances);
 
       await getBalances(null, mockSetBalances);
 
