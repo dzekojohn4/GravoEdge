@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import './documentation.css';
-import ScrollButton from 'components/ui/scroll-button/ScrollButton';
-import Sections from 'components/layout/sections/Sections';
-import Sidebar from 'components/layout/sidebar/Sidebar';
+import ScrollButton from '@/components/ui/scroll-button/ScrollButton';
+import Sections from '@/components/layout/sections/Sections';
+import Sidebar from '@/components/layout/sidebar/Sidebar';
 
 const Documentation = () => {
   useEffect(() => {
@@ -15,9 +15,7 @@ const Documentation = () => {
       id: 'Overview',
       name: 'Overview',
       link: '#overview',
-      subItems: [
-        { id: 'cosmos-1', name: 'Cosmos Overview', link: '#cosmos-1' },
-      ],
+      subItems: [{ id: 'cosmos-1', name: 'Cosmos Overview', link: '#cosmos-1' }],
     },
     { id: 'how-it-performs', name: 'How it performs', link: '#how-it-performs' },
     { id: 'powered-by-starknet', name: 'Powered by Starknet', link: '#powered-by-starknet' },
@@ -31,8 +29,7 @@ const Documentation = () => {
       content: [
         {
           type: 'text',
-          value:
-            'Welcome to Spotnet documentation.',
+          value: 'Welcome to Spotnet documentation.',
         },
         {
           type: 'text',
@@ -45,11 +42,9 @@ const Documentation = () => {
       id: 'overview',
       title: 'Overview',
       content: [
-
         {
           type: 'text',
-          value:
-            'What is Spotnet?',
+          value: 'What is Spotnet?',
         },
         {
           type: 'text',
@@ -162,12 +157,12 @@ const Documentation = () => {
       id: 'getting-started',
       title: 'Getting Started: Setting Up Your Wallet',
       content: [
-        
         {
           type: 'text',
-          value: 'To get started with Spotnet and fully leverage its features, you’ll need to set up a compatible Web3 wallet. Follow the steps below to set up your wallet and connect it to Spotnet:',
+          value:
+            'To get started with Spotnet and fully leverage its features, you’ll need to set up a compatible Web3 wallet. Follow the steps below to set up your wallet and connect it to Spotnet:',
         },
-      
+
         {
           type: 'text',
           value: 'Download a Compatible Web3 Wallet',
@@ -202,10 +197,6 @@ const Documentation = () => {
             "After funding your wallet, go to the Spotnet platform and look for the “Connect Wallet” button, typically found in the top-right corner of the homepage. Select your wallet type (e.g., MetaMask, WalletConnect) and follow the prompts to authorize the connection. Your wallet will ask for permission to connect with Spotnet; confirm this request to allow your wallet to interact with the platform. If you’re using a wallet like MetaMask that doesn’t support Starknet by default, you may need to manually add the Starknet network by selecting “Custom RPC” in your wallet settings and entering the necessary network details. Once connected, you'll have full access to Spotnet’s features.",
           ],
         },
-        
-
-
-
       ],
     },
   ];
