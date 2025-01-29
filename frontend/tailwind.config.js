@@ -47,6 +47,9 @@ export default {
       backgroundPosition: {
         '39p': '39% center',
       }
+      boxShadow: {
+        'custom': '0 4px 12px rgba(0, 0, 0, 0.2)',
+      },
     },
   },
   plugins: [],

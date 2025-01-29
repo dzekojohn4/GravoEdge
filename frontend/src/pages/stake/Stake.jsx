@@ -76,9 +76,9 @@ function Stake() {
                   </svg>
                 </div>
 
-                <div className="network-dropdown none absolute top-[100%] left-0 w-full bg-[#83919f] group-hover:block ">
+                <div className="network-dropdown none absolute top-[100%] left-0 w-full bg-[#83919f] rounded-sm z-[1] shadow-custom group-hover:block ">
                   {networks.map((network) => (
-                    <div key={network.name} className="network-option bg-[#FFFFFF33
+                    <div key={network.name} className="network-option py-[0.75rem] px-[1rem] flex items-center gap-[0.75rem] cursor-pointer rounded-[2rem] transition-transform duration-300 ease-in-out bg-[#FFFFFF33
 ] " onClick={() => handleChange(network)}>
                       <img src={network.image} alt={network.name} className="network-icon" />
                       <span>{network.name}</span>

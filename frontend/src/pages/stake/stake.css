@@ -15,17 +15,7 @@
   border-radius: 2000px;
   background-color: hsla(261, 49%, 15%, 1);
 }
-.network-dropdown {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: var(--gray);
-  border-radius: 2rem;
-  z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
+
 
 .network-dropdown .network-option {
   padding: 0.75rem 1rem;
