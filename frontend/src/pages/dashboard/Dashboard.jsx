@@ -151,7 +151,7 @@ export default function DashboardPage({ telegramId }) {
   return (
     <DashboardLayout>
       {loading && <Spinner loading={loading} />}
-      <div className="top-cards-dashboard">
+      <div className="flex mb-20 top-cards-dashboard">
         <Card label="Health Factor" value={healthFactor} icon={<HealthIcon className="icon" />} />
         <Card label="Borrow Balance" cardData={cardData} icon={<EthIcon className="icon" />} />
       </div>
