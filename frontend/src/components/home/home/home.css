@@ -1,11 +1,5 @@
 body {
   background-color: var(--dashboard-bg);
-  font-family:
-    'Rethink Sans',
-    -apple-system,
-    Roboto,
-    Helvetica,
-    sans-serif;
 }
 
 .container {
