@@ -52,8 +52,6 @@
     ]
   },
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "^5.60.1",
-    "@testing-library/jest-dom": "^6.6.2",
     "@vitest/ui": "^3.0.4",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
