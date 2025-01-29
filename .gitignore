@@ -180,3 +180,7 @@ cython_debug/
 node_modules/
 
 .python-version
+
+.vscode 
+.cursor*
+.DS_Store
