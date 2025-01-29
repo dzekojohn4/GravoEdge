@@ -84,9 +84,6 @@ main {
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
   font-family: var(--font-family);
 }
 
@@ -118,3 +115,5 @@ a.svelte-1mtuslq.svelte-1mtuslq {
     height: 100%;
   }
 }
+
+@import 'tailwindcss';
