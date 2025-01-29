@@ -44,6 +44,9 @@ export default {
         'blue-pink-gradient': 'linear-gradient(90deg, #74d6fd 0%, #e01dee 100%)',
         'blue-pink-gradient-alt': 'linear-gradient(90deg, #49abd2 0%, #e01dee 100%)',
       },
+      backgroundPosition: {
+        '39p': '39% center',
+      }
     },
   },
   plugins: [],
