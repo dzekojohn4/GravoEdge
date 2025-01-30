@@ -36,8 +36,16 @@ function PositionHistory() {
     <DashboardLayout title="Position History">
       <div className="flex flex-col gap-6">
         <div className="flex justify-center gap-2.5 w-full max-w-[642px]">
-          <Card label="Health Factor" value={cardData?.health_ratio || '0.00'} icon={<HealthIcon className="icon" />} />
-          <Card label="Borrow Balance" value={cardData?.borrowed || '0.00'} icon={<EthIcon className="icon" />} />
+          <Card
+            label="Health Factor"
+            value={cardData?.health_ratio || '0.00'}
+            icon={<HealthIcon className="mr-[5px] w-4 h-4" />}
+          />
+          <Card
+            label="Borrow Balance"
+            cardData={cardData?.borrowed || '0.00'}
+            icon={<HealthIcon className="mr-[5px] w-4 h-4" />}
+          />
         </div>
       </div>
 
@@ -58,12 +66,22 @@ function PositionHistory() {
                   <th className="py-4 px-4 text-left text-[#9CA3AF] font-normal border-b border-[#36294E]"></th>
                   <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Token</th>
                   <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Amount</th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Created At</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
+                    Created At
+                  </th>
                   <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Status</th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Start Price</th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Multiplier</th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Liquidated</th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Closed At</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
+                    Start Price
+                  </th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
+                    Multiplier
+                  </th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
+                    Liquidated
+                  </th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
+                    Closed At
+                  </th>
                   <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
                     <img src={filterIcon} alt="filter-icon" draggable="false" />
                   </th>
@@ -72,7 +90,9 @@ function PositionHistory() {
               <tbody>
                 {!tableData?.positions || tableData?.positions.length === 0 ? (
                   <tr>
-                    <td colSpan="10" className="text-center py-4">No opened positions</td>
+                    <td colSpan="10" className="text-center py-4">
+                      No opened positions
+                    </td>
                   </tr>
                 ) : (
                   tableData?.positions.map((data, index) => (
