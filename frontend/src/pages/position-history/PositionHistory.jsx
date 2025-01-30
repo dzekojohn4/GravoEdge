@@ -18,7 +18,7 @@ function PositionHistory() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: tableData, isPending } = usePositionHistoryTable();
-  const { data: cardData } = useDashboardData();
+  const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
 
   const [filteredTableData, setFilteredTableData] = useState(tableData);
   const positionsOnPage = 10;
@@ -31,7 +31,7 @@ function PositionHistory() {
 
   useEffect(() => {
     if (!isPending && tableData) setFilteredTableData(getFilteredData(tableData, currentPage, positionsOnPage));
-  }, [currentPage, isPending]);
+  }, [currentPage, isPending, tableData]);
 
   const tokenIconMap = {
     STRK: <StrkIcon className="token-icon" />,
@@ -49,8 +49,8 @@ function PositionHistory() {
     <DashboardLayout title="Position History">
       <div className="position-content">
         <div className="position-top-cards">
-          <Card label="Health Factor" value={cardData?.health_ratio || '0.00'} icon={<HealthIcon className="icon" />} />
-          <Card label="Borrow Balance" cardData={cardData?.borrowed || '0.00'} icon={<EthIcon className="icon" />} />
+          <Card label="Health Factor" value={dashboardData?.health_ratio || '0.00'} icon={<HealthIcon className="icon" />} />
+          <Card label="Borrow Balance" value={dashboardData?.borrowed || '0.00'} icon={<EthIcon className="icon" />} />
         </div>
       </div>
 
@@ -60,9 +60,9 @@ function PositionHistory() {
         </div>
 
         <div className="position-table">
-          {isPending ? (
+          {isPending || isDashboardLoading ? (
             <div className="spinner-container">
-              <Spinner loading={isPending} />
+              <Spinner loading={isPending || isDashboardLoading} />
             </div>
           ) : (
             <table className="text-white">
@@ -78,7 +78,7 @@ function PositionHistory() {
                   <th>Liquidated</th>
                   <th>Closed At</th>
                   <th className="action-column">
-                    <img src={filterIcon} alt="filter-icon" draggable="false" />
+                    <img src={filterIcon || "/placeholder.svg"} alt="filter-icon" draggable="false" />
                   </th>
                 </tr>
               </thead>
@@ -122,7 +122,7 @@ function PositionHistory() {
       <PositionPagination
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        isPending={isPending}
+        isPending={isPending || isDashboardLoading}
         tableData={tableData}
         positionsOnPage={positionsOnPage}
       />

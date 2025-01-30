@@ -29,6 +29,7 @@ const useDashboardData = () => {
       multipliers = {},
       balance = 0,
       deposit_data = [],
+      position_id = null,
     }) => {
       const depositedData = deposit_data.reduce(
         (acc, { token, amount }) => ({
@@ -64,12 +65,24 @@ const useDashboardData = () => {
         },
       ];
 
-      return { cardData, healthFactor: health_ratio, startSum: start_sum, currentSum: current_sum, depositedData };
+      return {
+        cardData,
+        healthFactor: health_ratio,
+        startSum: start_sum,
+        currentSum: current_sum,
+        depositedData,
+        position_id,
+      };
     },
     onError: (error) => console.error("Error fetching dashboard data:", error),
   });
 
   return {
+    data: {
+      health_ratio: data?.healthFactor || "0.00",
+      borrowed: data?.cardData.find(card => card.title === "Borrow")?.balance || 0,
+      position_id: data?.position_id || null,
+    },
     cardData: data?.cardData || [],
     healthFactor: data?.healthFactor || "0.00",
     startSum: data?.startSum || 0,
