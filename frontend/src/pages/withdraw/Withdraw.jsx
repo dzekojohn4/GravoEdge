@@ -63,7 +63,7 @@ export default function Withdraw() {
               </div>
             </div>
           </div>
-          <div class="relative p-[2px] rounded-lg bg-gradient-to-r from-[#49abd2] to-[#e01dee] mb-5 mt-5">
+          <div class="relative p-[2px] rounded-lg bg-gradient-to-r from-[#74d6fd] to-[#e01dee] mb-5 mt-5">
             <button class="w-full h-full bg-(--footer-divider-bg)  text-(--primary) px-4 py-3 !rounded-lg font-semibold">
               Withdraw
             </button>
