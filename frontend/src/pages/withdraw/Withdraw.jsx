@@ -20,7 +20,7 @@ export default function Withdraw() {
         <div className="mt-1.5">
           <p className="text-(--primary) text-center text-lg mt-3 !-mb-5">Stake Withdrawal</p>
           <div className="border !border-[#36294e] p-5 rounded-lg mt-5">
-            <div className="flex items-center !justify-between bg-(--footer-divider-bg) border !border-[#36294e] pt-4 px-5 rounded-lg w-[600px]">
+            <div className="flex items-center !justify-between bg-(--footer-divider-bg) border !border-[#36294e] py-10 px-5 rounded-lg w-[600px]">
               <div className="flex flex-col items-center">
                 <p className="flex items-center space-x-2">
                   <span>
@@ -28,7 +28,7 @@ export default function Withdraw() {
                   </span>
                   <span className="text-(--stormy-gray)">Your Stake</span>
                 </p>
-                <p className="text-(--primary)">13.89</p>
+                <p className="text-(--primary) text-2xl font-semibold">13.89</p>
               </div>
               <div className="flex flex-col items-center">
                 <p className="flex items-center space-x-2">
@@ -37,7 +37,7 @@ export default function Withdraw() {
                   </span>
                   <span className="text-(--stormy-gray)">Your Boost</span>
                 </p>
-                <p className="text-(--primary)">132.43%</p>
+                <p className="text-(--primary) text-2xl font-semibold">132.43%</p>
               </div>
             </div>
 
@@ -64,7 +64,7 @@ export default function Withdraw() {
             </div>
           </div>
           <div class="relative p-[2px] rounded-lg bg-gradient-to-r from-[#74d6fd] to-[#e01dee] mb-5 mt-5">
-            <button class="w-full h-full bg-(--footer-divider-bg)  text-(--primary) px-4 py-3 !rounded-lg font-semibold">
+            <button class="w-full h-full bg-btn-dark text-(--primary) px-4 py-3 !rounded-lg font-semibold cursor-pointer">
               Withdraw
             </button>
           </div>
