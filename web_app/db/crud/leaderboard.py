@@ -10,9 +10,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class LeaderboardCRUD:
+class LeaderboardDBConnector:
     """
-    A class used to perform CRUD operations related to the leaderboard.
+    Provides database connection and operations management using SQLAlchemy
+    in a FastAPI application context.
     """
     def __init__(self, session: Session):
         """
