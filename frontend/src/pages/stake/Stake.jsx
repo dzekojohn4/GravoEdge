@@ -27,22 +27,22 @@ function Stake() {
   };
   return (
     <VaultLayout>
-      <div className="stake-wrapper bg-cover bg-39p min-h-[125vh] h-full flex justify-center w-[calc(100vw-372px)] ml-[372px] mt-[70px] mb-[100px]    ">
+      <div className="stake-wrapper font-primary bg-cover bg-39p min-h-[125vh] h-full flex justify-center w-[calc(100vw-372px)] ml-[372px] mt-[70px] mb-[100px]    ">
         <div className="stake-container w-full max-w-[642px] h-[610px] my-0 mx-auto flex flex-col items-center  gap-4 ">
 
-          <h1 className='text-[#F0F0F0] font-semibold ' style={{fontSize: "24px"}} >zkLend Staking</h1>
+          <h1 className=' font-semibold ' style={{fontSize: "24px", color: "#F0F0F0"}} >zkLend Staking</h1>
           <div className='w-full flex flex-row justify-between items-center gap-6' >
           <MetricCard title="STRK Balance" value="0.046731" icon={STRK} />
           <MetricCard title="APY Balance" value="0.046731" icon={USDCc} />
           </div>
           <p className=' text-[#F0F0F0] font-normal text-sm ' >Please submit your leverage details</p>
 
-          <div className='border border-[#36294E] w-full max-h-[503px]  rounded-lg py-5 flex  flex-col ' >
+          <div className='border border-[#36294E] w-full max-h-[503px]  rounded-lg py-3 flex  flex-col ' >
 
            <div className='w-full px-4 ' >
            <div 
                 onClick={() => setShowDrop(!showDrop)}
-                className={ ` border border-t-0 border-r-0 border-l-0 py-4 border-b-[#36294E] relative ${showDrop ? 'clicked-network-selector-container  w-full' : 'network-selector-container' }`}
+                className={ `  py-3 border-b border-b-[#36294E] relative ${showDrop ? 'clicked-network-selector-container  w-full' : 'network-selector-container' }`}
               >
                 <div className="network-selector flex items-center justify-between gap-3 bg-[#120721]  text-white py-3 px-4 cursor-pointer text-[1rem] w-full relative z-[10] ">
                   <div className="selected-network flex items-center gap-3">
@@ -84,7 +84,7 @@ function Stake() {
             </div>
 
             <div className='w h-[158px] flex flex-row   items-start  my-15 ' aria-labelledby="amount-input-label" >
-              <label className='w-full text-[#393942] min-w-[182px] max-w-[250px]  font-semibold flex flex-col  justify-center gap-3 ' >
+              <label className='w-full text-[#393942] min-w-[182px] max-w-[200px]  font-semibold flex flex-col  justify-center gap-3 ' >
                 <input
                   type="text"
                   id="amount-field"
@@ -110,7 +110,7 @@ function Stake() {
             
           </div>
           <div className='button-gradient p-[4px] rounded-lg' >
-          <Button variant="secondary" size="lg" className="stake-button1 w-[642px] h-[60px]  flex items-center text-center py-5 outline-none border-none  px-6 rounded-lg font-semibold text-sm mt-8 " style={{padding: "16px 20px"}} >
+          <Button variant="secondary" size="lg" className="stake-button1 w-[642px] h-[60px] bg-[#120721]  flex items-center text-center py-3.5 outline-none border-none  px-6 rounded-lg font-semibold text-sm mt-8 " style={{padding: "16px 20px"}} >
               Stake
             </Button>
             </div>
