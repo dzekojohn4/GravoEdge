@@ -53,8 +53,8 @@ function Home() {
   ];
 
   return (
-    <div className="home">
-      <div className="container">
+    <div className=" relative flex flex-row justify-center color-white text-center w-[100%] hover-pointer  ">
+      <div className=" mt-[400px] mb-[200px] h-[100%]">
         <div>
           {decorationData.map((decoration, index) => (
             <Decoration
@@ -83,21 +83,21 @@ function Home() {
 
           <Starknet className="starknet" />
         </div>
-        <div className="center-text-container">
-          <h2 className="center-text">
-            <span className="blue-color">Earn</span> by leveraging your <br /> assets
-            <span className="text-gradient"> with Spotnet</span>
+        <div className=" flex mx-auto md:mt-[5em] lg:mt-0 flex-col items-center justify-center px-[1em]">
+          <h2 className=" lg:leading-[75px] leading-[50px] font-text text-[50px] lg:text-[70px] mx-auto text-center text-[#fff]">
+            <span className="text-blue-400">Earn</span> by leveraging your <br /> assets
+            <span className="bg-[linear-gradient(73deg,_#74d6fd_1.13%,_#e01dee_103.45%)] bg-clip-text text-transparent"> with Spotnet</span>
           </h2>
-          <h5 className="maximize-potential">
+          <h5 className="text-white lg:text-[20px] mt-[1em]">
             Maximize the potential of your resources and start earning today. Join <br /> Spotnet and unlock new
             opportunities to grow your wealth!
           </h5>
         </div>
 
-        <button className="launch-button" onClick={handleLaunchApp}>
-          <div className="btn-elements">
-            <span className="button-text">Launch App</span>
-            <Rocket className="rocket-icon" />
+        <button className="bg-[linear-gradient(55deg,#74d6fd_0%,#e01dee_100%)] hover:bg-[linear-gradient(55deg,#58c4ef_0%,#58c4ef_100%)]  border-none rounded-[8px] h-[52px] lg:w-[400px] w-[300px] text-[20px] text-white font-[700] mt-[20px] h-[60px] z-10 hover-pointer "   onClick={handleLaunchApp}>
+          <div className="flex justify-center items-center hover-pointer flex gap-[20px]">
+            <span className="">Launch App</span>
+            <Rocket className="" />
           </div>
         </button>
         <div className="bottom-gradient"></div>

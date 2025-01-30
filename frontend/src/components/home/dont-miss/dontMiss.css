@@ -35,7 +35,6 @@
 }
 
 .miss-star {
-  position: absolute;
   top: var(--star-top);
   left: var(--star-left);
   width: var(--star-size);
@@ -76,7 +75,7 @@
 @media (max-width: 1024px) {
   .dont-miss__container {
     margin-top: 45px;
-    margin-bottom: 220px;
+    
   }
 
   .miss-title {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import Logo from '@/assets/icons/spotnet-logo.svg?react';
+import Logo from '@/assets/icons/spotnet-logo.svg';
 import WalletSection from '@/components/layout/wallet-section/WalletSection';
 import NavigationLinks from '@/components/layout/navigation-links/NavigationLinks';
 import useLockBodyScroll from '@/hooks/useLockBodyScroll';
@@ -11,36 +11,25 @@ import '@/globals.css';
 import { ReportBugButton } from '@/components/report-button/ReportBugButton';
 import { ReportBugModal } from '@/components/report-modal/ReportBugModal';
 
-function Header({ onConnectWallet, onLogout }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const STICKY_ROUTES = [
+  '/overview',
+  '/documentation',
+  '/dashboard',
+  '/dashboard/position-history',
+  '/dashboard/deposit',
+  '/stake',
+  '/dashboard/withdraw',
+  '/terms-and-conditions',
+  '/defispring',
+];
+
+const useMenuHandling = (pathname) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
 
-  const makeNavStick = [
-    '/overview',
-    '/documentation',
-    '/dashboard',
-    '/dashboard/position-history',
-    '/dashboard/deposit',
-    '/stake',
-    '/dashboard/withdraw',
-    '/terms-and-conditions',
-    '/defispring',
-  ].includes(location.pathname);
-
-  // Blocking screen scroll if menu is open
-  useLockBodyScroll(isMenuOpen);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  // Closing menu is case route change
   useEffect(() => {
     setIsMenuOpen(false);
-  }, [location.pathname]);
+  }, [pathname]);
 
-  // Closing menu in case of screen size change
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 1024) {
@@ -49,45 +38,77 @@ function Header({ onConnectWallet, onLogout }) {
     };
 
     window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleNavClick = () => {
-    setIsMenuOpen(false);
+  return {
+    isMenuOpen,
+    toggleMenu: () => setIsMenuOpen(!isMenuOpen),
+    closeMenu: () => setIsMenuOpen(false)
   };
+};
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+const useModalHandling = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  return {
+    isModalOpen,
+    openModal: () => setIsModalOpen(true),
+    closeModal: () => setIsModalOpen(false)
   };
+};
+
+const Navigation = ({ makeNavStick, children }) => (
+  <nav className={
+    makeNavStick 
+      ? 'header-nav-sticky z-[100] fixed flex items-center w-full justify-center h-[90px] whitespace-nowrap border-b border-[#300734]' 
+      : 'header-nav relative z-[9999] flex items-center w-full justify-center h-[90px] whitespace-nowrap border-b border-[#300734]'
+  }>
+    {children}
+  </nav>
+);
+
+const LogoSection = () => (
+  <div className="">
+    <NavLink to="/">
+   <img src={Logo} className='@max-xs:w-[200px] sm:w-[230px] h-auto md:w-[250px] md:h-auto mt-[9px] lg:w-[300px] lg:h-auto'/>
+    </NavLink>
+  </div>
+);
+
+function Header({ onConnectWallet, onLogout }) {
+  const location = useLocation();
+  const makeNavStick = STICKY_ROUTES.includes(location.pathname);
+  
+  const { isMenuOpen, toggleMenu, closeMenu } = useMenuHandling(location.pathname);
+  const { isModalOpen, openModal, closeModal } = useModalHandling();
+  
+  useLockBodyScroll(isMenuOpen);
 
   return (
     <>
-      <nav className={makeNavStick ? 'header-nav-sticky' : 'header-nav'}>
-        <div className="list-items">
-          <div className="logo">
-            <NavLink to="/">
-              <Logo />
-            </NavLink>
-          </div>
-          {/* Desktop navigation */}
-          <NavigationLinks onNavClick={handleNavClick} />
-          <div className="menu-section">
-            <div className="dropdown">
-              <MobDropdownMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      <Navigation makeNavStick={makeNavStick}>
+        <div className="flex items-center justify-between bg-transparent w-full  px-[30px] relative">
+          <LogoSection />
+          
+          <NavigationLinks onNavClick={closeMenu} />
+          
+          <div className=" flex items-center">
+            <div className="block lg:hidden">
+              <MobDropdownMenu 
+                isMenuOpen={isMenuOpen} 
+                toggleMenu={toggleMenu} 
+              />
             </div>
-            <WalletSection onConnectWallet={onConnectWallet} onLogout={onLogout} />
+            <WalletSection 
+              onConnectWallet={onConnectWallet} 
+              onLogout={onLogout} 
+            />
           </div>
         </div>
-      </nav>
+      </Navigation>
 
       {!isModalOpen && <ReportBugButton onClick={openModal} />}
-
       {isModalOpen && <ReportBugModal onClose={closeModal} />}
     </>
   );

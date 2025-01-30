@@ -50,11 +50,12 @@ const Information = () => {
   };
 
   return (
-    <div className="information">
-      <div className="card-info__container">
-        <div className="card-info flex">
+    <div className="h-auto flex items-center justify-center px-[3em] md:px-[5em]">
+      <div className=" relative w-[100%] max-w-6xl flex flex-col lg:flex-row justify-around lg:mt-[190px] lg:mb-[180px] mt-[4em] gap-[2em]  ">
+        <div className=" flex flex-col lg:w-[420px] h-[250px] bg-[linear-gradient(135deg,_rgba(116,_214,_253,_0.5)_0%,_rgba(11,_12,_16,_0.5)_100%)] 
+              rounded-[20px] shadow-card backdrop-blur-[21.09375px] border border-[#4e7787] text-[38px] text-white text-center font-[600] p-[0.1em] "> 
           <h1>TVL</h1>
-          <h3 className={loading ? 'loading-text' : ''}>
+          <h3 className={loading ? 'text-[35px] min-h-35px font-text font-[600] leading-[95%] text-center items-center mb-0 mt-[3px]' : ''}>
             {loading ? 'Loading...' : error ? `Error: ${error}` : formatCurrency(data.total_opened_amount)}
           </h3>
         </div>
@@ -62,9 +63,10 @@ const Information = () => {
           <div className="card-gradient"></div>
           <div className="card-gradient"></div>
         </div>
-        <div className="card-info flex">
+        <div className="flex flex-col lg:w-[420px] h-[250px] bg-[linear-gradient(135deg,_rgba(116,_214,_253,_0.5)_0%,_rgba(11,_12,_16,_0.5)_100%)] 
+              rounded-[20px] shadow-card backdrop-blur-[21.09375px] border border-[#4e7787] text-[38px] font-[600] p-[0.1em] text-white text-center">
           <h1>Users</h1>
-          <h3 className={loading ? 'loading-text' : ''}>
+          <h3 className={loading ? '  text-[35px] min-h-35px font-text font-[600] leading-[95%] text-center items-center mb-0 mt-[3px]' : ''}>
             {loading ? 'Loading...' : error ? `Error: ${error}` : data.unique_users}
           </h3>
         </div>

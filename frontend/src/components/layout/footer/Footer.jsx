@@ -1,125 +1,123 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import TwitterIcon from '@/assets/icons/new-twitter.svg?react';
-import TelegramIcon from '@/assets/icons/telegram.svg?react';
-import GithubIcon from '@/assets/icons/github.svg?react';
-import DashboardIcon from '@/assets/icons/dashboard-icon.svg?react';
-import FormIcon from '@/assets/icons/form-icon.svg?react';
-
-import './footer.css';
+import { Github, MessageCircle, Twitter, LayoutDashboard, FormInput } from 'lucide-react';
 
 function Footer() {
   const socialLinks = [
     {
       name: 'Github',
-      icon: GithubIcon,
+      icon: Github,
       href: 'https://github.com/djeck1432/spotnet',
     },
     {
       name: 'Telegram',
-      icon: TelegramIcon,
+      icon: MessageCircle,
       href: 'https://t.me/djeck_vorobey1',
     },
     {
       name: 'Twitter',
-      icon: TwitterIcon,
+      icon: Twitter,
       href: 'https://x.com/SpotNet_123',
     },
   ];
 
   return (
-    <footer className="footer-container">
-      <div className="footer-text">
-        <p>Copyright© Spotnet {new Date().getFullYear()}</p>
+    <footer className="px-20 lg:px-[3em] h-[100px] lg:h-[70px] w-full flex items-center bg-[#050005] relative">
+      {/* Desktop Layout */}
+      <div className="w-full lg:flex hidden items-center justify-between">
+        {/* Copyright */}
+        <div className="text-gray-400 text-base">
+          <p className="m-0">Copyright©Spotnet2024</p>
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="flex items-center">
+          {[
+            { path: '/documentation', label: 'Documentation' },
+            { path: '/overview', label: 'Overview' },
+            { path: '/terms-and-conditions', label: 'Terms & Conditions' },
+            { path: '/defispring', label: 'Defi Spring Rewards' }
+          ].map((link, index, array) => (
+            <React.Fragment key={link.path}>
+              <NavLink
+                to={link.path}
+                className={({ isActive }) => `
+                  inline-block text-base text-gray-400
+                  transition-all duration-300 ease-in-out hover:text-[#49abd2] hover:scale-110
+                  ${isActive ? 'text-[#49abd2]' : ''}
+                `}
+                onClick={(e) => {
+                  if (window.location.pathname === link.path) {
+                    e.preventDefault();
+                  }
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                {link.label}
+              </NavLink>
+              {index < array.length - 1 && (
+                <div className="mx-4 w-[1px] h-4 bg-gray-600 opacity-40 rounded-full" />
+              )}
+            </React.Fragment>
+          ))}
+        </nav>
+
+        {/* Social Links */}
+        <div className="flex items-center">
+          {socialLinks.map(({ name, href, icon: Icon }, index, array) => (
+            <React.Fragment key={name}>
+              <a 
+                href={href} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label={name}
+                className="text-gray-400 hover:text-[#49abd2] transition-all duration-300 hover:scale-110"
+              >
+                <Icon className="w-5 h-5" />
+              </a>
+              {index < array.length - 1 && (
+                <div className="mx-4 w-[1px] h-4 bg-gray-600 opacity-40 rounded-full" />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
       </div>
-      <nav className="footer-docs">
-        <NavLink
-          to="/documentation"
-          className={({ isActive }) => (isActive ? 'footer-link-active' : '')}
-          onClick={(e) => {
-            if (window.location.pathname === '/documentation') {
-              e.preventDefault();
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        >
-          Documentation
-        </NavLink>
-        <NavLink
-          to="/overview"
-          className={({ isActive }) => (isActive ? 'footer-link-active' : '')}
-          onClick={(e) => {
-            if (window.location.pathname === '/overview') {
-              e.preventDefault();
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        >
-          Overview
-        </NavLink>
-        <NavLink
-          to="/terms-and-conditions"
-          className={({ isActive }) => (isActive ? 'footer-link-active' : '')}
-          onClick={(e) => {
-            if (window.location.pathname === '/terms-and-conditions') {
-              e.preventDefault();
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        >
-          Terms & Conditions
-        </NavLink>
-        <NavLink
-          to="/defispring"
-          className={({ isActive }) => (isActive ? 'footer-link-active' : '')}
-          onClick={(e) => {
-            if (window.location.pathname === '/defispring') {
-              e.preventDefault();
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        >
-          Defi Spring Rewards
-        </NavLink>
-      </nav>
-      <div className="footer-social">
-        {socialLinks.map(({ name, href, icon: Icon }) => (
-          <a key={name} href={href} target="_blank" rel="noopener noreferrer" arial-label={name}>
-            <Icon />
-          </a>
-        ))}
-      </div>
-      <div className="footer-mob-nav">
+
+      {/* Mobile Navigation */}
+      <div className="lg:hidden flex relative items-center justify-center w-full p-4 gap-[60px] sm:gap-10">
         <NavLink
           to="/dashboard"
-          className={({ isActive }) => (isActive ? 'active-link footer-link-dashboard' : 'footer-link-dashboard')}
+          className={({ isActive }) => `
+            inline-block text-sm font-normal text-gray-400 
+            transition-all duration-300 ease-in-out
+            ${isActive ? 'text-[#49abd2] font-semibold' : 'hover:text-[#49abd2]'}
+          `}
         >
-          <div className="link-wrapper">
-            <DashboardIcon className="footer-icon" />
-            <span className="footer-links">Dashboard</span>
+          <div className="flex flex-col items-center">
+            <LayoutDashboard className="mb-[3px] w-5 h-5" />
+            <span className="w-20 text-center">Dashboard</span>
           </div>
         </NavLink>
-        <div className="footer-mob-divider"></div>
+        
+        <div className="relative transform-gpu shadow-[0_0_3px_rgba(0,0,0,0.1)] z-[1] 
+          rounded-lg w-[1px] h-4 bg-gray-600 opacity-40 flex-shrink-0 m-0" />
+        
         <NavLink
           to="/form"
-          className={({ isActive }) => (isActive ? 'active-link footer-link-form' : 'footer-link-form')}
+          className={({ isActive }) => `
+            inline-block text-sm font-normal text-gray-400 
+            transition-all duration-300 ease-in-out
+            ${isActive ? 'text-[#49abd2] font-semibold' : 'hover:text-[#49abd2]'}
+          `}
         >
-          <div className="link-wrapper">
-            <FormIcon className="footer-icon" />
-            <span className="footer-links">Form</span>
+          <div className="flex flex-col items-center">
+            <FormInput className="mb-[3px] w-5 h-5" />
+            <span className="w-20 text-center">Form</span>
           </div>
         </NavLink>
-        {/* <div className="footer-mob-divider"></div> */}
-        {/* <NavLink
-          to="/stake"
-          className={({ isActive }) => (isActive ? 'active-link footer-link-form' : 'footer-link-form')}
-        >
-          <div className="link-wrapper">
-            <FormIcon className="footer-icon" />
-            <span>Vault</span>
-          </div>
-        </NavLink> */}
-        {/* <div className="footer-line"></div> */}
+
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r 
+          from-[#49abd2] to-[#050005] transition-colors duration-300" />
       </div>
     </footer>
   );
