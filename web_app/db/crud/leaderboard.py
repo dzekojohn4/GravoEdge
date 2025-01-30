@@ -46,6 +46,10 @@ class LeaderboardDBConnector(DBConnector):
                 return []
             
     def get_position_token_statistics(self) -> list[dict]:
+        """
+        Retrieves closed/opened positions groupped by token_symbol.
+        :return: List of dictionaries containing token_symbol and total_positions.
+        """
         with self.Session() as db:
             try:
                 results = (

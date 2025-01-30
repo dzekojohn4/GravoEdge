@@ -1,3 +1,6 @@
+"""
+This module handles leaderboard-related API endpoints.
+"""
 from fastapi import APIRouter
 from web_app.db.crud.leaderboard import LeaderboardDBConnector
 from web_app.api.serializers.leaderboard import UserLeaderboardItem, TokenPositionStatistic
