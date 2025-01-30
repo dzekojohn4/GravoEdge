@@ -13,7 +13,7 @@ export default function DashboardInfoCard({ cardData, startSum, currentSum, depo
     const getCurrentSumColor = () => {
       if (currentSum > startSum) return "current-sum-green"
       if (currentSum < startSum) return "current-sum-red"
-      return "" //string
+      return "" 
     }
   
     return (
