@@ -1,4 +1,3 @@
-import { useState } from "react"
 import HealthIcon from "@/assets/icons/health.svg?react"
 import EthIcon from "@/assets/icons/ethereum.svg?react"
 import Card from "@/components/ui/card/Card"
