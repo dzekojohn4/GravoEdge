@@ -40,7 +40,7 @@ export default function DashboardLayout({ children, title = 'zkLend Position' })
       <div className="relative flex justify-center items-center w-[calc(100vw-735px)] h-full">
         <div className="flex flex-col justify-center gap-2.5 p-6 pt-5 mt-24 mb-12 h-full">
           <h1 className="mt-4 text-2xl font-semibold text-second-primary text-center">{title}</h1>
-          <div className="w-[642px] gap-6 rounded-2xl p-4 text-second-primary text-center flex justify-center flex-col items-center">
+          <div className="w-[642px] gap-6 rounded-2xl p-4 text-second-primary text-center flex justify-center flex-col ">
             {children}
           </div>
         </div>
