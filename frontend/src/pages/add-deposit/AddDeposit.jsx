@@ -93,7 +93,7 @@ export const AddDeposit = () => {
 
       <Button
         size="lg"
-        className="w-full  mt-4"
+        className="w-full mt-4"
         variant="primary"
         onClick={handleDeposit}
         disabled={isLoading || isDashboardLoading || amount === '0'}
