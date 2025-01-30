@@ -10,8 +10,8 @@ import { usePositionHistoryTable } from '@/hooks/usePositionHistory';
 import PositionHistoryModal from '@/pages/position-history/PositionHistoryModal';
 import PositionPagination from '@/pages/position-history/PositionPagination';
 import { useEffect, useState } from 'react';
-import DashboardLayout from '../DashboardLayout';
 import './positionHistory.css';
+import DashboardLayout from '../DashboardLayout';
 
 function PositionHistory() {
   const [selectedPosition, setSelectedPosition] = useState(null);
