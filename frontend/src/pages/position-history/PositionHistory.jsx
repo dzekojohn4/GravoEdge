@@ -11,7 +11,6 @@ import PositionHistoryModal from '@/pages/position-history/PositionHistoryModal'
 import PositionPagination from '@/pages/position-history/PositionPagination';
 import { useState } from 'react';
 import DashboardLayout from '../DashboardLayout';
-import './positionHistory.css';
 
 function PositionHistory() {
   const [selectedPosition, setSelectedPosition] = useState(null);
@@ -22,50 +21,50 @@ function PositionHistory() {
   const { data: cardData } = useDashboardData();
 
   const tokenIconMap = {
-    STRK: <StrkIcon className="token-icon" />,
-    USDC: <UsdIcon className="token-icon" />,
-    ETH: <EthIcon className="token-icon" />,
+    STRK: <StrkIcon className="w-6 h-6 p-1 rounded-full bg-[#201338]" />,
+    USDC: <UsdIcon className="w-6 h-6 p-1 rounded-full bg-[#201338]" />,
+    ETH: <EthIcon className="w-6 h-6 p-1 rounded-full bg-[#201338]" />,
   };
 
   const statusStyles = {
-    opened: 'status-opened',
-    closed: 'status-closed',
-    pending: 'status-pending',
+    opened: 'text-[#49ABD2]',
+    closed: 'text-[#FF5C5C]',
+    pending: 'text-[#FFB800]',
   };
 
   return (
     <DashboardLayout title="Position History">
-      <div className="position-content">
-        <div className="position-top-cards">
+      <div className="flex flex-col gap-6">
+        <div className="flex justify-center gap-2.5 w-full max-w-[642px]">
           <Card label="Health Factor" value={cardData?.health_ratio || '0.00'} icon={<HealthIcon className="icon" />} />
           <Card label="Borrow Balance" value={cardData?.borrowed || '0.00'} icon={<EthIcon className="icon" />} />
         </div>
       </div>
 
-      <div className="position-content-table">
-        <div className="position-table-title">
+      <div className="w-full max-w-[1300px] mx-auto">
+        <div className="text-sm text-white mb-4 pl-2">
           <p>Position History</p>
         </div>
 
-        <div className="position-table">
+        <div className="border w-full border-[#36294E] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-[#12072180] [&::-webkit-scrollbar-thumb]:bg-[#36294E] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69]">
           {isPending ? (
-            <div className="spinner-container">
+            <div className="flex justify-center items-center">
               <Spinner loading={isPending} />
             </div>
           ) : (
-            <table className="text-white">
+            <table className="w-full border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th></th>
-                  <th>Token</th>
-                  <th>Amount</th>
-                  <th>Created At</th>
-                  <th>Status</th>
-                  <th>Start Price</th>
-                  <th>Multiplier</th>
-                  <th>Liquidated</th>
-                  <th>Closed At</th>
-                  <th className="action-column">
+                  <th className="py-4 px-4 text-left text-[#9CA3AF] font-normal border-b border-[#36294E]"></th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Token</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Amount</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Created At</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Status</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Start Price</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Multiplier</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Liquidated</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Closed At</th>
+                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
                     <img src={filterIcon} alt="filter-icon" draggable="false" />
                   </th>
                 </tr>
@@ -73,29 +72,34 @@ function PositionHistory() {
               <tbody>
                 {!tableData?.positions || tableData?.positions.length === 0 ? (
                   <tr>
-                    <td colSpan="10">No opened positions</td>
+                    <td colSpan="10" className="text-center py-4">No opened positions</td>
                   </tr>
                 ) : (
                   tableData?.positions.map((data, index) => (
-                    <tr key={data.id}>
-                      <td className="index">{index + 1}.</td>
-                      <td>
-                        <div className="token-cell">
+                    <tr key={data.id} className="even:bg-[rgba(18,7,33,0.5)]">
+                      <td className="py-4 px-4 text-[#9CA3AF]">{index + 1}.</td>
+                      <td className="py-4 px-4">
+                        <div className="flex items-center justify-center gap-2">
                           {tokenIconMap[data.token_symbol]}
-                          <span className="token-symbol">{data.token_symbol.toUpperCase()}</span>
+                          <span className="text-white">{data.token_symbol.toUpperCase()}</span>
                         </div>
                       </td>
-                      <td>{data.amount}</td>
-                      <td>{data.created_at}</td>
-                      <td className={`status-cell ${statusStyles[data.status.toLowerCase()] || ''}`}>{data.status}</td>
-                      <td>{data.start_price}</td>
-                      <td>{data.multiplier}</td>
-                      <td>{data.is_liquidated}</td>
-                      <td>{data.closed_at}</td>
-                      <td className="action-column">
-                        <span className="action-button" onClick={() => setSelectedPosition({ data, index })}>
+                      <td className="py-4 px-4 text-white text-center">{data.amount}</td>
+                      <td className="py-4 px-4 text-white text-center">{data.created_at}</td>
+                      <td className={`py-4 px-4 text-center font-semibold ${statusStyles[data.status.toLowerCase()]}`}>
+                        {data.status}
+                      </td>
+                      <td className="py-4 px-4 text-white text-center">{data.start_price}</td>
+                      <td className="py-4 px-4 text-white text-center">{data.multiplier}</td>
+                      <td className="py-4 px-4 text-white text-center">{data.is_liquidated}</td>
+                      <td className="py-4 px-4 text-white text-center">{data.closed_at}</td>
+                      <td className="py-4 px-4 text-center">
+                        <button
+                          className="text-white p-1 rounded hover:bg-white/10 transition-colors"
+                          onClick={() => setSelectedPosition({ data, index })}
+                        >
                           &#x22EE;
-                        </span>
+                        </button>
                       </td>
                     </tr>
                   ))
