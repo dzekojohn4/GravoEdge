@@ -2,7 +2,7 @@
 This module provides CRUD operations for the leaderboard, retrieving the top users by positions.
 
 """
-from sqlalchemy.orm import Session
+from .base import DBConnector
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
 from web_app.db.models import User, Position
@@ -10,19 +10,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class LeaderboardDBConnector:
+class LeaderboardDBConnector(DBConnector):
     """
     Provides database connection and operations management using SQLAlchemy
     in a FastAPI application context.
     """
-    def __init__(self, session: Session):
-        """
-        Initializes a new instance of the class.
-
-        Args:
-            session (Session): The database session to be used for database operations.
-        """
-        self.Session = session
 
     def get_top_users_by_positions(self) -> list[dict]:
         """
