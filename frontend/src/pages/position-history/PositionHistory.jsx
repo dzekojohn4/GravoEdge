@@ -44,7 +44,7 @@ function PositionHistory() {
           <Card
             label="Borrow Balance"
             cardData={cardData?.borrowed || '0.00'}
-            icon={<HealthIcon className="mr-[5px] w-4 h-4" />}
+            icon={<EthIcon className="mr-[5px] w-4 h-4" />}
           />
         </div>
       </div>
