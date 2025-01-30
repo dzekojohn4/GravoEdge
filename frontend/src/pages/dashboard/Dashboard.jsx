@@ -9,7 +9,8 @@ import useDashboardData from "@/hooks/useDashboardData"
 import { useWalletStore } from "@/stores/useWalletStore"
 import DashboardLayout from "../DashboardLayout"
 import DashboardInfoCard from "@/components/dashboard/dashboardCard/DashboardInfoCard"
-import TelegramNotification from "@/components/ui/telegram-notification/TelegramNotification"
+import { TelegramNotification } from "@/components/ui/telegram-notification/TelegramNotification";
+
 
 export default function DashboardPage({ telegramId }) {
   const { walletId } = useWalletStore()
