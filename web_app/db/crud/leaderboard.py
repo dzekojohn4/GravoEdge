@@ -52,3 +52,28 @@ class LeaderboardDBConnector:
             except SQLAlchemyError as e:
                 logger.error(f"Error retrieving top users by positions: {e}")
                 return []
+            
+    def get_position_token_statistics(self) -> list[dict]:
+        with self.Session() as db:
+            try:
+                results = (
+                    db.query(
+                        Position.token_symbol,
+                        func.count(Position.id).label("total_positions")
+                    )
+                    .filter(Position.status.in_(["closed", "opened"]))
+                    .group_by(Position.token_symbol)
+                    .all()
+                )
+
+                return [
+                    {
+                        "token_symbol": result.token_symbol,
+                        "total_positions": result.total_positions
+                    }
+                    for result in results
+                ]
+
+            except SQLAlchemyError as e:
+                logger.error(f"Error retrieving position token statistics: {e}")
+                return []
