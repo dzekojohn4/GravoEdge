@@ -36,7 +36,7 @@ const Leaderboard = () => {
 
         {/* Stats Cards */}
         <section className="grid grid-cols-3 gap-4 mb-8">
-          <div className="border border-[#36294E] p-4 rounded-lg">
+          <div className="border border-[#36294E] py-[16px] px-[24px] rounded-lg">
             <div className="p-4">
               <div className="flex gap-2 text-[14px] text-gray-400">
                 <span>{tokenIcon.USDC}</span>USDC Position
@@ -47,7 +47,7 @@ const Leaderboard = () => {
             </div>
           </div>
 
-          <div className="border border-[#36294E] p-4 rounded-lg">
+          <div className="border border-[#36294E] py-[16px] px-[24px] rounded-lg">
             <div className="p-4">
               <div className="flex gap-2 text-[14px] text-gray-400">
                 <span>{tokenIcon.ETH}</span>ETH Position
@@ -58,7 +58,7 @@ const Leaderboard = () => {
             </div>
           </div>
 
-          <div className="border border-[#36294E] p-4 rounded-lg">
+          <div className="border border-[#36294E] py-[16px] px-[24px] rounded-lg">
             <div className="p-4">
               <div className="flex gap-2 text-[14px] text-gray-400">
                 <span>{tokenIcon.STRK}</span>STRK Position
@@ -102,7 +102,10 @@ const Leaderboard = () => {
                     <tr className="flex flex-row justify-between items-center">
                       <span>
                         <td className="py-4">
-                          <div className="flex gap-1">{tokenIcon.ETH}</div>
+                          <div className="flex">
+                            {tokenIcon.ETH}
+                            {tokenIcon.STRK}
+                          </div>
                         </td>
                       </span>
                     </tr>
