@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import TelegramIcon from "@/assets/icons/telegram_dashboard.svg?react";
-import { ActionModal } from "@/components/ui/action-modal";
-import { Button } from "@/components/ui/custom-button/Button";
-import useTelegramNotification from "@/hooks/useTelegramNotification";
-import { useWalletStore } from "@/stores/useWalletStore";
+import React, { useState } from 'react';
+import TelegramIcon from '@/assets/icons/telegram_dashboard.svg?react';
+import { ActionModal } from '@/components/ui/action-modal';
+import { Button } from '@/components/ui/custom-button/Button';
+import useTelegramNotification from '@/hooks/useTelegramNotification';
+import { useWalletStore } from '@/stores/useWalletStore';
 
 export function TelegramNotification({ telegramId }) {
   const [showModal, setShowModal] = useState(false);
@@ -22,20 +22,19 @@ export function TelegramNotification({ telegramId }) {
       <Button
         variant="secondary"
         size="lg"
-        className="dashboard-btn telegram"
+        className="w-full max-w-[642px] h-[60px] flex items-center justify-center gap-2"
         onClick={handleOpen}
       >
-        <TelegramIcon className="tab-icon" />
+        <TelegramIcon className="w-6 h-6" />
         Enable telegram notification bot
       </Button>
-
       {showModal && (
         <ActionModal
           isOpen={showModal}
           title="Telegram Notification"
           subTitle="Do you want to enable telegram notification bot?"
           content={[
-            "This will allow you to receive quick notifications on your telegram line in real-time. You can disable this setting anytime.",
+            'This will allow you to receive quick notifications on your telegram line in realtime. You can disable this setting anytime.',
           ]}
           cancelLabel="Cancel"
           submitLabel="Yes, Sure"
