@@ -27,8 +27,8 @@ function Stake() {
   };
   return (
     <VaultLayout>
-      <div className="stake-wrapper bg-cover bg-39p min-h-[125vh] h-full flex justify-center w-[calc(100vw-372px)] ml-[372px] mt-[60px] mb-[40px]    ">
-        <div className="stake-container w-full max-w-[642px] h-[610px] my-0 mx-auto flex flex-col items-center  gap-[30px] ">
+      <div className="stake-wrapper bg-cover bg-39p min-h-[125vh] h-full flex justify-center w-[calc(100vw-372px)] ml-[372px] mt-[70px] mb-[100px]    ">
+        <div className="stake-container w-full max-w-[642px] h-[610px] my-0 mx-auto flex flex-col items-center  gap-4 ">
 
           <h1 className='text-[#F0F0F0] font-semibold ' style={{fontSize: "24px"}} >zkLend Staking</h1>
           <div className='w-full flex flex-row justify-between items-center gap-6' >
