@@ -76,7 +76,7 @@ const Form = () => {
   };
 
   return (
-    <div className="flex flex-col gap-[30px] justify-start items-center py-4 min-h-screen md:gap-0">
+    <div className="flex flex-col gap-[30px] items-center py-4 max-[768px]:gap-0">
       <BalanceCards className="balance-card" />
 
       {isClosePositionOpen && (
@@ -95,34 +95,40 @@ const Form = () => {
           cancelAction={handleCloseModal}
         />
       )}
-      <form className="flex justify-center flex-col gap-[10px] pb-[60px] w-[626px] text-primary md:mx-0 md:p-4 md:w-full " onSubmit={handleSubmit}>
-        <div className="form-title md:px-4 text-center font-normal text-xl mb-[10px] md:text-base">
-          <h1>Please submit your leverage details</h1>
+      <form
+        className="flex justify-center flex-col gap-[10px] pb-[10px]  w-[626px] max-[768px]:mx-0 max-[768px]:w-full max-[768px]:p-4 text-[#fff]"
+        onSubmit={handleSubmit}
+      >
+        <div className=" font-normal text-[14px] mb-[20px] max-[768px]:mb-5">
+          <h5>Please submit your leverage details</h5>
         </div>
-
         <TokenSelector
           selectedToken={selectedToken}
           setSelectedToken={setSelectedToken}
-          className="form-token-selector md:px-4"
+          className="form-token-selector"
         />
-        <label className='md:px-4 md:text-xs text-base text-gray'>Select Multiplier</label>
-        <MultiplierSelector
-          setSelectedMultiplier={setSelectedMultiplier}
-          selectedToken={selectedToken}
-          sliderValue={selectedMultiplier}
-        />
-        <div className="flex flex-col gap-[5px] mt-[60px] md:px-4 md:mt-0">
-          <label className="md:mt-[25px] mt-5 mb-3">Token Amount</label>
+        <div className="text-[#83919f] text-4 w-full pt-2">
+          <label>Select Multiplier</label>
+        </div>
+        <div className="w-full">
+          <MultiplierSelector
+            setSelectedMultiplier={setSelectedMultiplier}
+            selectedToken={selectedToken}
+            sliderValue={selectedMultiplier}
+          />
+        </div>
+        <div className="flex flex-col gap-[5px] mt-[60px] w-full mb-2">
+          <label className="text-start w-full text-[#83919F] pt-5">Token Amount</label>
           <input
-          className='bg-transparent md:rounded-2xl md:text-sm rounded-[50px] py-5 px-[30px] text-gray border border-' //light purpule
+            className="max-[768px]:rounded-[12px] max-[768px]:text-[14px] bg-transparent rounded-[8px] py-4 px-[30px] border-[#36294e] border w-full"
             type="number"
             placeholder="Enter Token Amount"
             value={tokenAmount}
             onChange={(e) => setTokenAmount(e.target.value)}
           />
         </div>
-        <div>
-          <div className="flex items-end justify-self-end w-fit m-[2px] text-gray self-end gap-[5px] md:px-4">
+        <div className="">
+          <div className="flex flex-row items-end justify-self-end w-fit m-0.5 text-gray-400 gap-[5px] self-end">
             <p>Estimated Health Factor Level:</p>
             <p>{isHealthFactorLoading ? 'Loading...' : healthFactor}</p>
           </div>
