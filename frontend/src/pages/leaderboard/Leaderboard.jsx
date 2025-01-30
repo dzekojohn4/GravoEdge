@@ -1,6 +1,7 @@
 import React from 'react';
-// import { Card, CardHeader, CardContent } from '@/components/ui/card';
-import { ArrowUpDown, Bug } from 'lucide-react';
+import UsdIcon from '@/assets/icons/usd_coin.svg?react';
+import StrkIcon from '@/assets/icons/strk.svg?react';
+import EthIcon from '@/assets/icons/ethereum.svg?react';
 
 const Leaderboard = () => {
   const stats = {
@@ -9,75 +10,102 @@ const Leaderboard = () => {
     strgPosition: 89002039,
   };
 
+  const tokenIcon = {
+    STRK: <StrkIcon className="token-icon" />,
+    USDC: <UsdIcon className="token-icon" />,
+    ETH: <EthIcon className="token-icon" />,
+  };
+
   const leaderboardData = [
-    { id: 1, name: '0x2326cE85ff591f2aBC3f5c2559...', positions: 98 },
-    { id: 2, name: '0x5294cE85ff591f2aBC3f5c7893...', positions: 96 },
-    { id: 3, name: '0x7754cE85ff591f2aBC3f5c2893...', positions: 95 },
-    { id: 4, name: '0x9924cE85ff591f2aBC3f5c2893...', positions: 94 },
-    { id: 5, name: '0x1124cE85ff591f2aBC3f5c2893...', positions: 93 },
+    { id: 1, name: 'Name', address: '0x2326cE85ff591f2aBC3f5c2559...', positions: 98 },
+    { id: 2, name: 'Name', address: '0x5294cE85ff591f2aBC3f5c7893...', positions: 96 },
+    { id: 3, name: 'Name', address: '0x7754cE85ff591f2aBC3f5c2893...', positions: 95 },
+    { id: 4, name: 'Name', address: '0x9924cE85ff591f2aBC3f5c2893...', positions: 94 },
+    { id: 5, name: 'Name', address: '0x1124cE85ff591f2aBC3f5c2893...', positions: 93 },
+    { id: 6, name: 'Name', address: '0x1124cE85ff591f2aBC3f5c2893...', positions: 93 },
+    { id: 7, name: 'Name', address: '0x1124cE85ff591f2aBC3f5c2893...', positions: 93 },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 p-6 text-white">
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-[url(/assets/background-form.png)] p-6 text-white">
+      <div className="w-[764px] mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold">zkLend Leaderboard</h1>
-          <button className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
-            <Bug size={18} />
-            <span className="text-sm">Report Bug</span>
-          </button>
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-center">zkLend Leaderboard</h1>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <section className="bg-gray-800 border-gray-700">
+        <section className="grid grid-cols-3 gap-4 mb-8">
+          <div className="border border-[#36294E] p-4 rounded-lg">
             <div className="p-4">
-              <div className="text-sm text-gray-400">USDC Position</div>
-              <div className="text-xl font-bold">{stats.usdcPosition.toLocaleString()}</div>
+              <div className="flex gap-2 text-[14px] text-gray-400">
+                <span>{tokenIcon.USDC}</span>USDC Position
+              </div>
+              <div className="text-[24px] font-bold text-center text-[#F0F0F0]">
+                {stats.usdcPosition.toLocaleString()}
+              </div>
             </div>
-          </section>
+          </div>
 
-          <section className="bg-gray-800 border-gray-700">
+          <div className="border border-[#36294E] p-4 rounded-lg">
             <div className="p-4">
-              <div className="text-sm text-gray-400">ETH Position</div>
-              <div className="text-xl font-bold">{stats.ethPosition.toLocaleString()}</div>
+              <div className="flex gap-2 text-[14px] text-gray-400">
+                <span>{tokenIcon.ETH}</span>ETH Position
+              </div>
+              <div className="text-[24px] font-bold text-center text-[#F0F0F0]">
+                {stats.ethPosition.toLocaleString()}
+              </div>
             </div>
-          </section>
+          </div>
 
-          <section className="bg-gray-800 border-gray-700">
+          <div className="border border-[#36294E] p-4 rounded-lg">
             <div className="p-4">
-              <div className="text-sm text-gray-400">STRG Position</div>
-              <div className="text-xl font-bold">{stats.strgPosition.toLocaleString()}</div>
+              <div className="flex gap-2 text-[14px] text-gray-400">
+                <span>{tokenIcon.STRK}</span>STRK Position
+              </div>
+              <div className="text-[24px] font-bold text-center text-[#F0F0F0]">
+                {stats.strgPosition.toLocaleString()}
+              </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
 
         {/* Leaderboard Table */}
-        <section className="bg-gray-800 border-gray-700">
-          <div className="border-b border-gray-700">
+        <section className="border-[#36294E]">
+          <div className="mb-5">
             <h2 className="text-xl font-bold">Leaderboard</h2>
           </div>
-          <div>
+          <div className="border border-[#36294E] p-[24px] rounded-lg">
             <table className="w-full">
               <thead>
-                <tr className="text-gray-400 text-sm">
-                  <th className="text-left py-4">Name</th>
-                  <th className="text-left py-4">Opened Positions</th>
-                  <th className="text-left py-4">Tokens</th>
+                <tr className="flex flex-row items-center gap-[150px] text-gray-400 text-sm border-b border-[#36294E]">
+                  <th className="text-left py-4 pl-5 text-[14px]">Name</th>
+                  <th className="text-left py-4 pl-8 text-[14px]">Opened Positions</th>
+                  <th className="text-left py-4 text-[14px]">Tokens</th>
                 </tr>
               </thead>
               <tbody>
                 {leaderboardData.map((item) => (
-                  <tr key={item.id} className="border-t border-gray-700">
-                    <td className="py-4">{item.name}</td>
-                    <td className="py-4">{item.positions}</td>
-                    <td className="py-4">
-                      <div className="flex gap-2">
-                        <div className="w-6 h-6 bg-blue-500 rounded-full"></div>
-                        <ArrowUpDown size={18} className="text-gray-400" />
-                      </div>
-                    </td>
+                  <tr key={item.id} className="flex flex-row items-center gap-[250px] text-[#83919F]">
+                    <span className="flex flex-row justify-between items-center gap-10">
+                      <tr className="flex flex-row gap-5 items-center">
+                        <td className="text-[12px]">{item.id}.</td>
+                        <tr className="flex flex-col">
+                          <td className="text-[14px]">{item.name}</td>
+                          <td className="text-[12px]">{item.address}</td>
+                        </tr>
+                      </tr>
+                      <span>
+                        <td className="py-4 text-[14px]">{item.positions}</td>
+                      </span>
+                    </span>
+                    <tr className="flex flex-row justify-between items-center">
+                      <span>
+                        <td className="py-4">
+                          <div className="flex gap-1">{tokenIcon.ETH}</div>
+                        </td>
+                      </span>
+                    </tr>
                   </tr>
                 ))}
               </tbody>
@@ -85,7 +113,7 @@ const Leaderboard = () => {
           </div>
         </section>
       </div>
-    </div>
+    </main>
   );
 };
 
