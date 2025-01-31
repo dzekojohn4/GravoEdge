@@ -105,9 +105,9 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   if (isLoading) return <div className="bg-white py-3 px-4 text-black rounded-xs">Loading multiplier data...</div>;
 
   return (
-    <div className="w-full border-none pt-9 max-h-24">
+    <div className="w-full border-none pt-9 max-h-24 px-2 md:px-0">
       <div className="relative h-2 w-full cursor-pointer">
-        <div className="mt-3.5 mr-0.5 -mb-2.5">
+        <div className="mt-3.5 mr-0 -mb-2.5">
           <div className="mt-2.5 w-full">
             <div
               className="relative h-2 w-full cursor-pointer"
