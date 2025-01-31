@@ -20,11 +20,11 @@ const ActionModal = ({
   }
   return (
     <div
-      className="flex items-center justify-center fixed top-0 left-0 w-full h-full bg-[#00000080] backdrop-blur-sm z-50"
+      className="flex items-center justify-center fixed top-0 left-0 w-full h-full bg-light-dark-bg backdrop-blur-sm z-50"
       onClick={cancelAction}
     >
       <div
-        className="flex items-center justify-center shadow-[#0b0c10] overflow-hidden md:w-xl sm:w-lg w-full text-white"
+        className="flex items-center justify-center shadow-primary-color overflow-hidden md:w-xl sm:w-lg w-full text-white"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="rounded-2xl max-w-2xl w-full flex flex-col gap-6 text-center">
