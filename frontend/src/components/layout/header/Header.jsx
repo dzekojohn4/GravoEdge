@@ -7,7 +7,6 @@ import NavigationLinks from '@/components/layout/navigation-links/NavigationLink
 import useLockBodyScroll from '@/hooks/useLockBodyScroll';
 import MobDropdownMenu from '@/components/layout/mob-dropdown-menu/MobDropdownMenu';
 import './header.css';
-import '@/globals.css';
 import { ReportBugButton } from '@/components/report-button/ReportBugButton';
 import { ReportBugModal } from '@/components/report-modal/ReportBugModal';
 
@@ -61,15 +60,15 @@ const useModalHandling = () => {
 const Navigation = ({ makeNavStick, children }) => (
   <nav className={
     makeNavStick 
-      ? 'header-nav-sticky z-[100] fixed flex items-center w-full justify-center h-[90px] whitespace-nowrap border-b border-[#300734]' 
-      : 'header-nav relative z-[9999] flex items-center w-full justify-center h-[90px] whitespace-nowrap border-b border-[#300734]'
+      ? ' z-[100] fixed flex items-center w-full justify-center h-[90px] whitespace-nowrap border-b border-[var(--deep-purple)] bg-header-bg' 
+      : ' relative z-[9999] flex items-center w-full justify-center h-[90px] whitespace-nowrap border-b border-[var(--deep-purple)] bg-header-bg'
   }>
     {children}
   </nav>
 );
 
 const LogoSection = () => (
-  <div className="">
+  <div className="lg:pl-[5em]">
     <NavLink to="/">
    <img src={Logo} className='@max-xs:w-[200px] sm:w-[230px] h-auto md:w-[250px] md:h-auto mt-[9px] lg:w-[300px] lg:h-auto'/>
     </NavLink>
@@ -94,7 +93,7 @@ function Header({ onConnectWallet, onLogout }) {
           <NavigationLinks onNavClick={closeMenu} />
           
           <div className=" flex items-center">
-            <div className="block lg:hidden">
+            <div className="block lg:hidden relative">
               <MobDropdownMenu 
                 isMenuOpen={isMenuOpen} 
                 toggleMenu={toggleMenu} 

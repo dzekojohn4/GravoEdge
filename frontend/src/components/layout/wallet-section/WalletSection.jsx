@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/custom-button/Button';
 import { useWalletStore } from '@/stores/useWalletStore';
-
 const WalletSection = ({ onConnectWallet, onLogout }) => {
   const { walletId } = useWalletStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -83,10 +82,9 @@ const WalletSection = ({ onConnectWallet, onLogout }) => {
         </div>
       )}
 
-      {/* Connect Wallet button for big screens (outside menu) */}
       {!isMobile && !walletId && (
         <Button variant="primary" size="md" onClick={onConnectWallet}>
-          <span>Connect Wallet</span>
+          <span>Connect Wallet </span>
         </Button>
       )}
     </div>

@@ -1,41 +1,3 @@
-.header-nav {
-  background: var(--header-bg);
-  z-index: 9999;
-}
-
-.header-nav-sticky {
-  background: var(--header-bg);
-  z-index: 100;
-}
-
-.nav-divider {
-  background: var(--nav-divider-bg);
-}
-
-.nav-items {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.nav-items a {
-  position: relative;
-  color: var(--secondary);
-  font-family: var(--font-family);
-  transition: color 0.3s;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 150%;
-  text-transform: capitalize;
-}
-
-.nav-items a:hover {
-  color: var(--nav-button-hover);
-}
-
-.nav-items a.active-link {
-  color: var(--nav-button-hover);
-  font-weight: 600;
-}
 
 /* Wallet section styles */
 .wallet-container {
@@ -158,10 +120,6 @@
 }
 
 @media (max-width: 1024px) {
-  .nav-items {
-    display: none;
-  }
-
   .menu-section {
     display: flex;
     align-items: center;
@@ -253,6 +211,7 @@
 
 @media (max-width: 768px) {
 
+
   .menu-dropdown {
     width: 285px;
   }
@@ -299,13 +258,7 @@
 }
 
 @media (max-width: 480px) {
-  .header-nav {
-    height: 80px;
-  }
-
-  .list-items {
-    padding: 0 25px;
-  }
+  
 
   .wallet-container {
     width: 40px;
@@ -314,9 +267,7 @@
     padding: 0;
   }
 
-  .menu-dots {
-    padding: 0;
-  }
+  
 
   .Toastify__toast {
     left: 200px;
@@ -330,10 +281,6 @@
 }
 
 @media (max-width: 320px) {
-  .list-items {
-    justify-content: flex-start;
-    padding: 0 25px;
-  }
 
 
   .Toastify__toast {
