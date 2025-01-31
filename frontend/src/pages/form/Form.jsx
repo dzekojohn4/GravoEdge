@@ -75,7 +75,7 @@ const Form = () => {
   };
 
   return (
-    <div className="flex flex-col gap-[30px] items-center py-4 max-[768px]:gap-0 min-h-screen">
+    <div className="flex flex-col gap-4 items-center py-4 min-h-screen">
       <BalanceCards className="balance-card" />
 
       {isClosePositionOpen && (
@@ -95,10 +95,10 @@ const Form = () => {
         />
       )}
       <form
-        className="flex justify-center flex-col gap-[10px] pb-[10px]  w-[626px] max-[768px]:mx-0 max-[768px]:w-full max-[768px]:p-4 text-white"
+        className="flex justify-center flex-col gap-2.5 pb-3  max-w-2xl w-full text-white px-2"
         onSubmit={handleSubmit}
       >
-        <div className=" font-normal text-[14px] mb-[10px] max-[768px]:mb-5">
+        <div className=" font-normal text-sm mb-2.5">
           <h5>Please submit your leverage details</h5>
         </div>
         <TokenSelector
@@ -116,10 +116,10 @@ const Form = () => {
             sliderValue={selectedMultiplier}
           />
         </div>
-        <div className="flex flex-col gap-[5px] mt-[60px] w-full mb-2">
+        <div className="flex flex-col gap-1.5 mt-16 w-full mb-2">
           <label className="text-start w-full text-[#83919F] pt-5">Token Amount</label>
           <input
-            className="rounded-[12px] max-[768px]:text-[14px] bg-transparent sm:rounded-[50px] py-4 px-[30px] border-[#36294e] border w-full"
+            className="rounded-xl text-[14px] bg-transparent sm:rounded-full py-4 px-8 border-[#36294e] border w-full"
             type="number"
             placeholder="Enter Token Amount"
             value={tokenAmount}
@@ -127,7 +127,7 @@ const Form = () => {
           />
         </div>
         <div className="w-full">
-          <div className="flex flex-row items-end justify-self-end w-fit mb-3 text-gray-400 gap-[5px] self-end">
+          <div className="flex flex-row items-end justify-self-end w-fit mb-3 text-gray-400 gap-1.5 self-end">
             <p>Estimated Health Factor Level:</p>
             <p>{isHealthFactorLoading ? 'Loading...' : healthFactor}</p>
           </div>

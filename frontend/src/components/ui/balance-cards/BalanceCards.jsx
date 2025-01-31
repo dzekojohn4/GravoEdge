@@ -23,7 +23,7 @@ const BalanceCards = ({ className }) => {
   ]);
 
   return (
-    <div className="mt-3 mx-auto w-[626px]">
+    <div className="mt-3 mx-auto max-w-2xl px-3 w-full">
       <div className="grid grid-cols-3 w-full rounded-[8px] gap-3">
         {balances.map((balance) =>
           isMobile ? (

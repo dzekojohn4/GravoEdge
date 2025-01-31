@@ -105,10 +105,10 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   if (isLoading) return <div className="bg-white py-3 px-4 text-black rounded-xs">Loading multiplier data...</div>;
 
   return (
-    <div className="w-full border-none pt-[48px] max-[768px]:pt-[32px] max-[768px]:max-h-[85px]">
+    <div className="w-full border-none pt-9 max-h-24">
       <div className="relative h-2 w-full cursor-pointer">
-        <div className="mt-[15px] mr-[1px] -mb-2.5">
-          <div className="max-[768px]:mt-[10px] max-[768px]:w-full">
+        <div className="mt-3.5 mr-0.5 -mb-2.5">
+          <div className="mt-2.5 w-full">
             <div
               className="relative h-2 w-full cursor-pointer"
               ref={sliderRef}
@@ -129,23 +129,23 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
                   left: `${calculateSliderPercentage(actualValue)}%`,
                 }}
               >
-                <div className="absolute h-[32.6px] w-[46px] bottom-[30px] md:bottom-[35px] left-[33%] -translate-x-[50%] bg-[#2c5475] text-[#fff] text-sm py-1.5 px-2 opacity-[0.9] ronded-[7.17px] transition-opacity duration-200 ease-in-out text-center after:content-[''] after:absolute after:bottom-[-13px] after:left-1/2 after:-translate-x-1/2 after:border-[7px] after:border-solid after:border-transparent after:border-t-[#2c5475] text-[12px] p-[3px] ">
+                <div className="absolute h-8 w-12 bottom-8 md:bottom-[35px] left-[33%] -translate-x-[50%] bg-[#2c5475] text-[#fff] text-sm py-1.5 px-2 opacity-[0.9] ronded-[7.17px] transition-opacity duration-200 ease-in-out text-center after:content-[''] after:absolute after:bottom-[-13px] after:left-1/2 after:-translate-x-1/2 after:border-[7px] after:border-solid after:border-transparent after:border-t-[#2c5475] p-1">
                   {actualValue.toFixed(1)}
                 </div>
                 <img
                   src={sliderThumb}
-                  className="h-[30px] w-[30px]"
+                  className="h-8 w-8"
                   alt="slider thumb"
                   draggable="false"
                 />
               </div>
             </div>
           </div>
-          <div className="w-full flex justify-between mt-5 max-[768px]:mt-[10px]">
+          <div className="w-full flex justify-between mt-5">
             {marks.map((mark, index) => (
               <div
                 key={index}
-                className={`flex flex-col gap-2 items-center w-[18px]  ${actualValue === mark ? 'text-[#fff]' : 'text-[#393942]'}`}
+                className={`flex flex-col gap-2 items-center w-4  ${actualValue === mark ? 'text-[#fff]' : 'text-[#393942]'}`}
                 style={{
                   left: `${calculateSliderPercentage(mark)}%`,
                   position: 'absolute',
@@ -153,9 +153,9 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
                 }}
               >
                 <div
-                  className={`w-[4px] h-[12px] rounded-[12px] ${actualValue === mark ? 'bg-[#49abd2]' : 'bg-[#393942]'} `}
+                  className={`w-1 h-3 rounded-xl ${actualValue === mark ? 'bg-[#49abd2]' : 'bg-[#393942]'} `}
                 />
-                <span className="text-[0.875rem] max-[768px]:text-[10px] ">{`x${mark}`}</span>
+                <span className="text-sm">{`x${mark}`}</span>
               </div>
             ))}
           </div>
