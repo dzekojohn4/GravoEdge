@@ -10,8 +10,8 @@ import { usePositionHistoryTable } from '@/hooks/usePositionHistory';
 import PositionHistoryModal from '@/pages/position-history/PositionHistoryModal';
 import PositionPagination from '@/pages/position-history/PositionPagination';
 import { useEffect, useState } from 'react';
-import './positionHistory.css';
 import DashboardLayout from '../DashboardLayout';
+import './positionHistory.css';
 
 function PositionHistory() {
   const [selectedPosition, setSelectedPosition] = useState(null);
@@ -84,12 +84,12 @@ function PositionHistory() {
               </thead>
 
               <tbody>
-                {!tableData?.positions || tableData?.positions.length === 0 ? (
+                {!tableData || tableData.length === 0 || !filteredTableData ? (
                   <tr>
                     <td colSpan="10">No opened positions</td>
                   </tr>
                 ) : (
-                  tableData?.positions.map((data, index) => (
+                  filteredTableData.map((data, index) => (
                     <tr key={data.id}>
                       <td className="index">{index + 1}.</td>
                       <td>
