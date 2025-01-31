@@ -34,8 +34,8 @@ function PositionHistory() {
 
   return (
     <DashboardLayout title="Position History">
-      <div className="flex flex-col gap-6">
-        <div className="flex justify-center gap-2.5 w-full max-w-[642px]">
+      <div className="flex flex-col items-center justify-center gap-0.5 pt-6 rounded-lg text-primary text-center">
+        <div className="flex justify-center gap-2 w-full">
           <Card
             label="Health Factor"
             value={cardData?.health_ratio || '0.00'}
@@ -48,41 +48,30 @@ function PositionHistory() {
           />
         </div>
       </div>
-
-      <div className="w-full max-w-[1300px] mx-auto">
+      <div className="w-full max-w-[1300px] mx-auto ">
         <div className="text-sm text-white mb-4 pl-2">
           <p>Position History</p>
         </div>
 
-        <div className="border w-full border-[#36294E] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-[#12072180] [&::-webkit-scrollbar-thumb]:bg-[#36294E] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69]">
+        <div className="border w-full border-[#36294E] rounded-lg overflow-auto ]">
           {isPending ? (
             <div className="flex justify-center items-center">
               <Spinner loading={isPending} />
             </div>
           ) : (
-            <table className="w-full border-separate border-spacing-0">
+            <table className="w-full border-separate border-spacing-0 px-4">
               <thead>
-                <tr>
-                  <th className="py-4 px-4 text-left text-[#9CA3AF] font-normal border-b border-[#36294E]"></th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Token</th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Amount</th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
-                    Created At
-                  </th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">Status</th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
-                    Start Price
-                  </th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
-                    Multiplier
-                  </th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
-                    Liquidated
-                  </th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
-                    Closed At
-                  </th>
-                  <th className="py-4 px-4 text-center text-[#9CA3AF] font-normal border-b border-[#36294E]">
+                <tr className="flex gap-2 md:gap-3 border-b border-[#36294E]  text-[#9CA3AF] items-center py-4 text-[clamp(0.5rem,2vw,1rem)] font-normal justify-between">
+                  <th className=""></th>
+                  <th className="">Token</th>
+                  <th className="">Amount</th>
+                  <th className="">Created At</th>
+                  <th className="">Status</th>
+                  <th className="">Start Price</th>
+                  <th className="">Multiplier</th>
+                  <th className="">Liquidated</th>
+                  <th className="">Closed At</th>
+                  <th>
                     <img src={filterIcon} alt="filter-icon" draggable="false" />
                   </th>
                 </tr>

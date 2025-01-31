@@ -48,7 +48,7 @@ export const AddDeposit = () => {
   return (
     <DashboardLayout title="Add Deposit">
       <div className="flex flex-col items-center justify-center gap-0.5 pt-6 rounded-lg text-primary text-center">
-        <div className="flex gap-2 w-[642px] h-[101px] justify-center max-md:w-[500px] max-sm:w-[480px] max-[480px]:w-[420px] max-[420px]:w-[350px]">
+      <div className="flex gap-2">
           <Card 
             label="Health Factor" 
             value={dashboardData?.health_ratio} 

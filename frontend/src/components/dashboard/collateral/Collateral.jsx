@@ -4,7 +4,7 @@ import { TrendingDown, TrendingUp } from 'lucide-react';
 
 function Collateral({ data, startSum, currentSum, getCurrentSumColor }) {
   return (
-    <div className="p-1 pl-5 text-left text-base font-normal w-fit h-fit">
+    <div className="p-1 pl-5 text-left text-base font-normal w-full  h-fit">
       <div className="flex flex-col gap-2 w-fit h-fit text-base">
         <div className="flex items-center">
           {React.createElement(data[0]?.currencyIcon || CollateralIcon, {
