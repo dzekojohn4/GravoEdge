@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import { useMaxMultiplier } from '@/hooks/useMaxMultiplier';
 import sliderThumb from '@/assets/icons/slider_thumb.svg';
-import './multiplier.css';
 
 const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   const minMultiplier = 1.1;
@@ -103,8 +102,8 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
     }
   }, [maxMultiplier, actualValue, setSelectedMultiplier]);
 
-  if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
-  console.log(actualValue ,marks);
+  if (isLoading) return <div className="bg-white py-3 px-4 text-black rounded-xs">Loading multiplier data...</div>;
+
   return (
     <div className="w-full border-none pt-[48px] max-[768px]:pt-[32px] max-[768px]:max-h-[85px]">
       <div className="relative h-2 w-full cursor-pointer">
