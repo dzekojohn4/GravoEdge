@@ -52,7 +52,7 @@ const Information = () => {
     <div className="h-auto flex items-center justify-center px-[3em] md:px-[5em]">
       <div className=" relative w-[100%] max-w-6xl flex flex-col lg:flex-row justify-around lg:mt-[190px] lg:mb-[180px] mt-[4em] gap-[2em]  ">
         <div
-          className=" flex flex-col lg:w-[420px] h-[250px] bg-gradient-to-r  
+          className=" flex flex-col items-center justify-center lg:w-[420px] h-[250px] bg-gradient-to-r  
 from-[var(--card-bg-gradient-from)]
     to-[var(--card-bg-gradient-to)]
               rounded-[20px] shadow-card backdrop-blur-[21.09375px] border border-[var(--card-border-1)] text-[38px] text-white text-center font-[600] p-[0.1em] "
@@ -74,7 +74,7 @@ from-[var(--card-bg-gradient-from)]
         <div
           className="flex flex-col lg:w-[420px] h-[250px] bg-gradient-to-r 
     from-[var(--card-bg-gradient-from)] 
-    to-[var(--card-bg-gradient-to)]
+    to-[var(--card-bg-gradient-to)] items-center justify-center
               rounded-[20px] shadow-card backdrop-blur-[21.09375px] border border-[var(--card-border-1)] text-[38px] font-[600] p-[0.1em] text-white text-center"
         >
           <h1>Users</h1>

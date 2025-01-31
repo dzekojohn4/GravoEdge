@@ -78,10 +78,12 @@
 
   --button-gradient-from: #74d6fd;
   --button-gradient-to: #e01dee;
+  --button-gradient-via: #8fddfe;
+
 
   --button-gradient-hover-from: #74d6fd;
   --button-gradient-hover-to: #74d6fd;
-
+  
   --button-gradient-active-from: #58c4ef;
   --button-gradient-active-to: #58c4ef;
 

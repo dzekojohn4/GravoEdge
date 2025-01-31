@@ -16,7 +16,7 @@ const GradientButton = ({
       className={`
         bg-gradient-to-r from-[var(--button-gradient-from)] via-[var(--button-gradient-to)] to-[var(--button-gradient-to)]
         hover:bg-gradient-to-r hover:from-[var(--button-gradient-hover-from)] hover:via-[var(--button-gradient-from)] hover:to-[var(--button-gradient-hover-from)]
-        border-none rounded-[8px] h-[52px] text-[20px] text-white font-[700] mt-[20px] 2xl:h-[60px] z-10 cursor-pointer
+        border-none rounded-[8px] h-[52px] text-[20px] text-black font-[700] mt-[20px] 2xl:h-[60px] z-10 cursor-pointer
         ${mobileWidth} ${desktopWidth} ${className}
       `}
       onClick={onClick}

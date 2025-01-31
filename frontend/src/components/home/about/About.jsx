@@ -66,8 +66,8 @@ const About = () => {
             <div className="absolute -top-[2em] md:-top-[1em] lg:-top-[1.5em] 2xl:-top-[1.5em] z-10 left-1/2 -translate-x-1/2">
               <div
                 className="bg-primary-color  border-[var(--brand)] border-[0.8px] text-brand font-text font-semibold 
-                text-[32px] px-4 py-1 rounded-xl min-w-[70px] text-center
-                xl:text-[30px] z-1 bg-black lg:text-[25px] lg:min-w-[60px] md:text-[18px] md:min-w-[45px] text-[var(--brand)]"
+                text-[32px] px-4 py-1 rounded-xl min-w-[70px] text-center 
+                xl:text-[30px] z-7 bg-black lg:text-[25px] lg:min-w-[60px] md:text-[18px] md:min-w-[45px] text-[var(--brand)]"
               >
                 {card.number}
               </div>
@@ -76,7 +76,7 @@ const About = () => {
             <div
               className="w-[310px] h-[368px]  flex flex-col items-center gap-4 px-4 pt-[3em] 2xl:pt-[3em] bg-[linear-gradient(135deg,_rgba(116,_214,_253,_0.5)_0%,_rgba(11,_12,_16,_0.5)_100%)] 
               rounded-[20px] border border-[var(--card-border-1)] shadow-card backdrop-blur-[21.09375px]
-              xl:w-[260px] xl:h-[300px] lg:w-[220px] lg:h-[255px] md:w-[175px] md:h-[205px] z-1"
+              xl:w-[280px] xl:h-[350px] lg:w-[250px] lg:h-[255px] md:w-[175px] md:h-[205px] z-6"
             >
               <div
                 className="flex justify-center items-center w-[120px] h-[120px]
@@ -87,14 +87,14 @@ const About = () => {
 
               <h4
                 className="font-text text-[26px] text-primary text-center leading-[108%] font-medium
-                xl:text-[20px] text-white lg:text-[18px] md:text-[15px]"
+                xl:text-[22px] text-white lg:text-[18px] md:text-[15px]"
               >
                 {card.title}
               </h4>
 
               <p
                 className="font-text text-[20px] text-white text-secondary text-center leading-[140%] font-normal
-                xl:text-base lg:text-sm md:text-[11px]"
+                xl:text-base lg:text-md md:text-[11px]"
               >
                 {card.description}
               </p>

@@ -6,7 +6,7 @@ import Decoration from '@/assets/particles/deco.svg?react';
 import Starknet from '@/assets/particles/starknet.svg?react';
 import { useWalletStore } from '@/stores/useWalletStore';
 import { notify } from '@/components/layout/notifier/Notifier';
-import LaunchButton from '../../button';
+import LaunchButton from '../../gradientbutton';
 
 function Home() {
   const { walletId } = useWalletStore();
@@ -111,7 +111,8 @@ function Home() {
         </div>
         <LaunchButton onClick={handleLaunchApp}>Launch App</LaunchButton>
 
-        <div className="   absolute           
+        <div
+          className="   absolute           
     h-[100px]          
     w-[60%]            
     left-1/2           
@@ -121,7 +122,8 @@ function Home() {
     -z-10             
     bg-gradient-to-r 
     from-[var(--gradient-from)] 
-    to-[var(--gradient-to)] bottom-[-10%]"></div>
+    to-[var(--gradient-to)] bottom-[-10%]"
+        ></div>
       </div>
     </div>
   );

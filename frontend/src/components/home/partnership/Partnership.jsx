@@ -28,7 +28,7 @@ const Partnership = () => {
         />
       ))}
       <h1 className="text-center font-semibold text-[48px] text-white mb-[130px]">Partnership</h1>
-      <div className=" w-screen h-[150px] bg-gradient-to-r from-indigo-500 to-purple-500 relative flex items-center overflow-hidden">
+      <div className=" w-screen h-[150px] bg-gradient-to-r from-[var(--gradient-from)] via-purple-400 to-purple-500 relative flex items-center overflow-hidden">
         <div className=" partnership-logo flex items-center justify-start relative animate-scroll [&>*]:flex-shrink-0 [&>*]:w-[150px] [&>*]:h-[100px] [&>*]:mx-[20px]">
           {logos}
         </div>
