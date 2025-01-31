@@ -9,29 +9,27 @@ import useDashboardData from '@/hooks/useDashboardData';
 import { usePositionHistoryTable } from '@/hooks/usePositionHistory';
 import PositionHistoryModal from '@/pages/position-history/PositionHistoryModal';
 import PositionPagination from '@/pages/position-history/PositionPagination';
-import { useEffect, useState } from 'react';
+import {useState } from 'react';
 import DashboardLayout from '../DashboardLayout';
 import './positionHistory.css';
 
 function PositionHistory() {
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const positionsOnPage=10;
 
-  const { data: tableData, isPending } = usePositionHistoryTable();
-  const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
+  const { data: tableData, isPending } = usePositionHistoryTable(currentPage, positionsOnPage);
+  const { data:cardData} = useDashboardData();
 
-  const [filteredTableData, setFilteredTableData] = useState(tableData);
-  const positionsOnPage = 10;
+  // const getFilteredData = (data, page, itemsPerPage) => {
+  //   const start = (page - 1) * itemsPerPage;
+  //   const end = start + itemsPerPage;
+  //   return data.slice(start, end);
+  // };
 
-  const getFilteredData = (data, page, itemsPerPage) => {
-    const start = (page - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return data.slice(start, end);
-  };
-
-  useEffect(() => {
-    if (!isPending && tableData) setFilteredTableData(getFilteredData(tableData, currentPage, positionsOnPage));
-  }, [currentPage, isPending, tableData]);
+  // useEffect(() => {
+  //   if (!isPending && tableData) setFilteredTableData(getFilteredData(tableData, currentPage, positionsOnPage));
+  // }, [currentPage, isPending, tableData]);
 
   const tokenIconMap = {
     STRK: <StrkIcon className="token-icon" />,
@@ -49,8 +47,8 @@ function PositionHistory() {
     <DashboardLayout title="Position History">
       <div className="position-content">
         <div className="position-top-cards">
-          <Card label="Health Factor" value={dashboardData?.health_ratio || '0.00'} icon={<HealthIcon className="icon" />} />
-          <Card label="Borrow Balance" value={dashboardData?.borrowed || '0.00'} icon={<EthIcon className="icon" />} />
+          <Card label="Health Factor" value={cardData?.health_ratio || '0.00'} icon={<HealthIcon className="icon" />} />
+          <Card label="Borrow Balance" value={cardData?.borrowed || '0.00'} icon={<EthIcon className="icon" />} />
         </div>
       </div>
 
@@ -60,9 +58,9 @@ function PositionHistory() {
         </div>
 
         <div className="position-table">
-          {isPending || isDashboardLoading ? (
+          {isPending? (
             <div className="spinner-container">
-              <Spinner loading={isPending || isDashboardLoading} />
+              <Spinner loading={isPending} />
             </div>
           ) : (
             <table className="text-white">
@@ -78,18 +76,17 @@ function PositionHistory() {
                   <th>Liquidated</th>
                   <th>Closed At</th>
                   <th className="action-column">
-                    <img src={filterIcon || "/placeholder.svg"} alt="filter-icon" draggable="false" />
+                    <img src={filterIcon} alt="filter-icon" draggable="false" />
                   </th>
                 </tr>
               </thead>
-
               <tbody>
-                {!tableData || tableData.length === 0 || !filteredTableData ? (
+                {!tableData?.positions || tableData?.positions.length === 0 ? (
                   <tr>
                     <td colSpan="10">No opened positions</td>
                   </tr>
                 ) : (
-                  filteredTableData.map((data, index) => (
+                  tableData?.positions.map((data, index) => (
                     <tr key={data.id}>
                       <td className="index">{index + 1}.</td>
                       <td>
@@ -122,7 +119,7 @@ function PositionHistory() {
       <PositionPagination
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        isPending={isPending || isDashboardLoading}
+        isPending={isPending}
         tableData={tableData}
         positionsOnPage={positionsOnPage}
       />
