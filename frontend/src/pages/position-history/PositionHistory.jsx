@@ -84,12 +84,12 @@ function PositionHistory() {
               </thead>
 
               <tbody>
-                {!tableData || tableData.length === 0 || !filteredTableData ? (
+                {!tableData?.positions || tableData?.positions.length === 0 ? (
                   <tr>
                     <td colSpan="10">No opened positions</td>
                   </tr>
                 ) : (
-                  filteredTableData.map((data, index) => (
+                  tableData?.positions.map((data, index) => (
                     <tr key={data.id}>
                       <td className="index">{index + 1}.</td>
                       <td>
