@@ -9,27 +9,17 @@ import useDashboardData from '@/hooks/useDashboardData';
 import { usePositionHistoryTable } from '@/hooks/usePositionHistory';
 import PositionHistoryModal from '@/pages/position-history/PositionHistoryModal';
 import PositionPagination from '@/pages/position-history/PositionPagination';
-import {useState } from 'react';
+import { useState } from 'react';
 import DashboardLayout from '../DashboardLayout';
 import './positionHistory.css';
 
 function PositionHistory() {
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const positionsOnPage=10;
+  const positionsOnPage = 10;
 
   const { data: tableData, isPending } = usePositionHistoryTable(currentPage, positionsOnPage);
-  const { data:cardData} = useDashboardData();
-
-  // const getFilteredData = (data, page, itemsPerPage) => {
-  //   const start = (page - 1) * itemsPerPage;
-  //   const end = start + itemsPerPage;
-  //   return data.slice(start, end);
-  // };
-
-  // useEffect(() => {
-  //   if (!isPending && tableData) setFilteredTableData(getFilteredData(tableData, currentPage, positionsOnPage));
-  // }, [currentPage, isPending, tableData]);
+  const { data: cardData } = useDashboardData();
 
   const tokenIconMap = {
     STRK: <StrkIcon className="token-icon" />,
@@ -58,7 +48,7 @@ function PositionHistory() {
         </div>
 
         <div className="position-table">
-          {isPending? (
+          {isPending ? (
             <div className="spinner-container">
               <Spinner loading={isPending} />
             </div>
