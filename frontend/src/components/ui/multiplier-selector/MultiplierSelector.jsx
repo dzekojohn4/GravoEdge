@@ -115,21 +115,21 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
               onMouseDown={handleMouseDown}
               onTouchStart={handleTouchStart}
             >
-              <div className="absolute h-full w-full rounded-full outline-hidden border border-[#201338]">
+              <div className="absolute h-full w-full rounded-full outline-hidden border border-border-color">
                 <div
-                  className="absolute h-full bg-gradient-to-r from-[#49abd2] to-[#e01dee]"
+                  className="absolute h-full bg-gradient-to-r from-nav-button-hover to-pink"
                   style={{
                     width: `${calculateSliderPercentage(actualValue)}%`,
                   }}
                 ></div>
               </div>
               <div
-                className="absolute top-[50%] -translate-x-1/2 -translate-y-1/2 transition-colors duration-300"
+                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 transition-colors duration-300"
                 style={{
                   left: `${calculateSliderPercentage(actualValue)}%`,
                 }}
               >
-                <div className="absolute h-8 w-12 bottom-8 md:bottom-[35px] left-[33%] -translate-x-[50%] bg-[#2c5475] text-[#fff] text-sm py-1.5 px-2 opacity-[0.9] ronded-[7.17px] transition-opacity duration-200 ease-in-out text-center after:content-[''] after:absolute after:bottom-[-13px] after:left-1/2 after:-translate-x-1/2 after:border-[7px] after:border-solid after:border-transparent after:border-t-[#2c5475] p-1">
+                <div className="absolute h-8 w-12 bottom-8 md:bottom-8 left-4 -translate-x-1/2 bg-[#2c5475] text-primary text-sm py-1.5 px-2 opacity-[0.9] rounded-[7.17px] transition-opacity duration-200 ease-in-out text-center after:content-[''] after:absolute after:-bottom-3.5 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-solid after:border-transparent after:border-t-[#2c5475] p-1">
                   {actualValue.toFixed(1)}
                 </div>
                 <img
@@ -145,7 +145,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
             {marks.map((mark, index) => (
               <div
                 key={index}
-                className={`flex flex-col gap-2 items-center w-4  ${actualValue === mark ? 'text-[#fff]' : 'text-[#393942]'}`}
+                className={`flex flex-col gap-2 items-center w-4  ${actualValue === mark ? 'text-primary' : 'text-slider-gray'}`}
                 style={{
                   left: `${calculateSliderPercentage(mark)}%`,
                   position: 'absolute',
@@ -153,7 +153,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
                 }}
               >
                 <div
-                  className={`w-1 h-3 rounded-xl ${actualValue === mark ? 'bg-[#49abd2]' : 'bg-[#393942]'} `}
+                  className={`w-1 h-3 rounded-xl ${actualValue === mark ? 'bg-nav-button-hover' : 'bg-slider-gray'} `}
                 />
                 <span className="text-sm">{`x${mark}`}</span>
               </div>

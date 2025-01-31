@@ -95,18 +95,18 @@ const Form = () => {
         />
       )}
       <form
-        className="flex justify-center flex-col gap-2.5 pb-3  max-w-2xl w-full text-white px-2"
+        className="flex justify-center flex-col gap-2.5 pb-3  max-w-2xl w-full text-primary px-2"
         onSubmit={handleSubmit}
       >
         <div className=" font-normal text-sm mb-2.5">
-          <h5>Please submit your leverage details</h5>
+          <h2 className='text-xl text-center'>Please submit your leverage details</h2>
         </div>
         <TokenSelector
           selectedToken={selectedToken}
           setSelectedToken={setSelectedToken}
           className="form-token-selector"
         />
-        <div className="text-[#83919f] text-4 w-full pt-2">
+        <div className="text-gray text-4 w-full pt-2">
           <label>Select Multiplier</label>
         </div>
         <div className="w-full">
@@ -117,9 +117,9 @@ const Form = () => {
           />
         </div>
         <div className="flex flex-col gap-1.5 mt-16 w-full mb-2">
-          <label className="text-start w-full text-[#83919F] pt-5">Token Amount</label>
+          <label className="text-start w-full text-gray pt-5">Token Amount</label>
           <input
-            className="rounded-xl text-[14px] bg-transparent sm:rounded-full py-4 px-8 border-[#36294e] border w-full"
+            className="rounded-xl text-[14px] bg-transparent sm:rounded-full py-4 px-8 border-light-purple border w-full"
             type="number"
             placeholder="Enter Token Amount"
             value={tokenAmount}
@@ -127,7 +127,7 @@ const Form = () => {
           />
         </div>
         <div className="w-full">
-          <div className="flex flex-row items-end justify-self-end w-fit mb-3 text-gray-400 gap-1.5 self-end">
+          <div className="flex flex-row items-end justify-self-end w-fit mb-3 text-gray gap-1.5 self-end">
             <p>Estimated Health Factor Level:</p>
             <p>{isHealthFactorLoading ? 'Loading...' : healthFactor}</p>
           </div>

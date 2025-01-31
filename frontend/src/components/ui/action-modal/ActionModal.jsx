@@ -28,8 +28,8 @@ const ActionModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="rounded-2xl max-w-2xl w-full flex flex-col gap-6 text-center">
-          <div className="text-center py-4 border-[#36294e]  bg-[#120721] rounded-3xl min-h-80 text-sm md:rounded-2xl max-[1024px]:pt-[16px] h-52">
-            <div className="text-[#fff] text-center text-base border-b-[#ffffff1a] pb-2 border-b mb-6 w-full">
+          <div className="text-center py-4 border-nav-divider-bg  bg-bg rounded-3xl min-h-80 text-sm md:rounded-2xl pt-4 h-52">
+            <div className="text-primary text-center text-base border-b-gray pb-2 border-b mb-6 w-full">
               {title}
             </div>
             <div className='px-2'>

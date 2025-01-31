@@ -16,11 +16,11 @@ const TokenSelector = ({ selectedToken, setSelectedToken, className }) => {
 
   return (
     <div className="flex flex-col gap-2 w-full">
-      <span className="text-[#83919f] block text-start w-full">Select Token</span>
+      <span className="text-stormy-gray block text-start w-full">Select Token</span>
       <div className="flex justify-center items-center gap-2 w-full">
         {Tokens.map((token) => (
           <div
-            className={`relative w-full text-center rounded-xl border border-[#201338] h-16 grid place-content-center ${selectedToken === token.label ? 'selected' : ''}`}
+            className={`relative w-full text-center rounded-xl border border-border-color h-16 grid place-content-center ${selectedToken === token.label ? 'selected' : ''}`}
             key={token.id}
             onClick={() => handleTokenChange(token)}
           >
@@ -34,12 +34,12 @@ const TokenSelector = ({ selectedToken, setSelectedToken, className }) => {
               className="hidden p-0.5 w-full rounded-xs outline-none"
             />
             <div className="w-full flex gap-1 items-center py-4">
-              <div className="bg-[#201338] rounded-full w-8 h-8 grid place-content-center">
+              <div className="bg-border-color rounded-full w-8 h-8 grid place-content-center">
                 <span className="rounded-full h-5 w-5 flex justify-center items-center">
                   {token.component}
                 </span>
               </div>
-              <label htmlFor={token.id} className="text-base font-semibold text-[#fff] leading-6">
+              <label htmlFor={token.id} className="text-base font-semibold text-primary leading-6">
                 {token.label}
               </label>
             </div>
