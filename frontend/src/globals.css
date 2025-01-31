@@ -163,14 +163,15 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   --color-second-primary: #fdfdfd;
   --color-plain-button-bg: #0e0a16;
   --color-header-button-bg: #120721;
+  --color-btn-dark: rgb(18, 7, 33);
 
-  --font-text: "Rethink Sans", sans-serif;
-  --font-primary: "Open Sans", sans-serif;
-  --font-third: "Allerta Stencil", sans-serif;
-  --font-inter: "Inter", sans-serif;
+  --font-text: 'Rethink Sans', sans-serif;
+  --font-primary: 'Open Sans', sans-serif;
+  --font-third: 'Allerta Stencil', sans-serif;
+  --font-inter: 'Inter', sans-serif;
 
-  --bg-app: url("../public/desktop-background.png");
-  --bg-app-mobile: url("../public/mobile-background.png");
+  --bg-app: url('../public/desktop-background.png');
+  --bg-app-mobile: url('../public/mobile-background.png');
   --bg-main-gradient: linear-gradient(73deg, #74d6fd 1.13%, #e01dee 103.45%);
   --bg-button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
   --bg-button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
@@ -185,6 +186,7 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   --shadow-card: inset 4px 4px 9px 0 rgba(153, 234, 255, 0.25), 0 4px 4px 0 rgba(0, 0, 0, 0.15);
   --blur-card: 42.1875px;
   --blur-backdrop: 12px;
+  
 
   --border-purple: 1px;
   --border-midnight-purple: 1px;
