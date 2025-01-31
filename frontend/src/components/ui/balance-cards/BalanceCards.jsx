@@ -6,7 +6,6 @@ import { useWalletStore } from '@/stores/useWalletStore';
 import ETH from '@/assets/icons/ethereum.svg?react';
 import USDC from '@/assets/icons/borrow_usdc.svg?react';
 import STRK from '@/assets/icons/strk.svg?react';
-import './balanceCards.css';
 
 const BalanceCards = ({ className }) => {
   const { walletId } = useWalletStore();
@@ -25,11 +24,11 @@ const BalanceCards = ({ className }) => {
 
   return (
     <div className="mt-3 mx-auto w-[626px]">
-      <div className="flex justify-between w-full rounded-[8px] gap-11">
+      <div className="grid grid-cols-3 w-full rounded-[8px] gap-3">
         {balances.map((balance) =>
           isMobile ? (
             <div
-              className="border flex flex-col items-center text-center border-[#36294E] py-2.5 px-2.5 rounded-[8px]"
+              className="border flex flex-col items-center text-center border-[#36294E] py-3 px-2.5 rounded-[8px] max-w-[180px]"
               key={balance.title}
             >
               <label htmlFor={balance.title} className={'flex text-[#83919F] gap-1'}>
