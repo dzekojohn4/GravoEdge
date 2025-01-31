@@ -129,7 +129,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
                   left: `${calculateSliderPercentage(actualValue)}%`,
                 }}
               >
-                <div className="absolute h-8 w-12 bottom-8 md:bottom-8 left-4 -translate-x-1/2 bg-[#2c5475] text-primary text-sm py-1.5 px-2 opacity-[0.9] rounded-[7.17px] transition-opacity duration-200 ease-in-out text-center after:content-[''] after:absolute after:-bottom-3.5 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-solid after:border-transparent after:border-t-[#2c5475] p-1">
+                <div className="absolute h-8 w-12 bottom-8 md:bottom-8 left-4 -translate-x-1/2 bg-pinky-blue- text-primary text-sm py-1.5 px-2 opacity-[0.9] rounded-[7.17px] transition-opacity duration-200 ease-in-out text-center after:content-[''] after:absolute after:-bottom-3.5 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-solid after:border-transparent after:border-t-[#2c5475] p-1">
                   {actualValue.toFixed(1)}
                 </div>
                 <img
