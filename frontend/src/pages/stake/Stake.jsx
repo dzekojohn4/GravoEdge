@@ -4,7 +4,7 @@ import STRK from '@/assets/icons/strk.svg';
 import USDCc from '@/assets/icons/apy_icon.svg';
 import { VaultLayout } from '@/components/vault/VaultLayout';
 import { cn } from '@/utils/cn';
-import { DiamondIcon, SettingsIcon, TimerIcon } from 'lucide-react';
+import GasFee from '@/components/vault/gas-fee/GasFee';
 
 function Stake() {
   const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
@@ -27,17 +27,17 @@ function Stake() {
   };
   return (
     <VaultLayout>
-          <div className="w-screen h-full min-h-screen  p-[7%]  2xl:h-screen flex flex-col justify-center items-center lg:ml-32">
-            <div className='w-full   flex flex-col items-center justify-center' >
+          <div className="w-screen h-full  min-h-screen p-[7%]  2xl:h-screen flex flex-col justify-center items-center lg:ml-32">
+            <div className='w-full max-w-[650px] h-full flex flex-col items-center justify-center' >
               <h1 className="text-2xl text-white text-center mt-5 mb-10">zkLend Staking</h1>
-              <div className="flex items-center space-x-5 ">
+              <div className="w-full flex items-stretch h-[103px] justify-between space-x-5    ">
                 <MetricCard title="STRK Balance" value="0.046731" icon={STRK}  />
                 <MetricCard title="APY Balance" value="0.046731" icon={USDCc} />
               </div>
         
             <div className="mt-1.5">
               <p className="text-white text-center text-lg mt-3 mb-2">Please submit your leverage details</p>
-              <div className="border border-light-purple p-5 pt-2 px-7 rounded-lg mt-5 w-[700px]">
+              <div className="border border-[#36294e] p-5 pt-2 px-7 rounded-lg mt-5 w-[650px]">
                 
 
               <div className="w-full">
@@ -116,18 +116,11 @@ function Stake() {
               <div className="self-start text-[#393942] font-medium text-sm  ">STRK</div>
             </div>
     
-                <div>
-                  <div className="w-full h-0.5 bg-footer-divider mt-16"></div>
-                  <div className="mt-3 w-full flex justify-between items-center">
-                    <div className="bg-footer-divider rounded-full p-2">
-                      <SettingsIcon />
-                    </div>
-                    <p className="text-stormy-gray text-xs">Gas fee: 0.00 STRK</p>
-                  </div>
-                </div>
+              
+                <GasFee/>
               </div>
-              <div class="relative p-[2px] rounded-lg bg-gradient-to-r from-[#74d6fd] to-[#e01dee] mb-5 mt-5">
-                <button class="w-full h-full bg-btn-dark text-white px-4 py-3 rounded-lg font-semibold cursor-pointer">
+              <div class="relative p-[1px] rounded-lg bg-gradient-to-r from-[#74d6fd] to-[#e01dee] mb-5 mt-5">
+                <button class="w-full h-full bg-[rgb(18,7,33)] text-white px-4 py-4 rounded-lg font-semibold cursor-pointer">
                 Stake
                 </button>
               </div>
