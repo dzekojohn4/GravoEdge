@@ -75,7 +75,7 @@ const Form = () => {
   };
 
   return (
-    <div className="flex flex-col gap-[30px] items-center py-4 max-[768px]:gap-0">
+    <div className="flex flex-col gap-[30px] items-center py-4 max-[768px]:gap-0 min-h-screen">
       <BalanceCards className="balance-card" />
 
       {isClosePositionOpen && (
@@ -95,10 +95,10 @@ const Form = () => {
         />
       )}
       <form
-        className="flex justify-center flex-col gap-[10px] pb-[10px]  w-[626px] max-[768px]:mx-0 max-[768px]:w-full max-[768px]:p-4 text-[#fff]"
+        className="flex justify-center flex-col gap-[10px] pb-[10px]  w-[626px] max-[768px]:mx-0 max-[768px]:w-full max-[768px]:p-4 text-white"
         onSubmit={handleSubmit}
       >
-        <div className=" font-normal text-[14px] mb-[20px] max-[768px]:mb-5">
+        <div className=" font-normal text-[14px] mb-[10px] max-[768px]:mb-5">
           <h5>Please submit your leverage details</h5>
         </div>
         <TokenSelector
@@ -119,15 +119,15 @@ const Form = () => {
         <div className="flex flex-col gap-[5px] mt-[60px] w-full mb-2">
           <label className="text-start w-full text-[#83919F] pt-5">Token Amount</label>
           <input
-            className="max-[768px]:rounded-[12px] max-[768px]:text-[14px] bg-transparent rounded-[8px] py-4 px-[30px] border-[#36294e] border w-full"
+            className="rounded-[12px] max-[768px]:text-[14px] bg-transparent sm:rounded-[50px] py-4 px-[30px] border-[#36294e] border w-full"
             type="number"
             placeholder="Enter Token Amount"
             value={tokenAmount}
             onChange={(e) => setTokenAmount(e.target.value)}
           />
         </div>
-        <div className="">
-          <div className="flex flex-row items-end justify-self-end w-fit m-0.5 text-gray-400 gap-[5px] self-end">
+        <div className="w-full">
+          <div className="flex flex-row items-end justify-self-end w-fit mb-3 text-gray-400 gap-[5px] self-end">
             <p>Estimated Health Factor Level:</p>
             <p>{isHealthFactorLoading ? 'Loading...' : healthFactor}</p>
           </div>

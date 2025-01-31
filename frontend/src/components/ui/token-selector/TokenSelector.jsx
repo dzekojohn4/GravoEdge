@@ -2,7 +2,6 @@ import React from 'react';
 import ETH from '@/assets/icons/ethereum.svg?react';
 import USDC from '@/assets/icons/borrow_usdc.svg?react';
 import STRK from '@/assets/icons/strk.svg?react';
-import './tokenSelector.css';
 
 const Tokens = [
   { id: 'ethOption', component: <ETH />, label: 'ETH' },
@@ -16,12 +15,12 @@ const TokenSelector = ({ selectedToken, setSelectedToken, className }) => {
   };
 
   return (
-    <div className={`token-selector-container ${className}`}>
-      <span className="token-select-label">Select Token</span>
-      <div className="token-options">
+    <div className="flex flex-col gap-2 w-full">
+      <span className="text-[#83919f] block text-start w-full">Select Token</span>
+      <div className="flex justify-center items-center gap-2 w-full">
         {Tokens.map((token) => (
           <div
-            className={`token-card-btn ${selectedToken === token.label ? 'selected' : ''}`}
+            className={`relative w-full text-center rounded-[8px] border border-[#201338] h-[64px] grid place-content-center ${selectedToken === token.label ? 'selected' : ''}`}
             key={token.id}
             onClick={() => handleTokenChange(token)}
           >
@@ -32,11 +31,15 @@ const TokenSelector = ({ selectedToken, setSelectedToken, className }) => {
               name="token-options"
               value={token.label}
               onChange={() => handleTokenChange(token)}
-              className="token-radio"
+              className="hidden p-0.5 w-full rounded-[4px] outline-none"
             />
-            <div className="token-name-wrapper">
-              <span className="token-selector-icon">{token.component}</span>
-              <label htmlFor={token.id} className="token-card-label">
+            <div className="w-full flex gap-1 items-center py-4">
+              <div className="bg-[#201338] rounded-full w-[32px] h-[32px] grid place-content-center">
+                <span className="rounded-full h-[20px] w-[20px] flex justify-center items-center">
+                  {token.component}
+                </span>
+              </div>
+              <label htmlFor={token.id} className="text-base font-semibold text-[#fff] leading-[22px]">
                 {token.label}
               </label>
             </div>

@@ -28,18 +28,13 @@ const ActionModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="rounded-2xl max-w-[700px] w-full flex flex-col gap-6 text-center max-[768px]:rounded-[16px] max-[768px]:gap-[16px] max-[320px]:w-[300px] ">
-          <div className="text-center py-4 border-[#36294e]  bg-[#120721] rounded-3xl h-[300px] max-[1024px]:text-sm max-[1024px]:max-[1024px]:rounded-[16px] max-[1024px]:pt-[16px] max-[768px]:h-[200px]">
-            <div className="text-[#fff] text-center text-base border-b-[#ffffff1a] pb-2 border-b mb-[24px] w-full">{title}</div>
-            <h6
-              className="text-sm px-2 pt-6"
-            >
-              {subTitle}
-            </h6>
+          <div className="text-center py-4 border-[#36294e]  bg-[#120721] rounded-3xl min-h-[300px] max-[1024px]:text-sm max-[1024px]:max-[1024px]:rounded-[16px] max-[1024px]:pt-[16px] max-[768px]:h-[200px]">
+            <div className="text-[#fff] text-center text-base border-b-[#ffffff1a] pb-2 border-b mb-[24px] w-full">
+              {title}
+            </div>
+            <h6 className="text-sm px-2 ">{subTitle}</h6>
             {content.map((content, i) => (
-              <p
-                className="text-[#e7ecf0] text-base leading-1.5 max-w-[380px] mt-0 mx-auto mb-3 max-[768px]:text-[12px]"
-                key={i}
-              >
+              <p className="text-gray-500 text-base leading-6 max-w-[380px] mt-0 mx-auto mb-3 max-[768px]:text-[12px]" key={i}>
                 {content}
               </p>
             ))}

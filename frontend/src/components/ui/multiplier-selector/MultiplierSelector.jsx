@@ -104,45 +104,59 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
   }, [maxMultiplier, actualValue, setSelectedMultiplier]);
 
   if (isLoading) return <div className="slider-skeleton">Loading multiplier data...</div>;
-
+  console.log(actualValue ,marks);
   return (
-    <div className="multiplier-card">
-      <div className="slider-container">
-        <div className="slider-with-tooltip">
-          <div className="multiplier-slider-container">
-            <div className="slider" ref={sliderRef} onMouseDown={handleMouseDown} onTouchStart={handleTouchStart}>
-              <div className="slider-track">
+    <div className="w-full border-none pt-[48px] max-[768px]:pt-[32px] max-[768px]:max-h-[85px]">
+      <div className="relative h-2 w-full cursor-pointer">
+        <div className="mt-[15px] mr-[1px] -mb-2.5">
+          <div className="max-[768px]:mt-[10px] max-[768px]:w-full">
+            <div
+              className="relative h-2 w-full cursor-pointer"
+              ref={sliderRef}
+              onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
+            >
+              <div className="absolute h-full w-full rounded-full outline-hidden border border-[#201338]">
                 <div
-                  className="slider-range"
+                  className="absolute h-full bg-gradient-to-r from-[#49abd2] to-[#e01dee]"
                   style={{
                     width: `${calculateSliderPercentage(actualValue)}%`,
                   }}
                 ></div>
               </div>
               <div
-                className="slider-thumb"
+                className="absolute top-[50%] -translate-x-1/2 -translate-y-1/2 transition-colors duration-300"
                 style={{
                   left: `${calculateSliderPercentage(actualValue)}%`,
                 }}
               >
-                <div className="tooltip">{actualValue.toFixed(1)}</div>
-                <img src={sliderThumb} className="cursor" alt="slider thumb" draggable="false" />
+                <div className="absolute h-[32.6px] w-[46px] bottom-[30px] md:bottom-[35px] left-[33%] -translate-x-[50%] bg-[#2c5475] text-[#fff] text-sm py-1.5 px-2 opacity-[0.9] ronded-[7.17px] transition-opacity duration-200 ease-in-out text-center after:content-[''] after:absolute after:bottom-[-13px] after:left-1/2 after:-translate-x-1/2 after:border-[7px] after:border-solid after:border-transparent after:border-t-[#2c5475] text-[12px] p-[3px] ">
+                  {actualValue.toFixed(1)}
+                </div>
+                <img
+                  src={sliderThumb}
+                  className="h-[30px] w-[30px]"
+                  alt="slider thumb"
+                  draggable="false"
+                />
               </div>
             </div>
           </div>
-          <div className="mark-container">
+          <div className="w-full flex justify-between mt-5 max-[768px]:mt-[10px]">
             {marks.map((mark, index) => (
               <div
                 key={index}
-                className={`mark-item ${actualValue === mark ? 'active' : ''}`}
+                className={`flex flex-col gap-2 items-center w-[18px]  ${actualValue === mark ? 'text-[#fff]' : 'text-[#393942]'}`}
                 style={{
                   left: `${calculateSliderPercentage(mark)}%`,
                   position: 'absolute',
                   transform: 'translateX(-50%)',
                 }}
               >
-                <div className="marker" />
-                <span className="mark-label">{`x${mark}`}</span>
+                <div
+                  className={`w-[4px] h-[12px] rounded-[12px] ${actualValue === mark ? 'bg-[#49abd2]' : 'bg-[#393942]'} `}
+                />
+                <span className="text-[0.875rem] max-[768px]:text-[10px] ">{`x${mark}`}</span>
               </div>
             ))}
           </div>

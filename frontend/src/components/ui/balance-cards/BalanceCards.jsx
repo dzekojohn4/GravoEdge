@@ -24,29 +24,33 @@ const BalanceCards = ({ className }) => {
   ]);
 
   return (
-    <div className={`balance-card ${className}`}>
-      <div className="balance-container">
+    <div className="mt-3 mx-auto w-[626px]">
+      <div className="flex justify-between w-full rounded-[8px] gap-11">
         {balances.map((balance) =>
           isMobile ? (
-            <div className="balance-item" key={balance.title}>
-              <div className="title-container">
-                <label htmlFor="icon" className="balance-title">
-                  <span className="token-icon">{balance.icon}</span>
-                </label>
-                <label htmlFor={balance.title}>
-                  <span className="balance-text">{balance.title} Balance</span>
-                </label>
-              </div>
-              <label htmlFor={balance.title}>{balance.balance}</label>
-            </div>
-          ) : (
-            <div className="balance-item" key={balance.title}>
-              <label htmlFor={balance.title} className={'balance-title'}>
+            <div
+              className="border flex flex-col items-center text-center border-[#36294E] py-2.5 px-2.5 rounded-[8px]"
+              key={balance.title}
+            >
+              <label htmlFor={balance.title} className={'flex text-[#83919F] gap-1'}>
                 <span className="token-icon blend">{balance.icon}</span>
                 <span className="balance-text">{balance.title} Balance</span>
               </label>
               <label htmlFor={balance.title}>
-                <span className="balance-amount">{balance.balance}</span>
+                <span className="text-white">{balance.balance}</span>
+              </label>
+            </div>
+          ) : (
+            <div
+              className="border flex flex-col items-center text-center border-[#36294E] py-3 px-6 rounded-[8px]"
+              key={balance.title}
+            >
+              <label htmlFor={balance.title} className={'flex text-[#83919F] gap-1'}>
+                <span className="token-icon blend">{balance.icon}</span>
+                <span className="balance-text">{balance.title} Balance</span>
+              </label>
+              <label htmlFor={balance.title}>
+                <span className="font-semibold text-2xl text-white">{balance.balance}</span>
               </label>
             </div>
           )
