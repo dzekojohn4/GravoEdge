@@ -24,15 +24,15 @@ const ActionModal = ({
       onClick={cancelAction}
     >
       <div
-        className="flex items-center justify-center shadow-primary-color overflow-hidden md:w-xl sm:w-lg w-full text-white"
+        className="flex items-center justify-center shadow-primary-color overflow-hidden md:w-xl sm:w-lg w-full text-white px-20"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="rounded-2xl max-w-2xl w-full flex flex-col gap-6 text-center">
-          <div className="text-center py-4 border-nav-divider-bg  bg-bg rounded-3xl min-h-80 text-sm md:rounded-2xl pt-4 h-52">
-            <div className="text-primary text-center text-base border-b-gray pb-2 border-b mb-6 w-full">
+          <div className="text-center py-4 border-nav-divider-bg  bg-bg rounded-3xl max-h-80 text-sm md:rounded-2xl pt-4 h-56 border">
+            <div className="text-primary text-center text-base border-b-nav-divider-bg  pb-2 border-b mb-6 w-full">
               {title}
             </div>
-            <div className='px-2'>
+            <div className="px-2">
               <h6 className="text-sm px-2 ">{subTitle}</h6>
               {content.map((content, i) => (
                 <p className="text-gray-500 text-base leading-6 max-w-96 mt-0 mx-auto mb-3" key={i}>
@@ -41,7 +41,7 @@ const ActionModal = ({
               ))}
             </div>
           </div>
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-4 justify-between">
             <Button variant="secondary" size="md" className="modal-btn" onClick={cancelAction} disabled={isLoading}>
               {cancelLabel}
             </Button>
