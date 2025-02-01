@@ -48,17 +48,17 @@ export const AddDeposit = () => {
   return (
     <DashboardLayout title="Add Deposit">
       <div className="flex flex-col w-full items-center justify-center gap-0.5 pt-6 rounded-lg text-primary text-center">
-        <div className="flex flex-col md:flex-row w-full gap-2">
+        <div className="flex w-full gap-2">
           <Card
             label="Health Factor"
             value={dashboardData?.health_ratio}
-            icon={<HealthIcon className="mr-[5px] w-4 h-4" />}
+            icon={<HealthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
             labelClassName="text-stormy-gray"
           />
           <Card
             label="Borrow Balance"
             value={formatNumber(dashboardData?.borrowed, true)}
-            icon={<EthIcon className="mr-[5px] w-4 h-4" />}
+            icon={<EthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
             labelClassName="text-stormy-gray"
           />
         </div>
