@@ -1,82 +1,3 @@
-.header-nav {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: center;
-  height: 90px;
-  white-space: nowrap;
-  background: var(--header-bg);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid #300734;
-  z-index: 9999;
-}
-
-.header-nav-sticky {
-  position: fixed;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: center;
-  height: 90px;
-  white-space: nowrap;
-  background: var(--header-bg);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid #300734;
-  z-index: 100;
-}
-
-.list-items {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: transparent;
-  width: 100%;
-  padding: 0 30px;
-  position: relative;
-}
-
-.nav-divider {
-  border-radius: 8px;
-  width: 3px;
-  height: 12px;
-  background: var(--nav-divider-bg);
-}
-
-.nav-items {
-  display: flex;
-  gap: 1em;
-  align-items: center;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.nav-items a {
-  position: relative;
-  color: var(--secondary);
-  font-family: var(--font-family);
-  transition: color 0.3s;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 150%;
-  text-transform: capitalize;
-}
-
-.nav-items a:hover {
-  color: var(--nav-button-hover);
-}
-
-.nav-items a.active-link {
-  color: var(--nav-button-hover);
-  font-weight: 600;
-}
-
-.logo svg {
-  margin-top: 9px;
-  width: 300px;
-  height: auto;
-}
 
 /* Wallet section styles */
 .wallet-container {
@@ -199,15 +120,6 @@
 }
 
 @media (max-width: 1024px) {
-  .nav-items {
-    display: none;
-  }
-
-  .logo svg {
-    width: 250px;
-    height: auto;
-  }
-
   .menu-section {
     display: flex;
     align-items: center;
@@ -298,10 +210,7 @@
 }
 
 @media (max-width: 768px) {
-  .logo svg {
-    width: 230px;
-    height: auto;
-  }
+
 
   .menu-dropdown {
     width: 285px;
@@ -349,13 +258,7 @@
 }
 
 @media (max-width: 480px) {
-  .header-nav {
-    height: 80px;
-  }
-
-  .list-items {
-    padding: 0 25px;
-  }
+  
 
   .wallet-container {
     width: 40px;
@@ -364,9 +267,7 @@
     padding: 0;
   }
 
-  .menu-dots {
-    padding: 0;
-  }
+  
 
   .Toastify__toast {
     left: 200px;
@@ -380,14 +281,7 @@
 }
 
 @media (max-width: 320px) {
-  .list-items {
-    justify-content: flex-start;
-    padding: 0 25px;
-  }
 
-  .logo svg {
-    width: 200px;
-  }
 
   .Toastify__toast {
     left: 130px;
