@@ -4,10 +4,9 @@ import SmallStar from '@/assets/particles/small_star.svg?react';
 import StarMaker from '@/components/layout/star-maker/StarMaker';
 import Decoration from '@/assets/particles/deco.svg?react';
 import Starknet from '@/assets/particles/starknet.svg?react';
-import Rocket from '@/assets/icons/rocket.svg?react';
-import './home.css';
 import { useWalletStore } from '@/stores/useWalletStore';
 import { notify } from '@/components/layout/notifier/Notifier';
+import LaunchButton from '../../gradientbutton';
 
 function Home() {
   const { walletId } = useWalletStore();
@@ -53,13 +52,12 @@ function Home() {
   ];
 
   return (
-    <div className="home">
-      <div className="container">
+    <div className=" relative flex flex-row justify-center color-white text-center w-[100%] hover-pointer  ">
+      <div className=" mt-[400px] mb-[200px] h-[100%]">
         <div>
           {decorationData.map((decoration, index) => (
             <Decoration
-              key={index}
-              className={`decoration decoration-${index}`}
+              className={`decoration absolute z-[-1] top-[var(--top)] left-[var(--left)] w-[var(--size)] h-[--size] decoration-${index}`}
               style={{
                 '--top': `${decoration.top}vh`,
                 '--left': `${decoration.left}vw`,
@@ -67,12 +65,24 @@ function Home() {
             />
           ))}
         </div>
-        <div className="top-gradient"></div>
+        <div
+          className="    absolute           
+    h-[100px]          
+    w-[60%]            
+    left-1/2           
+    -translate-x-1/2   
+    rounded-[2000px_2000px_0_0]  
+    blur-[100px]     
+    -z-10             
+    bg-gradient-to-r 
+    from-[var(--gradient-from)] 
+    to-[var(--gradient-to)] top-0"
+        ></div>
         <div>
           {starsData.map((star, index) => (
             <SmallStar
               key={index}
-              className="small-star"
+              className=" absolute z-1 top-[var(--top)] left-[var(--left)]"
               style={{
                 '--top': `${star.top}%`,
                 '--left': `${star.left}%`,
@@ -81,26 +91,39 @@ function Home() {
           ))}
           <StarMaker starData={starData} />
 
-          <Starknet className="starknet" />
+          <Starknet className=" absolute top-0 right-[20px] z-[-1]" />
         </div>
-        <div className="center-text-container">
-          <h2 className="center-text">
-            <span className="blue-color">Earn</span> by leveraging your <br /> assets
-            <span className="text-gradient"> with Spotnet</span>
+        <div className=" flex mx-auto md:mt-[5em] lg:mt-0 flex-col items-center justify-center px-[1em]">
+          <h2 className=" lg:leading-[75px] leading-[50px] font-text text-[50px] lg:text-[70px] mx-auto text-center text-[var(--primary)]">
+            <span className="text-blue-400">Earn</span> by leveraging your <br /> assets
+            <span
+              className="bg-gradient-to-r from-[var(--button-gradient-from)] via-[var(--button-gradient-from)] to-[var(--button-gradient-to)]
+        hover:bg-gradient-to-r hover:from-[var(--button-gradient-hover-from)] bg-clip-text text-transparent"
+            >
+              {' '}
+              with Spotnet
+            </span>
           </h2>
-          <h5 className="maximize-potential">
+          <h5 className="text-white lg:text-[20px] mt-[1em]">
             Maximize the potential of your resources and start earning today. Join <br /> Spotnet and unlock new
             opportunities to grow your wealth!
           </h5>
         </div>
+        <LaunchButton onClick={handleLaunchApp}>Launch App</LaunchButton>
 
-        <button className="launch-button" onClick={handleLaunchApp}>
-          <div className="btn-elements">
-            <span className="button-text">Launch App</span>
-            <Rocket className="rocket-icon" />
-          </div>
-        </button>
-        <div className="bottom-gradient"></div>
+        <div
+          className="   absolute           
+    h-[100px]          
+    w-[60%]            
+    left-1/2           
+    -translate-x-1/2   
+    rounded-[2000px_2000px_0_0]  
+    blur-[100px]     
+    -z-10             
+    bg-gradient-to-r 
+    from-[var(--gradient-from)] 
+    to-[var(--gradient-to)] bottom-[-10%]"
+        ></div>
       </div>
     </div>
   );
