@@ -20,7 +20,7 @@ const ActionModal = ({
   }
   return (
     <div
-      className="flex items-center justify-center fixed top-0 left-0 w-full h-full bg-light-dark-bg backdrop-blur-sm z-50"
+      className="flex items-center justify-center fixed top-0 left-0 w-full h-full bg-black/50 backdrop-blur-sm z-50"
       onClick={cancelAction}
     >
       <div
