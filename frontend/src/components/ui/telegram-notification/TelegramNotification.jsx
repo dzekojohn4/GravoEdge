@@ -18,11 +18,11 @@ export function TelegramNotification({ telegramId }) {
   };
 
   return (
-    <>
+    <div className="hidden md:flex">
       <Button
         variant="secondary"
         size="lg"
-        className="w-full max-w-[642px] h-[60px] flex items-center justify-center gap-2"
+        className="w-full max-w-[642px] h-[60px]  md:flex items-center justify-center gap-2"
         onClick={handleOpen}
       >
         <span className="flex items-center justify-center gap-2">
@@ -44,6 +44,6 @@ export function TelegramNotification({ telegramId }) {
           cancelAction={handleClose}
         />
       )}
-    </>
+    </div>
   );
 }
