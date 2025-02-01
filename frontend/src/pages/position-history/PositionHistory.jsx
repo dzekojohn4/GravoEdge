@@ -48,7 +48,7 @@ function PositionHistory() {
           />
         </div>
       </div>
-      <div className="w-full max-w-[1300px] mx-auto ">
+      <div className="w-full md:max-w-[700px] mx-auto ">
         <div className="text-sm text-white mb-4 pl-2">
           <p>Position History</p>
         </div>
@@ -59,36 +59,36 @@ function PositionHistory() {
               <Spinner loading={isPending} />
             </div>
           ) : (
-            <table className="w-full border-separate border-spacing-0 px-4">
+              <table className="w-full table-auto">
               <thead>
-                <tr className="flex gap-2 md:gap-3 border-b border-[#36294E]  text-[#9CA3AF] items-center py-4 text-[clamp(0.5rem,2vw,1rem)] font-normal justify-between">
-                  <th className=""></th>
-                  <th className="">Token</th>
-                  <th className="">Amount</th>
-                  <th className="">Created At</th>
-                  <th className="">Status</th>
-                  <th className="">Start Price</th>
-                  <th className="">Multiplier</th>
-                  <th className="">Liquidated</th>
-                  <th className="">Closed At</th>
-                  <th>
+                <tr className="border-b border-[#36294E] text-[#9CA3AF] text-[clamp(0.5rem,2vw,1rem)] font-normal">
+                  <th className="py-4 px-4 text-left w-[5%]">#</th>
+                  <th className="py-4 px-4 text-left w-[12%]">Token</th>
+                  <th className="py-4 px-4 text-center w-[8%]">Amount</th>
+                  <th className="py-4 px-4 text-center w-[15%]">Created At</th>
+                  <th className="py-4 px-4 text-center w-[10%]">Status</th>
+                  <th className="py-4 px-4 text-center w-[12%]">Start Price</th>
+                  <th className="py-4 px-4 text-center w-[10%]">Multiplier</th>
+                  <th className="py-4 px-4 text-center w-[10%]">Liquidated</th>
+                  <th className="py-4 px-4 text-center w-[15%]">Closed At</th>
+                  <th className="py-4 px-4 text-center w-[3%]">
                     <img src={filterIcon} alt="filter-icon" draggable="false" />
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {!tableData?.positions || tableData?.positions.length === 0 ? (
+                {!tableData?.position || tableData?.position?.length === 0 ? (
                   <tr>
                     <td colSpan="10" className="text-center py-4">
                       No opened positions
                     </td>
                   </tr>
                 ) : (
-                  tableData?.positions.map((data, index) => (
+                  tableData?.position?.map((data, index) => (
                     <tr key={data.id} className="even:bg-[rgba(18,7,33,0.5)]">
-                      <td className="py-4 px-4 text-[#9CA3AF]">{index + 1}.</td>
+                      <td className="py-4 px-4 text-[#9CA3AF] text-left">{index + 1}.</td>
                       <td className="py-4 px-4">
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center gap-2">
                           {tokenIconMap[data.token_symbol]}
                           <span className="text-white">{data.token_symbol.toUpperCase()}</span>
                         </div>
@@ -100,7 +100,7 @@ function PositionHistory() {
                       </td>
                       <td className="py-4 px-4 text-white text-center">{data.start_price}</td>
                       <td className="py-4 px-4 text-white text-center">{data.multiplier}</td>
-                      <td className="py-4 px-4 text-white text-center">{data.is_liquidated}</td>
+                      <td className="py-4 px-4 text-white text-center">{data.is_liquidated.toString()}</td>
                       <td className="py-4 px-4 text-white text-center">{data.closed_at}</td>
                       <td className="py-4 px-4 text-center">
                         <button
