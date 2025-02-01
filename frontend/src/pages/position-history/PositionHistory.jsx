@@ -9,7 +9,7 @@ import useDashboardData from '@/hooks/useDashboardData';
 import { usePositionHistoryTable } from '@/hooks/usePositionHistory';
 import PositionHistoryModal from '@/pages/position-history/PositionHistoryModal';
 import PositionPagination from '@/pages/position-history/PositionPagination';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import DashboardLayout from '../DashboardLayout';
 import './positionHistory.css';
 
@@ -38,7 +38,7 @@ function PositionHistory() {
       <div className="position-content">
         <div className="position-top-cards">
           <Card label="Health Factor" value={cardData?.health_ratio || '0.00'} icon={<HealthIcon className="icon" />} />
-          <Card label="Borrow Balance" cardData={cardData?.borrowed || '0.00'} icon={<EthIcon className="icon" />} />
+          <Card label="Borrow Balance" value={cardData?.borrowed || '0.00'} icon={<EthIcon className="icon" />} />
         </div>
       </div>
 
@@ -70,7 +70,6 @@ function PositionHistory() {
                   </th>
                 </tr>
               </thead>
-
               <tbody>
                 {!tableData?.positions || tableData?.positions.length === 0 ? (
                   <tr>

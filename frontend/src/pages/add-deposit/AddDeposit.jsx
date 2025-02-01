@@ -19,7 +19,7 @@ export const AddDeposit = () => {
 
   const [amount, setAmount] = useState('0');
   const [selectedToken, setSelectedToken] = useState('STRK');
-  const { data: dashboardData } = useDashboardData();
+  const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
 
   const { mutate: addDeposit, isLoading } = useAddDeposit();
 
@@ -33,7 +33,7 @@ export const AddDeposit = () => {
   const handleDeposit = () => {
     addDeposit(
       {
-        positionId: dashboardData.position_id,
+        positionId: dashboardData?.position_id,
         amount,
         tokenSymbol: selectedToken,
       },
@@ -74,7 +74,7 @@ export const AddDeposit = () => {
           className="amount-field-deposit"
           aria-describedby="currency-symbol"
           placeholder="0.00"
-          disabled={isLoading}
+          disabled={isLoading || isDashboardLoading}
         />
         <span id="currency-symbol" className="currency-deposit">
           {selectedToken}
@@ -86,7 +86,7 @@ export const AddDeposit = () => {
         className="redeem-btn"
         variant="primary"
         onClick={handleDeposit}
-        disabled={isLoading || amount === '0'}
+        disabled={isLoading || isDashboardLoading || amount === '0'}
       >
         {isLoading ? 'Processing...' : 'Deposit'}
       </Button>
