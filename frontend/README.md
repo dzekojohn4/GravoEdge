@@ -16,7 +16,7 @@ You may also see any errors or warnings in the console.
 
 ### `yarn test`
 
-Runs the tests using the environment provisioned by Jest. After running the initial setup and starting the app, open another terminal shell, navigate to the frontend directory, and run `yarn test`.
+Runs the tests using the environment provisioned by Vitest. After running the initial setup and starting the app, open another terminal shell, navigate to the frontend directory, and run `yarn test`.
 
 ### `yarn build`
 
