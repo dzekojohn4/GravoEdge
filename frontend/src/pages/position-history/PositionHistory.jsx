@@ -39,12 +39,12 @@ function PositionHistory() {
           <Card
             label="Health Factor"
             value={cardData?.health_ratio || '0.00'}
-            icon={<HealthIcon className="mr-[5px] w-4 h-4" />}
+            icon={<HealthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
           />
           <Card
             label="Borrow Balance"
             cardData={cardData?.borrowed || '0.00'}
-            icon={<EthIcon className="mr-[5px] w-4 h-4" />}
+            icon={<EthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
           />
         </div>
       </div>

@@ -37,17 +37,17 @@ export default function DashboardPage({ telegramId }) {
   return (
     <DashboardLayout>
       {isLoading && <Spinner loading={isLoading} />}  
-      <div className="flex flex-col md:flex-row gap-2 w-full pt-6">
+      <div className="flex  gap-2 w-full pt-6">
         <Card
           label="Health Factor"
           value={healthFactor}
-          icon={<HealthIcon className="mr-[5px] w-4 h-4" />}
+          icon={<HealthIcon className=" mr-[5px] w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
           labelClassName="text-stormy-gray"
         />
         <Card
           label="Borrow Balance"
           cardData={cardData}
-          icon={<EthIcon className="mr-[5px] w-4 h-4" />}
+          icon={<EthIcon className="mr-[5px] w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
           labelClassName="text-stormy-gray"
         />  
       </div>
