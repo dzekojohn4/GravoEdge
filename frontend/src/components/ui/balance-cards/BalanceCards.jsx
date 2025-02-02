@@ -23,31 +23,31 @@ const BalanceCards = ({ className }) => {
   ]);
 
   return (
-    <div className="mt-3 mx-auto max-w-2xl px-3 w-full">
-      <div className="grid grid-cols-3 w-full rounded-[8px] sm:gap-5 min-w-xl">
+    <div className="mt-3 mx-auto max-w-2xl px-3 w-full overflow-x-auto no-scrollbar">
+      <div className="grid grid-cols-3 w-full rounded-[8px] gap-5  min-w-md">
         {balances.map((balance) =>
           isMobile ? (
             <div
-              className="border flex flex-col items-center text-center border-nav-divider-bg py-3 px-2.5 rounded-[8px] max-w-[180px]"
+              className="border flex flex-col items-center text-center border- py-3 rounded-xl border-nav-divider-bg px-1"
               key={balance.title}
             >
-              <label htmlFor={balance.title} className={'flex text-[#83919F] gap-1'}>
+              <label htmlFor={balance.title} className={'flex text-[#83919F] gap-1 items-center'}>
                 <div className="h-6 w-6 rounded-full bg-border-color flex justify-center p-1">
                   <img src={balance.icon} className="w-full h-full" />
                 </div>
-                <span className="balance-text">{balance.title} Balance</span>
+                <span className="text-sm">{balance.title} Balance</span>
               </label>
               <label htmlFor={balance.title}>
-                <span className="text-white">{balance.balance}</span>
+                <span className="font-semibold text-2xl text-white">{balance.balance}</span>
               </label>
             </div>
           ) : (
             <div
-              className="border flex flex-col items-center text-center border- py-3 px-6 rounded-[8px] border-nav-divider-bg "
+              className="border flex flex-col items-center text-center border- py-4 px-6 rounded-xl border-nav-divider-bg "
               key={balance.title}
             >
               <label htmlFor={balance.title} className={'flex text-[#83919F] gap-1'}>
-                <div className="h-8 w-8 rounded-full bg-border-color flex justify-center p-1">
+                <div className="h-6 w-6 rounded-full bg-border-color flex justify-center p-1">
                   <img src={balance.icon} className="w-full h-full" />
                 </div>
                 <span className="">{balance.title} Balance</span>
