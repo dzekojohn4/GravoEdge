@@ -35,7 +35,6 @@ function Deposited({ data }) {
 
           <p className="currency-value">{data.usdc}</p>
         </div>
-
       </div>
     </div>
   );

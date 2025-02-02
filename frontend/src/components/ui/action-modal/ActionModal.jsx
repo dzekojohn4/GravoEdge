@@ -20,28 +20,28 @@ const ActionModal = ({
   }
   return (
     <div
-      className="flex items-center justify-center fixed top-0 left-0 w-full h-full bg-black/50 backdrop-blur-sm z-[55555] "
+      className="fixed top-0 left-0 z-[55555] flex h-full w-full items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={cancelAction}
     >
       <div
-        className="flex items-center justify-center shadow-primary-color overflow-hidden md:w-xl w-lg text-white"
+        className="shadow-primary-color flex w-lg items-center justify-center overflow-hidden text-white md:w-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="rounded-2xl max-w-[330px] sm:max-w-md w-full sm:w-8/12 flex flex-col gap-4 text-center">
-          <div className="text-center py-4 border-nav-divider-bg  bg-bg rounded-2xl text-sm md:rounded-2xl pt-4 h-fit border">
-            <div className="text-primary text-center text-xs pt-1 border-b-nav-divider-bg  pb-2 border-b mb-6 w-full">
+        <div className="flex w-full max-w-[330px] flex-col gap-4 rounded-2xl text-center sm:w-8/12 sm:max-w-md">
+          <div className="border-nav-divider-bg bg-bg h-fit rounded-2xl border py-4 pt-4 text-center text-sm md:rounded-2xl">
+            <div className="text-primary border-b-nav-divider-bg mb-6 w-full border-b pt-1 pb-2 text-center text-xs">
               {title}
             </div>
-            <div className="px-2 grid min-h-28 place-content-center">
+            <div className="grid min-h-28 place-content-center px-2">
               <h6 className="text-sm font-semibold">{subTitle}</h6>
               {content.map((content, i) => (
-                <p className="text-gray-500 text-base leading-6 max-w-96 mt-0 mx-auto mb-3" key={i}>
+                <p className="mx-auto mt-0 mb-3 max-w-96 text-base leading-6 text-gray-500" key={i}>
                   {content}
                 </p>
               ))}
             </div>
           </div>
-          <div className="flex gap-4 justify-between">
+          <div className="flex justify-between gap-4">
             <Button variant="secondary" size="md" className="modal-btn" onClick={cancelAction} disabled={isLoading}>
               {cancelLabel}
             </Button>

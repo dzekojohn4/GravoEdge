@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Allerta+Stencil&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
 @import 'tailwindcss';
+
 @theme {
+  /* Fonts */
   --text-font: 'Rethink Sans', sans-serif;
   --font-family: 'Open Sans', sans-serif;
   --third-family: 'Allerta Stencil', sans-serif;
   --font3: 'Inter', sans-serif;
-  --backdrop-filter: blur(12px);
-  --header-bg: rgba(7, 0, 22, 0.8);
-  --nav-button-hover: #49abd2;
-  --nav-divider-bg: #36294e;
-  --second-primary: #fdfdfd;
-  --header-button-bg: #120721;
-  --plain-button-bg: #0e0a16;
-  --mask-gradient: #fff;
+  --font-text: 'Rethink Sans', sans-serif;
+  --font-primary: 'Open Sans', sans-serif;
+  --font-third: 'Allerta Stencil', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+
+  /* Colors */
   --primary: #fff;
   --primary-color: #0b0c10;
   --black: #000;
@@ -31,9 +31,6 @@
   --footer-line-color: rgba(231, 235, 245, 0.2);
   --footer-divider-bg: #201338;
   --dashboard-bg: rgba(11, 12, 16, 1);
-  --card-bg-filter: blur(42.1875px);
-  --card-box-shadow: inset 4px 4px 9px 0 rgba(153, 234, 255, 0.25), 0 4px 4px 0 rgba(0, 0, 0, 0.15);
-  --card-border: 0.5px solid #4e7787;
   --success-color: #4caf50;
   --error-color: #ff5a5f;
   --color-overlay: rgba(0, 0, 0, 0.5);
@@ -47,12 +44,7 @@
   --status-closed: #433b5a;
   --status-pending: #83919f;
   --slider-gray: #393942;
-  --light-blue: #88b4fa;
-  --thumb-image: url('./assets/icons/slider-thumb.svg');
-  --purple-border: 1px solid #201338;
   --dark-gray: #393942;
-  --midnight-purple-border: 1px solid #36294e;
-  --midnight-purple-hover-border: 1px solid #5b4b80;
   --stormy-gray: #83919f;
   --deep-purple: #120721;
   --dark-background: #130713;
@@ -62,52 +54,72 @@
   --warning-colour: #bdc000;
   --warning-colour-alt: #272a0a;
   --warning-text-colour: #f0f0f0;
-  --deep-purple: #300734;
-  
+  --backdrop-filter: blur(12px);
+  --header-bg: rgba(7, 0, 22, 0.8);
+  --nav-button-hover: #49abd2;
+  --nav-divider-bg: #36294e;
+  --second-primary: #fdfdfd;
+  --header-button-bg: #120721;
+  --plain-button-bg: #0e0a16;
+  --mask-gradient: #fff;
 
-
+  /* Gradients */
   --second-gradient-from: #e01dee;
   --second-gradient-to: #49abd2;
-
   --border-gradient-from: #49abd2;
   --border-gradient-to: #df1ced;
   --gradient: linear-gradient(73deg, #74d6fd 1.13%, #e01dee 103.45%);
-
   --gradient-from: #74d6fd;
   --gradient-to: #e01dee;
-
   --button-gradient-from: #74d6fd;
   --button-gradient-to: #e01dee;
   --button-gradient-via: #8fddfe;
-
-
   --button-gradient-hover-from: #74d6fd;
   --button-gradient-hover-to: #74d6fd;
-  
   --button-gradient-active-from: #58c4ef;
   --button-gradient-active-to: #58c4ef;
-
   --card-bg-gradient-from: rgba(116, 214, 253, 0.5);
   --card-bg-gradient-to: rgba(11, 12, 16, 0.5);
-
   --closePosition-from: #49abd2;
   --closePosition-to: #e01dee;
-
   --blue-pink-gradient-from: #74d6fd;
   --blue-pink-gradient-to: #e01dee;
-
   --blue-pink-gradient-alt-from: #49abd2;
   --blue-pink-gradient-alt-to: #e01dee;
-
-  --mask-gradient-from: linear-gradient(#fff 0 0) content-box;
---mask-gradient-to: linear-gradient(#fff 0 0);
-
   --blue-pink-gradient-alt2-from: #49abd2;
   --blue-pink-gradient-alt2-to: #e01dee;
-  --font-weight-sm: 400;   /* Regular */
-  --font-weight-md: 500;   /* Medium */
-  --font-weight-lg: 600;   /* Semi-bold */
-  --font-weight-xl: 700;   /* Bold */
+  --mask-gradient-from: linear-gradient(#fff 0 0) content-box;
+  --mask-gradient-to: linear-gradient(#fff 0 0);
+  --bg-app: url('../public/desktop-background.png');
+  --bg-app-mobile: url('../public/mobile-background.png');
+  --bg-main-gradient: linear-gradient(73deg, #74d6fd 1.13%, #e01dee 103.45%);
+  --bg-button-gradient: linear-gradient(55deg, #74d6fd 0%, #e01dee 100%);
+  --bg-button-gradient-hover: linear-gradient(55deg, #74d6fd 0%, #74d6fd 100%);
+  --bg-button-gradient-active: linear-gradient(55deg, #58c4ef 0%, #58c4ef 100%);
+  --bg-second-gradient: linear-gradient(55deg, #e01dee 0%, #49abd2 49%);
+  --bg-border-gradient: linear-gradient(90deg, #49abd2 0%, #df1ced 99.5%);
+  --bg-blue-pink-gradient: linear-gradient(90deg, #74d6fd 0%, #e01dee 100%);
+  --bg-blue-pink-gradient-alt: linear-gradient(90deg, #49abd2 0%, #e01dee 100%);
+  --bg-card-bg-gradient: linear-gradient(135deg, rgba(116, 214, 253, 0.5) 0%, rgba(11, 12, 16, 0.5) 100%);
+  --bg-report-btn-bg-hover: linear-gradient(to right, rgba(147, 51, 234, 0.3), rgba(59, 130, 246, 0.3));
+
+  /* Other */
+  --thumb-image: url('./assets/icons/slider-thumb.svg');
+  --purple-border: 1px solid #201338;
+  --midnight-purple-border: 1px solid #36294e;
+  --midnight-purple-hover-border: 1px solid #5b4b80;
+  --font-weight-sm: 400;
+  --font-weight-md: 500;
+  --font-weight-lg: 600;
+  --font-weight-xl: 700;
+  --shadow-card: inset 4px 4px 9px 0 rgba(153, 234, 255, 0.25), 0 4px 4px 0 rgba(0, 0, 0, 0.15);
+  --blur-card: 42.1875px;
+  --blur-backdrop: 12px;
+  --border-purple: 1px;
+  --border-midnight-purple: 1px;
+  --border-midnight-purple-hover: 1px;
+  --z-9999: 9999;
+  --z-100: 100;
 }
 
 body {
@@ -164,7 +176,6 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   z-index: -1;
 }
 
-
 .decoration-0 {
   width: 80%;
   height: 80%;
@@ -192,11 +203,7 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   height: var(--size);
 }
 
-
-
-
 @media (max-width: 1800px) {
- 
   .decoration-0 {
     width: 65%;
     height: 65%;
@@ -224,12 +231,9 @@ a.svelte-1mtuslq.svelte-1mtuslq {
     top: -5vh;
     left: 62vw;
   }
-
-
 }
 
 @media (max-width: 480px) {
- 
   .decoration-0 {
     width: 40%;
     height: 40%;
@@ -250,10 +254,9 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   }
 }
 .partnership-logo {
-  animation: scroll 13s linear infinite; 
+  animation: scroll 13s linear infinite;
   width: calc(150px * 8 * 2);
 }
- 
 
 @import 'tailwindcss';
 
@@ -303,11 +306,6 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   --color-plain-button-bg: #0e0a16;
   --color-header-button-bg: #120721;
 
-  --font-text: 'Rethink Sans', sans-serif;
-  --font-primary: 'Open Sans', sans-serif;
-  --font-third: 'Allerta Stencil', sans-serif;
-  --font-inter: 'Inter', sans-serif;
-
   --bg-app: url('../public/desktop-background.png');
   --bg-app-mobile: url('../public/mobile-background.png');
   --bg-main-gradient: linear-gradient(73deg, #74d6fd 1.13%, #e01dee 103.45%);
@@ -324,7 +322,6 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   --shadow-card: inset 4px 4px 9px 0 rgba(153, 234, 255, 0.25), 0 4px 4px 0 rgba(0, 0, 0, 0.15);
   --blur-card: 42.1875px;
   --blur-backdrop: 12px;
-  
 
   --border-purple: 1px;
   --border-midnight-purple: 1px;
@@ -342,7 +339,7 @@ a.svelte-1mtuslq.svelte-1mtuslq {
 
   /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-    -ms-overflow-x: hidden;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-x: hidden; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }

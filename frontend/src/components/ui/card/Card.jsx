@@ -1,17 +1,15 @@
 function Card({ label, icon, value = '', cardData = [] }) {
   return (
-    <div className="flex flex-col  grow justify-center items-center text-center border-1 border-light-purple rounded-lg p-4 lg:w-[317px] h-[101px] sm:w-full sm:h-[90px] xs:h-auto bg-transparent">
-      {/* Card Header */}
-      <div className="flex items-center justify-center mb-2">
+    <div className="border-light-purple xs:h-auto flex h-[101px] grow flex-col items-center justify-center rounded-lg border-1 bg-transparent p-4 text-center sm:h-[90px] sm:w-full lg:w-[317px]">
+      <div className="mb-2 flex items-center justify-center">
         {icon}
-        <span className="text-sm font-semibold sm:font-normal text-gray ml-2 ">{label}</span>
+        <span className="text-gray ml-2 text-sm font-semibold sm:font-normal">{label}</span>
       </div>
 
-      {/* Card Value */}
-      <div className=" text-xl font-semibold sm:text-lg xs:text-base ">
+      <div className="text-2xl font-semibold md:text-2xl">
         {cardData.length > 0 ? (
           <>
-            <span className="text-gray-500 mr-1 text-lg xs:text-sm">$</span>
+            <span className="mr-1">$</span>
             <span>{cardData[1]?.balance ? Number(cardData[1].balance).toFixed(8) : '0.00'}</span>
           </>
         ) : (

@@ -23,23 +23,11 @@ const DontMiss = () => {
   ];
 
   return (
-    <div className=" h-auto  flex items-center justify-center flex-col mb-[50px] mt-[60px] lg:mb-[250px]">
-      <div
-        className=" absolute           
-    h-[100px]          
-    w-[20%]            
-    left-0
-    bottom-10           
-    -translate-x-1/2   
-    rounded-[2000px_2000px_0_0]  
-    blur-[100px]                  
-    bg-gradient-to-r 
-    from-[var(--gradient-from)] 
-    to-[var(--gradient-to)] "
-      ></div>
+    <div className="mt-[60px] mb-[50px] flex h-auto flex-col items-center justify-center lg:mb-[250px]">
+      <div className="absolute bottom-10 left-0 h-[100px] w-[20%] -translate-x-1/2 rounded-[2000px_2000px_0_0] bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)] blur-[100px]"></div>
       <div className="text-container">
-        <h1 className=" text-center text-white text-[48px] font-[600]">Don&apos;t miss out</h1>
-        <p className=" text-white text-[20px] mb-0 text-center font-[400]">
+        <h1 className="text-center text-[48px] font-[600] text-white">Don&apos;t miss out</h1>
+        <p className="mb-0 text-center text-[20px] font-[400] text-white">
           Investing wisely would be the smartest move you&apos;ll make!
         </p>
       </div>
@@ -47,7 +35,7 @@ const DontMiss = () => {
       {starData.map((star, index) => (
         <Star
           key={index}
-          className="miss-star lg:absolute hidden"
+          className="miss-star hidden lg:absolute"
           style={{
             '--star-top': `${star.top}% `,
             '--star-left': `${star.left}%`,
@@ -55,23 +43,11 @@ const DontMiss = () => {
           }}
         />
       ))}
-      <div className="relative ">
+      <div className="relative">
         <JoinButton onClick={handleLaunchApp}>Launch App</JoinButton>
-        <Hand className=" absolute lg:right-[-53px] lg:w-[135px] lg:h-[135px] top-[26px] right-[-44px] w-[114px] h-[114px]  " />
+        <Hand className="absolute top-[26px] right-[-44px] h-[114px] w-[114px] lg:right-[-53px] lg:h-[135px] lg:w-[135px]" />
       </div>
-      <div
-        className=" absolute           
-    h-[100px]          
-    w-[20%]            
-    right-0
-    bottom-10           
-    translate-x-1/2   
-    rounded-[2000px_2000px_0_0]  
-    blur-[100px]                  
-    bg-gradient-to-r 
-    from-[var(--gradient-from)] 
-    to-[var(--gradient-to)] "
-      ></div>
+      <div className="absolute right-0 bottom-10 h-[100px] w-[20%] translate-x-1/2 rounded-[2000px_2000px_0_0] bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)] blur-[100px]"></div>
     </div>
   );
 };

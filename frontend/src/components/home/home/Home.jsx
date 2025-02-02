@@ -52,12 +52,12 @@ function Home() {
   ];
 
   return (
-    <div className=" relative flex flex-row justify-center color-white text-center w-[100%] hover-pointer  ">
-      <div className=" mt-[400px] mb-[200px] h-[100%]">
+    <div className="color-white hover-pointer relative flex w-[100%] flex-row justify-center text-center">
+      <div className="mt-[400px] mb-[200px] h-[100%]">
         <div>
           {decorationData.map((decoration, index) => (
             <Decoration
-              className={`decoration absolute z-[-1] top-[var(--top)] left-[var(--left)] w-[var(--size)] h-[--size] decoration-${index}`}
+              className={`decoration absolute top-[var(--top)] left-[var(--left)] z-[-1] h-[--size] w-[var(--size)] decoration-${index}`}
               style={{
                 '--top': `${decoration.top}vh`,
                 '--left': `${decoration.left}vw`,
@@ -65,24 +65,12 @@ function Home() {
             />
           ))}
         </div>
-        <div
-          className="    absolute           
-    h-[100px]          
-    w-[60%]            
-    left-1/2           
-    -translate-x-1/2   
-    rounded-[2000px_2000px_0_0]  
-    blur-[100px]     
-    -z-10             
-    bg-gradient-to-r 
-    from-[var(--gradient-from)] 
-    to-[var(--gradient-to)] top-0"
-        ></div>
+        <div className="absolute top-0 left-1/2 -z-10 h-[100px] w-[60%] -translate-x-1/2 rounded-[2000px_2000px_0_0] bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)] blur-[100px]"></div>
         <div>
           {starsData.map((star, index) => (
             <SmallStar
               key={index}
-              className=" absolute z-1 top-[var(--top)] left-[var(--left)]"
+              className="absolute top-[var(--top)] left-[var(--left)] z-1"
               style={{
                 '--top': `${star.top}%`,
                 '--left': `${star.left}%`,
@@ -91,39 +79,24 @@ function Home() {
           ))}
           <StarMaker starData={starData} />
 
-          <Starknet className=" absolute top-0 right-[20px] z-[-1]" />
+          <Starknet className="absolute top-0 right-[20px] z-[-1]" />
         </div>
-        <div className=" flex mx-auto md:mt-[5em] lg:mt-0 flex-col items-center justify-center px-[1em]">
-          <h2 className=" lg:leading-[75px] leading-[50px] font-text text-[50px] lg:text-[70px] mx-auto text-center text-[var(--primary)]">
+        <div className="mx-auto flex flex-col items-center justify-center px-[1em] md:mt-[5em] lg:mt-0">
+          <h2 className="font-text mx-auto text-center text-[50px] leading-[50px] text-[var(--primary)] lg:text-[70px] lg:leading-[75px]">
             <span className="text-blue-400">Earn</span> by leveraging your <br /> assets
-            <span
-              className="bg-gradient-to-r from-[var(--button-gradient-from)] via-[var(--button-gradient-from)] to-[var(--button-gradient-to)]
-        hover:bg-gradient-to-r hover:from-[var(--button-gradient-hover-from)] bg-clip-text text-transparent"
-            >
+            <span className="bg-gradient-to-r from-[var(--button-gradient-from)] via-[var(--button-gradient-from)] to-[var(--button-gradient-to)] bg-clip-text text-transparent hover:bg-gradient-to-r hover:from-[var(--button-gradient-hover-from)]">
               {' '}
               with Spotnet
             </span>
           </h2>
-          <h5 className="text-white lg:text-[20px] mt-[1em]">
+          <h5 className="mt-[1em] text-white lg:text-[20px]">
             Maximize the potential of your resources and start earning today. Join <br /> Spotnet and unlock new
             opportunities to grow your wealth!
           </h5>
         </div>
         <LaunchButton onClick={handleLaunchApp}>Launch App</LaunchButton>
 
-        <div
-          className="   absolute           
-    h-[100px]          
-    w-[60%]            
-    left-1/2           
-    -translate-x-1/2   
-    rounded-[2000px_2000px_0_0]  
-    blur-[100px]     
-    -z-10             
-    bg-gradient-to-r 
-    from-[var(--gradient-from)] 
-    to-[var(--gradient-to)] bottom-[-10%]"
-        ></div>
+        <div className="absolute bottom-[-10%] left-1/2 -z-10 h-[100px] w-[60%] -translate-x-1/2 rounded-[2000px_2000px_0_0] bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)] blur-[100px]"></div>
       </div>
     </div>
   );

@@ -78,10 +78,12 @@ const Sidebar = ({ title, items, className = '' }) => {
   };
 
   return (
-    <div className={`bg-black border-r border-[#300734] fixed top-[5.5rem] left-0 h-screen w-[375px] ${className} hidden lg:block`}>
-      <nav className="flex flex-col pl-20 p-8 pt-8">
+    <div
+      className={`fixed top-[5.5rem] left-0 h-screen w-[375px] border-r border-[#300734] bg-black ${className} hidden lg:block`}
+    >
+      <nav className="flex flex-col p-8 pt-8 pl-20">
         {title && (
-          <div className="pb-2 mb-3 border-b border-border-color">
+          <div className="border-border-color mb-3 border-b pb-2">
             <h2 className="text-[15px] font-normal text-white">{title}</h2>
           </div>
         )}

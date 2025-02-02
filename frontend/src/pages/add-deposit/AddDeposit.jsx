@@ -47,43 +47,47 @@ export const AddDeposit = () => {
 
   return (
     <DashboardLayout title="Add Deposit">
-      <div className="flex flex-col w-full items-center justify-center gap-0.5 pt-6 rounded-lg text-primary text-center">
+      <div className="text-primary flex w-full flex-col items-center justify-center gap-0.5 rounded-lg pt-6 text-center">
         <div className="flex w-full gap-2">
           <Card
             label="Health Factor"
             value={dashboardData?.health_ratio}
-            icon={<HealthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
+            icon={
+              <HealthIcon className="bg-border-color mr-[5px] flex h-8 w-8 items-center justify-center rounded-full p-2" />
+            }
             labelClassName="text-stormy-gray"
           />
           <Card
             label="Borrow Balance"
             value={formatNumber(dashboardData?.borrowed, true)}
-            icon={<EthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
+            icon={
+              <EthIcon className="bg-border-color mr-[5px] flex h-8 w-8 items-center justify-center rounded-full p-2" />
+            }
             labelClassName="text-stormy-gray"
           />
         </div>
       </div>
-      <h1 className="text-xl font-normal text-primary text-center mt-8 mb-0 md:mt-0">Please make a deposit</h1>
+      <h1 className="text-primary mt-8 mb-0 text-center text-xl font-normal md:mt-0">Please make a deposit</h1>
       <TokenSelector
         selectedToken={selectedToken}
         setSelectedToken={setSelectedToken}
-        className="border-none rounded-lg"
+        className="rounded-lg border-none"
       />
-      <div className="relative w-[146px] max-w-[400px] mx-auto my-8 text-center font-semibold">
+      <div className="relative mx-auto my-8 w-[146px] max-w-[400px] text-center font-semibold">
         <input
           type="text"
           id="amount-field"
           value={amount}
           onChange={handleAmountChange}
           pattern="^\d*\.?\d*$"
-          className="bg-transparent border-none text-gray text-[64px] font-semibold outline-none text-center w-full"
+          className="text-gray w-full border-none bg-transparent text-center text-[64px] font-semibold outline-none"
           aria-describedby="currency-symbol"
           placeholder="0.00"
           disabled={isLoading || isDashboardLoading}
         />
         <span
           id="currency-symbol"
-          className="absolute text-dark-gray top-[18%] -translate-x-1/2 -translate-y-1/2 opacity-50 text-base leading-[20.83px] z-[999999]"
+          className="text-dark-gray absolute top-[18%] z-[999999] -translate-x-1/2 -translate-y-1/2 text-base leading-[20.83px] opacity-50"
         >
           {selectedToken}
         </span>
@@ -91,7 +95,7 @@ export const AddDeposit = () => {
 
       <Button
         size="lg"
-        className="w-full mt-4"
+        className="mt-4 w-full"
         variant="primary"
         onClick={handleDeposit}
         disabled={isLoading || isDashboardLoading || amount === '0'}

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import './vaultLayout.css';
 import Sidebar from '@/components/layout/sidebar/Sidebar';
 
 export function VaultLayout({ children }) {

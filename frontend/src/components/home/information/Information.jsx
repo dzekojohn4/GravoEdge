@@ -49,19 +49,14 @@ const Information = () => {
   };
 
   return (
-    <div className="h-auto flex items-center justify-center px-[3em] md:px-[5em]">
-      <div className=" relative w-[100%] max-w-6xl flex flex-col lg:flex-row justify-around lg:mt-[190px] lg:mb-[180px] mt-[4em] gap-[2em]  ">
-        <div
-          className=" flex flex-col items-center justify-center lg:w-[420px] h-[250px] bg-gradient-to-r  
-from-[var(--card-bg-gradient-from)]
-    to-[var(--card-bg-gradient-to)]
-              rounded-[20px] shadow-card backdrop-blur-[21.09375px] border border-[var(--card-border-1)] text-[38px] text-white text-center font-[600] p-[0.1em] "
-        >
+    <div className="flex h-auto items-center justify-center px-[3em] md:px-[5em]">
+      <div className="relative mt-[4em] flex w-[100%] max-w-6xl flex-col justify-around gap-[2em] lg:mt-[190px] lg:mb-[180px] lg:flex-row">
+        <div className="shadow-card flex h-[250px] flex-col items-center justify-center rounded-[20px] border border-[var(--card-border-1)] bg-gradient-to-r from-[var(--card-bg-gradient-from)] to-[var(--card-bg-gradient-to)] p-[0.1em] text-center text-[38px] font-[600] text-white backdrop-blur-[21.09375px] lg:w-[420px]">
           <h1>TVL</h1>
           <h3
             className={
               loading
-                ? 'text-[35px] min-h-35px font-text font-[600] leading-[95%] text-center items-center mb-0 mt-[3px]'
+                ? 'min-h-35px font-text mt-[3px] mb-0 items-center text-center text-[35px] leading-[95%] font-[600]'
                 : ''
             }
           >
@@ -71,17 +66,12 @@ from-[var(--card-bg-gradient-from)]
         <div className="">
           <div className="card-gradient"></div>
         </div>
-        <div
-          className="flex flex-col lg:w-[420px] h-[250px] bg-gradient-to-r 
-    from-[var(--card-bg-gradient-from)] 
-    to-[var(--card-bg-gradient-to)] items-center justify-center
-              rounded-[20px] shadow-card backdrop-blur-[21.09375px] border border-[var(--card-border-1)] text-[38px] font-[600] p-[0.1em] text-white text-center"
-        >
+        <div className="shadow-card flex h-[250px] flex-col items-center justify-center rounded-[20px] border border-[var(--card-border-1)] bg-gradient-to-r from-[var(--card-bg-gradient-from)] to-[var(--card-bg-gradient-to)] p-[0.1em] text-center text-[38px] font-[600] text-white backdrop-blur-[21.09375px] lg:w-[420px]">
           <h1>Users</h1>
           <h3
             className={
               loading
-                ? '  text-[35px] text-brand min-h-35px font-text font-[600] leading-[95%] text-center items-center mb-0 mt-[3px]'
+                ? 'text-brand min-h-35px font-text mt-[3px] mb-0 items-center text-center text-[35px] leading-[95%] font-[600]'
                 : ''
             }
           >

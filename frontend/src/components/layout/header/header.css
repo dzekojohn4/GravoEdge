@@ -1,4 +1,3 @@
-
 /* Wallet section styles */
 .wallet-container {
   position: relative;
@@ -210,8 +209,6 @@
 }
 
 @media (max-width: 768px) {
-
-
   .menu-dropdown {
     width: 285px;
   }
@@ -258,16 +255,12 @@
 }
 
 @media (max-width: 480px) {
-  
-
   .wallet-container {
     width: 40px;
     height: 40px;
     font-size: 20px;
     padding: 0;
   }
-
-  
 
   .Toastify__toast {
     left: 200px;
@@ -281,8 +274,6 @@
 }
 
 @media (max-width: 320px) {
-
-
   .Toastify__toast {
     left: 130px;
     width: 180px;

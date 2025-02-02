@@ -5,44 +5,39 @@ import OpenBotIcon from '@/assets/icons/bot.svg?react';
 import TermsIcon from '@/assets/icons/terms.svg?react';
 
 const menuItems = [
-  { id: 1, text: 'Reload page', icon: <ReloadIcon className="md:mr-2 sm:mr-1.5 mr-1.5 w-[18px] h-[18px]" />, link: '#' },
-  { id: 2, text: 'Open Bot', icon: <OpenBotIcon className="md:mr-2 mr-1.5 w-[18px] h-[18px]" />, link: '#' },
-  { id: 3, text: 'Terms of Use', icon: <TermsIcon className="md:mr-2 mr-1.5 w-[18px] h-[18px]" />, link: '#' },
+  {
+    id: 1,
+    text: 'Reload page',
+    icon: <ReloadIcon className="mr-1.5 h-[18px] w-[18px] sm:mr-1.5 md:mr-2" />,
+    link: '#',
+  },
+  { id: 2, text: 'Open Bot', icon: <OpenBotIcon className="mr-1.5 h-[18px] w-[18px] md:mr-2" />, link: '#' },
+  { id: 3, text: 'Terms of Use', icon: <TermsIcon className="mr-1.5 h-[18px] w-[18px] md:mr-2" />, link: '#' },
 ];
 
-function MobDropdownMenu({isMenuOpen, toggleMenu}) {
+function MobDropdownMenu({ isMenuOpen, toggleMenu }) {
   return (
     <div className="relative">
       <button
-        className="after:hidden px-2 py-1 sm:px-2.5 sm:flex justify-center items-center sm:relative sm:bg-transparent sm:border-0"
+        className="items-center justify-center px-2 py-1 after:hidden sm:relative sm:flex sm:border-0 sm:bg-transparent sm:px-2.5"
         type="button"
         id="dropdownMenuButton1"
         data-bs-toggle="dropdown"
         onClick={toggleMenu}
         aria-expanded={isMenuOpen}
       >
-        <ArrowDownIcon className="md:mr-2 mr-1.5 w-[18px] h-[18px]" />
+        <ArrowDownIcon className="mr-1.5 h-[18px] w-[18px] md:mr-2" />
       </button>
 
       {isMenuOpen && (
-        <ul 
-          className={`
-            xs:-translate-y-[60%] !translate-x-[-50%] !translate-y-[-60%] 
-            @max-xs:translate-x-[-50%] bg-overlay fixed !top-[280px] !left-[50%] 
-            border-0 pointer-events-auto md:p-[18px] p-6 px-9 xs:p-[18px] sm:p-[18px] 
-            w-[330px] h-[310px] md:w-[390px] md:h-[368px] @min-xs:w-[300px] @min-xs:h-[280px] 
-            text-[var(--primary)]
-            lg:animate-[fadeIn_0.3s_ease-in-out]
-          `} 
+        <ul
+          className={`xs:-translate-y-[60%] bg-overlay xs:p-[18px] pointer-events-auto fixed !top-[280px] !left-[50%] h-[310px] w-[330px] !translate-x-[-50%] !translate-y-[-60%] border-0 p-6 px-9 text-[var(--primary)] sm:p-[18px] md:h-[368px] md:w-[390px] md:p-[18px] lg:animate-[fadeIn_0.3s_ease-in-out] @max-xs:translate-x-[-50%] @min-xs:h-[280px] @min-xs:w-[300px]`}
           aria-labelledby="dropdownMenuButton1"
         >
           {menuItems.map((item) => (
             <li key={item.id}>
-              <a 
-                className="h-[50px] w-3xs md:w-[342px] sm:w-[294px] md:h-[60px] 
-                  flex items-center border border-footer-divider rounded-2xl text-xs 
-                  md:text-sm bg-dark-purple font-semibold leading-[171%] md:mb-4 mb-3 
-                  pointer-events-auto !transition-none px-6 md:py-4" 
+              <a
+                className="border-footer-divider bg-dark-purple pointer-events-auto mb-3 flex h-[50px] w-3xs items-center rounded-2xl border px-6 text-xs leading-[171%] font-semibold !transition-none sm:w-[294px] md:mb-4 md:h-[60px] md:w-[342px] md:py-4 md:text-sm"
                 href={item.link}
               >
                 {item.icon}
@@ -51,16 +46,8 @@ function MobDropdownMenu({isMenuOpen, toggleMenu}) {
             </li>
           ))}
           <li>
-            <button 
-              className="h-[50px] w-3xs md:w-[342px] sm:w-[294px] md:h-[60px] 
-                flex items-center border border-footer-divider rounded-2xl text-xs 
-                md:text-sm bg-dark-purple font-semibold leading-[171%] md:mb-4 mb-3 
-                pointer-events-auto relative !transition-none md:px-6 md:py-4 justify-center 
-                z-[1] mt-[45px] cursor-pointer text-center text-white font-text
-                before:content-[''] before:absolute before:top-0 before:left-0 before:bottom-0 
-                before:z-[-1] before:rounded-[16px] before:p-[1px]
-                before:mask-[var(--mask-gradient)]
-                bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)]" 
+            <button
+              className="border-footer-divider bg-dark-purple font-text before:mask-[var(--mask-gradient)] pointer-events-auto relative z-[1] mt-[45px] mb-3 flex h-[50px] w-3xs cursor-pointer items-center justify-center rounded-2xl border bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)] text-center text-xs leading-[171%] font-semibold text-white !transition-none before:absolute before:top-0 before:bottom-0 before:left-0 before:z-[-1] before:rounded-[16px] before:p-[1px] before:content-[''] sm:w-[294px] md:mb-4 md:h-[60px] md:w-[342px] md:px-6 md:py-4 md:text-sm"
               onClick={toggleMenu}
             >
               Cancel

@@ -26,9 +26,9 @@ function Footer() {
   ];
 
   return (
-    <footer className="px-20 lg:px-[3em] h-[100px] lg:h-[70px] w-full flex items-center bg-[var(--darkish)] relative">
-      <div className="w-full lg:flex hidden items-center justify-between">
-        <div className="text-gray-400 text-base">
+    <footer className="relative flex h-[100px] w-full items-center bg-[var(--darkish)] px-20 lg:h-[70px] lg:px-[3em]">
+      <div className="hidden w-full items-center justify-between lg:flex">
+        <div className="text-base text-gray-400">
           <p className="m-0">Copyright©Spotnet2024</p>
         </div>
         <nav className="flex items-center">
@@ -36,16 +36,14 @@ function Footer() {
             { path: '/documentation', label: 'Documentation' },
             { path: '/overview', label: 'Overview' },
             { path: '/terms-and-conditions', label: 'Terms & Conditions' },
-            { path: '/defispring', label: 'Defi Spring Rewards' }
+            { path: '/defispring', label: 'Defi Spring Rewards' },
           ].map((link, index, array) => (
             <React.Fragment key={link.path}>
               <NavLink
                 to={link.path}
-                className={({ isActive }) => `
-                  inline-block text-base text-gray-400
-                  transition-all duration-300 ease-in-out hover:text-[var(--brand)] hover:scale-110
-                  ${isActive ? 'text-[var(--brand)]' : ''}
-                `}
+                className={({ isActive }) =>
+                  `inline-block text-base text-gray-400 transition-all duration-300 ease-in-out hover:scale-110 hover:text-[var(--brand)] ${isActive ? 'text-[var(--brand)]' : ''} `
+                }
                 onClick={(e) => {
                   if (window.location.pathname === link.path) {
                     e.preventDefault();
@@ -55,64 +53,55 @@ function Footer() {
               >
                 {link.label}
               </NavLink>
-              {index < array.length - 1 && (
-                <div className="mx-4 w-[1px] h-4 bg-gray-600 opacity-40 rounded-full" />
-              )}
+              {index < array.length - 1 && <div className="mx-4 h-4 w-[1px] rounded-full bg-gray-600 opacity-40" />}
             </React.Fragment>
           ))}
         </nav>
         <div className="flex items-center">
           {socialLinks.map(({ name, href, icon: Icon }, index, array) => (
             <React.Fragment key={name}>
-              <a 
-                href={href} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={name}
-                className="text-gray-400 hover:text-[var(--nav-button-hover)] transition-all duration-300 hover:scale-110"
+                className="text-gray-400 transition-all duration-300 hover:scale-110 hover:text-[var(--nav-button-hover)]"
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="h-5 w-5" />
               </a>
-              {index < array.length - 1 && (
-                <div className="mx-4 w-[1px] h-4 bg-gray-600 opacity-40 rounded-full" />
-              )}
+              {index < array.length - 1 && <div className="mx-4 h-4 w-[1px] rounded-full bg-gray-600 opacity-40" />}
             </React.Fragment>
           ))}
         </div>
       </div>
-      <div className="lg:hidden flex relative items-center justify-center w-full p-4 gap-[60px] sm:gap-10">
+      <div className="relative flex w-full items-center justify-center gap-[60px] p-4 sm:gap-10 lg:hidden">
         <NavLink
           to="/dashboard"
-          className={({ isActive }) => `
-            inline-block text-sm font-normal text-gray-400 
-            transition-all duration-300 ease-in-out
-            ${isActive ? 'text-[var(--brand)] font-semibold' : 'hover:text-[var(--brand)]'}
-          `}
+          className={({ isActive }) =>
+            `inline-block text-sm font-normal text-gray-400 transition-all duration-300 ease-in-out ${isActive ? 'font-semibold text-[var(--brand)]' : 'hover:text-[var(--brand)]'} `
+          }
         >
           <div className="flex flex-col items-center">
-            <DashboardIcon className="mb-[3px] w-5 h-5" />
+            <DashboardIcon className="mb-[3px] h-5 w-5" />
             <span className="w-20 text-center">Dashboard</span>
           </div>
         </NavLink>
-        
-        <div className="relative transform-gpu z-[1] 
-          rounded-lg w-[1px] h-4 bg-gray-600 opacity-40 flex-shrink-0 m-0" />
-        
+
+        <div className="relative z-[1] m-0 h-4 w-[1px] flex-shrink-0 transform-gpu rounded-lg bg-gray-600 opacity-40" />
+
         <NavLink
           to="/form"
-          className={({ isActive }) => `
-            inline-block text-sm font-normal text-gray-400 
-            transition-all duration-300 ease-in-out
-            ${isActive ? 'text-[var(--brand)] font-semibold' : 'hover:text-[var(--brand)]'}
-          `}
+          className={({ isActive }) =>
+            `inline-block text-sm font-normal text-gray-400 transition-all duration-300 ease-in-out ${isActive ? 'font-semibold text-[var(--brand)]' : 'hover:text-[var(--brand)]'} `
+          }
         >
           <div className="flex flex-col items-center">
-            <FormIcon className="mb-[3px] w-5 h-5 " />
+            <FormIcon className="mb-[3px] h-5 w-5" />
             <span className="w-20 text-center">Form</span>
           </div>
         </NavLink>
 
-        <div className="absolute top-0 left-0 w-full h-[1px] transition-colors duration-300" />
+        <div className="absolute top-0 left-0 h-[1px] w-full transition-colors duration-300" />
       </div>
     </footer>
   );

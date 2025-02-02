@@ -3,7 +3,7 @@ import './metricCard.css';
 
 export default function MetricCard({ title, value }) {
   return (
-    <div className="metric-card" >
+    <div className="metric-card">
       <div className="card-header">
         <span className="label">{title}</span>
       </div>
