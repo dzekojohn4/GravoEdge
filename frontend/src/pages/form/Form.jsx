@@ -95,7 +95,7 @@ const Form = () => {
         />
       )}
       <form
-        className="flex justify-center flex-col gap-2.5 pb-3  max-w-2xl w-full text-primary px-2"
+        className="flex justify-center px-4 flex-col gap-2.5 pb-3  max-w-2xl w-full text-primary sm:px-2"
         onSubmit={handleSubmit}
       >
         <div className=" font-normal text-sm md:mb-2.5 mt-0 mb-3 sm:my-3.5">
