@@ -77,14 +77,14 @@ function PositionHistory() {
                 </tr>
               </thead>
               <tbody>
-                {!tableData?.position || tableData?.position?.length === 0 ? (
+                {!tableData?.positions || tableData?.positions?.length === 0 ? (
                   <tr>
                     <td colSpan="10" className="text-center py-4">
                       No opened positions
                     </td>
                   </tr>
                 ) : (
-                  tableData?.position?.map((data, index) => (
+                  tableData?.positions?.map((data, index) => (
                     <tr key={data.id} className="even:bg-[rgba(18,7,33,0.5)]">
                       <td className="py-4 px-4 text-[#9CA3AF] text-left">{index + 1}.</td>
                       <td className="py-4 px-4">
