@@ -62,6 +62,8 @@
   --header-button-bg: #120721;
   --plain-button-bg: #0e0a16;
   --mask-gradient: #fff;
+  --profit-indicator: #1edc9e;
+  --loss-indicator: #f42222;
 
   /* Gradients */
   --second-gradient-from: #e01dee;
@@ -142,10 +144,6 @@ a {
 
 li {
   list-style-type: none;
-}
-
-a.svelte-1mtuslq.svelte-1mtuslq {
-  display: none;
 }
 
 .App {
@@ -305,6 +303,7 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   --color-second-primary: #fdfdfd;
   --color-plain-button-bg: #0e0a16;
   --color-header-button-bg: #120721;
+  --color-midnight-purple-hover: #5b4b80;
 
   --bg-app: url('../public/desktop-background.png');
   --bg-app-mobile: url('../public/mobile-background.png');

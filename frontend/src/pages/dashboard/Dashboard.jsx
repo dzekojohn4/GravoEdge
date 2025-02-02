@@ -13,7 +13,7 @@ import { TelegramNotification } from '@/components/ui/telegram-notification/Tele
 export default function DashboardPage({ telegramId }) {
   const { walletId } = useWalletStore();
 
-  const { data, cardData, healthFactor, startSum, currentSum, depositedData, isLoading } = useDashboardData();
+  const { cardData, healthFactor, startSum, currentSum, depositedData, isLoading } = useDashboardData();
 
   const { mutate: closePositionEvent, isLoading: isClosing } = useClosePosition(walletId);
 
@@ -23,13 +23,13 @@ export default function DashboardPage({ telegramId }) {
 
   return (
     <DashboardLayout>
-      {isLoading && <Spinner loading={isLoading} />}
+      <Spinner loading={isLoading} />
       <div className="flex w-full gap-2 pt-6">
         <Card
           label="Health Factor"
           value={healthFactor}
           icon={
-            <HealthIcon className="bg-border-color mr-[5px] flex h-8 w-8 items-center justify-center rounded-full p-2" />
+            <HealthIcon className="bg-border-color mr-1 flex size-6 items-center justify-center rounded-full p-1 md:size-8 md:p-2" />
           }
           labelClassName="text-stormy-gray"
         />
@@ -37,7 +37,7 @@ export default function DashboardPage({ telegramId }) {
           label="Borrow Balance"
           cardData={cardData}
           icon={
-            <EthIcon className="bg-border-color mr-[5px] flex h-8 w-8 items-center justify-center rounded-full p-2" />
+            <EthIcon className="bg-border-color mr-1 flex size-6 items-center justify-center rounded-full p-1 md:size-8 md:p-2" />
           }
           labelClassName="text-stormy-gray"
         />
@@ -49,16 +49,17 @@ export default function DashboardPage({ telegramId }) {
           currentSum={currentSum}
           depositedData={depositedData}
         />
-        <Button
-          className="mt-4 h-[60px] w-full max-w-[642px]"
-          variant="primary"
-          size="lg"
-          onClick={() => closePositionEvent()}
-          disabled={isClosing || !hasOpenedPosition}
-        >
-          {isClosing ? 'Closing...' : 'Redeem'}
-        </Button>
-        <TelegramNotification telegramId={telegramId} />
+        <div className="flex w-full flex-col gap-4">
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => closePositionEvent()}
+            // disabled={isClosing || !hasOpenedPosition}
+          >
+            {isClosing ? 'Closing...' : 'Redeem'}
+          </Button>
+          <TelegramNotification telegramId={telegramId} />
+        </div>
       </div>
     </DashboardLayout>
   );

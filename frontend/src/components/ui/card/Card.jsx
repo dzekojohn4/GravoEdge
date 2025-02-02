@@ -3,10 +3,10 @@ function Card({ label, icon, value = '', cardData = [] }) {
     <div className="border-light-purple xs:h-auto flex h-[101px] grow flex-col items-center justify-center rounded-lg border-1 bg-transparent p-4 text-center sm:h-[90px] sm:w-full lg:w-[317px]">
       <div className="mb-2 flex items-center justify-center">
         {icon}
-        <span className="text-gray ml-2 text-sm font-semibold sm:font-normal">{label}</span>
+        <span className="text-gray text-sm md:font-semibold">{label}</span>
       </div>
 
-      <div className="text-2xl font-semibold md:text-2xl">
+      <div className="text-base font-semibold md:text-2xl">
         {cardData.length > 0 ? (
           <>
             <span className="mr-1">$</span>
