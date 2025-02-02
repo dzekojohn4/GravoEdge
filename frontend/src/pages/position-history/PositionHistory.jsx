@@ -32,7 +32,6 @@ function PositionHistory() {
     pending: 'text-[#83919F]',
   };
 
-
   return (
     <DashboardLayout title="Position History">
       <div className="flex flex-col  items-center justify-center gap-0.5 pt-6 rounded-lg text-primary text-center">
@@ -40,12 +39,16 @@ function PositionHistory() {
           <Card
             label="Health Factor"
             value={cardData?.health_ratio || '0.00'}
-            icon={<HealthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
+            icon={
+              <HealthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />
+            }
           />
           <Card
             label="Borrow Balance"
             cardData={cardData?.borrowed || '0.00'}
-            icon={<EthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
+            icon={
+              <EthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />
+            }
           />
         </div>
       </div>
@@ -54,24 +57,24 @@ function PositionHistory() {
           <p>Position History</p>
         </div>
 
-        <div className="border w-full max-[1500px]:max-w-[650px] border-[#36294E] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-[#12072180] [&::-webkit-scrollbar-thumb]:bg-[#36294E] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69]">
+        <div className="border max-[400px]:w-full  max-[1500px]:max-w-[650px] border-[#36294E] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-[#12072180] [&::-webkit-scrollbar-thumb]:bg-[#36294E] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69]">
           {isPending ? (
             <div className="flex justify-center items-center">
               <Spinner loading={isPending} />
             </div>
           ) : (
-              <table className="w-full table-auto">
+            <table className="w-full table-auto">
               <thead>
-                <tr className="border-b border-[#36294E] text-[#9CA3AF] text-[clamp(0.5rem,2vw,1rem)] font-normal">
-                  <th className="py-4 px-4 text-left w-[5%]">#</th>
+                <tr className="border-b border-[#36294E] text-[#9CA3AF] text-[clamp(0.5rem,2vw,1rem)] font-normal  whitespace-nowrap">
+                  <th className=" py-4 px-4 text-left w-[5%]">#</th>
                   <th className="py-4 px-4 text-left w-[12%]">Token</th>
-                  <th className="py-4 px-4 text-center w-[8%]">Amount</th>
-                  <th className="py-4 px-4 text-center w-[15%]">Created At</th>
-                  <th className="py-4 px-4 text-center w-[10%]">Status</th>
-                  <th className="py-4 px-4 text-center w-[12%]">Start Price</th>
-                  <th className="py-4 px-4 text-center w-[10%]">Multiplier</th>
-                  <th className="py-4 px-4 text-center w-[10%]">Liquidated</th>
-                  <th className="py-4 px-4 text-center w-[15%]">Closed At</th>
+                  <th className="  py-4 px-4 text-center w-[8%]">Amount</th>
+                  <th className="py-4 px-4 hidden lg:table-cell text-center w-[15%]">Created At</th>
+                  <th className="   py-4 px-4 text-center w-[10%]">Status</th>
+                  <th className=" hidden lg:table-cell py-4 px-4 text-center w-[12%]">Start Price</th>
+                  <th className=" hidden lg:table-cell py-4 px-4 text-center w-[10%]">Multiplier</th>
+                  <th className=" hidden lg:table-cell py-4 px-4 text-center w-[10%]">Liquidated</th>
+                  <th className="hidden  lg:table-cell py-4 px-4 text-center w-[15%]">Closed At</th>
                   <th className="py-4 px-4 text-center w-[3%]">
                     <img src={filterIcon} alt="filter-icon" draggable="false" />
                   </th>
@@ -95,17 +98,21 @@ function PositionHistory() {
                         </div>
                       </td>
                       <td className="py-4 px-4 text-white text-center">{data.amount}</td>
-                      <td className="py-4 px-4 text-white text-center">{data.created_at}</td>
-                      <td className={`py-4 px-4 text-center font-semibold ${statusStyles[data.status.toLowerCase()]}`}>
+                      <td className="py-4 px-4 hidden lg:table-cell text-white text-center">{data.created_at}</td>
+                      <td
+                        className={`py-4   px-4 text-center font-semibold ${statusStyles[data.status.toLowerCase()]}`}
+                      >
                         {data.status}
                       </td>
-                      <td className="py-4 px-4 text-white text-center">{data.start_price}</td>
-                      <td className="py-4 px-4 text-white text-center">{data.multiplier}</td>
-                      <td className="py-4 px-4 text-white text-center">{data.is_liquidated.toString()}</td>
-                      <td className="py-4 px-4 text-white text-center">{data.closed_at}</td>
-                      <td className="py-4 px-4 text-center">
+                      <td className="py-4 hidden lg:table-cell  px-4 text-white text-center">{data.start_price}</td>
+                      <td className="py-4 hidden lg:table-cell  px-4 text-white text-center">{data.multiplier}</td>
+                      <td className="py-4 hidden  lg:table-cell px-4 text-white text-center">
+                        {data.is_liquidated.toString()}
+                      </td>
+                      <td className="py-4 hidden  lg:table-cell px-4 text-white text-center">{data.closed_at}</td>
+                      <td className="py-4  px-4 text-center">
                         <button
-                          className="text-white p-1 rounded hover:bg-white/10 transition-colors"
+                          className="t p-1 rounded text-[#433B5A] hover:bg-white/10 hover:text-[#fff] cursor-pointer transition-colors"
                           onClick={() => setSelectedPosition({ data, index })}
                         >
                           &#x22EE;
