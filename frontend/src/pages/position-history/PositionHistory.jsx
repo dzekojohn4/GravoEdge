@@ -48,7 +48,7 @@ function PositionHistory() {
           />
         </div>
       </div>
-      <div className="w-full md:max-w-[700px] mx-auto ">
+      <div className="w-full md:max-w-[650px] mx-auto ">
         <div className="text-sm text-white mb-4 pl-2">
           <p>Position History</p>
         </div>
