@@ -8,7 +8,6 @@ import useDashboardData from '@/hooks/useDashboardData';
 import { NUMBER_REGEX } from '@/utils/regex';
 import { useState } from 'react';
 import DashboardLayout from '../DashboardLayout';
-import './addDeposit.css';
 
 export const AddDeposit = () => {
   const formatNumber = (value, currency = false) => {
@@ -48,42 +47,51 @@ export const AddDeposit = () => {
 
   return (
     <DashboardLayout title="Add Deposit">
-      <div className="main-container-deposit">
-        <div className="top-cards-dashboard">
-          <Card label="Health Factor" value={dashboardData?.health_ratio} icon={<HealthIcon className="icon" />} />
+      <div className="flex flex-col w-full items-center justify-center gap-0.5 pt-6 rounded-lg text-primary text-center">
+        <div className="flex w-full gap-2">
+          <Card
+            label="Health Factor"
+            value={dashboardData?.health_ratio}
+            icon={<HealthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
+            labelClassName="text-stormy-gray"
+          />
           <Card
             label="Borrow Balance"
             value={formatNumber(dashboardData?.borrowed, true)}
-            icon={<EthIcon className="icon" />}
+            icon={<EthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
+            labelClassName="text-stormy-gray"
           />
         </div>
       </div>
-      <h1 className="deposit-title2">Please make a deposit</h1>
+      <h1 className="text-xl font-normal text-primary text-center mt-8 mb-0 md:mt-0">Please make a deposit</h1>
       <TokenSelector
         selectedToken={selectedToken}
         setSelectedToken={setSelectedToken}
-        className="deposit-token-selector"
+        className="border-none rounded-lg"
       />
-      <div className="amount-input-deposit" aria-labelledby="amount-input-label">
+      <div className="relative w-[146px] max-w-[400px] mx-auto my-8 text-center font-semibold">
         <input
           type="text"
           id="amount-field"
           value={amount}
           onChange={handleAmountChange}
           pattern="^\d*\.?\d*$"
-          className="amount-field-deposit"
+          className="bg-transparent border-none text-gray text-[64px] font-semibold outline-none text-center w-full"
           aria-describedby="currency-symbol"
           placeholder="0.00"
           disabled={isLoading || isDashboardLoading}
         />
-        <span id="currency-symbol" className="currency-deposit">
+        <span
+          id="currency-symbol"
+          className="absolute text-dark-gray top-[18%] -translate-x-1/2 -translate-y-1/2 opacity-50 text-base leading-[20.83px] z-[999999]"
+        >
           {selectedToken}
         </span>
       </div>
 
       <Button
         size="lg"
-        className="redeem-btn"
+        className="w-full mt-4"
         variant="primary"
         onClick={handleDeposit}
         disabled={isLoading || isDashboardLoading || amount === '0'}

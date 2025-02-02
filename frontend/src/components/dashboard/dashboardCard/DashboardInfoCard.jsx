@@ -17,21 +17,21 @@ export default function DashboardInfoCard({ cardData, startSum, currentSum, depo
     }
   
     return (
-      <div className="dashboard-info-card">
-        <DashboardTabs activeTab={activeTab} switchTab={setActiveTab} />
-  
-        {activeTab === COLLATERAL && (
-          <Collateral
-            getCurrentSumColor={getCurrentSumColor}
-            startSum={startSum}
-            currentSum={currentSum}
-            data={cardData}
-          />
-        )}
-  
-        {activeTab === BORROW && <Borrow data={cardData} />}
-  
-        {activeTab === DEPOSITED && <Deposited data={depositedData} />}
-      </div>
+      <div className="bg-transparent border-1 border-[#36294e] rounded-lg max-w-[642px] w-full h-[318px] py-4 px-7 flex flex-col gap-3">
+      <DashboardTabs activeTab={activeTab} switchTab={setActiveTab} />
+
+      {activeTab === COLLATERAL && (
+        <Collateral
+          getCurrentSumColor={getCurrentSumColor}
+          startSum={startSum}
+          currentSum={currentSum}
+          data={cardData}
+        />
+      )}
+
+      {activeTab === BORROW && <Borrow data={cardData} />}
+
+      {activeTab === DEPOSITED && <Deposited data={depositedData} />}
+    </div>
     )
   }

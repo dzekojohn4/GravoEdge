@@ -36,15 +36,6 @@ function Deposited({ data }) {
           <p className="currency-value">{data.usdc}</p>
         </div>
 
-        {/* <div className="info-divider" />
-
-        <div className="deposited-item">
-          <div className="currency-name">
-            <EthIcon className="icon" />
-            <p className="currency-name">USDT</p>
-          </div>
-          <p className="currency-value">{data.usdt}</p>
-        </div> */}
       </div>
     </div>
   );

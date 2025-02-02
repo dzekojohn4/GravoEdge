@@ -15,6 +15,7 @@ export default function DashboardPage({ telegramId }) {
   const { walletId } = useWalletStore()
 
   const { 
+    data,
     cardData, 
     healthFactor, 
     startSum, 
@@ -35,21 +36,30 @@ export default function DashboardPage({ telegramId }) {
 
   return (
     <DashboardLayout>
-      {isLoading && <Spinner loading={isLoading} />}
-      <div className="top-cards-dashboard">
-        <Card label="Health Factor" value={healthFactor} icon={<HealthIcon className="icon" />} />
-        <Card label="Borrow Balance" cardData={cardData} icon={<EthIcon className="icon" />} />
+      {isLoading && <Spinner loading={isLoading} />}  
+      <div className="flex  gap-2 w-full pt-6">
+        <Card
+          label="Health Factor"
+          value={healthFactor}
+          icon={<HealthIcon className=" mr-[5px] w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
+          labelClassName="text-stormy-gray"
+        />
+        <Card
+          label="Borrow Balance"
+          cardData={cardData}
+          icon={<EthIcon className="mr-[5px] w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />}
+          labelClassName="text-stormy-gray"
+        />  
       </div>
-      <div className="dashboard-info-container">
-        <DashboardInfoCard
+      <div className="flex flex-col items-center gap-6">
+      <DashboardInfoCard
           cardData={cardData}
           startSum={startSum}
           currentSum={currentSum}
           depositedData={depositedData}
         />
-
         <Button
-          className="redeem-btn"
+          className="w-full max-w-[642px] h-[60px] mt-4"
           variant="primary"
           size="lg"
           onClick={() => closePositionEvent()}
