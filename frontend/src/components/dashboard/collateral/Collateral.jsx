@@ -27,10 +27,10 @@ function Collateral({ data, startSum, currentSum, getCurrentSumColor }) {
             {startSum ? Number(startSum).toFixed(2) : '0.00'}
           </span>
         </span>
-        <span>
-          <span className="text-gray-500 font-normal">Current sum: </span>
-          <span className={currentSum > 0 ? 'text-green-500' : getCurrentSumColor()}>
-            <span className="mr-1">$</span>
+        <span className='flex '>
+          <span className="text-gray-500 font-normal mr-2">Current sum: </span>
+          <span className={`flex  ${currentSum > 0 ? 'text-green-500' : getCurrentSumColor()}`}>
+            <span>$</span>
             {currentSum ? Number(currentSum).toFixed(8) : '0.00'}
             {currentSum > startSum && currentSum !== 0 && <TrendingUp className="text-green-500 w-6 h-6 ml-2" />}
             {currentSum < startSum && currentSum !== 0 && <TrendingDown className="text-red-500 w-6 h-6 ml-2" />}
