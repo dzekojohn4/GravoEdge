@@ -9,24 +9,11 @@ export default function DashboardInfoCard({ cardData, startSum, currentSum, depo
   const [activeTab, setActiveTab] = useState(DASHBOARD_TABS.COLLATERAL);
   const { COLLATERAL, BORROW, DEPOSITED } = DASHBOARD_TABS;
 
-  const getCurrentSumColor = () => {
-    if (currentSum > startSum) return 'current-sum-green';
-    if (currentSum < startSum) return 'current-sum-red';
-    return '';
-  };
-
   return (
-    <div className="flex h-[318px] w-full max-w-[642px] flex-col gap-3 rounded-lg border-1 border-[#36294e] bg-transparent px-7 py-4">
+    <div className="flex h-[318px] w-full max-w-[642px] flex-col gap-4 rounded-lg border-1 border-[#36294e] bg-transparent px-6 py-4">
       <DashboardTabs activeTab={activeTab} switchTab={setActiveTab} />
 
-      {activeTab === COLLATERAL && (
-        <Collateral
-          getCurrentSumColor={getCurrentSumColor}
-          startSum={startSum}
-          currentSum={currentSum}
-          data={cardData}
-        />
-      )}
+      {activeTab === COLLATERAL && <Collateral startSum={startSum} currentSum={currentSum} data={cardData} />}
 
       {activeTab === BORROW && <Borrow data={cardData} />}
 

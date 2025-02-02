@@ -18,13 +18,8 @@ export function TelegramNotification({ telegramId }) {
   };
 
   return (
-    <div className="hidden md:flex">
-      <Button
-        variant="secondary"
-        size="lg"
-        className="h-[60px] w-full max-w-[642px] items-center justify-center gap-2 md:flex"
-        onClick={handleOpen}
-      >
+    <>
+      <Button variant="secondary" size="lg" onClick={handleOpen} className="hidden md:flex">
         <span className="flex items-center justify-center gap-2">
           <TelegramIcon className="h-6 w-6" />
           Enable telegram notification bot
@@ -44,6 +39,6 @@ export function TelegramNotification({ telegramId }) {
           cancelAction={handleClose}
         />
       )}
-    </div>
+    </>
   );
 }

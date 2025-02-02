@@ -8,7 +8,7 @@ const NavigationLinks = ({ onNavClick }) => (
       end
       className={({ isActive }) =>
         isActive
-          ? 'font-semibold text-[var(--nav-button-hover)]'
+          ? 'text-nav-button-hover font-semibold'
           : 'font-primary relative leading-[150%] font-medium text-white capitalize duration-300 hover:text-[var(--nav-button-hover)]'
       }
       onClick={onNavClick}
@@ -22,7 +22,7 @@ const NavigationLinks = ({ onNavClick }) => (
       to="/dashboard"
       className={({ isActive }) =>
         isActive
-          ? 'font-semibold text-[var(--nav-button-hover)]'
+          ? 'text-nav-button-hover font-semibold'
           : 'font-primary relative leading-[150%] font-medium text-white capitalize duration-300 hover:text-[var(--nav-button-hover)]'
       }
       onClick={onNavClick}
@@ -36,7 +36,7 @@ const NavigationLinks = ({ onNavClick }) => (
       to="/form"
       className={({ isActive }) =>
         isActive
-          ? 'font-semibold text-[var(--nav-button-hover)]'
+          ? 'text-nav-button-hover font-semibold'
           : 'font-primary relative leading-[150%] font-medium text-white capitalize duration-300 hover:text-[var(--nav-button-hover)]'
       }
       onClick={onNavClick}
