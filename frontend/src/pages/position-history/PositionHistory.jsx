@@ -27,15 +27,16 @@ function PositionHistory() {
   };
 
   const statusStyles = {
-    opened: 'text-[#49ABD2]',
-    closed: 'text-[#FF5C5C]',
-    pending: 'text-[#FFB800]',
+    opened: 'text-[#1EDC9E]',
+    closed: 'text-[#433B5A]',
+    pending: 'text-[#83919F]',
   };
+
 
   return (
     <DashboardLayout title="Position History">
-      <div className="flex flex-col items-center justify-center gap-0.5 pt-6 rounded-lg text-primary text-center">
-        <div className="flex flex-col md:flex-row gap-2 w-full">
+      <div className="flex flex-col  items-center justify-center gap-0.5 pt-6 rounded-lg text-primary text-center">
+        <div className="flex gap-2  min-[800px]:w-[600px] w-full">
           <Card
             label="Health Factor"
             value={cardData?.health_ratio || '0.00'}
@@ -48,12 +49,12 @@ function PositionHistory() {
           />
         </div>
       </div>
-      <div className="w-full md:max-w-[650px] mx-auto ">
+      <div className="w-full mx-auto ">
         <div className="text-sm text-white mb-4 pl-2">
           <p>Position History</p>
         </div>
 
-        <div className="border w-full border-[#36294E] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-[#12072180] [&::-webkit-scrollbar-thumb]:bg-[#36294E] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69]">
+        <div className="border w-full max-[1500px]:max-w-[650px] border-[#36294E] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-[#12072180] [&::-webkit-scrollbar-thumb]:bg-[#36294E] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69]">
           {isPending ? (
             <div className="flex justify-center items-center">
               <Spinner loading={isPending} />
