@@ -65,7 +65,7 @@ function PositionHistory() {
           ) : (
             <table className="w-full table-auto">
               <thead>
-                <tr className="border-b border-[#36294E] text-[#9CA3AF] text-[clamp(0.5rem,2vw,1rem)] font-normal  whitespace-nowrap">
+                <tr className="border-b border-[#36294E] text-[#9CA3AF] text-[clamp(0.8rem,2vw,1rem)] font-normal  whitespace-nowrap">
                   <th className=" py-4 px-4 text-left w-[5%]">#</th>
                   <th className="py-4 px-4 text-left w-[12%]">Token</th>
                   <th className="  py-4 px-4 text-center w-[8%]">Amount</th>
