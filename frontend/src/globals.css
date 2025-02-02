@@ -333,3 +333,16 @@ a.svelte-1mtuslq.svelte-1mtuslq {
   --z-9999: 9999;
   --z-100: 100;
 }
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-x: hidden;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}

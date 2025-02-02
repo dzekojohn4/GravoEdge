@@ -98,8 +98,8 @@ const Form = () => {
         className="flex justify-center flex-col gap-2.5 pb-3  max-w-2xl w-full text-primary px-2"
         onSubmit={handleSubmit}
       >
-        <div className=" font-normal text-sm md:mb-2.5 my-3.5">
-          <h2 className="text-xl text-center">Please submit your leverage details</h2>
+        <div className=" font-normal text-sm md:mb-2.5 mt-0 mb-3 sm:my-3.5">
+          <h2 className="text-lg sm:text-xl text-center">Please submit your leverage details</h2>
         </div>
         <TokenSelector
           selectedToken={selectedToken}
@@ -117,9 +117,9 @@ const Form = () => {
           />
         </div>
         <div className="flex flex-col gap-1.5 mt-16 w-full mb-2">
-          <label className="text-start w-full text-gray pt-5">Token Amount</label>
+          <label className="text-start w-full text-gray pt-5 pb-2 ">Token Amount</label>
           <input
-            className="rounded-xl text-sm bg-transparent py-5 px-8 border-light-purple border w-full focus:outline-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            className="rounded-xl text-sm bg-transparent py-5 px-6 sm:px-8 border-light-purple border w-full focus:outline-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             type="number"
             placeholder="Enter Token Amount"
             value={tokenAmount}
@@ -127,7 +127,7 @@ const Form = () => {
           />
         </div>
         <div className="w-full">
-          <div className="flex flex-row items-end justify-self-end w-fit mb-3 text-gray gap-1.5 self-end">
+          <div className="flex flex-row items-end justify-self-end w-fit mb-7 sm:mb-8 text-gray gap-1.5 self-end">
             <p>Estimated Health Factor Level:</p>
             <p>{isHealthFactorLoading ? 'Loading...' : healthFactor}</p>
           </div>
