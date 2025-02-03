@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/custom-button/Button';
 import useLockBodyScroll from '@/hooks/useLockBodyScroll';
+import { cn } from '@/utils/cn';
 
 const ActionModal = ({
   isOpen,
@@ -20,29 +21,31 @@ const ActionModal = ({
   }
   return (
     <div
-      className="flex items-center justify-center fixed top-0 left-0 w-full h-full bg-black/50 backdrop-blur-sm z-[55555] "
+      className="fixed top-0 left-0 z-[55555] flex h-full w-full items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={cancelAction}
     >
       <div
-        className="flex items-center justify-center shadow-primary-color overflow-hidden md:w-xl w-lg text-white"
+        className="shadow-primary-color flex items-center justify-center overflow-hidden text-white"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="rounded-2xl max-w-[330px] sm:max-w-md w-full sm:w-8/12 flex flex-col gap-4 text-center">
-          <div className="text-center py-4 border-nav-divider-bg  bg-bg rounded-2xl text-sm md:rounded-2xl pt-4 h-fit border">
-            <div className="text-primary text-center text-xs pt-1 border-b-nav-divider-bg  pb-2 border-b mb-6 w-full">
+        <div className="flex w-[330px] flex-col gap-[18px] rounded-2xl text-center md:w-full md:max-w-[700px] md:gap-6">
+          <div className="border-nav-divider-bg bg-bg h-fit rounded-2xl border p-6 py-4 pt-4 text-center text-sm md:rounded-2xl">
+            <div className="text-primary mb-6 w-full border-b border-b-[rgba(255,255,255,0.1)] px-[10px] py-[10px] text-center text-base text-[13px] sm:mb-[14px] sm:py-[6px] md:mb-4 md:pb-4">
               {title}
             </div>
-            <div className="px-2 grid min-h-28 place-content-center">
-              <h6 className="text-sm font-semibold">{subTitle}</h6>
+            <div className="grid min-h-28 place-content-center px-2">
+              <h2 className={cn('mx-auto mb-4 text-sm font-semibold md:text-2xl', content.length && 'px-0 py-[55px]')}>
+                {subTitle}
+              </h2>
               {content.map((content, i) => (
-                <p className="text-gray-500 text-base leading-6 max-w-96 mt-0 mx-auto mb-3" key={i}>
+                <p className="mx-auto mt-0 mb-3 max-w-96 text-base leading-6" key={i}>
                   {content}
                 </p>
               ))}
             </div>
           </div>
-          <div className="flex gap-4 justify-between">
-            <Button variant="secondary" size="md" className="modal-btn" onClick={cancelAction} disabled={isLoading}>
+          <div className="flex justify-between gap-2 md:gap-4">
+            <Button variant="secondary" size="md" onClick={cancelAction} disabled={isLoading}>
               {cancelLabel}
             </Button>
             <Button variant="primary" size="md" onClick={submitAction} disabled={isLoading}>

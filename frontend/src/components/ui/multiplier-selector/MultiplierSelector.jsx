@@ -102,10 +102,10 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
     }
   }, [maxMultiplier, actualValue, setSelectedMultiplier]);
 
-  if (isLoading) return <div className="bg-white py-3 px-4 text-black rounded-xs">Loading multiplier data...</div>;
+  if (isLoading) return <div className="rounded-xs bg-white px-4 py-3 text-black">Loading multiplier data...</div>;
 
   return (
-    <div className="w-full pt-9 max-h-24 px-2 md:px-0">
+    <div className="max-h-24 w-full px-2 pt-9 md:px-0">
       <div className="relative h-2 w-full cursor-pointer">
         <div className="mt-3.5 mr-0 -mb-2.5">
           <div className="mt-2.5 w-full">
@@ -115,32 +115,32 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
               onMouseDown={handleMouseDown}
               onTouchStart={handleTouchStart}
             >
-              <div className="absolute h-full w-full rounded-full border border-border-color">
+              <div className="border-border-color absolute h-full w-full rounded-full border">
                 <div
-                  className="absolute h-full rounded-full bg-gradient-to-r from-nav-button-hover to-pink"
+                  className="from-nav-button-hover to-pink absolute h-full rounded-full bg-gradient-to-r"
                   style={{
                     width: `${calculateSliderPercentage(actualValue)}%`,
                   }}
                 ></div>
               </div>
               <div
-                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 transition-colors duration-300 w-8 h-8 sm:w-[40px] sm:h-10"
+                className="absolute top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 transition-colors duration-300 sm:h-10 sm:w-[40px]"
                 style={{
                   left: `${calculateSliderPercentage(actualValue)}%`,
                 }}
               >
-                <div className="bg-[#2c5475] absolute h-8 w-12 bottom-10 sm:bottom-12 left-5 -translate-x-1/2 text-primary text-sm py-1.5 px-2 rounded-[7.17px] transition-opacity duration-200 ease-in-out text-center after:content-[''] after:absolute after:-bottom-3.5 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-solid after:border-transparent after:border-t-[#2c5475] p-1">
+                <div className="text-primary absolute bottom-10 left-5 h-8 w-12 -translate-x-1/2 rounded-[7.17px] bg-[#2c5475] p-1 px-2 py-1.5 text-center text-sm transition-opacity duration-200 ease-in-out after:absolute after:-bottom-3.5 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-solid after:border-transparent after:border-t-[#2c5475] after:content-[''] sm:bottom-12">
                   {actualValue.toFixed(1)}
                 </div>
                 <img src={sliderThumb} className="h-full w-full" alt="slider thumb" draggable="false" />
               </div>
             </div>
           </div>
-          <div className="w-full flex justify-between mt-5">
+          <div className="mt-5 flex w-full justify-between">
             {marks.map((mark, index) => (
               <div
                 key={index}
-                className={`flex flex-col gap-2 items-center w-4  ${actualValue === mark ? 'text-primary' : 'text-slider-gray'}`}
+                className={`flex w-4 flex-col items-center gap-2 ${actualValue === mark ? 'text-primary' : 'text-slider-gray'}`}
                 style={{
                   left: `${calculateSliderPercentage(mark)}%`,
                   position: 'absolute',
@@ -148,7 +148,7 @@ const MultiplierSelector = ({ setSelectedMultiplier, selectedToken }) => {
                 }}
               >
                 <div
-                  className={`w-1 h-3 rounded-xl ${actualValue === mark ? 'bg-nav-button-hover' : 'bg-slider-gray'} `}
+                  className={`h-3 w-1 rounded-xl ${actualValue === mark ? 'bg-nav-button-hover' : 'bg-slider-gray'} `}
                 />
                 <span className="text-sm">{`x${mark}`}</span>
               </div>

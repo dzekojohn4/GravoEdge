@@ -30,12 +30,7 @@ const usePositionHistoryTable = (currentPage, positionsOnPage) => {
 
   const { data, isPending, error } = useQuery({
     queryKey: ['positionHistory', walletId, currentPage],
-    queryFn: () =>
-      fetchPositionHistoryTable(
-        walletId,
-        (currentPage - 1) * positionsOnPage,
-        positionsOnPage
-      ),
+    queryFn: () => fetchPositionHistoryTable(walletId, (currentPage - 1) * positionsOnPage, positionsOnPage),
     enabled: !!walletId,
     onError: (err) => {
       console.error('Error during fetching position history:', err);

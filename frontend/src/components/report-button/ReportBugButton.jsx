@@ -1,21 +1,17 @@
-import React from "react";
-import ReportBugIcon from "../../assets/icons/customer-service-01.svg";
+import React from 'react';
+import ReportBugIcon from '../../assets/icons/customer-service-01.svg';
 
 export function ReportBugButton({ onClick }) {
-    return (
-        <button
-            className="fixed top-[125px] right-[30px] flex items-center gap-2 z-10 h-[46px] bg-[#11061E] border-x border-y border-border-color rounded-[12px] py-3 px-6 cursor-pointer transition-all hover:bg-report-btn-bg-hover"
-            onClick={(e) => {
-                e.stopPropagation();
-                onClick();
-            }}
-        >
-            <img
-                src={ReportBugIcon}
-                alt="bug-icon"
-                className="w-4 h-4 inline"
-            />
-            <p className="text-[#e7ecf0] text-base font-normal">Report Bug</p>
-        </button>
-    );
+  return (
+    <button
+      className="border-border-color hover:bg-report-btn-bg-hover fixed top-[125px] right-[30px] z-10 hidden h-[46px] cursor-pointer items-center gap-2 rounded-[12px] border-x border-y bg-[#11061E] px-6 py-3 transition-all md:flex"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+    >
+      <img src={ReportBugIcon} alt="bug-icon" className="inline h-4 w-4" />
+      <p className="text-base font-normal text-[#e7ecf0]">Report Bug</p>
+    </button>
+  );
 }

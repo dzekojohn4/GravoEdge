@@ -6,7 +6,6 @@ import WalletSection from '@/components/layout/wallet-section/WalletSection';
 import NavigationLinks from '@/components/layout/navigation-links/NavigationLinks';
 import useLockBodyScroll from '@/hooks/useLockBodyScroll';
 import MobDropdownMenu from '@/components/layout/mob-dropdown-menu/MobDropdownMenu';
-import './header.css';
 import { ReportBugButton } from '@/components/report-button/ReportBugButton';
 import { ReportBugModal } from '@/components/report-modal/ReportBugModal';
 
@@ -43,7 +42,7 @@ const useMenuHandling = (pathname) => {
   return {
     isMenuOpen,
     toggleMenu: () => setIsMenuOpen(!isMenuOpen),
-    closeMenu: () => setIsMenuOpen(false)
+    closeMenu: () => setIsMenuOpen(false),
   };
 };
 
@@ -53,24 +52,29 @@ const useModalHandling = () => {
   return {
     isModalOpen,
     openModal: () => setIsModalOpen(true),
-    closeModal: () => setIsModalOpen(false)
+    closeModal: () => setIsModalOpen(false),
   };
 };
 
 const Navigation = ({ makeNavStick, children }) => (
-  <nav className={
-    makeNavStick 
-      ? ' z-[100] fixed flex items-center w-full justify-center h-[90px] whitespace-nowrap border-b border-[var(--deep-purple)] bg-header-bg' 
-      : ' relative z-[9999] flex items-center w-full justify-center h-[90px] whitespace-nowrap border-b border-[var(--deep-purple)] bg-header-bg'
-  }>
+  <nav
+    className={
+      makeNavStick
+        ? 'bg-header-bg fixed z-[100] flex h-[90px] w-full items-center justify-center border-b border-[var(--deep-purple)] whitespace-nowrap'
+        : 'bg-header-bg relative z-[9999] flex h-[90px] w-full items-center justify-center border-b border-[var(--deep-purple)] whitespace-nowrap'
+    }
+  >
     {children}
   </nav>
 );
 
 const LogoSection = () => (
-  <div className="lg:pl-[5em]">
+  <div>
     <NavLink to="/">
-   <img src={Logo} className='@max-xs:w-[200px] sm:w-[230px] h-auto md:w-[250px] md:h-auto mt-[9px] lg:w-[300px] lg:h-auto'/>
+      <img
+        src={Logo}
+        className="mt-[9px] h-auto sm:w-[230px] md:h-auto md:w-[250px] lg:h-auto lg:w-[300px] @max-xs:w-[200px]"
+      />
     </NavLink>
   </div>
 );
@@ -78,31 +82,25 @@ const LogoSection = () => (
 function Header({ onConnectWallet, onLogout }) {
   const location = useLocation();
   const makeNavStick = STICKY_ROUTES.includes(location.pathname);
-  
+
   const { isMenuOpen, toggleMenu, closeMenu } = useMenuHandling(location.pathname);
   const { isModalOpen, openModal, closeModal } = useModalHandling();
-  
+
   useLockBodyScroll(isMenuOpen);
 
   return (
     <>
       <Navigation makeNavStick={makeNavStick}>
-        <div className="flex items-center justify-between bg-transparent w-full  px-[30px] relative">
+        <div className="relative flex w-full items-center justify-between bg-transparent px-[30px]">
           <LogoSection />
-          
+
           <NavigationLinks onNavClick={closeMenu} />
-          
-          <div className=" flex items-center">
-            <div className="block lg:hidden relative">
-              <MobDropdownMenu 
-                isMenuOpen={isMenuOpen} 
-                toggleMenu={toggleMenu} 
-              />
+
+          <div className="flex items-center">
+            <div className="relative block lg:hidden">
+              <MobDropdownMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
             </div>
-            <WalletSection 
-              onConnectWallet={onConnectWallet} 
-              onLogout={onLogout} 
-            />
+            <WalletSection onConnectWallet={onConnectWallet} onLogout={onLogout} />
           </div>
         </div>
       </Navigation>

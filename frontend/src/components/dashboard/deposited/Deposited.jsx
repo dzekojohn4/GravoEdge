@@ -1,41 +1,40 @@
-import './deposited.css';
 import EthIcon from '@/assets/icons/ethereum.svg?react';
 import StrkIcon from '@/assets/icons/strk.svg?react';
 import UsdIcon from '@/assets/icons/usdc-icon.svg?react';
 
+const IconWrapper = ({ children }) => <div>{children}</div>;
+
 function Deposited({ data }) {
   return (
-    <div className="deposited-tab-content">
-      <div className="deposited-info">
-        <div className="deposited-item">
-          <div className="currency-name">
-            <EthIcon className="icon" />
+    <div className="mt-4 h-[190px] w-full px-10 pr-10 text-left max-[480px]:p-0 md:mt-0 md:h-auto md:p-4">
+      <div className="flex flex-col justify-center gap-2">
+        <div className="flex items-center justify-between text-base font-semibold">
+          <div className="text-warning-text-colour flex items-center gap-1">
+            <EthIcon className="bg-border-color flex size-5 items-center justify-center rounded-[900px] p-1 md:size-8 md:p-2" />
             <p>ETH</p>
           </div>
-          <p className="currency-value">{data.eth}</p>
+          <p className="text-gray">{data.eth}</p>
         </div>
 
-        <div className="info-divider" />
+        <div className="bg-border-color h-[1px] w-full rounded-lg md:h-0.5" />
 
-        <div className="deposited-item">
-          <div className="currency-name">
-            <StrkIcon className="icon" />
-            <p className="currency-name">STRK</p>
+        <div className="flex items-center justify-between text-base font-semibold">
+          <div className="text-warning-text-colour flex items-center gap-1">
+            <StrkIcon className="bg-border-color flex size-5 items-center justify-center rounded-[900px] p-1 md:size-8 md:p-2" />
+            <p>STRK</p>
           </div>
-          <p className="currency-value">{data.strk}</p>
+          <p className="text-gray">{data.strk}</p>
         </div>
 
-        <div className="info-divider" />
+        <div className="bg-border-color h-[1px] w-full rounded-lg md:h-0.5" />
 
-        <div className="deposited-item">
-          <div className="currency-name">
-            <UsdIcon className="icon" />
-            <p className="currency-name">USDC</p>
+        <div className="flex items-center justify-between text-base font-semibold">
+          <div className="text-warning-text-colour flex items-center gap-1">
+            <UsdIcon className="bg-border-color flex size-5 items-center justify-center rounded-[900px] p-1 md:size-8 md:p-2" />
+            <p>USDC</p>
           </div>
-
-          <p className="currency-value">{data.usdc}</p>
+          <p className="text-gray">{data.usdc}</p>
         </div>
-
       </div>
     </div>
   );

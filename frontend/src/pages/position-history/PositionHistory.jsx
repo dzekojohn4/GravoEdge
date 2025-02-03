@@ -21,9 +21,9 @@ function PositionHistory() {
   const { data: cardData } = useDashboardData();
 
   const tokenIconMap = {
-    STRK: <StrkIcon className="w-6 h-6 p-1 rounded-full bg-[#201338]" />,
-    USDC: <UsdIcon className="w-6 h-6 p-1 rounded-full bg-[#201338]" />,
-    ETH: <EthIcon className="w-6 h-6 p-1 rounded-full bg-[#201338]" />,
+    STRK: <StrkIcon className="h-6 w-6 rounded-full bg-[#201338] p-1" />,
+    USDC: <UsdIcon className="h-6 w-6 rounded-full bg-[#201338] p-1" />,
+    ETH: <EthIcon className="h-6 w-6 rounded-full bg-[#201338] p-1" />,
   };
 
   const statusStyles = {
@@ -34,48 +34,50 @@ function PositionHistory() {
 
   return (
     <DashboardLayout title="Position History">
-      <div className="flex flex-col  items-center justify-center gap-0.5 pt-6 rounded-lg text-primary text-center">
-        <div className="flex gap-2  min-[800px]:w-[600px] w-full">
+      <div className="text-primary flex flex-col items-center justify-center gap-0.5 rounded-lg pt-6 text-center">
+        <div className="flex w-full gap-2 min-[800px]:w-[600px]">
           <Card
             label="Health Factor"
             value={cardData?.health_ratio || '0.00'}
             icon={
-              <HealthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />
+              <HealthIcon className="bg-border-color mr-[5px] flex h-8 w-8 items-center justify-center rounded-full p-2" />
             }
           />
           <Card
             label="Borrow Balance"
             cardData={cardData?.borrowed || '0.00'}
             icon={
-              <EthIcon className="mr-[5px]  w-8 h-8 bg-border-color rounded-full flex items-center justify-center p-2" />
+              <EthIcon className="bg-border-color mr-[5px] flex h-8 w-8 items-center justify-center rounded-full p-2" />
             }
           />
         </div>
       </div>
-      <div className="w-full mx-auto ">
-        <div className="text-sm text-white mb-4 pl-2">
+      <div className="mx-auto w-full">
+        <div className="mb-4 pl-2 text-sm text-white">
           <p>Position History</p>
         </div>
 
-        <div className="border max-[400px]:w-full  max-[1500px]:max-w-[650px] border-[#36294E] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-[#12072180] [&::-webkit-scrollbar-thumb]:bg-[#36294E] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69]">
+        <div className="overflow-auto rounded-lg border border-[#36294E] max-[1300px]:max-w-[650px] max-[400px]:w-full [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#36294E] hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69] [&::-webkit-scrollbar-track]:bg-[#12072180]">
           {isPending ? (
-            <div className="flex justify-center items-center">
+            <div className="flex items-center justify-center">
               <Spinner loading={isPending} />
             </div>
           ) : (
             <table className="w-full table-auto">
               <thead>
-                <tr className="border-b border-[#36294E] text-[#9CA3AF] text-[clamp(0.8rem,2vw,1rem)] font-normal  whitespace-nowrap">
-                  <th className=" py-4 px-4 text-left w-[5%]">#</th>
-                  <th className="py-4 px-4 text-left w-[12%]">Token</th>
-                  <th className="  py-4 px-4 text-center w-[8%]">Amount</th>
-                  <th className="py-4 px-4 hidden lg:table-cell text-center w-[15%]">Created At</th>
-                  <th className="   py-4 px-4 text-center w-[10%]">Status</th>
-                  <th className=" hidden lg:table-cell py-4 px-4 text-center w-[12%]">Start Price</th>
-                  <th className=" hidden lg:table-cell py-4 px-4 text-center w-[10%]">Multiplier</th>
-                  <th className=" hidden lg:table-cell py-4 px-4 text-center w-[10%]">Liquidated</th>
-                  <th className="hidden  lg:table-cell py-4 px-4 text-center w-[15%]">Closed At</th>
-                  <th className="py-4 px-4 text-center w-[3%]">
+                <tr className="border-b border-[#36294E] text-[clamp(0.8rem,2vw,1rem)] font-normal whitespace-nowrap text-[#9CA3AF]">
+                  <th className="w-[5%] px-4 py-4 text-left text-sm font-normal">#</th>
+                  <th className="w-[12%] px-4 py-4 text-left text-sm font-normal">Token</th>
+                  <th className="w-[8%] px-4 py-4 text-center text-sm font-normal">Amount</th>
+                  <th className="hidden w-[15%] px-4 py-4 text-center text-sm font-normal lg:table-cell">Created At</th>
+                  <th className="w-[10%] px-4 py-4 text-center text-sm font-normal">Status</th>
+                  <th className="hidden w-[12%] px-4 py-4 text-center text-sm font-normal lg:table-cell">
+                    Start Price
+                  </th>
+                  <th className="hidden w-[10%] px-4 py-4 text-center text-sm font-normal lg:table-cell">Multiplier</th>
+                  <th className="hidden w-[10%] px-4 py-4 text-center text-sm font-normal lg:table-cell">Liquidated</th>
+                  <th className="hidden w-[15%] px-4 py-4 text-center text-sm font-normal lg:table-cell">Closed At</th>
+                  <th className="w-[3%] px-4 py-4 text-center">
                     <img src={filterIcon} alt="filter-icon" draggable="false" />
                   </th>
                 </tr>
@@ -83,36 +85,34 @@ function PositionHistory() {
               <tbody>
                 {!tableData?.positions || tableData?.positions?.length === 0 ? (
                   <tr>
-                    <td colSpan="10" className="text-center py-4">
+                    <td colSpan="10" className="py-4 text-center">
                       No opened positions
                     </td>
                   </tr>
                 ) : (
                   tableData?.positions?.map((data, index) => (
                     <tr key={data.id} className="even:bg-[rgba(18,7,33,0.5)]">
-                      <td className="py-4 px-4 text-[#9CA3AF] text-left">{index + 1}.</td>
-                      <td className="py-4 px-4">
+                      <td className="px-4 py-4 text-left text-[#9CA3AF]">{index + 1}.</td>
+                      <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
                           {tokenIconMap[data.token_symbol]}
                           <span className="text-white">{data.token_symbol.toUpperCase()}</span>
                         </div>
                       </td>
-                      <td className="py-4 px-4 text-white text-center">{data.amount}</td>
-                      <td className="py-4 px-4 hidden lg:table-cell text-white text-center">{data.created_at}</td>
-                      <td
-                        className={`py-4   px-4 text-center font-semibold ${statusStyles[data.status.toLowerCase()]}`}
-                      >
+                      <td className="px-4 py-4 text-center text-white">{data.amount}</td>
+                      <td className="hidden px-4 py-4 text-center text-white lg:table-cell">{data.created_at}</td>
+                      <td className={`px-4 py-4 text-center font-semibold ${statusStyles[data.status.toLowerCase()]}`}>
                         {data.status}
                       </td>
-                      <td className="py-4 hidden lg:table-cell  px-4 text-white text-center">{data.start_price}</td>
-                      <td className="py-4 hidden lg:table-cell  px-4 text-white text-center">{data.multiplier}</td>
-                      <td className="py-4 hidden  lg:table-cell px-4 text-white text-center">
+                      <td className="hidden px-4 py-4 text-center text-white lg:table-cell">{data.start_price}</td>
+                      <td className="hidden px-4 py-4 text-center text-white lg:table-cell">{data.multiplier}</td>
+                      <td className="hidden px-4 py-4 text-center text-white lg:table-cell">
                         {data.is_liquidated.toString()}
                       </td>
-                      <td className="py-4 hidden  lg:table-cell px-4 text-white text-center">{data.closed_at}</td>
-                      <td className="py-4  px-4 text-center">
+                      <td className="hidden px-4 py-4 text-center text-white lg:table-cell">{data.closed_at}</td>
+                      <td className="block px-4 py-4 text-center md:hidden">
                         <button
-                          className="t p-1 rounded text-[#433B5A] hover:bg-white/10 hover:text-[#fff] cursor-pointer transition-colors"
+                          className="cursor-pointer rounded p-1 text-[#433B5A] transition-colors hover:bg-white/10 hover:text-[#fff]"
                           onClick={() => setSelectedPosition({ data, index })}
                         >
                           &#x22EE;

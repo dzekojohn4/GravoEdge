@@ -55,26 +55,22 @@ export async function sendWithdrawAllTransaction(data, userContractAddress) {
   try {
     const wallet = await getWallet();
     const contractCalldata = new CallData(abi);
-    const closeCalldata = contractCalldata.compile("close_position", data.repay_data);
+    const closeCalldata = contractCalldata.compile('close_position', data.repay_data);
     const withdrawCalls = [];
 
     data.tokens.forEach((token) => {
-      withdrawCalls.push(
-          {
-            contractAddress: userContractAddress,
-            entrypoint: "withdraw",
-            calldata: contractCalldata.compile("withdraw", {token: token, amount: 0})
-          }
-      );
+      withdrawCalls.push({
+        contractAddress: userContractAddress,
+        entrypoint: 'withdraw',
+        calldata: contractCalldata.compile('withdraw', { token: token, amount: 0 }),
+      });
     });
-    let result = await wallet.account.execute(
-        [
-            {contractAddress: userContractAddress, entrypoint: "close_position", calldata: closeCalldata},
-            ...withdrawCalls
-        ]
-    )
+    let result = await wallet.account.execute([
+      { contractAddress: userContractAddress, entrypoint: 'close_position', calldata: closeCalldata },
+      ...withdrawCalls,
+    ]);
     notify(
-    ToastWithLink(
+      ToastWithLink(
         'Withdraw all successfully sent',
         `https://starkscan.co/tx/${result.transaction_hash}`,
         'Transaction ID'
@@ -85,10 +81,9 @@ export async function sendWithdrawAllTransaction(data, userContractAddress) {
     return {
       transaction_hash: result.transaction_hash,
     };
-
   } catch (error) {
-    console.log('Error sending withdraw transaction', error)
-    throw error
+    console.log('Error sending withdraw transaction', error);
+    throw error;
   }
 }
 
@@ -102,33 +97,24 @@ export async function sendExtraDepositTransaction(deposit_data, userContractAddr
     const extraDepositCalldata = new CallData(abi);
 
     const approveCalldata = new CallData(erc20abi);
-    const compiledApproveCalldata = approveCalldata.compile('approve', [
-      userContractAddress, 
-      token_amount
-    ]); 
+    const compiledApproveCalldata = approveCalldata.compile('approve', [userContractAddress, token_amount]);
 
-    const compiledExtraDepositCalldata = extraDepositCalldata.compile('extra_deposit', [
-      token_address, 
-      token_amount
-    ]);
+    const compiledExtraDepositCalldata = extraDepositCalldata.compile('extra_deposit', [token_address, token_amount]);
 
-    const approveTransaction = {  
+    const approveTransaction = {
       contractAddress: token_address,
-      entrypoint: 'approve',                
-      calldata: compiledApproveCalldata
+      entrypoint: 'approve',
+      calldata: compiledApproveCalldata,
     };
 
-    const extraDepositTransaction = {  
+    const extraDepositTransaction = {
       contractAddress: userContractAddress,
-      entrypoint: 'extra_deposit',                
-      calldata: compiledExtraDepositCalldata
+      entrypoint: 'extra_deposit',
+      calldata: compiledExtraDepositCalldata,
     };
-    
+
     // Execute transaction
-    const result = await wallet.account.execute([
-      approveTransaction,
-      extraDepositTransaction
-    ]);
+    const result = await wallet.account.execute([approveTransaction, extraDepositTransaction]);
 
     // Notify user
     notify(
@@ -198,7 +184,10 @@ export const handleTransaction = async (connectedWalletId, formData, setTokenAmo
     const response = await axiosInstance.post(`/api/create-position`, formData);
 
     const transactionData = response.data;
-    const { loopTransaction: transaction_hash } = await sendTransaction(transactionData, transactionData.contract_address);
+    const { loopTransaction: transaction_hash } = await sendTransaction(
+      transactionData,
+      transactionData.contract_address
+    );
     console.log('Transaction executed successfully');
 
     const openPositionResponse = await axiosInstance.get(`/api/open-position`, {

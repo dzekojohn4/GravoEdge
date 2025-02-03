@@ -40,84 +40,37 @@ const About = () => {
   ];
 
   return (
-    <div className=" relative flex flex-col   items-center justify-between w-[100%] bg-[var(--black)] lg:pb-[350px] pb-[100px] ">
-      <div
-        className=" absolute           
-    h-[100px]          
-    w-[20%]  
-    hidden
-    lg:block          
-    left-[10em]  
-    top-[12em]         
-    -translate-x-1/2   
-    rounded-[2000px_2000px_0_0]  
-    blur-[100px]     
-    z-10             
-    bg-gradient-to-r 
-    from-[var(--gradient-from)] 
-    to-[var(--gradient-to)] "
-      ></div>
+    <div className="relative flex w-[100%] flex-col items-center justify-between bg-[var(--primary-color)] pb-[100px] lg:pb-[350px]">
+      <div className="absolute top-[15em] left-[15em] z-10 hidden h-[232px] w-[208px] -translate-x-1/2 rounded-[2000px_2000px_0_0] bg-[linear-gradient(73deg,_#74d6fd_1.13%,_#e01dee_103.45%)] blur-[80px] lg:block"></div>
       <StarMaker starData={starData} />
-      <h1 className=" text-center font-text text-white mt-[64px] text-[48px] font-[600] mb-[180px] ">How it works</h1>
+      <h1 className="font-text mt-[64px] mb-[180px] text-center text-[48px] font-[600] text-white">How it works</h1>
 
-      <div className="flex flex-wrap gap-[5em] sm:gap-[4em]  lg:gap-[2em] justify-center  px-4 max-w-7xl mx-auto">
+      <div className="mx-auto flex max-w-7xl flex-wrap justify-center gap-[5em] px-4 sm:gap-[4em] lg:gap-[2em]">
         {CardData.map((card, index) => (
           <div key={index} className="relative flex flex-col items-center">
-            <div className="absolute -top-[2em] md:-top-[1em] lg:-top-[1.5em] 2xl:-top-[1.5em] z-10 left-1/2 -translate-x-1/2">
-              <div
-                className="bg-primary-color  border-[var(--brand)] border-[0.8px] text-brand font-text font-semibold 
-                text-[32px] px-4 py-1 rounded-xl min-w-[70px] text-center 
-                xl:text-[30px] z-7 bg-black lg:text-[25px] lg:min-w-[60px] md:text-[18px] md:min-w-[45px] text-[var(--brand)]"
-              >
+            <div className="absolute -top-[2em] left-1/2 z-10 -translate-x-1/2 md:-top-[1em] lg:-top-[1.5em] 2xl:-top-[1.5em]">
+              <div className="bg-primary-color text-brand font-text z-7 min-w-[70px] rounded-xl border-[0.8px] border-[var(--brand)] bg-black px-4 py-1 text-center text-[32px] font-semibold text-[var(--brand)] md:min-w-[45px] md:text-[18px] lg:min-w-[60px] lg:text-[25px] xl:text-[30px]">
                 {card.number}
               </div>
             </div>
 
-            <div
-              className="w-[310px] h-[368px]  flex flex-col items-center gap-4 px-4 pt-[3em] 2xl:pt-[3em] bg-[linear-gradient(135deg,_rgba(116,_214,_253,_0.5)_0%,_rgba(11,_12,_16,_0.5)_100%)] 
-              rounded-[20px] border border-[var(--card-border-1)] shadow-card backdrop-blur-[21.09375px]
-              xl:w-[280px] xl:h-[350px] lg:w-[250px] lg:h-[255px] md:w-[175px] md:h-[205px] z-6"
-            >
-              <div
-                className="flex justify-center items-center w-[120px] h-[120px]
-                xl:w-[100px] xl:h-[100px] lg:w-[80px] lg:h-[80px] md:w-[60px] md:h-[60px] "
-              >
+            <div className="shadow-card z-6 flex h-[368px] w-[310px] flex-col items-center gap-4 rounded-[20px] border border-[var(--card-border-1)] bg-[linear-gradient(135deg,_rgba(116,_214,_253,_0.5)_0%,_rgba(11,_12,_16,_0.5)_100%)] px-4 pt-[3em] backdrop-blur-[21.09375px] md:h-[205px] md:w-[175px] lg:h-[255px] lg:w-[250px] xl:h-[350px] xl:w-[280px] 2xl:pt-[3em]">
+              <div className="flex h-[120px] w-[120px] items-center justify-center md:h-[60px] md:w-[60px] lg:h-[80px] lg:w-[80px] xl:h-[100px] xl:w-[100px]">
                 <card.icon />
               </div>
 
-              <h4
-                className="font-text text-[26px] text-primary text-center leading-[108%] font-medium
-                xl:text-[22px] text-white lg:text-[18px] md:text-[15px]"
-              >
+              <h4 className="font-text text-primary text-center text-[26px] leading-[108%] font-medium text-white md:text-[15px] lg:text-[18px] xl:text-[22px]">
                 {card.title}
               </h4>
 
-              <p
-                className="font-text text-[20px] text-white text-secondary text-center leading-[140%] font-normal
-                xl:text-base lg:text-md md:text-[11px]"
-              >
+              <p className="font-text text-secondary lg:text-md text-center text-[20px] leading-[140%] font-normal text-white md:text-[11px] xl:text-base">
                 {card.description}
               </p>
             </div>
           </div>
         ))}
       </div>
-      <div
-        className=" absolute           
-    h-[100px]          
-    w-[20%]  
-    hidden
-    lg:block          
-     right-0
-     top-[35em]
-      
-    rounded-[2000px_2000px_0_0]  
-    blur-[100px]     
-    z-0 
-    bg-gradient-to-r 
-    from-[var(--gradient-from)] 
-    to-[var(--gradient-to)] "
-      ></div>
+      <div className="absolute top-[25em] right-[25em] z-0 hidden h-[232px] w-[208px] rounded-[2000px_2000px_0_0] bg-[linear-gradient(73deg,_#74d6fd_1.13%,_#e01dee_103.45%)] blur-[100px] lg:block"></div>
     </div>
   );
 };

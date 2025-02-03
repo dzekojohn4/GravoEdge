@@ -35,12 +35,12 @@ const dashboardItems = [
 
 export default function DashboardLayout({ children, title = 'zkLend Position' }) {
   return (
-  <div className="min-h-screen flex w-screen lg:w-[calc(100vw-372px)] lg:ml-[372px] md:justify-center ">
+    <div className="flex min-h-screen w-screen md:justify-center lg:ml-[372px] lg:w-[calc(100vw-372px)]">
       <Sidebar items={dashboardItems} />
-      <div className="relative flex justify-center border border-solid  items-center w-full h-full">
-        <div className="flex flex-col justify-center gap-2.5 p-6 pt-5 mt-24 mb-12 h-full w-full md:w-auto md:max-w-none">
-          <h1 className="mt-4 text-2xl font-semibold text-second-primary text-center">{title}</h1>
-        <div className="w-full gap-6  rounded-2xl  text-second-primary text-center flex justify-center flex-col ">
+      <div className="relative flex h-full w-full items-center justify-center">
+        <div className="mt-24 mb-12 flex h-full w-full flex-col justify-center gap-2.5 p-6 pt-5 md:w-auto md:max-w-none">
+          <h1 className="text-second-primary mt-4 text-center text-2xl font-semibold">{title}</h1>
+          <div className="text-second-primary flex w-full flex-col justify-center gap-6 rounded-2xl text-center">
             {children}
           </div>
         </div>

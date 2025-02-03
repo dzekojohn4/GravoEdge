@@ -23,37 +23,37 @@ const BalanceCards = ({ className }) => {
   ]);
 
   return (
-    <div className="mt-3 mx-auto max-w-2xl px-3 w-full overflow-x-auto no-scrollbar">
-      <div className="grid grid-cols-3 w-full rounded-[8px] gap-5  min-w-md">
+    <div className="no-scrollbar mx-auto mt-3 w-full max-w-2xl overflow-x-auto px-3">
+      <div className="grid w-full min-w-md grid-cols-3 gap-5 rounded-[8px]">
         {balances.map((balance) =>
           isMobile ? (
             <div
-              className="border flex flex-col items-center text-center border- py-3 rounded-xl border-nav-divider-bg px-1"
+              className="border- border-nav-divider-bg flex flex-col items-center rounded-xl border px-1 py-3 text-center"
               key={balance.title}
             >
-              <label htmlFor={balance.title} className={'flex text-[#83919F] gap-1 items-center'}>
-                <div className="h-6 w-6 rounded-full bg-border-color flex justify-center p-1">
-                  <img src={balance.icon} className="w-full h-full" />
+              <label htmlFor={balance.title} className={'flex items-center gap-1 text-[#83919F]'}>
+                <div className="bg-border-color flex h-6 w-6 justify-center rounded-full p-1">
+                  <img src={balance.icon} className="h-full w-full" />
                 </div>
                 <span className="text-sm">{balance.title} Balance</span>
               </label>
               <label htmlFor={balance.title}>
-                <span className="font-semibold text-2xl text-white">{balance.balance}</span>
+                <span className="text-2xl font-semibold text-white">{balance.balance}</span>
               </label>
             </div>
           ) : (
             <div
-              className="border flex flex-col items-center text-center border- py-4 px-6 rounded-xl border-nav-divider-bg "
+              className="border- border-nav-divider-bg flex flex-col items-center rounded-xl border px-6 py-4 text-center"
               key={balance.title}
             >
-              <label htmlFor={balance.title} className={'flex text-[#83919F] gap-1'}>
-                <div className="h-6 w-6 rounded-full bg-border-color flex justify-center p-1">
-                  <img src={balance.icon} className="w-full h-full" />
+              <label htmlFor={balance.title} className={'flex gap-1 text-[#83919F]'}>
+                <div className="bg-border-color flex h-6 w-6 justify-center rounded-full p-1">
+                  <img src={balance.icon} className="h-full w-full" />
                 </div>
                 <span className="">{balance.title} Balance</span>
               </label>
               <label htmlFor={balance.title}>
-                <span className="font-semibold text-2xl text-white">{balance.balance}</span>
+                <span className="text-2xl font-semibold text-white">{balance.balance}</span>
               </label>
             </div>
           )
