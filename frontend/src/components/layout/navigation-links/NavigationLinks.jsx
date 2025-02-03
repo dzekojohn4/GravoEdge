@@ -16,7 +16,7 @@ const NavigationLinks = ({ onNavClick }) => (
       Home
     </NavLink>
 
-    <div className="h-4 w-[1.5px] rounded-md bg-[var(--gray)]" />
+    <div className="bg-light-purple h-4 w-[1.5px] rounded-md" />
 
     <NavLink
       to="/dashboard"
@@ -30,7 +30,7 @@ const NavigationLinks = ({ onNavClick }) => (
       Dashboard
     </NavLink>
 
-    <div className="h-4 w-[1.5px] rounded-md bg-[var(--gray)]" />
+    <div className="bg-light-purple h-4 w-[1.5px] rounded-md" />
 
     <NavLink
       to="/form"
@@ -44,7 +44,7 @@ const NavigationLinks = ({ onNavClick }) => (
       Form
     </NavLink>
 
-    {/* <div className="w-[1.5px] rounded-md h-4  bg-[var(--gray)]" /> */}
+    {/* <div className="h-4 w-[1.5px] rounded-md bg-light-purple" /> */}
     {/* 
     <NavLink 
       to="/vault" 
@@ -57,7 +57,7 @@ const NavigationLinks = ({ onNavClick }) => (
       Vault
     </NavLink>
 
-    <div className="w-[1.5px] rounded-md h-4  bg-[var(--gray)]" />
+    <div className="h-4 w-[1.5px] rounded-md bg-light-purple" />
 
     <NavLink 
       to="/leaderboard" 

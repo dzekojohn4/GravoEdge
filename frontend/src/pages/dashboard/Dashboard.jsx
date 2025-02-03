@@ -54,7 +54,7 @@ export default function DashboardPage({ telegramId }) {
             variant="primary"
             size="lg"
             onClick={() => closePositionEvent()}
-            // disabled={isClosing || !hasOpenedPosition}
+            disabled={isClosing || !hasOpenedPosition}
           >
             {isClosing ? 'Closing...' : 'Redeem'}
           </Button>

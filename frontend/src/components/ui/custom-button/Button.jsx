@@ -34,8 +34,8 @@ const buttonVariants = cva(
         ],
       },
       size: {
-        lg: 'w-[642px] md:w-full',
-        md: 'w-[309px] md:w-[167px]',
+        lg: 'w-full md:w-[642px]',
+        md: 'w-[167px] md:w-[309px]',
         sm: 'w-[167px]',
       },
     },

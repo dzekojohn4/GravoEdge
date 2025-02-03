@@ -70,7 +70,7 @@ const Navigation = ({ makeNavStick, children }) => (
 );
 
 const LogoSection = () => (
-  <div className="lg:pl-[5em]">
+  <div>
     <NavLink to="/">
       <img
         src={Logo}
