@@ -82,14 +82,14 @@ function Home() {
           <Starknet className="absolute top-0 right-[20px] z-[-1]" />
         </div>
         <div className="mx-auto flex flex-col items-center justify-center px-[1em] md:mt-[5em] lg:mt-0">
-          <h2 className="font-text mx-auto text-center text-[50px] leading-[50px] text-[var(--primary)] lg:text-[70px] lg:leading-[75px]">
+          <h2 className="font-text mx-auto text-center text-[50px] leading-[50px] font-medium text-[var(--primary)] lg:text-[70px] lg:leading-[75px]">
             <span className="text-blue-400">Earn</span> by leveraging your <br /> assets
             <span className="bg-gradient-to-r from-[var(--button-gradient-from)] via-[var(--button-gradient-from)] to-[var(--button-gradient-to)] bg-clip-text text-transparent hover:bg-gradient-to-r hover:from-[var(--button-gradient-hover-from)]">
               {' '}
               with Spotnet
             </span>
           </h2>
-          <h5 className="mt-[1em] text-white lg:text-[20px]">
+          <h5 className="mt-[1em] text-white lg:text-[17px]">
             Maximize the potential of your resources and start earning today. Join <br /> Spotnet and unlock new
             opportunities to grow your wealth!
           </h5>

@@ -24,7 +24,6 @@ const DontMiss = () => {
 
   return (
     <div className="mt-[60px] mb-[50px] flex h-auto flex-col items-center justify-center lg:mb-[250px]">
-      <div className="absolute bottom-10 left-0 h-[100px] w-[20%] -translate-x-1/2 rounded-[2000px_2000px_0_0] bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)] blur-[100px]"></div>
       <div className="text-container">
         <h1 className="text-center text-[48px] font-[600] text-white">Don&apos;t miss out</h1>
         <p className="mb-0 text-center text-[20px] font-[400] text-white">
@@ -47,7 +46,10 @@ const DontMiss = () => {
         <JoinButton onClick={handleLaunchApp}>Launch App</JoinButton>
         <Hand className="absolute top-[26px] right-[-44px] h-[114px] w-[114px] lg:right-[-53px] lg:h-[135px] lg:w-[135px]" />
       </div>
-      <div className="absolute right-0 bottom-10 h-[100px] w-[20%] translate-x-1/2 rounded-[2000px_2000px_0_0] bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)] blur-[100px]"></div>
+      <div>
+        <div className="absolute bottom-175 left-125 h-[232px] w-[208px] -translate-x-1/2 rounded-[2000px_2000px_0_0] bg-[linear-gradient(73deg,_#74d6fd_1.13%,_#e01dee_103.45%)] blur-[80px]"></div>
+        <div className="absolute right-110 bottom-200 h-[232px] w-[208px] translate-x-1/2 rounded-[2000px_2000px_0_0] bg-[linear-gradient(73deg,_#74d6fd_1.13%,_#e01dee_103.45%)] blur-[80px]"></div>
+      </div>
     </div>
   );
 };
