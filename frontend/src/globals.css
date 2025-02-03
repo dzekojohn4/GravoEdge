@@ -64,6 +64,12 @@
   --mask-gradient: #fff;
   --profit-indicator: #1edc9e;
   --loss-indicator: #f42222;
+  --color-backdrop-dark: #14142880;
+  --color-backdrop-darker: #1e1e3280;
+  --color-border-light: #ffffff1a;
+  --color-border-lighter: #ffffff33;
+  --color-gradient-purple: #6f3ff566;
+  --color-gradient-transparent: #6f3ff500;
 
   /* Gradients */
   --second-gradient-from: #e01dee;
@@ -122,6 +128,11 @@
   --border-midnight-purple-hover: 1px;
   --z-9999: 9999;
   --z-100: 100;
+
+  /* Gradient Colors */
+  --gradient-start: #49abd2;
+  --gradient-end: #df1ced;
+  --border-gradient: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 99.5%);
 }
 
 body {
@@ -340,5 +351,60 @@ li {
   .no-scrollbar {
     -ms-overflow-x: hidden; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+}
+
+/* Toastify Styles */
+.Toastify__toast {
+  margin-top: 90px;
+}
+
+.Toastify__toast-body {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .Toastify__toast {
+    left: 50px;
+    height: 60px;
+    width: 265px;
+  }
+
+  .Toastify__toast-body {
+    font-size: 13px;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 768px) {
+  .Toastify__toast {
+    left: 70px;
+    height: 40px;
+    width: 250px;
+  }
+
+  .Toastify__toast-body {
+    font-size: 13px;
+    font-weight: 400;
+  }
+}
+
+@media (max-width: 480px) {
+  .Toastify__toast {
+    left: 200px;
+    width: 200px;
+    border-radius: 6px !important;
+  }
+
+  .Toastify__toast-body {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 320px) {
+  .Toastify__toast {
+    left: 130px;
+    width: 180px;
   }
 }
