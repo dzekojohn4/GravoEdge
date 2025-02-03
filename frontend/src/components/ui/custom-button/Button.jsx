@@ -57,7 +57,7 @@ export const Button = React.forwardRef(({ className, variant, size, children, ..
       ref={ref}
       {...props}
     >
-      <span className="relative z-10 px-6 py-4">{children}</span>
+      <span className="relative z-10 py-4 md:px-6">{children}</span>
     </button>
   );
 });

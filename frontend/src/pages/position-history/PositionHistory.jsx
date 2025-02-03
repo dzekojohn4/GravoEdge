@@ -57,7 +57,7 @@ function PositionHistory() {
           <p>Position History</p>
         </div>
 
-        <div className="overflow-auto rounded-lg border border-[#36294E] max-[1500px]:max-w-[650px] max-[400px]:w-full [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#36294E] hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69] [&::-webkit-scrollbar-track]:bg-[#12072180]">
+        <div className="overflow-auto rounded-lg border border-[#36294E] max-[1300px]:max-w-[650px] max-[400px]:w-full [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#36294E] hover:[&::-webkit-scrollbar-thumb]:bg-[#4b3b69] [&::-webkit-scrollbar-track]:bg-[#12072180]">
           {isPending ? (
             <div className="flex items-center justify-center">
               <Spinner loading={isPending} />
@@ -66,15 +66,17 @@ function PositionHistory() {
             <table className="w-full table-auto">
               <thead>
                 <tr className="border-b border-[#36294E] text-[clamp(0.8rem,2vw,1rem)] font-normal whitespace-nowrap text-[#9CA3AF]">
-                  <th className="w-[5%] px-4 py-4 text-left">#</th>
-                  <th className="w-[12%] px-4 py-4 text-left">Token</th>
-                  <th className="w-[8%] px-4 py-4 text-center">Amount</th>
-                  <th className="hidden w-[15%] px-4 py-4 text-center lg:table-cell">Created At</th>
-                  <th className="w-[10%] px-4 py-4 text-center">Status</th>
-                  <th className="hidden w-[12%] px-4 py-4 text-center lg:table-cell">Start Price</th>
-                  <th className="hidden w-[10%] px-4 py-4 text-center lg:table-cell">Multiplier</th>
-                  <th className="hidden w-[10%] px-4 py-4 text-center lg:table-cell">Liquidated</th>
-                  <th className="hidden w-[15%] px-4 py-4 text-center lg:table-cell">Closed At</th>
+                  <th className="w-[5%] px-4 py-4 text-left text-sm font-normal">#</th>
+                  <th className="w-[12%] px-4 py-4 text-left text-sm font-normal">Token</th>
+                  <th className="w-[8%] px-4 py-4 text-center text-sm font-normal">Amount</th>
+                  <th className="hidden w-[15%] px-4 py-4 text-center text-sm font-normal lg:table-cell">Created At</th>
+                  <th className="w-[10%] px-4 py-4 text-center text-sm font-normal">Status</th>
+                  <th className="hidden w-[12%] px-4 py-4 text-center text-sm font-normal lg:table-cell">
+                    Start Price
+                  </th>
+                  <th className="hidden w-[10%] px-4 py-4 text-center text-sm font-normal lg:table-cell">Multiplier</th>
+                  <th className="hidden w-[10%] px-4 py-4 text-center text-sm font-normal lg:table-cell">Liquidated</th>
+                  <th className="hidden w-[15%] px-4 py-4 text-center text-sm font-normal lg:table-cell">Closed At</th>
                   <th className="w-[3%] px-4 py-4 text-center">
                     <img src={filterIcon} alt="filter-icon" draggable="false" />
                   </th>
@@ -108,9 +110,9 @@ function PositionHistory() {
                         {data.is_liquidated.toString()}
                       </td>
                       <td className="hidden px-4 py-4 text-center text-white lg:table-cell">{data.closed_at}</td>
-                      <td className="px-4 py-4 text-center">
+                      <td className="block px-4 py-4 text-center md:hidden">
                         <button
-                          className="t cursor-pointer rounded p-1 text-[#433B5A] transition-colors hover:bg-white/10 hover:text-[#fff]"
+                          className="cursor-pointer rounded p-1 text-[#433B5A] transition-colors hover:bg-white/10 hover:text-[#fff]"
                           onClick={() => setSelectedPosition({ data, index })}
                         >
                           &#x22EE;

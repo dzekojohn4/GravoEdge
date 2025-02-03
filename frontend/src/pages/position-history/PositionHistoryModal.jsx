@@ -2,18 +2,14 @@ import React from 'react';
 
 function PositionHistoryModal({ position, onClose, index, tokenIcon, statusStyles }) {
   return (
-    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
-      <div className="w-full max-w-md rounded-lg bg-[#1E1E2E] p-6 shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-bg w-full max-w-md rounded-lg p-6 shadow-lg">
         <div className="mb-4 flex items-center justify-between">
-          <p className="text-lg font-semibold text-white">
-            <span>
-              <span>{index}.</span>
-              {tokenIcon[position.token_symbol]}
-              {position.token_symbol}
-            </span>
-            <span className="ml-2">{position.amount}</span>
-            <span className={`ml-2 ${statusStyles[position.status.toLowerCase()] || ''}`}>{position.status}</span>
-          </p>
+          <span>{index}.</span>
+          {tokenIcon[position.token_symbol]}
+          {position.token_symbol}
+          <span className="ml-2">{position.amount}</span>
+          <span className={`ml-2 ${statusStyles[position.status.toLowerCase()] || ''}`}>{position.status}</span>
 
           <button
             onClick={onClose}

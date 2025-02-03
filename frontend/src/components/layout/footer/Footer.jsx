@@ -26,9 +26,9 @@ function Footer() {
   ];
 
   return (
-    <footer className="relative flex h-[100px] w-full items-center bg-[var(--darkish)] px-20 lg:h-[70px] lg:px-[3em]">
+    <footer className="text-primary relative flex h-[70px] w-full items-center bg-[var(--footer-bg-color)] px-[15px] md:h-[100px] md:px-[80px]">
       <div className="hidden w-full items-center justify-between lg:flex">
-        <div className="text-base text-gray-400">
+        <div className="text-base">
           <p className="m-0">Copyright©Spotnet2024</p>
         </div>
         <nav className="flex items-center">
@@ -42,7 +42,7 @@ function Footer() {
               <NavLink
                 to={link.path}
                 className={({ isActive }) =>
-                  `inline-block text-base text-gray-400 transition-all duration-300 ease-in-out hover:scale-110 hover:text-[var(--brand)] ${isActive ? 'text-[var(--brand)]' : ''} `
+                  `inline-block text-base transition-all duration-300 ease-in-out hover:scale-110 hover:text-[var(--brand)] ${isActive ? 'text-[var(--brand)]' : ''} `
                 }
                 onClick={(e) => {
                   if (window.location.pathname === link.path) {

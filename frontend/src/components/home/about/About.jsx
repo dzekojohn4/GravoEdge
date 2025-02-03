@@ -40,8 +40,8 @@ const About = () => {
   ];
 
   return (
-    <div className="relative flex w-[100%] flex-col items-center justify-between bg-[var(--black)] pb-[100px] lg:pb-[350px]">
-      <div className="absolute top-[12em] left-[10em] z-10 hidden h-[100px] w-[20%] -translate-x-1/2 rounded-[2000px_2000px_0_0] bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)] blur-[100px] lg:block"></div>
+    <div className="relative flex w-[100%] flex-col items-center justify-between bg-[var(--primary-color)] pb-[100px] lg:pb-[350px]">
+      <div className="absolute top-[15em] left-[15em] z-10 hidden h-[232px] w-[208px] -translate-x-1/2 rounded-[2000px_2000px_0_0] bg-[linear-gradient(73deg,_#74d6fd_1.13%,_#e01dee_103.45%)] blur-[80px] lg:block"></div>
       <StarMaker starData={starData} />
       <h1 className="font-text mt-[64px] mb-[180px] text-center text-[48px] font-[600] text-white">How it works</h1>
 
@@ -70,7 +70,7 @@ const About = () => {
           </div>
         ))}
       </div>
-      <div className="absolute top-[35em] right-0 z-0 hidden h-[100px] w-[20%] rounded-[2000px_2000px_0_0] bg-gradient-to-r from-[var(--gradient-from)] to-[var(--gradient-to)] blur-[100px] lg:block"></div>
+      <div className="absolute top-[25em] right-[25em] z-0 hidden h-[232px] w-[208px] rounded-[2000px_2000px_0_0] bg-[linear-gradient(73deg,_#74d6fd_1.13%,_#e01dee_103.45%)] blur-[100px] lg:block"></div>
     </div>
   );
 };

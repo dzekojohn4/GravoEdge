@@ -14,7 +14,7 @@ const Partnership = () => {
   const starData = [{ top: 10, left: 75, size: 15 }];
 
   return (
-    <div className="relative bg-[var(--black)]">
+    <div className="relative">
       {starData.map((star, index) => (
         <Star
           key={index}

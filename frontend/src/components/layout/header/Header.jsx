@@ -6,7 +6,6 @@ import WalletSection from '@/components/layout/wallet-section/WalletSection';
 import NavigationLinks from '@/components/layout/navigation-links/NavigationLinks';
 import useLockBodyScroll from '@/hooks/useLockBodyScroll';
 import MobDropdownMenu from '@/components/layout/mob-dropdown-menu/MobDropdownMenu';
-import './header.css';
 import { ReportBugButton } from '@/components/report-button/ReportBugButton';
 import { ReportBugModal } from '@/components/report-modal/ReportBugModal';
 
