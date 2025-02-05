@@ -127,13 +127,15 @@ function PositionHistory() {
         </div>
       </div>
 
-      <PositionPagination
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        isPending={isPending}
-        tableData={tableData}
-        positionsOnPage={positionsOnPage}
-      />
+      {!tableData?.positions || tableData?.positions?.length === 0 ? null : (
+        <PositionPagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          isPending={isPending}
+          tableData={tableData}
+          positionsOnPage={positionsOnPage}
+        />
+      )}
 
       {selectedPosition && (
         <PositionHistoryModal
