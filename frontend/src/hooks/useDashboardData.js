@@ -46,7 +46,7 @@ const useDashboardData = () => {
       };
 
       const { name: currencyName, icon: currencyIcon } =
-        Object.entries(multipliers).find(([key]) => currencyMap[key])?.[1] || currencyMap.ETH;
+        currencyMap[Object.entries(multipliers).find(([key]) => currencyMap[key])?.[0]] || currencyMap.ETH;
 
       const cardData = [
         {
