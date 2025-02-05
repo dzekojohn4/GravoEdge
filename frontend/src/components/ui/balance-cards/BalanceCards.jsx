@@ -3,9 +3,9 @@ import { useMatchMedia } from '@/hooks/useMatchMedia';
 import { getBalances } from '@/services/wallet';
 import { useWalletStore } from '@/stores/useWalletStore';
 
-import ETH from '@/assets/icons/ethereum.svg';
-import USDC from '@/assets/icons/borrow_usdc.svg';
-import STRK from '@/assets/icons/strk.svg';
+import ETH from '@/assets/icons/ethereum.svg?react';
+import USDC from '@/assets/icons/borrow_usdc.svg?react';
+import STRK from '@/assets/icons/strk.svg?react';
 
 const BalanceCards = ({ className }) => {
   const { walletId } = useWalletStore();
@@ -17,9 +17,9 @@ const BalanceCards = ({ className }) => {
   }, [walletId]);
 
   const [balances, setBalances] = useState([
-    { icon: ETH, title: 'ETH', balance: '0.00' },
-    { icon: USDC, title: 'USDC', balance: '0.00' },
-    { icon: STRK, title: 'STRK', balance: '0.00' },
+    { icon: <ETH />, title: 'ETH', balance: '0.00' },
+    { icon: <USDC />, title: 'USDC', balance: '0.00' },
+    { icon: <STRK />, title: 'STRK', balance: '0.00' },
   ]);
 
   return (
@@ -33,7 +33,7 @@ const BalanceCards = ({ className }) => {
             >
               <label htmlFor={balance.title} className={'flex items-center gap-1 text-[#83919F]'}>
                 <div className="bg-border-color flex h-6 w-6 justify-center rounded-full p-1">
-                  <img src={balance.icon} className="h-full w-full" />
+                  <span className="flex h-full w-full items-center justify-center rounded-full">{balance.icon}</span>
                 </div>
                 <span className="text-sm">{balance.title} Balance</span>
               </label>
@@ -48,7 +48,7 @@ const BalanceCards = ({ className }) => {
             >
               <label htmlFor={balance.title} className={'flex gap-1 text-[#83919F]'}>
                 <div className="bg-border-color flex h-6 w-6 justify-center rounded-full p-1">
-                  <img src={balance.icon} className="h-full w-full" />
+                  <span className="flex h-full w-full items-center justify-center rounded-full">{balance.icon}</span>
                 </div>
                 <span className="">{balance.title} Balance</span>
               </label>
