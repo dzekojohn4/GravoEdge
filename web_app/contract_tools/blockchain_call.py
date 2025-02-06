@@ -172,14 +172,14 @@ class StarknetClient:
             )
         }
 
-    async def get_z_addresses(self) -> dict[str, tuple[int, int]]:
+    async def get_z_addresses(self) -> dict[str, tuple[int, int, int]]:
         """
         Get ZkLend addresses.
 
         :return: A dictionary with token names as keys and tuples of addresses as values.
         """
         reserves = await self.get_available_zklend_reserves()
-        return {token: (reserve[1], reserve[2]) for token, reserve in reserves.items()}
+        return {token: (reserve[1], reserve[2], reserve[4]) for token, reserve in reserves.items()}
 
     async def get_zklend_debt(self, user: str, token: str) -> list[int]:
         """

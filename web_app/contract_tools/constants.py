@@ -19,6 +19,8 @@ ETH = "ETH"
 STRK = "STRK"
 USDC = "USDC"
 
+ZKLEND_SCALE_DECIMALS = Decimal("1000000000000000000000000000")
+
 
 @dataclass(frozen=True)
 class TokenConfig:
@@ -60,7 +62,7 @@ class TokenParams:
         name=STRK,
         address="0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
         decimals=Decimal("18"),
-        collateral_factor=Decimal("0.50"),
+        collateral_factor=Decimal("0.60"),
         borrow_factor=Decimal("1"),
     )
     USDC = TokenConfig(
