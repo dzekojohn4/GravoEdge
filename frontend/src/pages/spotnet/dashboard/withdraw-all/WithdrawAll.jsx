@@ -20,7 +20,7 @@ const WithdrawAll = () => {
         </div>
         <div className="flex flex-col gap-20 md:gap-10">
           <div className="mt-8 text-center">
-            <h1 cleassName="text-lg font-medium text-gray-200 mb-4">Please take special note</h1>
+            <h1 className="text-lg font-medium text-gray-200 mb-4">Please take special note</h1>
           </div>
 
           <div className="bg-warning-alt text-secondary border-warning mt-6 mb-6 w-full rounded-lg border px-6 py-4 text-center md:max-w-[650px]">
