@@ -8,7 +8,7 @@ from decimal import Decimal
 from pragma_sdk.common.types.types import AggregationMode
 from pragma_sdk.onchain.client import PragmaOnChainClient
 from web_app.contract_tools.blockchain_call import CLIENT
-from web_app.contract_tools.constants import TokenParams
+from web_app.contract_tools.constants import TokenParams, ZKLEND_SCALE_DECIMALS
 
 PRAGMA = PragmaOnChainClient(
     network="mainnet",
@@ -79,7 +79,7 @@ class HealthRatioMixin:
         reserves = await CLIENT.get_z_addresses()
         deposits = await cls._get_z_balances(reserves, deposit_contract_address)
         return {
-            token: amount * TokenParams.get_token_collateral_factor(token)
+            token: amount * Decimal(reserves[token][2]) / ZKLEND_SCALE_DECIMALS
             for token, amount in deposits.items()
             if amount != 0
         }
