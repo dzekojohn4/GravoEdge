@@ -12,7 +12,7 @@ import {
 
 import * as walletService from '../../src/services/wallet';
 
-import { ETH_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../../src/utils/constants';
+import { ETH_ADDRESS, kSTRK_ADDRESS, STRK_ADDRESS, USDC_ADDRESS } from '../../src/utils/constants';
 import { expect, describe, it, beforeEach, vi } from 'vitest';
 
 vi.mock('starknetkit', () => ({
@@ -274,6 +274,7 @@ describe('Wallet Services', () => {
                 [ETH_ADDRESS]: { result: ['1000000000000000000'] },
                 [USDC_ADDRESS]: { result: ['2000000'] },
                 [STRK_ADDRESS]: { result: ['3000000000000000000'] },
+                [kSTRK_ADDRESS]: { result: ['4000000000000000000'] },
               };
               return balances[contractAddress];
             }),
@@ -290,6 +291,7 @@ describe('Wallet Services', () => {
         ETH: '1.0000',
         USDC: '2.0000',
         STRK: '3.0000',
+        kSTRK: '4.0000',
       });
     });
   });
@@ -299,6 +301,7 @@ describe('Wallet Services', () => {
       { name: 'ETH', balance: '1.0000', icon: 'ETH-icon' },
       { name: 'USDC', balance: '2.0000', icon: 'USDC-icon' },
       { name: 'STRK', balance: '3.0000', icon: 'STRK-icon' },
+      { name: 'kSTRK', balance: '4.0000', icon: 'kSTRK-icon' },
     ];
 
     it('should update balances state with token balances', async () => {
