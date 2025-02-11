@@ -17,10 +17,10 @@ ZKLEND_MARKET_ADDRESS: str = (
 MULTIPLIER_POWER = 99
 ETH = "ETH"
 STRK = "STRK"
+kSTRK = "kSTRK"
 USDC = "USDC"
 
 ZKLEND_SCALE_DECIMALS = Decimal("1000000000000000000000000000")
-
 
 @dataclass(frozen=True)
 class TokenConfig:
@@ -34,7 +34,6 @@ class TokenConfig:
     collateral_factor: Decimal = Decimal("0.0")
     borrow_factor: Decimal = Decimal("0.0")
 
-
 @dataclass(frozen=True)
 class TokenMultipliers:
     """
@@ -43,8 +42,8 @@ class TokenMultipliers:
 
     ETH: float = 4.6
     STRK: float = 1.9
+    kSTRK: float = 1.8
     USDC: float = 5.0
-
 
 class TokenParams:
     """
@@ -65,6 +64,13 @@ class TokenParams:
         collateral_factor=Decimal("0.60"),
         borrow_factor=Decimal("1"),
     )
+    kSTRK = TokenConfig(
+        name=kSTRK,
+        address="0x45cd05ee2caaac3459b87e5e2480099d201be2f62243f839f00e10dde7f500c",
+        decimals=Decimal("18"),
+        collateral_factor=Decimal("0.60"),
+        borrow_factor=Decimal("1"),
+    )
     USDC = TokenConfig(
         name=USDC,
         address="0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
@@ -78,7 +84,7 @@ class TokenParams:
         """
         Return an iterator over all token configurations.
         """
-        return iter([cls.ETH, cls.STRK, cls.USDC])
+        return iter([cls.ETH, cls.STRK, cls.USDC, cls.kSTRK])
 
     @classmethod
     def get_token_address(cls, token_name: str) -> str:
@@ -157,7 +163,6 @@ class TokenParams:
         :return: underlying address
         """
         return token_address[:2] + "0" + token_address[2:]
-
 
 class ProtocolAddress(Enum):
     """
