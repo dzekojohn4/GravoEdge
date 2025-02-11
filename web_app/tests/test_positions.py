@@ -353,6 +353,32 @@ async def test_get_repay_data_missing_wallet_id(
                 "ekubo_limits": {"mock_key": "mock_value"},
             },
         ),
+            # New test case for kSTRK
+        (
+            "valid_wallet_id_4",
+            "kSTRK",
+            "800",
+            4,
+            {
+                "contract_address": "mock_contract_address",
+                "position_id": "123",
+                "pool_price": 100,
+                "pool_key": {
+                    "token0": "mock_token0",
+                    "token1": "mock_token1",
+                    "fee": "mock_fee",
+                    "tick_spacing": "mock_tick_spacing",
+                    "extension": "mock_extension",
+                },
+                "deposit_data": {
+                    "token": "mock_token",
+                    "amount": "mock_amount",
+                    "multiplier": "1",
+                    "borrow_portion_percent": 0,
+                },
+                "ekubo_limits": {"mock_key": "mock_value"},
+            },
+        ),
     ],
 )
 @pytest.mark.anyio
