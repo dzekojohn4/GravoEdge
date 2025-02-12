@@ -10,6 +10,12 @@ import { useCheckMobile } from '@/hooks/useCheckMobile';
 
 const dashboardItems = [
   {
+    id: 'Postion',
+    name: 'Open Position',
+    link: '/form',
+    icon: formIcon,
+  },
+  {
     id: 'dashboard',
     name: 'Dashboard',
     link: '/dashboard',
@@ -32,12 +38,6 @@ const dashboardItems = [
     name: 'Withdraw All',
     link: '/dashboard/withdraw',
     icon: withdrawIcon,
-  },
-  {
-    id: 'Postion',
-    name: 'Open Position',
-    link: '/form',
-    icon: formIcon,
   },
 ];
 

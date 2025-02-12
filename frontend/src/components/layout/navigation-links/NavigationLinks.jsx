@@ -30,7 +30,7 @@ const NavigationLinks = ({ onNavClick }) => (
       Dashboard
     </NavLink>
 
-    <div className="bg-light-purple h-4 w-[1.5px] rounded-md" />
+    
 
     {/* <NavLink
       to="/form"
