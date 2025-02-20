@@ -9,10 +9,10 @@ class Liquidation(BaseModel):
     """
     Liquidation Model
     Columns:
-        margin_position_id (UUID): Foreign key referencing MarginPosition.id.
-        bonus_amount (Decimal): The amount of bonus given during liquidation.
-        bonus_token (str): The token in which the bonus is given.
-        created_at (datetime): Timestamp indicating when the liquidation was created.
+        margin_position_id: Foreign key referencing MarginPosition.id.
+        bonus_amount: The amount of bonus given during liquidation.
+        bonus_token: The token in which the bonus is given.
+        created_at: Timestamp when the liquidation was created.
     """
     margin_position_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), 
