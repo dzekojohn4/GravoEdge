@@ -22,23 +22,29 @@ Rename ```example.env``` to ```.env``` with this command: ```mv .env.example .en
 docker compose up
 ```
 
-#### Also you need to create database and tables. You have 3 variants:
+#### Also you need to create database and tables. You have 2 variants:
 
 1) Use alembic
-   
+
+**Note: While this app is in beta, you first need to navigate to the `margin_app` folder.**
+```bash
+cd margin_app
+```
+
+And then:
 ```bash
 alembic upgrade head
 ```
 
-2) Use postgres dumps **(if you create it before)**
-   
+2) Any other script you have
+
+#### To create a new migration:  
+1) Ensure Docker Compose is running.  
+2) Run the following script to create the migration:  
 ```bash
-./scripts/postgres/restore.sh
-```
-
-After that write name of this dump
-
-3) Any other script you have
+./scripts/alembic/create_migration.sh
+```  
+3) Choose a name for the migration.
 
 ### 4. Link to API
 
