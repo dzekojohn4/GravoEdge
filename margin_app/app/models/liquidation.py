@@ -24,8 +24,3 @@ class Liquidation(BaseModel):
     )
     bonus_amount: Mapped[Decimal] = mapped_column(nullable=False)
     bonus_token: Mapped[str] = mapped_column(String, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime, 
-        default=datetime.utcnow, 
-        nullable=False
-    )
