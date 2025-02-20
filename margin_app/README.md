@@ -38,6 +38,14 @@ alembic upgrade head
 
 2) Any other script you have
 
+#### To create a new migration:  
+1) Ensure Docker Compose is running.  
+2) Run the following script to create the migration:  
+```bash
+./scripts/alembic/create_migration.sh
+```  
+3) Choose a name for the migration.
+
 ### 4. Link to API
 
 You need to use [this link](http://127.0.0.1:8000), for access to API.
