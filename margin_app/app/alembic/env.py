@@ -2,7 +2,7 @@ import os
 import asyncio
 from logging.config import fileConfig
 
-from app.models import BaseModel
+from app.models import BaseModel, MarginPosition
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
