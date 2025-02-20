@@ -3,7 +3,7 @@ import asyncio
 from logging.config import fileConfig
 
 from app.models import BaseModel
-from app.models.pool import Pool, UserPool  # Add this import
+from app.models.pool import Pool, UserPool  
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
