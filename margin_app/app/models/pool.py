@@ -1,8 +1,12 @@
+"""
+This module contains the Pool and UserPool models.
+"""
+
 import uuid
 from decimal import Decimal
 from typing import List
 
-from sqlalchemy import ForeignKey, String, func
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -37,7 +41,7 @@ class UserPool(BaseModel):
 
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("user.id"), nullable=False
-    )  
+    )
     pool_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("pools.id"), nullable=False
     )
