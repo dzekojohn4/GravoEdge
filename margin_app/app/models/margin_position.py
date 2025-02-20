@@ -1,24 +1,46 @@
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, CheckConstraint
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+"""
+MarginPosition model
+"""
+
+import uuid
+from datetime import datetime
+from decimal import Decimal
 from enum import Enum
-from .base import BaseModel
+from sqlalchemy import String, ForeignKey, CheckConstraint
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models.base import BaseModel
 
 class MarginPositionStatus(Enum):
     OPEN = "Open"
     CLOSED = "Closed"
 
 class MarginPosition(BaseModel):
+    """
+    MarginPosition Model
+    Columns:
+        user_id: Foreign key referencing User.id.
+        multiplier: Integer value between 1 and 20.
+        borrowed_amount: The amount borrowed in the margin position.
+        status: Current status of the margin position (Open or Closed).
+        transaction_id: Unique identifier for the transaction.
+        liquidated_at: Timestamp when the position was liquidated (if applicable).
+    """
+
     __tablename__ = 'margin_positions'
 
-    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
-    multiplier = Column(Integer, nullable=False)
-    borrowed_amount = Column(Numeric, nullable=False)
-    status = Column(String, nullable=False)
-    transaction_id = Column(String, nullable=False)
-    liquidated_at = Column(DateTime, nullable=True)
+    user_id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True), 
+        ForeignKey('users.id'), 
+        nullable=False
+    )
+    multiplier: Mapped[int] = mapped_column(nullable=False)
+    borrowed_amount: Mapped[Decimal] = mapped_column(nullable=False)
+    status: Mapped[str] = mapped_column(String, nullable=False)
+    transaction_id: Mapped[str] = mapped_column(String, nullable=False)
+    liquidated_at: Mapped[datetime] = mapped_column(nullable=True)
 
-    user = relationship("User", back_populates="margin_positions")
+    user: Mapped["User"] = relationship(back_populates="margin_positions")
 
     __table_args__ = (
         CheckConstraint('multiplier >= 1 AND multiplier <= 20', name='check_multiplier_range'),
