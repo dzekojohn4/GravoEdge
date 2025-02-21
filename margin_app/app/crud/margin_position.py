@@ -1,5 +1,6 @@
 """
-This module contains the MarginPositionCRUD Class for opening ,updating and closing margin positions.
+This module contains the MarginPositionCRUD Class for opening ,
+updating and closing margin positions.
 """
 
 import uuid
@@ -10,8 +11,8 @@ from app.models.margin_position import MarginPositionStatus
 
 class MarginPositionCRUD(DBConnector):
     """"Handles margin position database operations"""
-
-    async def open_margin_position(self, user_id: uuid.UUID, multiplier: int, borrowed_amount:int, transaction_id:str) -> MarginPosition:
+    async def open_margin_position(self, user_id: uuid.UUID, multiplier: int,
+                                   borrowed_amount:int, transaction_id:str) -> MarginPosition:
         """
         Opens a margin position by creating an entry record in the database.
         :param user_id: uuid
@@ -20,12 +21,11 @@ class MarginPositionCRUD(DBConnector):
         :param transaction_id: str
         :return: MarginPosition
         """
-        position_entry = MarginPosition(user_id=user_id, 
-                                         multiplier=multiplier, 
-                                         borrowed_amount=borrowed_amount,
-                                         status=MarginPositionStatus.OPEN.value,
-                                         transaction_id=transaction_id)
-        
+        position_entry = MarginPosition(user_id=user_id,
+                                        multiplier=multiplier,
+                                        borrowed_amount=borrowed_amount,
+                                        status=MarginPositionStatus.OPEN.value,
+                                        transaction_id=transaction_id)
         position = await self.write_to_db(position_entry)
         return position
 
@@ -39,6 +39,4 @@ class MarginPositionCRUD(DBConnector):
         if position:
             position.status = MarginPositionStatus.CLOSED.value
             await self.write_to_db(position)
-        return position.status
-    
-
+            return position.status
