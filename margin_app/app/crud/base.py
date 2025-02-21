@@ -38,7 +38,7 @@ class DBConnector:
         
     @asynccontextmanager
     async def session(self) -> AsyncIterator[AsyncSession]:
-        session = self.session_maker()
+        session: AsyncSession = self.session_maker()
 
         try:
             yield session
