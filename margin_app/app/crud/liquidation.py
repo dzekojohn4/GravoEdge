@@ -4,7 +4,6 @@ from app.crud.base import DBConnector
 from app.models.liquidation import Liquidation
 from sqlalchemy.orm import Session
 
-# pylint: disable=too-few-public-methods
 class LiquidationCRUD(DBConnector):
     """Handles database operations for liquidations."""
 
