@@ -36,7 +36,7 @@ class MarginPosition(BaseModel):
     )
     multiplier: Mapped[int] = mapped_column(nullable=False)
     borrowed_amount: Mapped[Decimal] = mapped_column(nullable=False)
-    status: Mapped[str] = mapped_column(String, default='Open', nullable=False)
+    status: Mapped[str] = mapped_column(String, default=MarginPositionStatus.OPEN.value, nullable=False)
     transaction_id: Mapped[str] = mapped_column(String, nullable=False)
     liquidated_at: Mapped[datetime] = mapped_column(nullable=True)
 
