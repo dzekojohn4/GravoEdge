@@ -1,20 +1,16 @@
 """
-This module contains the base crud database configuration.
+This module contains the base CRUD database configuration using settings from config.py.
 """
 
 import logging
 import uuid
 from typing import Type, TypeVar
 
-from sqlalchemy import create_engine # type: ignore
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-from web_app.db.database import SQLALCHEMY_DATABASE_URL
-from web_app.db.models import AirDrop, Base
+from sqlalchemy import create_engine
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
-ModelType = TypeVar("ModelType", bound=Base) # type: ignore
+ModelType = TypeVar("ModelType", bound=Base)
 
 
 class DBConnector:
@@ -28,12 +24,12 @@ class DBConnector:
     - remove_object: Removes an object by its ID from the database.
     """
 
-    def __init__(self, db_url: str = SQLALCHEMY_DATABASE_URL):
+    def __init__(self):  # Use settings from config.py
         """
         Initialize the database connection and session factory.
         :param db_url: str = None
         """
-        self.engine = create_engine(db_url)
+        self.engine = create_engine(settings.db_url)
         self.session_factory = sessionmaker(bind=self.engine)
         self.Session = scoped_session(self.session_factory)
 
@@ -42,7 +38,7 @@ class DBConnector:
         Writes an object to the database. Rolls back the transaction if there's an error.
         Refreshes the object to keep it attached to the session.
         :param obj: Base = None
-        :raise SQLAlchemyError: If the database operation fails.
+        :raise Exception: If the database operation fails.
         :return: Base - the updated object
         """
         with self.Session() as session:
@@ -52,17 +48,18 @@ class DBConnector:
                 session.refresh(obj)
                 return obj
 
-            except SQLAlchemyError as e:
+            except Exception as e:
                 session.rollback()
+                logger.error(f"Error writing to database: {e}")
                 raise e
 
     def get_object(
-        self, model: Type[ModelType] = None, obj_id: uuid = None
+        self, model: Type[ModelType] = None, obj_id: uuid.UUID = None
     ) -> ModelType | None:
         """
         Retrieves an object by its ID from the database.
-        :param: model: type[Base] = None
-        :param: obj_id: uuid = None
+        :param model: type[Base] = None
+        :param obj_id: uuid.UUID = None
         :return: Base | None
         """
         db = self.Session()
@@ -88,29 +85,25 @@ class DBConnector:
             db.close()
 
     def delete_object_by_id(
-        self, model: Type[Base] = None, obj_id: uuid = None
+        self, model: Type[Base] = None, obj_id: uuid.UUID = None
     ) -> None:
         """
         Delete an object by its ID from the database. Rolls back if the operation fails.
         :param model: type[Base] = None
-        :param obj_id: uuid = None
+        :param obj_id: uuid.UUID = None
         :return: None
-        :raise SQLAlchemyError: If the database operation fails
+        :raise Exception: If the database operation fails
         """
         db = self.Session()
-
         try:
             obj = db.query(model).filter(model.id == obj_id).first()
             if obj:
                 db.delete(obj)
                 db.commit()
-
+        except Exception as e:
             db.rollback()
-
-        except SQLAlchemyError as e:
-            db.rollback()
+            logger.error(f"Error deleting object by ID: {e}")
             raise e
-
         finally:
             db.close()
 
@@ -123,20 +116,9 @@ class DBConnector:
         try:
             db.delete(object)
             db.commit()
-
-        except SQLAlchemyError as e:
+        except Exception as e:
             db.rollback()
             logger.error(f"Error deleting object: {e}")
-
+            raise e
         finally:
             db.close()
-
-    def create_empty_claim(self, user_id: uuid.UUID) -> AirDrop:
-        """
-        Creates a new empty AirDrop instance for the given user_id.
-        :param user_id: uuid.UUID
-        :return: AirDrop
-        """
-        airdrop = AirDrop(user_id=user_id)
-        self.write_to_db(airdrop)
-        return airdrop
