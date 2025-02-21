@@ -6,9 +6,7 @@ import os
 import asyncio
 from logging.config import fileConfig
 
-from app.models import BaseModel, MarginPosition
-from app.models.deposit import Deposit  
-from app.models.pool import Pool, UserPool  
+from app.models import BaseModel
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
