@@ -46,4 +46,3 @@ class MarginPosition(BaseModel):
         CheckConstraint('multiplier >= 1 AND multiplier <= 20', name='check_multiplier_range'),
         CheckConstraint("status IN ('Open', 'Closed')", name='check_valid_status'),
     )
-    

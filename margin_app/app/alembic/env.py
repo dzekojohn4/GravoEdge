@@ -1,8 +1,13 @@
+"""
+Alembic environment configuration for database migrations.
+"""
+
 import os
 import asyncio
 from logging.config import fileConfig
 
 from app.models import BaseModel, MarginPosition
+from app.models.pool import Pool, UserPool  
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
@@ -27,6 +32,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.BaseModel.metadata
+
 target_metadata = BaseModel.metadata
 
 # other values from the config, defined by the needs of env.py,
