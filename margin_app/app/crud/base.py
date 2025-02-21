@@ -5,12 +5,17 @@ This module contains the base crud database configuration.
 import logging
 import uuid
 from typing import Type, TypeVar
+from app.models.base import BaseModel
 
-from sqlalchemy import create_engine
+from typing import AsyncIterator
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+from contextlib import asynccontextmanager
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
-ModelType = TypeVar("ModelType", bound=Base)
+ModelType = TypeVar("ModelType", bound=BaseModel)
 
 
 class DBConnector:
@@ -29,11 +34,43 @@ class DBConnector:
         Initialize the database connection and session factory.
         :param db_url: str = None
         """
-        self.engine = create_engine(settings.db_url)
-        self.session_factory = sessionmaker(bind=self.engine)
-        self.Session = scoped_session(self.session_factory)
+        self.engine = create_async_engine(settings.db_url)
+        self.session_maker = async_sessionmaker(bind=self.engine)
+        
+    @asynccontextmanager
+    async def session(self) -> AsyncIterator[AsyncSession]:
+        """
+        Asynchronous context manager for handling database sessions.
 
-    def write_to_db(self, obj: Base = None) -> Base:
+        This method creates and yields an asynchronous 
+            database session using `self.session_maker()`.  
+        It ensures proper handling of transactions and session cleanup.
+
+        Yields:
+            AsyncSession: An asynchronous database session.
+
+        Raises:
+            Exception: If a database operation fails, 
+            an exception is raised after rolling back the transaction.
+
+        Example:
+            async with db.session() as session:
+                await session.execute(query)
+                await session.commit()
+        """
+        session: AsyncSession = self.session_maker()
+
+        try:
+            yield session
+        except SQLAlchemyError as e:
+            await session.rollback()
+            logger.error(f"Error while process database operation: {e}")
+            raise Exception("Error while process database operation") from e
+        finally:
+            await session.close()
+
+
+    async def write_to_db(self, obj: ModelType = None) -> ModelType:
         """
         Writes an object to the database. Rolls back the transaction if there's an error.
         Refreshes the object to keep it attached to the session.
@@ -41,18 +78,13 @@ class DBConnector:
         :raise SQLAlchemyError: If the database operation fails.
         :return: Base - the updated object
         """
-        with self.Session() as session:
-            try:
-                session.add(obj)
-                session.commit()
-                session.refresh(obj)
-                return obj
+        async with self.session() as db:
+            db.add(obj)
+            await db.commit()
+            await db.refresh(obj)
+            return obj
 
-            except SQLAlchemyError as e:
-                session.rollback()
-                raise e
-
-    def get_object(
+    async def get_object(
         self, model: Type[ModelType] = None, obj_id: uuid = None
     ) -> ModelType | None:
         """
@@ -61,13 +93,10 @@ class DBConnector:
         :param: obj_id: uuid = None
         :return: Base | None
         """
-        db = self.Session()
-        try:
-            return db.query(model).filter(model.id == obj_id).first()
-        finally:
-            db.close()
+        async with self.session() as db:
+            return await db.get(model, obj_id)
 
-    def get_object_by_field(
+    async def get_object_by_field(
         self, model: Type[ModelType] = None, field: str = None, value: str = None
     ) -> ModelType | None:
         """
@@ -77,14 +106,12 @@ class DBConnector:
         :param value: str = None
         :return: Base | None
         """
-        db = self.Session()
-        try:
-            return db.query(model).filter(getattr(model, field) == value).first()
-        finally:
-            db.close()
+        async with self.session() as db:
+            result = await db.execute(select(model).where(getattr(model, field) == value))
+            return result.scalar_one()
 
-    def delete_object_by_id(
-        self, model: Type[Base] = None, obj_id: uuid = None
+    async def delete_object_by_id(
+        self, model: Type[ModelType] = None, obj_id: uuid = None
     ) -> None:
         """
         Delete an object by its ID from the database. Rolls back if the operation fails.
@@ -93,34 +120,17 @@ class DBConnector:
         :return: None
         :raise SQLAlchemyError: If the database operation fails
         """
-        db = self.Session()
-
-        try:
-            obj = db.query(model).filter(model.id == obj_id).first()
+        async with self.session() as db:
+            obj = await db.get(model, obj_id)
             if obj:
-                db.delete(obj)
-                db.commit()
+                await db.delete(obj)
+                await db.commit()
 
-            db.rollback()
-
-        except SQLAlchemyError as e:
-            db.rollback()
-            raise e
-
-        finally:
-            db.close()
-
-    def delete_object(self, object: Base) -> None:
+    async def delete_object(self, model: ModelType) -> None:
         """
         Deletes an object from the database.
         :param object: Object to delete
         """
-        db = self.Session()
-        try:
-            db.delete(object)
-            db.commit()
-
-        except SQLAlchemyError as e:
-            db.rollback()
-            logger.error(f"Error deleting object: {e}")
-
+        async with self.session() as db:
+            await db.delete(model)
+            await db.commit()

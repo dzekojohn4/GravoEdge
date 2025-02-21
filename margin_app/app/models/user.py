@@ -14,6 +14,8 @@ class User(BaseModel):
     """
     User model. With one-to-many realtionships to Deposit and MarginPosition models.
     """
+    
+    __tablename__ = "user"
 
     wallet_id: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     deposit: Mapped[list[Deposit]] = relationship("Deposit", back_populates="user")

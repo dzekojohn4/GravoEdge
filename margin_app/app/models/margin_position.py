@@ -12,6 +12,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import BaseModel
 
 class MarginPositionStatus(Enum):
+    """MarginPositionStatus Enum"""
     OPEN = "Open"
     CLOSED = "Closed"
 
@@ -27,20 +28,23 @@ class MarginPosition(BaseModel):
         liquidated_at: Timestamp when the position was liquidated (if applicable).
     """
 
-    __tablename__ = 'margin_positions'
+    __tablename__ = 'margin_position'
 
     user_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), 
-        ForeignKey('users.id'), 
+        ForeignKey('user.id'), 
         nullable=False
     )
     multiplier: Mapped[int] = mapped_column(nullable=False)
     borrowed_amount: Mapped[Decimal] = mapped_column(nullable=False)
-    status: Mapped[str] = mapped_column(String, default=MarginPositionStatus.OPEN.value, nullable=False)
+    status: Mapped[str] = mapped_column(
+        String, nullable=False, 
+        default=MarginPositionStatus.OPEN.value, 
+    )
     transaction_id: Mapped[str] = mapped_column(String, nullable=False)
     liquidated_at: Mapped[datetime] = mapped_column(nullable=True)
 
-    user: Mapped["User"] = relationship(back_populates="margin_positions")
+    user: Mapped["User"] = relationship(back_populates="margin_position")
 
     __table_args__ = (
         CheckConstraint('multiplier >= 1 AND multiplier <= 20', name='check_multiplier_range'),
