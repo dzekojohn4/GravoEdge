@@ -45,7 +45,7 @@ class DBConnector:
         except SQLAlchemyError as e:
             await session.rollback()
             logger.error(f"Error while process database operation: {e}")
-            raise
+            raise Exception("Error while process database operation") from e
         finally:
             await session.close()
 
