@@ -23,6 +23,7 @@ docker compose up
 ```
 
 #### Also you need to create database and tables. You have 2 variants:
+**Note: When you start the project with docker compose up, Docker automatically executes the Alembic migration.**
 
 1) Use alembic
 
