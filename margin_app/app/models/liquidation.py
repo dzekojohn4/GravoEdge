@@ -28,3 +28,4 @@ class Liquidation(BaseModel):
     )
     bonus_amount: Mapped[Decimal] = mapped_column(nullable=False)
     bonus_token: Mapped[str] = mapped_column(String, nullable=False)
+    
