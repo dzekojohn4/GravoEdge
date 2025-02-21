@@ -18,7 +18,7 @@ class Pool(BaseModel):
     Represents a pool in the application.
     """
 
-    __tablename__ = "pools"
+    __tablename__ = "pool"
 
     token: Mapped[str] = mapped_column(String, nullable=False)
     user_pools: Mapped[List["UserPool"]] = relationship(back_populates="pool")
@@ -37,13 +37,13 @@ class UserPool(BaseModel):
     and stores additional information about the user's participation.
     """
 
-    __tablename__ = "user_pools"
+    __tablename__ = "user_pool"
 
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("user.id"), nullable=False
     )
     pool_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("pools.id"), nullable=False
+        UUID(as_uuid=True), ForeignKey("pool.id"), nullable=False
     )
     token: Mapped[str] = mapped_column(String, nullable=False)
     amount: Mapped[Decimal] = mapped_column(nullable=False)

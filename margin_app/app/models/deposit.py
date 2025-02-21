@@ -13,9 +13,9 @@ class Deposit(BaseModel):
     Represents a deposit transaction in the Spotnet application.
     """
 
-    __tablename__ = "deposits"
+    __tablename__ = "deposit"
 
-    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     token = Column(String, nullable=False)
     amount = Column(Numeric(precision=10, scale=2), nullable=False)
     transaction_id = Column(String, nullable=False, unique=True)

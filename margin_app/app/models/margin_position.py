@@ -27,11 +27,11 @@ class MarginPosition(BaseModel):
         liquidated_at: Timestamp when the position was liquidated (if applicable).
     """
 
-    __tablename__ = 'margin_positions'
+    __tablename__ = 'margin_position'
 
     user_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), 
-        ForeignKey('users.id'), 
+        ForeignKey('user.id'), 
         nullable=False
     )
     multiplier: Mapped[int] = mapped_column(nullable=False)
