@@ -7,8 +7,10 @@ import uuid
 from typing import Type, TypeVar
 from margin_app.app.models.base import BaseModel
 
+from typing import AsyncIterator
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from contextlib import asynccontextmanager
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -33,6 +35,20 @@ class DBConnector:
         """
         self.engine = create_async_engine(settings.db_url)
         self.session_maker = async_sessionmaker(bind=self.engine)
+        
+    @asynccontextmanager
+    async def session(self) -> AsyncIterator[AsyncSession]:
+        session = self.session_maker()
+
+        try:
+            yield session
+        except SQLAlchemyError as e:
+            await session.rollback()
+            logger.error(f"Error while process database operation: {e}")
+            raise
+        finally:
+            await session.close()
+
 
     async def write_to_db(self, obj: ModelType = None) -> ModelType:
         """
@@ -42,16 +58,11 @@ class DBConnector:
         :raise SQLAlchemyError: If the database operation fails.
         :return: Base - the updated object
         """
-        async with self.session_maker() as db:
-            try:
-                db.add(obj)
-                await db.commit()
-                await db.refresh(obj)
-                return obj
-
-            except SQLAlchemyError as e:
-                await db.rollback()
-                raise e
+        async with self.session() as db:
+            db.add(obj)
+            await db.commit()
+            await db.refresh(obj)
+            return obj
 
     async def get_object(
         self, model: Type[ModelType] = None, obj_id: uuid = None
@@ -62,7 +73,7 @@ class DBConnector:
         :param: obj_id: uuid = None
         :return: Base | None
         """
-        async with self.session_maker() as db:
+        async with self.session() as db:
             return await db.get(model, obj_id)
 
     async def get_object_by_field(
@@ -75,7 +86,7 @@ class DBConnector:
         :param value: str = None
         :return: Base | None
         """
-        async with self.session_maker() as db:
+        async with self.session() as db:
             result = await db.query(model).filter(getattr(model, field) == value)
             return result.first()
 
@@ -89,28 +100,17 @@ class DBConnector:
         :return: None
         :raise SQLAlchemyError: If the database operation fails
         """
-        async with self.session_maker() as db:
-            try:
-                obj = await db.get(model, obj_id)
-                if obj:
-                    await db.delete(obj)
-                    await db.commit()
-
-            except SQLAlchemyError as e:
-                await db.rollback()
-                raise e
+        async with self.session() as db:
+            obj = await db.get(model, obj_id)
+            if obj:
+                await db.delete(obj)
+                await db.commit()
 
     async def delete_object(self, model: ModelType) -> None:
         """
         Deletes an object from the database.
         :param object: Object to delete
         """
-        async with self.session_maker() as db:
-            try:
-                await db.delete(model)
-                await db.commit()
-
-            except SQLAlchemyError as e:
-                await db.rollback()
-                logger.error(f"Error deleting object: {e}")
-
+        async with self.session() as db:
+            await db.delete(model)
+            await db.commit()
