@@ -5,12 +5,14 @@ This module contains the base crud database configuration.
 import logging
 import uuid
 from typing import Type, TypeVar
+from margin_app.app.models.base import BaseModel
 
-from sqlalchemy import create_engine
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
-ModelType = TypeVar("ModelType", bound=Base)
+ModelType = TypeVar("ModelType", bound=BaseModel)
 
 
 class DBConnector:
@@ -29,11 +31,10 @@ class DBConnector:
         Initialize the database connection and session factory.
         :param db_url: str = None
         """
-        self.engine = create_engine(settings.db_url)
-        self.session_factory = sessionmaker(bind=self.engine)
-        self.Session = scoped_session(self.session_factory)
+        self.engine = create_async_engine(settings.db_url)
+        self.session_maker = async_sessionmaker(bind=self.engine)
 
-    def write_to_db(self, obj: Base = None) -> Base:
+    async def write_to_db(self, obj: ModelType = None) -> ModelType:
         """
         Writes an object to the database. Rolls back the transaction if there's an error.
         Refreshes the object to keep it attached to the session.
@@ -41,18 +42,18 @@ class DBConnector:
         :raise SQLAlchemyError: If the database operation fails.
         :return: Base - the updated object
         """
-        with self.Session() as session:
+        async with self.session_maker() as db:
             try:
-                session.add(obj)
-                session.commit()
-                session.refresh(obj)
+                db.add(obj)
+                await db.commit()
+                await db.refresh(obj)
                 return obj
 
             except SQLAlchemyError as e:
-                session.rollback()
+                await db.rollback()
                 raise e
 
-    def get_object(
+    async def get_object(
         self, model: Type[ModelType] = None, obj_id: uuid = None
     ) -> ModelType | None:
         """
@@ -61,13 +62,10 @@ class DBConnector:
         :param: obj_id: uuid = None
         :return: Base | None
         """
-        db = self.Session()
-        try:
-            return db.query(model).filter(model.id == obj_id).first()
-        finally:
-            db.close()
+        async with self.session_maker() as db:
+            return await db.get(model, obj_id)
 
-    def get_object_by_field(
+    async def get_object_by_field(
         self, model: Type[ModelType] = None, field: str = None, value: str = None
     ) -> ModelType | None:
         """
@@ -77,14 +75,12 @@ class DBConnector:
         :param value: str = None
         :return: Base | None
         """
-        db = self.Session()
-        try:
-            return db.query(model).filter(getattr(model, field) == value).first()
-        finally:
-            db.close()
+        async with self.session_maker() as db:
+            result = await db.query(model).filter(getattr(model, field) == value)
+            return result.first()
 
-    def delete_object_by_id(
-        self, model: Type[Base] = None, obj_id: uuid = None
+    async def delete_object_by_id(
+        self, model: Type[ModelType] = None, obj_id: uuid = None
     ) -> None:
         """
         Delete an object by its ID from the database. Rolls back if the operation fails.
@@ -93,34 +89,28 @@ class DBConnector:
         :return: None
         :raise SQLAlchemyError: If the database operation fails
         """
-        db = self.Session()
+        async with self.session_maker() as db:
+            try:
+                obj = await db.get(model, obj_id)
+                if obj:
+                    await db.delete(obj)
+                    await db.commit()
 
-        try:
-            obj = db.query(model).filter(model.id == obj_id).first()
-            if obj:
-                db.delete(obj)
-                db.commit()
+            except SQLAlchemyError as e:
+                await db.rollback()
+                raise e
 
-            db.rollback()
-
-        except SQLAlchemyError as e:
-            db.rollback()
-            raise e
-
-        finally:
-            db.close()
-
-    def delete_object(self, object: Base) -> None:
+    async def delete_object(self, model: ModelType) -> None:
         """
         Deletes an object from the database.
         :param object: Object to delete
         """
-        db = self.Session()
-        try:
-            db.delete(object)
-            db.commit()
+        async with self.session_maker() as db:
+            try:
+                await db.delete(model)
+                await db.commit()
 
-        except SQLAlchemyError as e:
-            db.rollback()
-            logger.error(f"Error deleting object: {e}")
+            except SQLAlchemyError as e:
+                await db.rollback()
+                logger.error(f"Error deleting object: {e}")
 
