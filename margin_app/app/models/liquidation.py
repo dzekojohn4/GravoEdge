@@ -21,11 +21,12 @@ class Liquidation(BaseModel):
         created_at: Timestamp when the liquidation was created.
     """
     
+    __tablename__ = "liquidations"
+    
     margin_position_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), 
-        ForeignKey("margin_position.id"), 
+        ForeignKey("margin_positions.id"), 
         nullable=False
     )
     bonus_amount: Mapped[Decimal] = mapped_column(nullable=False)
     bonus_token: Mapped[str] = mapped_column(String, nullable=False)
-    
