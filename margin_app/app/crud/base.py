@@ -1,5 +1,5 @@
 """
-This module contains the base CRUD database configuration using settings from config.py.
+This module contains the base crud database configuration.
 """
 
 import logging
@@ -24,7 +24,7 @@ class DBConnector:
     - remove_object: Removes an object by its ID from the database.
     """
 
-    def __init__(self):  # Use settings from config.py
+    def __init__(self):
         """
         Initialize the database connection and session factory.
         :param db_url: str = None
@@ -38,7 +38,7 @@ class DBConnector:
         Writes an object to the database. Rolls back the transaction if there's an error.
         Refreshes the object to keep it attached to the session.
         :param obj: Base = None
-        :raise Exception: If the database operation fails.
+        :raise SQLAlchemyError: If the database operation fails.
         :return: Base - the updated object
         """
         with self.Session() as session:
@@ -48,18 +48,17 @@ class DBConnector:
                 session.refresh(obj)
                 return obj
 
-            except Exception as e:
+            except SQLAlchemyError as e:
                 session.rollback()
-                logger.error(f"Error writing to database: {e}")
                 raise e
 
     def get_object(
-        self, model: Type[ModelType] = None, obj_id: uuid.UUID = None
+        self, model: Type[ModelType] = None, obj_id: uuid = None
     ) -> ModelType | None:
         """
         Retrieves an object by its ID from the database.
-        :param model: type[Base] = None
-        :param obj_id: uuid.UUID = None
+        :param: model: type[Base] = None
+        :param: obj_id: uuid = None
         :return: Base | None
         """
         db = self.Session()
@@ -85,25 +84,29 @@ class DBConnector:
             db.close()
 
     def delete_object_by_id(
-        self, model: Type[Base] = None, obj_id: uuid.UUID = None
+        self, model: Type[Base] = None, obj_id: uuid = None
     ) -> None:
         """
         Delete an object by its ID from the database. Rolls back if the operation fails.
         :param model: type[Base] = None
-        :param obj_id: uuid.UUID = None
+        :param obj_id: uuid = None
         :return: None
-        :raise Exception: If the database operation fails
+        :raise SQLAlchemyError: If the database operation fails
         """
         db = self.Session()
+
         try:
             obj = db.query(model).filter(model.id == obj_id).first()
             if obj:
                 db.delete(obj)
                 db.commit()
-        except Exception as e:
+
             db.rollback()
-            logger.error(f"Error deleting object by ID: {e}")
+
+        except SQLAlchemyError as e:
+            db.rollback()
             raise e
+
         finally:
             db.close()
 
@@ -116,9 +119,8 @@ class DBConnector:
         try:
             db.delete(object)
             db.commit()
-        except Exception as e:
+
+        except SQLAlchemyError as e:
             db.rollback()
             logger.error(f"Error deleting object: {e}")
-            raise e
-        finally:
-            db.close()
+
