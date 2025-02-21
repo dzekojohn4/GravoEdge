@@ -8,6 +8,7 @@ from typing import Type, TypeVar
 from app.models.base import BaseModel
 
 from typing import AsyncIterator
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
@@ -87,8 +88,8 @@ class DBConnector:
         :return: Base | None
         """
         async with self.session() as db:
-            result = await db.query(model).filter(getattr(model, field) == value)
-            return result.first()
+            result = await db.execute(select(model).where(getattr(model, field) == value))
+            return result.scalar_one()
 
     async def delete_object_by_id(
         self, model: Type[ModelType] = None, obj_id: uuid = None
