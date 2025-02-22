@@ -17,6 +17,8 @@ class LiquidationCRUD(DBConnector):
         Liquidates a position by creating a liquidation record in the database.
 
         :param position_id: ID of the position to be liquidated.
+        :param bonus_amount: Decimal
+        :param bonus_token: str
         :return: The created Liquidation record.
         """
         liquidation_entry = Liquidation(
