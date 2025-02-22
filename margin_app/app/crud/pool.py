@@ -15,7 +15,8 @@ class UserPoolCRUD(DBConnector):
     CRUD operations for UserPool model.
     """
 
-    async def create_user_pool(self, user_id: uuid.UUID, pool_id: uuid.UUID, token: str, amount: Decimal):
+    async def create_user_pool(self, user_id: uuid.UUID,
+                               pool_id: uuid.UUID, token: str, amount: Decimal):
         """
         Create a new user pool entry.
 
@@ -35,7 +36,8 @@ class UserPoolCRUD(DBConnector):
             await db.refresh(user_pool)
             return user_pool
 
-    async def update_user_pool(self, user_pool_id: uuid.UUID, token: str = None, amount: Decimal = None):
+    async def update_user_pool(self, user_pool_id: uuid.UUID, 
+                               token: str = None, amount: Decimal = None):
         """
         Update user pool details.
 
