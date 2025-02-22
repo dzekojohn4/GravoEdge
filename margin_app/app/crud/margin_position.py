@@ -24,7 +24,7 @@ class MarginPositionCRUD(DBConnector):
         position = await self.write_to_db(position_entry)
         return position
 
-    async def close_margin_position(self, position_id : uuid.UUID) -> MarginPosition | None:
+    async def close_margin_position(self, position_id : uuid.UUID) -> MarginPositionStatus:
         """
         Closes a margin position by updating the position status in the database.
         :param position_id: uuid
