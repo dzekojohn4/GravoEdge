@@ -15,3 +15,5 @@ class LiquidationCRUD(DBConnector):
         """
         liquidation_entry = Liquidation(position_id=position_id)
         return await self.write_to_db(liquidation_entry)
+
+liqudation_crud = LiquidationCRUD()

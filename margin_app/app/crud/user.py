@@ -96,3 +96,5 @@ class UserCRUD(DBConnector):
             user_id=user_id, size=size, leverage=leverage
         )
         return await self.write_to_db(new_margin_position)
+
+user_crud = UserCRUD()

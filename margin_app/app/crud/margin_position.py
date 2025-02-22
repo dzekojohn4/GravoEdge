@@ -37,3 +37,5 @@ class MarginPositionCRUD(DBConnector):
             position.status = MarginPositionStatus.CLOSED.value
             await self.write_to_db(position)
             return position.status
+
+margin_position_crud = MarginPositionCRUD()
