@@ -96,8 +96,9 @@ class UserCRUD(DBConnector):
         """
         Add a margin position to a user's account.
         :param user_id: UUID
-        :param size: Decimal
-        :param leverage: int
+        :param borrowed_amount: Decimal
+        :param multiplier: int
+        :param transaction_id str
         :return: MarginPosition
         """
 
