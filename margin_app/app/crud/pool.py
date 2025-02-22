@@ -1,6 +1,6 @@
+"""This module contains the PoolCRUD class for managing Pool relation in database."""
 from app.crud.base import DBConnector
 from app.models.pool import Pool
-import uuid
 
 
 class PoolCRUD(DBConnector):
