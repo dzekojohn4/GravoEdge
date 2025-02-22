@@ -42,7 +42,8 @@ class MarginPosition(BaseModel):
             MarginPositionStatus,
             name="margin_position_status",
             values_callable=lambda obj: [e.value for e in obj],
-        )
+        ),
+        default=MarginPositionStatus.OPEN
     )
     transaction_id: Mapped[str] = mapped_column(String, nullable=False)
     liquidated_at: Mapped[datetime] = mapped_column(nullable=True)
