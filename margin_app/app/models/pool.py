@@ -45,7 +45,6 @@ class UserPool(BaseModel):
     pool_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("pool.id"), nullable=False
     )
-    token: Mapped[str] = mapped_column(String, nullable=False)
     amount: Mapped[Decimal] = mapped_column(nullable=False)
     pool: Mapped["Pool"] = relationship(back_populates="user_pools", lazy="selectin")
 
