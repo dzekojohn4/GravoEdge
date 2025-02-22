@@ -54,5 +54,5 @@ class UserPool(BaseModel):
         """
         return (
             f"<UserPool(id={self.id}, user_id={self.user_id}, pool_id={self.pool_id}, "
-            f"token={self.token}, amount={self.amount})>"
+            f"token={self.pool.token}, amount={self.amount})>"
         )
