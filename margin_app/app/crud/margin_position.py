@@ -22,6 +22,8 @@ class MarginPositionCRUD(DBConnector):
         Opens a margin position by creating an entry record in the database.
         :param user_id: uuid
         :param borrowed_amount: Decimal
+        :param multiplier int
+        :param transaction_id str
         :return: MarginPosition
         """
         position_entry = MarginPosition(
