@@ -6,8 +6,24 @@ CRUD operations for the UserPool model.
 import uuid
 from decimal import Decimal
 from typing import Optional
+from app.models.pool import Pool
 from app.models.pool import UserPool
 from app.crud.base import DBConnector
+
+
+"""This module contains the PoolCRUD class for managing Pool relation in database."""
+
+class PoolCRUD(DBConnector):
+    """Handles Database queries for Pools"""
+    async def create_pool(self, token: str) -> Pool:
+        """
+        Creates a new pool
+        :param token: string of the token in the pool
+        :return Pool the object successfully added to the database
+        
+        """
+        pool_entry: Pool = Pool(token = token)
+        return await self.write_to_db(pool_entry)
 
 
 class UserPoolCRUD(DBConnector):
@@ -31,7 +47,8 @@ class UserPoolCRUD(DBConnector):
             UserPool: The newly created user pool entry.
         """
         async with self.session() as db:
-            user_pool = UserPool(user_id=user_id, pool_id=pool_id, token=token, amount=amount)
+            user_pool = UserPool(user_id=user_id, pool_id=pool_id,
+                                 token=token, amount=amount)
             db.add(user_pool)
             await db.commit()
             await db.refresh(user_pool)
@@ -39,7 +56,7 @@ class UserPoolCRUD(DBConnector):
 
     async def update_user_pool(self, user_pool_id: uuid.UUID, 
                                token: Optional[str] = None, amount:
-                                   Optional[Decimal] = None) -> Optional[UserPool]:
+                    Optional[Decimal] = None) -> Optional[UserPool]:
         """
         Update user pool details.
 
