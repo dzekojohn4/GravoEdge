@@ -47,7 +47,7 @@ class UserPool(BaseModel):
     )
     token: Mapped[str] = mapped_column(String, nullable=False)
     amount: Mapped[Decimal] = mapped_column(nullable=False)
-    pool: Mapped["Pool"] = relationship(back_populates="user_pools")
+    pool: Mapped["Pool"] = relationship(back_populates="user_pools", lazy="selectin")
 
     def __repr__(self) -> str:
         """
