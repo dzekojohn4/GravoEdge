@@ -4,6 +4,7 @@ updating and closing margin positions.
 """
 
 import uuid
+from decimal import Decimal
 from app.crud.base import DBConnector
 from app.models.margin_position import MarginPosition
 from app.models.margin_position import MarginPositionStatus
@@ -12,11 +13,11 @@ from app.models.margin_position import MarginPositionStatus
 class MarginPositionCRUD(DBConnector):
     """"Handles margin position database operations"""
     async def open_margin_position(self, user_id: uuid.UUID,
-                                   borrowed_amount: float) -> MarginPosition:
+                                   borrowed_amount: Decimal) -> MarginPosition:
         """
         Opens a margin position by creating an entry record in the database.
         :param user_id: uuid
-        :param borrowed_amount: float
+        :param borrowed_amount: Decimal
         :return: MarginPosition
         """
         position_entry = MarginPosition(user_id=user_id,
