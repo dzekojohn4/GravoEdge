@@ -10,8 +10,8 @@ from typing import Any, Dict, Optional
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.crud.base import DBConnector  # Import DBConnector for database operations
-from app.models.deposit import Deposit  # Import the Deposit model
+from app.crud.base import DBConnector 
+from app.models.deposit import Deposit
 
 logger = logging.getLogger(__name__)
 
@@ -93,46 +93,3 @@ class DepositCRUD(DBConnector):
             logger.error(f"Error updating deposit with ID {deposit_id}: {e}")
             raise
 
-#  Test Code
-if __name__ == "__main__":
-    async def test_deposit_crud():
-        # Initialize the DepositCRUD instance
-        db = DepositCRUD()
-        '''
-        Tests the DepositCRUD class by performing the following operations:
-        1. Initializes a DepositCRUD instance.
-        2. Creates a deposit entry with sample data.
-        3. Updates the deposit amount for the created entry.
-        4. Prints the created deposit ID and updated amount.
-        Handles exceptions to catch database operation failures.
-        '''
-        # Test data for creating a deposit
-        test_user_id = uuid.uuid4()
-        test_data = {
-            "user_id": test_user_id,
-            "token": "ETH",
-            "amount": Decimal("1.5"),
-            "transaction_id": f"tx-{uuid.uuid4()}",
-        }
-        #  Create a deposit
-        try:
-            deposit = await db.create_deposit(
-                user_id=test_data["user_id"],
-                token=test_data["token"],
-                amount=test_data["amount"],
-                transaction_id=test_data["transaction_id"],
-            )
-            print(f"Created deposit: {deposit.id}")
-
-            # Test updating the deposit
-            update_data = {"amount": Decimal("2.0")}
-            update_deposit = await db.update_deposit(deposit.id, update_data)
-            if update_deposit:
-                print(f"Updated deposit amount: {update_deposit.amount}")
-            else:
-                print("Failed to update deposit")
-        except Exception as e:
-            print(f"Test failed: {e}")
-
-# Run the async test function
-asyncio.run(test_deposit_crud())
