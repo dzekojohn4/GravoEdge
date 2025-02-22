@@ -39,10 +39,12 @@ class UserPoolCRUD(DBConnector):
             await db.commit()
             await db.refresh(user_pool)
             return user_pool
+        
+        
 
 
 
-# testing
+# testing the crud
 async def test_crud():
     db = UserPoolCRUD()
     
