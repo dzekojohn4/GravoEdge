@@ -12,11 +12,11 @@ from app.models.margin_position import MarginPositionStatus
 class MarginPositionCRUD(DBConnector):
     """"Handles margin position database operations"""
     async def open_margin_position(self, user_id: uuid.UUID,
-                                   borrowed_amount:int) -> MarginPosition:
+                                   borrowed_amount: float) -> MarginPosition:
         """
         Opens a margin position by creating an entry record in the database.
         :param user_id: uuid
-        :param borrowed_amount: int
+        :param borrowed_amount: float
         :return: MarginPosition
         """
         position_entry = MarginPosition(user_id=user_id,
@@ -28,8 +28,9 @@ class MarginPositionCRUD(DBConnector):
         """
         Closes a margin position by updating the position status in the database.
         :param position_id: uuid
-        :return: Position | None
+        :return: MarginPositionStatus
         """
+
         position = self.get_object(MarginPosition, position_id)
         if position:
             position.status = MarginPositionStatus.CLOSED.value
