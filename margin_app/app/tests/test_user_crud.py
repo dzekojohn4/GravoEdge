@@ -137,7 +137,8 @@ async def test_add_margin_position_happy_path(user_crud_instance: UserCRUD) -> N
     Positive test for add_margin position method.
     """
     user = await user_crud_instance.create_user(wallet_id = "wallet_123")
-    margin_position = await user_crud_instance.add_margin_position(user.id, size=Decimal("100.00"), leverage=5)
+    margin_position = await user_crud_instance.add_margin_position(
+        user.id, size=Decimal("100.00"), leverage=5)
     assert margin_position.user_id == user.id
     assert margin_position.size == Decimal("100.00")
     assert margin_position.leverage == 5
@@ -151,7 +152,8 @@ async def test_add_margin_position_non_existent_user(user_crud_instance: UserCRU
     """
     non_existent_id = uuid.uuid4()
     with pytest.raises(ValueError, match="User {non_existent_id} does not exist"):
-        await user_crud_instance.add_margin_position(non_existent_id, size=Decimal("100.00"), leverage=5)
+        await user_crud_instance.add_margin_position(
+            non_existent_id, size=Decimal("100.00"), leverage=5)
 
 #Negative Test Cases 
 @pytest.mark.asyncio
