@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function HelloWorld({ name }) {
-  const [count, setCount] = useState(1);    
+  const [count, setCount] = useState(1);
   return (
     <div>
       <h1>
