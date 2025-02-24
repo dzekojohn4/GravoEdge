@@ -1,12 +1,10 @@
+"""Conftest.py"""
 
-
-import uuid
 import pytest_asyncio
-from app.crud.base import DBConnector
-from app.models.base import BaseModel
-
 from sqlalchemy import Column, String
 
+from app.crud.base import DBConnector
+from app.models.base import BaseModel
 
 
 @pytest_asyncio.fixture
