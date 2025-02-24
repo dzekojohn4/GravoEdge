@@ -1,2 +1,107 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "InstrumentSans";
+  src: url("./assets/fonts/Instrument_Sans/static/InstrumentSans-Regular.ttf")
+    format("truetype");
+  font-weight: 400; /* Regular */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "InstrumentSans";
+  src: url("./assets/fonts/Instrument_Sans/static/InstrumentSans-Medium.ttf")
+    format("truetype");
+  font-weight: 500; /* Medium */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "InstrumentSans";
+  src: url("./assets/fonts/Instrument_Sans/static/InstrumentSans-SemiBold.ttf")
+    format("truetype");
+  font-weight: 600; /* Semibold */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "InstrumentSans";
+  src: url("./assets/fonts/Instrument_Sans/static/InstrumentSans-Bold.ttf")
+    format("truetype");
+  font-weight: 700; /* Bold */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "BricolageGrotesque";
+  src: url("./assets/fonts/Bricolage_Grotesque/static/BricolageGrotesque-Regular.ttf")
+    format("truetype");
+  font-weight: 400; /* Light */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "BricolageGrotesque";
+  src: url("./assets/fonts/Bricolage_Grotesque/static/BricolageGrotesque-Medium.ttf")
+    format("truetype");
+  font-weight: 400; /* Regular */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "BricolageGrotesque";
+  src: url("./assets/fonts/Bricolage_Grotesque/static/BricolageGrotesque-SemiBold.ttf")
+    format("truetype");
+  font-weight: 600; /* Medium */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "BricolageGrotesque";
+  src: url("./assets/fonts/Bricolage_Grotesque/static/BricolageGrotesque-Bold.ttf")
+    format("truetype");
+  font-weight: 700; /* SemiBold */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PilotCommandSpaced";
+  src: url("./assets/fonts/Pilot-Command-Spaced/pilotcommandspaced.ttf")
+    format("truetype");
+  font-weight: 500; /* Light */
+  font-style: normal;
+}
+
+@theme {
+  /* Fonts */
+  --text-instrumentsans: "InstrumentSans";
+  --font-family: "BricolageGrotesque";
+  --third-family: "PilotCommandSpaced";
+
+  /* Colors */
+  --text: #fffcfc;
+  --logo-text: #fff;
+  --nav-text-color: #b4b4b4;
+  --seperator: #252525;
+  --button-outline-border: #4f4f4f;
+  --header-text-color: #e5e5e5;
+
+  /* Gradients */
+  /* --second-gradient-from: #e01dee; */
+
+  /* Other */
+  --header-text-size: 64px;
+  --header-text-lineheight: 68.35px;
+  --thumb-image: url("./assets/icons/slider-thumb.svg");
+  --purple-border: 1px solid #201338;
+  --midnight-purple-border: 1px solid #36294e;
+  --midnight-purple-hover-border: 1px solid #5b4b80;
+  --font-weight-sm: 400;
+  --font-weight-md: 500;
+  --font-weight-lg: 600;
+  --font-weight-xl: 700;
+}
+
+.logo {
+  color: var(--text);
+}
