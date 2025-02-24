@@ -5,6 +5,7 @@ This is the test module for the UserCRUD class.
 import uuid
 import pytest
 from decimal import Decimal
+from uuid import UUID
 from sqlalchemy.exc import IntegrityError
 from app.crud.user import UserCRUD
 
@@ -48,6 +49,7 @@ async def test_create_user_duplicate_wallet_id(user_crud: UserCRUD) -> None:
     Negative test for create_user method: duplicate wallet_id
     """
     wallet_id = "wallet_123"
+    await user_crud.create_user(wallet_id = wallet_id)
     with pytest.raises(IntegrityError, match="duplicate key value violates unique constraint"):
         await user_crud.create_user(wallet_id = wallet_id)
 #----------------------------------------------------------------------------------

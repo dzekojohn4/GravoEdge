@@ -6,6 +6,7 @@ import asyncio
 import uuid
 from typing import Optional
 from uuid import UUID
+from sqlalchemy import select
 from sqlalchemy.sql import text
 from sqlalchemy.exc import IntegrityError
 from decimal import Decimal
@@ -40,20 +41,31 @@ class UserCRUD(DBConnector):
         :return: User
         """
 
-        new_user = User(wallet_id=wallet_id)
-
         if not wallet_id:
             raise ValueError("wallet_id cannot be empty")
+        
+        new_user = User(wallet_id=wallet_id)
+        async with self.session() as session:
+            try:
+                session.add(new_user)
+                await self.session.commit()
+                await self.session.refresh(new_user)
+                return new_user
+            except IntegrityError as e:
+                await self.session.rollback()
+                if "unique constraint" in str(e).lower():
+                    raise ValueError("Duplicate key value violates unique constraint") from e
+                raise
 
-        try:
-            self.session.add(new_user)
-            await self.session.commit()
-            await self.session.refresh(new_user)
-            return new_user
-        except IntegrityError as e:
-            await self.session.rollback()
-            raise ValueError("Duplicate key value violates unique constraint") from e
-      
+    async def get_user(self, user_id: UUID, **kwargs) -> Optional[User]:
+        """
+        Get a user from the database.
+        :param user_id: UUID
+        :return: User
+        """
+        async with self.session() as session:
+            result = await session.execute(select(User).where(User.id == user_id))
+            return result.scalar_one_or_none()    
 
     async def update_user(self, user_id: UUID, **kwargs) -> Optional[User]:
         """
@@ -62,7 +74,7 @@ class UserCRUD(DBConnector):
         :return: User
         """
 
-        with self.session() as session:
+        async with self.session() as session:
             user = await session.get(User, user_id)
             if not user:
                 return None
@@ -78,9 +90,12 @@ class UserCRUD(DBConnector):
         :param user_id: UUID
         :return: None
         """
-
-        await self.delete_object_by_id(User, user_id)
-
+        async with self.session() as session:
+            user = await session.get(User, user_id)
+            if not user:
+                raise ValueError(f"User {user_id} does not exist.")
+            session.delete(user)
+            await session.commit()
 
     async def add_deposit(
         self, user_id: UUID, amount: Decimal, 
@@ -94,14 +109,21 @@ class UserCRUD(DBConnector):
         :param transaction_id str
         :return: Deposit
         """
+        if amount <= Decimal("0.00"):
+            raise ValueError("Deposit amount must be greater than zero.")
 
-        if not await self.get_object(User, user_id):
+        if not await self.get_user(user_id):
             raise ValueError(f"User {user_id} does not exist.")
+        
         new_deposit = Deposit(
             user_id=user_id, amount=amount, 
             token=token, transaction_id=transaction_id
         )
-        return await self.write_to_db(new_deposit)
+        async with self.session() as session:
+            session.add(new_deposit)
+            await session.commit()
+            await session.refresh(new_deposit)
+            return new_deposit
    
     async def add_margin_position(
         self, user_id: UUID, 
@@ -117,6 +139,11 @@ class UserCRUD(DBConnector):
         :param transaction_id str
         :return: MarginPosition
         """
+        if borrowed_amount <= Decimal("0.00"):
+            raise ValueError("Borrowed amount must be greater than zero.")
+        
+        if multiplier <= 0:
+            raise ValueError("Multiplier must be greater than zero.")
 
         if not await self.get_object(User, user_id):
             raise ValueError(f"User {user_id} does not exist.")
@@ -126,6 +153,10 @@ class UserCRUD(DBConnector):
             multiplier=multiplier,
             transaction_id=transaction_id
         )
-        return await self.write_to_db(new_margin_position)
+        async with self.session() as session:
+            session.add(new_margin_position)
+            await session.commit()
+            await session.refresh(new_margin_position)
+            return new_margin_position
 
 user_crud = UserCRUD()
