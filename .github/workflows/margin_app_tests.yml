@@ -32,11 +32,6 @@ jobs:
           echo "Waiting for containers to be ready..."
           sleep 30
 
-      - name: Install Test Dependencies in Container
-        run: |
-          docker compose -f margin_app/docker-compose.yml exec backend pip install pytest pytest-cov
-          docker compose -f margin_app/docker-compose.yml exec backend pip freeze  # Debug: show installed packages
-
       - name: Run Integration Tests with Coverage
         run: |
           docker compose -f margin_app/docker-compose.yml exec backend python -m pytest app/tests -v
