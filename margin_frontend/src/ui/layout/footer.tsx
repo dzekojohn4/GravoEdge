@@ -15,7 +15,7 @@ const socials = [
 export function Footer() {
   return (
     <div className="hidden md:w-11/12 xl:w-[1280px] px-10 pb-10 pt-6 mx-auto h-[88px] md:flex  justify-between">
-      <h4 className="logo uppercase font-[InstrumentSans] text-white font-bold text-[13px] leading-[15.86px]">
+      <h4 className="font-bold uppercase font-instrumentsans text-text text-logo leading-logo">
         Margin
       </h4>
       <div className="flex items-center h-6 gap-6">
