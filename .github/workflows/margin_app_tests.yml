@@ -37,24 +37,6 @@ jobs:
           docker compose -f margin_app/docker-compose.yml exec backend pip install pytest pytest-cov
           docker compose -f margin_app/docker-compose.yml exec backend pip freeze  # Debug: show installed packages
 
-      - name: Wait for Backend Service
-        timeout-minutes: 5
-        run: |
-          while ! curl -s http://localhost:8000/health > /dev/null; do
-            echo "Waiting for backend service..."
-            sleep 30
-            
-            # Check if the container is still running before logging
-            if ! docker ps | grep -q backend; then
-              echo "Backend container is not running!"
-              docker compose -f margin_app/docker-compose.yml  logs backend || true 
-              exit 1
-            fi
-            
-            # Log the backend service status for debugging purposes.
-            docker compose -f margin_app/docker-compose.yml logs backend || true 
-          done
-
       - name: Apply Migrations
         run: |
           docker compose -f margin_app/docker-compose.yml exec backend alembic -c margin_app/alembic.ini upgrade head || {
