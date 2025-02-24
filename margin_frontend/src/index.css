@@ -74,34 +74,30 @@
 
 @theme {
   /* Fonts */
-  --text-instrumentsans: "InstrumentSans";
-  --font-family: "BricolageGrotesque";
-  --third-family: "PilotCommandSpaced";
+  --font-instrumentsans: "InstrumentSans";
+  --font-bricolageGrotesque: "BricolageGrotesque";
+  --font-pilotCommandSpaced: "PilotCommandSpaced";
 
   /* Colors */
-  --text: #fffcfc;
-  --logo-text: #fff;
-  --nav-text-color: #b4b4b4;
-  --seperator: #252525;
-  --button-outline-border: #4f4f4f;
-  --header-text-color: #e5e5e5;
-
-  /* Gradients */
-  /* --second-gradient-from: #e01dee; */
+  --color-text: #fffcfc;
+  --color-logo-text: #fff;
+  --color-nav-text: #b4b4b4;
+  --color-seperator: #252525;
+  --color-button-outline-border: #4f4f4f;
+  --color-headerText: #e5e5e5;
 
   /* Other */
-  --header-text-size: 64px;
-  --header-text-lineheight: 68.35px;
-  --thumb-image: url("./assets/icons/slider-thumb.svg");
-  --purple-border: 1px solid #201338;
-  --midnight-purple-border: 1px solid #36294e;
-  --midnight-purple-hover-border: 1px solid #5b4b80;
-  --font-weight-sm: 400;
-  --font-weight-md: 500;
-  --font-weight-lg: 600;
-  --font-weight-xl: 700;
+  --text-logo: 13px;
+  --leading-logo: 15.86px;
+
+  --text-header-text-size: 64px;
+  --leading-header-text-lineheight: 68.35px;
 }
 
-.logo {
-  color: var(--text);
+.content_mobile_text {
+  @apply text-center uppercase font-pilotCommandSpaced text-header-text-size leading-header-text-lineheight text-headerText;
+}
+
+.content__mobile__dot {
+  @apply h-3.5 w-3.5 rounded-full bg-white mx-auto;
 }
