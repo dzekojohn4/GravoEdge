@@ -48,11 +48,11 @@ class UserCRUD(DBConnector):
         async with self.session() as session:
             try:
                 session.add(new_user)
-                await self.session.commit()
-                await self.session.refresh(new_user)
+                await session.commit()
+                await session.refresh(new_user)
                 return new_user
             except IntegrityError as e:
-                await self.session.rollback()
+                await session.rollback()
                 if "unique constraint" in str(e).lower():
                     raise ValueError("Duplicate key value violates unique constraint") from e
                 raise
