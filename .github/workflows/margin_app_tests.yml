@@ -57,7 +57,7 @@ jobs:
 
       - name: Apply Migrations
         run: |
-          docker exec backend alembic -c margin_app/alembic.ini upgrade head || {
+          docker compose -f margin_app/docker-compose.yml exec backend alembic -c margin_app/alembic.ini upgrade head || {
             echo "Migration failed. Showing backend logs:"
             docker compose -f margin_app/docker-compose.yml logs backend || true
             exit 1
