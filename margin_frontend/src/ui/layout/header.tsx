@@ -22,7 +22,7 @@ export function Header() {
             <div key={index}>
               <a
                 href={link.link}
-                className="text-nav-text text-sm font-normal font-bricolageGrotesque]"
+                className="text-sm font-normal text-nav-text font-bricolageGrotesque"
               >
                 {link.title}
               </a>
