@@ -8,6 +8,7 @@ from typing import Optional
 from uuid import UUID
 from sqlalchemy.sql import text
 from decimal import Decimal
+import pytest
 
 from app.models.deposit import Deposit
 from app.models.margin_position import MarginPosition
@@ -29,6 +30,7 @@ class UserCRUD(DBConnector):
         async with self.session() as session:
             result = await session.execute(text("SELECT version()"))
             return f"PostgreSQL version: {result.scalar()}"
+        
 
     async def create_user(self, wallet_id: str) -> User:
         """
@@ -66,6 +68,7 @@ class UserCRUD(DBConnector):
 
         await self.delete_object_by_id(User, user_id)
 
+
     async def add_deposit(
         self, user_id: UUID, amount: Decimal, 
         token: str, transaction_id: str
@@ -86,7 +89,7 @@ class UserCRUD(DBConnector):
             token=token, transaction_id=transaction_id
         )
         return await self.write_to_db(new_deposit)
-
+   
     async def add_margin_position(
         self, user_id: UUID, 
         borrowed_amount: Decimal,
