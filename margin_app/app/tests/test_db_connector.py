@@ -1,8 +1,8 @@
 """
 Pytest-based asynchronous database tests for CRUD operations.
 This module verifies database functionality using SQLAlchemy and an async database connection.
-While database operations use the SQLAlchemy ORM model (defined inline), results are converted to a NamedTuple
-for simpler, read-only data representation.
+While database operations use the SQLAlchemy ORM model (defined inline), 
+results are converted to a NamedTuple for simpler, read-only data representation.
 """
 
 import uuid
