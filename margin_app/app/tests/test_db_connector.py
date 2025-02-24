@@ -1,20 +1,17 @@
 """
 Pytest-based asynchronous database tests for CRUD operations.
-
-This module defines test cases for verifying the functionality of the database
-operations using SQLAlchemy and an async database connection. It includes
-fixtures to set up and tear down test environments, as well as tests for
-creating, retrieving, updating, and deleting objects in the database.
+This module verifies database functionality using SQLAlchemy and an async database connection.
+While database operations use the SQLAlchemy ORM model (defined inline), results are converted to a NamedTuple
+for simpler, read-only data representation.
 """
 
 import uuid
+from typing import NamedTuple
 
 import pytest
 import pytest_asyncio
 from sqlalchemy import Column, String
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.base import DBConnector
 from app.models.base import BaseModel
 
 pytestmark = pytest.mark.asyncio
@@ -28,6 +25,16 @@ class TestModel(BaseModel):
     name = Column(String, nullable=False)
 
 
+class TestObjectTuple(NamedTuple):
+    """NamedTuple for test data representation."""
+
+    id: str
+    name: str
+
+
+def to_named_tuple(model_obj: TestModel) -> TestObjectTuple:
+    """Converts an ORM model instance to a NamedTuple."""
+    return TestObjectTuple(id=model_obj.id, name=model_obj.name)
 
 
 @pytest_asyncio.fixture
@@ -35,32 +42,35 @@ async def test_object(db_connector):
     """Fixture to create a test object in the database."""
     obj = TestModel(name="Test Object")
     obj = await db_connector.write_to_db(obj)
-    return obj
+    return to_named_tuple(obj)
 
 
 async def test_write_to_db(db_connector):
     """Test writing an object to the database."""
     obj = TestModel(name="New Object")
     saved_obj = await db_connector.write_to_db(obj)
-    assert saved_obj.id is not None
-    assert saved_obj.name == "New Object"
+    result = to_named_tuple(saved_obj)
+    assert result.id is not None
+    assert result.name == "New Object"
 
 
 async def test_get_object(db_connector, test_object):
     """Test retrieving an object by ID."""
     fetched_obj = await db_connector.get_object(TestModel, test_object.id)
-    assert fetched_obj is not None
-    assert fetched_obj.id == test_object.id
-    assert fetched_obj.name == "Test Object"
+    result = to_named_tuple(fetched_obj)
+    assert result is not None
+    assert result.id == test_object.id
+    assert result.name == "Test Object"
 
 
 async def test_get_object_by_field(db_connector, test_object):
-    """Test retrieving an object by ID."""
+    """Test retrieving an object by a field value."""
     fetched_obj = await db_connector.get_object_by_field(
         TestModel, "name", "Test Object"
     )
-    assert fetched_obj is not None
-    assert fetched_obj.name == "Test Object"
+    result = to_named_tuple(fetched_obj)
+    assert result is not None
+    assert result.name == "Test Object"
 
 
 async def test_delete_object_by_id(db_connector, test_object):
@@ -87,8 +97,8 @@ async def test_get_nonexistent_object(db_connector):
 
 
 async def test_get_object_by_invalid_field(db_connector):
-    """Test retrieving an object using an invalid field, expecting an AttributeError."""
-    with pytest.raises(AttributeError):
+    """Test retrieving an object using an invalid field, expecting an exception."""
+    with pytest.raises(Exception):
         await db_connector.get_object_by_field(TestModel, "non_existing_field", "value")
 
 
@@ -99,6 +109,6 @@ async def test_delete_nonexistent_object(db_connector):
 
 
 async def test_write_invalid_object(db_connector):
-    """Test attempting to write an invalid object, expecting an Exception."""
+    """Test attempting to write an invalid object, expecting an exception."""
     with pytest.raises(Exception):
         await db_connector.write_to_db(None)

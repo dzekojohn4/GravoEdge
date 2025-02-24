@@ -1,7 +1,6 @@
 """Conftest.py"""
 
 import pytest_asyncio
-from sqlalchemy import Column, String
 
 from app.crud.base import DBConnector
 from app.models.base import BaseModel
@@ -13,7 +12,6 @@ async def db_connector():
     db = DBConnector()
     async with db.engine.begin() as conn:
         await conn.run_sync(BaseModel.metadata.create_all)
-
     try:
         yield db
     finally:
