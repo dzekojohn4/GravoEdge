@@ -93,11 +93,3 @@
   --text-header-text-size: 64px;
   --leading-header-text-lineheight: 68.35px;
 }
-
-.content_mobile_text {
-  @apply text-center uppercase font-pilotCommandSpaced text-header-text-size leading-header-text-lineheight text-headerText;
-}
-
-.content__mobile__dot {
-  @apply h-3.5 w-3.5 rounded-full bg-white mx-auto;
-}

@@ -19,11 +19,17 @@ function Content() {
         Trade, Earn, Grow
       </h1>
       <div className="space-y-8 md:hidden">
-        <h1 className="content_mobile_text">Trade</h1>
-        <div className="content__mobile__dot" />
-        <h1 className="content_mobile_text">Earn</h1>
-        <div className="content__mobile__dot" />
-        <h1 className="content_mobile_text">Grow</h1>
+        <h1 className="text-center uppercase  font-pilotCommandSpaced text-header-text-size leading-header-text-lineheight text-headerText">
+          Trade
+        </h1>
+        <div className="h-3.5 w-3.5 rounded-full bg-white mx-auto" />
+        <h1 className="text-center uppercase  font-pilotCommandSpaced text-header-text-size leading-header-text-lineheight text-headerText">
+          Earn
+        </h1>
+        <div className="h-3.5 w-3.5 rounded-full bg-white mx-auto" />
+        <h1 className="text-center uppercase  font-pilotCommandSpaced text-header-text-size leading-header-text-lineheight text-headerText">
+          Grow
+        </h1>
       </div>
 
       <p className="w-10/12 mx-auto mt-4 text-sm font-medium text-center font-bricolageGrotesque md:text-base text-text">
