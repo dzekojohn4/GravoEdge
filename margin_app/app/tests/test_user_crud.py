@@ -32,45 +32,45 @@ async def test_create_user_happy_path(user_crud: UserCRUD) -> None:
     assert user.id is not None # Ensure the user has a valid id
 
 
-def test_create_user_empty_wallet_id(user_crud: UserCRUD) -> None:
+async def test_create_user_empty_wallet_id(user_crud: UserCRUD) -> None:
     """
     Negative test for create_user method: empty wallet_id.
     """
     with pytest.raises(ValueError, match="wallet_id cannot be empty"):
-        user_crud.create_user(wallet_id = None) 
+        await user_crud.create_user(wallet_id = None) 
 
-def test_create_user_duplicate_wallet_id(user_crud: UserCRUD) -> None:
+async def test_create_user_duplicate_wallet_id(user_crud: UserCRUD) -> None:
     """
     Negative test for create_user method: duplicate wallet_id
     """
-    user_crud.create_user(wallet_id = "wallet_123")
+    await user_crud.create_user(wallet_id = "wallet_123")
     with pytest.raises(IntegrityError, match="duplicate key value violates unique constraint"):
-        user_crud.create_user(wallet_id = "wallet_123")
+        await user_crud.create_user(wallet_id = "wallet_123")
 #----------------------------------------------------------------------------------
 
-def test_update_user_happy_path(user_crud: UserCRUD) -> None:
+async def test_update_user_happy_path(user_crud: UserCRUD) -> None:
     """
     Happy path for update_user method
     """
-    user = user_crud.create_user(wallet_id = "wallet_123")
-    updated_user = user_crud.update_user(user.id, wallet_id = "wallet_456")
+    user = await user_crud.create_user(wallet_id = "wallet_123")
+    updated_user = await user_crud.update_user(user.id, wallet_id = "wallet_456")
     assert updated_user.wallet_id == "wallet_456"
 
 
-def test_update_user_non_existent(user_crud: UserCRUD) -> None:
+async def test_update_user_non_existent(user_crud: UserCRUD) -> None:
     """
     Negative test for update_user method: non-existent user
     """
     non_existent_id = uuid.uuid4()
-    result = user_crud.update_user(non_existent_id, wallet_id = "wallet_456")
+    result = await user_crud.update_user(non_existent_id, wallet_id = "wallet_456")
     assert result is None
 
-def test_delete_user_happy_path(user_crud: UserCRUD) -> None:
+async def test_delete_user_happy_path(user_crud: UserCRUD) -> None:
     """
     Positive test for delete_user method.
     """
-    user = user_crud.create_user(wallet_id = "wallet_123")
-    user_crud.delete_user(user.id)
+    user = await user_crud.create_user(wallet_id = "wallet_123")
+    await user_crud.delete_user(user.id)
     deleted_user = user_crud.get_user(user.id)
     assert deleted_user is None
 
