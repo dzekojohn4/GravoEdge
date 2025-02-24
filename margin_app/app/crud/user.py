@@ -40,10 +40,10 @@ class UserCRUD(DBConnector):
         :return: User
         """
 
+        new_user = User(wallet_id=wallet_id)
+
         if not wallet_id:
             raise ValueError("wallet_id cannot be empty")
-
-        new_user = User(wallet_id=wallet_id)
 
         try:
             self.session.add(new_user)
