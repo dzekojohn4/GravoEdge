@@ -67,6 +67,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "starknet": "^6.11.0",
     "tailwind-merge": "^2.6.0",
-    "vite-plugin-svgr": "^4.3.0"
+    "vite-plugin-svgr": "^4.3.0",
+    "vitest": "^3.0.4"
   }
 }
