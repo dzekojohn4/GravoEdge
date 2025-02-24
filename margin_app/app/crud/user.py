@@ -40,6 +40,10 @@ class UserCRUD(DBConnector):
         """
 
         new_user = User(wallet_id=wallet_id)
+        if not wallet_id:
+            raise ValueError("wallet_id cannot be empty")
+        
+        new_user = User(wallet_id=wallet_id)
         return await self.write_to_db(new_user)
 
     async def update_user(self, user_id: UUID, **kwargs) -> Optional[User]:
