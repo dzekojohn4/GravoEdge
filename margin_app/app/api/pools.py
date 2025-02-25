@@ -24,7 +24,7 @@ router = APIRouter()
     "/create_pool", response_model=PoolResponse, status_code=status.HTTP_201_CREATED
 )
 async def create_pool(
-    token: str, risk_status: PoolRiskStatus, db: AsyncSession = Depends(get_db)
+    token: str, risk_status: PoolRiskStatus
 ) -> PoolResponse:
     """
     Create a new pool
