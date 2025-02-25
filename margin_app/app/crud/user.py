@@ -6,15 +6,7 @@ import asyncio
 import uuid
 from typing import Optional
 from uuid import UUID
-'''remove'''
-from sqlalchemy import select
-'''remove'''
-#keep
 from sqlalchemy.sql import text
-#keep
-'''remove'''
-from sqlalchemy.exc import IntegrityError
-'''remove'''
 from decimal import Decimal
 
 from app.models.deposit import Deposit
