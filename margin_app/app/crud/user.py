@@ -54,7 +54,7 @@ class UserCRUD(DBConnector):
             except IntegrityError as e:
                 await session.rollback()
                 if "unique constraint" in str(e).lower():
-                    raise ValueError(f"Key (wallet_id)=({wallet_id}) already exists") from e
+                    raise ValueError(f"{wallet_id} already exists") from e
                 raise
 
     async def get_user(self, user_id: UUID, **kwargs) -> Optional[User]:
