@@ -118,7 +118,4 @@ class UserCRUD(DBConnector):
         )
         return await self.write_to_db(new_margin_position)
 
-19:19
-
-
 user_crud = UserCRUD()
