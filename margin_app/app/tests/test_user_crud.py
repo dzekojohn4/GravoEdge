@@ -5,8 +5,6 @@ This is the test module for the UserCRUD class.
 import uuid
 import pytest
 from decimal import Decimal
-from uuid import UUID
-from sqlalchemy.exc import IntegrityError
 from app.crud.user import UserCRUD
 from app.models.user import User
 
