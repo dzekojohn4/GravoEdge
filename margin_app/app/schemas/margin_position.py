@@ -2,6 +2,7 @@
 This file contains the Pydantic schema for the MarginPosition model.
 """
 
+from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
@@ -29,9 +30,12 @@ class MarginPositionResponse(BaseModel):
     borrowed_amount: Decimal
     multiplier: int
     transaction_id: str
+    status: str
+    liquidated_at: datetime | None
 
     class Config:
         """
         Pydantic model configuration.
         """
+
         orm_mode: True
