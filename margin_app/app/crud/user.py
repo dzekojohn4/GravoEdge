@@ -49,7 +49,7 @@ class UserCRUD(DBConnector):
         :return: User
         """
 
-        async with self.session() as session:
+        with self.session() as session:
             user = await session.get(User, user_id)
             if not user:
                 return None

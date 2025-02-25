@@ -21,7 +21,6 @@ async def test_test_connection(user_crud: UserCRUD) -> None:
     """
     result = await user_crud.test_connection()
     assert "PostgreSQL version:" in result
-#----------------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_create_user_happy_path(user_crud: UserCRUD) -> None:
@@ -30,7 +29,6 @@ async def test_create_user_happy_path(user_crud: UserCRUD) -> None:
     """
     user = await user_crud.create_user(wallet_id = "wallet_123")
     assert user.id is not None # Ensure the user has a valid id
-#----------------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_update_user_happy_path(user_crud: UserCRUD) -> None:
@@ -50,7 +48,6 @@ async def test_update_user_non_existent(user_crud: UserCRUD) -> None:
     non_existent_id = uuid.uuid4()
     result = await user_crud.update_user(non_existent_id, wallet_id = "wallet_444")
     assert result is None
-#----------------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_delete_user_happy_path(user_crud: UserCRUD) -> None:
@@ -77,8 +74,6 @@ async def test_delete_user_non_existent(user_crud: UserCRUD) -> None:
     non_existent_check = await user_crud.delete_user(non_existent_id)
     assert non_existent_check is None
 
-#----------------------------------------------------------------------------------
-
 @pytest.mark.asyncio
 async def test_add_deposit_happy_path(user_crud: UserCRUD) -> None:
     """
@@ -103,7 +98,6 @@ async def test_add_deposit_non_existent_user(user_crud: UserCRUD) -> None:
                                     amount=Decimal("100.00"),
                                     token = "USDT",
                                     transaction_id = "tx923")
-#----------------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_add_margin_position_happy_path(user_crud: UserCRUD) -> None:
