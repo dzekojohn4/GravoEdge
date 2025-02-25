@@ -9,6 +9,10 @@ from pydantic import BaseModel
 
 
 class MarginPositionCreate(BaseModel):
+    """
+    Pydantic model for creating a MarginPosition.
+    """
+
     user_id: UUID
     borrowed_amount: Decimal
     multiplier: int
@@ -16,6 +20,10 @@ class MarginPositionCreate(BaseModel):
 
 
 class MarginPositionResponse(BaseModel):
+    """
+    Pydantic model for a MarginPosition response.
+    """
+
     id: UUID
     user_id: UUID
     borrowed_amount: Decimal
@@ -23,4 +31,7 @@ class MarginPositionResponse(BaseModel):
     transaction_id: str
 
     class Config:
+        """
+        Pydantic model configuration.
+        """
         orm_mode: True
