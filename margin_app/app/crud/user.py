@@ -64,7 +64,9 @@ class UserCRUD(DBConnector):
         :return: User
         """
         async with self.session() as session:
-            result = await session.execute(select(User).where(User.id == user_id))
+            result = await session.execute(select(User)
+                                           .execution_options(populate_existing=True)
+                                           .where(User.id == user_id))
             return result.scalar_one_or_none()    
 
     async def update_user(self, user_id: UUID, **kwargs) -> Optional[User]:
@@ -94,8 +96,13 @@ class UserCRUD(DBConnector):
             user = await session.get(User, user_id)
             if not user:
                 raise ValueError(f"User {user_id} does not exist.")
-            session.delete(user)
+            await session.delete(user)
             await session.commit()
+
+            #verify deletion in the same session
+            not_deleted = await session.get(User, user_id)
+            if not_deleted:
+                raise RuntimeError("Deletion failed unexpectedly")
 
     async def add_deposit(
         self, user_id: UUID, amount: Decimal, 
