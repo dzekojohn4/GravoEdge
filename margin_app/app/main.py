@@ -7,11 +7,13 @@ import sys
 from fastapi import FastAPI, Request
 from loguru import logger
 
+from app.api.margin_position import router as margin_position_router
 from app.api.pools import router as pool_router
 
 # Initialize FastAPI app
 app = FastAPI()
 app.include_router(pool_router, prefix="/api/pool", tags=["Pool"])
+app.include_router(margin_position_router, tags=["MarginPosition"])
 
 
 # Configure Loguru
