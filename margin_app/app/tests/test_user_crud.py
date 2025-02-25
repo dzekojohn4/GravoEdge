@@ -50,6 +50,7 @@ async def test_update_user_non_existent(user_crud: UserCRUD) -> None:
     non_existent_id = uuid.uuid4()
     result = await user_crud.update_user(non_existent_id, wallet_id = "wallet_444")
     assert result is None
+#----------------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_delete_user_happy_path(user_crud: UserCRUD) -> None:
