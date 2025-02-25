@@ -49,7 +49,7 @@ async def test_update_user_non_existent(user_crud: UserCRUD) -> None:
     """
     non_existent_id = uuid.uuid4()
     result = await user_crud.update_user(non_existent_id, wallet_id = "wallet_444")
-    assert result.non_existent_id is None
+    assert result is None
 
 @pytest.mark.asyncio
 async def test_delete_user_happy_path(user_crud: UserCRUD) -> None:
@@ -59,12 +59,12 @@ async def test_delete_user_happy_path(user_crud: UserCRUD) -> None:
     user = await user_crud.create_user(wallet_id = "wallet_789")
 
     # verify user exists before deletion
-    pre_delete_check = await user.crud.session.get(User, user.id)
+    pre_delete_check = await user.get_object(User, user.id)
     assert pre_delete_check is not None
 
     # Perform deletion
     await user_crud.delete_user(user.id)
-    post_delete_check = await user.crud.session.get(User, user.id)
+    post_delete_check = await user.get_object(User, user.id)
     assert post_delete_check is None
 
 @pytest.mark.asyncio
@@ -73,7 +73,7 @@ async def test_delete_user_non_existent(user_crud: UserCRUD) -> None:
     Negative test for delete_user method: non-existent user
     """
     non_existent_id = uuid.uuid4()
-    non_existent_check = await user_crud.session.get(User, non_existent_id)
+    non_existent_check = await user_crud.get_object(User, non_existent_id)
     assert non_existent_check is None
 
 #----------------------------------------------------------------------------------
