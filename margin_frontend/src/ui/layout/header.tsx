@@ -32,7 +32,7 @@ export function Header() {
           </React.Fragment>
         ))}
       </nav>
-      <Button variant={"outline"} className="h-12! w-[164px]! text-sm!">
+      <Button variant={"outline"} className="w-[164px]" size={"md"}>
         Connect Wallet
       </Button>
     </div>
