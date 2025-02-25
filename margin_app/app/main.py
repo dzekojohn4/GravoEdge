@@ -76,4 +76,3 @@ async def health_check():
     """
     logger.info("Health check endpoint accessed.")
     return {"status": "OK"}
-
