@@ -31,11 +31,6 @@ pytest-mock = "^3.14.0"
 pytest-env = "^1.1.5"
 pytest-cov = "^6.0.0"
 trio = "^0.29.0"
-anyio = "^4.8.0"
-pytest-tornasync = "^0.6.0.post2"
-pytest-trio = "^0.8.0"
-pytest-twisted = "^1.14.3"
-twisted = "^24.11.0"
 
 
 [build-system]
