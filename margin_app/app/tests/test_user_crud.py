@@ -51,7 +51,7 @@ async def test_create_user_duplicate_wallet_id(user_crud: UserCRUD) -> None:
     wallet_id = "wallet_666"
     await user_crud.create_user(wallet_id = wallet_id)
     with pytest.raises(ValueError, 
-                       match=f"Key (wallet_id)=({wallet_id}) already exists"):
+                       match=f"{wallet_id} already exists"):
         await user_crud.create_user(wallet_id = wallet_id)
 #----------------------------------------------------------------------------------
 
