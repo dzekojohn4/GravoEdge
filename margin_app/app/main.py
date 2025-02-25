@@ -13,6 +13,8 @@ from app.api.pools import router as pool_router
 app = FastAPI()
 app.include_router(pool_router, prefix="/api/pool", tags=["Pool"])
 
+app.include_router(user.router, prefix="/api/v1")
+
 
 # Configure Loguru
 logger.remove()  # Remove default logger to configure custom settings
