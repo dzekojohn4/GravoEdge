@@ -9,12 +9,13 @@ from loguru import logger
 
 from app.api.margin_position import router as margin_position_router
 from app.api.pools import router as pool_router
+from app.api.user import router as user_router
 
 # Initialize FastAPI app
 app = FastAPI()
 app.include_router(pool_router, prefix="/api/pool", tags=["Pool"])
 app.include_router(margin_position_router, tags=["MarginPosition"])
-
+app.include_router(user_router, prefix="/api/user", tags=["User"])
 
 # Configure Loguru
 logger.remove()  # Remove default logger to configure custom settings
@@ -75,3 +76,4 @@ async def health_check():
     """
     logger.info("Health check endpoint accessed.")
     return {"status": "OK"}
+
