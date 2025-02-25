@@ -132,4 +132,3 @@ async def test_add_margin_position_non_existent_user(user_crud: UserCRUD) -> Non
             borrowed_amount=Decimal("100.00"), 
             multiplier=5,
             transaction_id = "tx123")
-
