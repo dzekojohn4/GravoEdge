@@ -11,4 +11,3 @@ class LiquidationResponse(BaseModel):
     margin_position_id: UUID
     bonus_amount: Decimal
     bonus_token: str
-    status: str
