@@ -48,7 +48,7 @@ async def test_create_user_duplicate_wallet_id(user_crud: UserCRUD) -> None:
     """
     Negative test for create_user method: duplicate wallet_id
     """
-    wallet_id = "wallet_123"
+    wallet_id = "wallet_666"
     await user_crud.create_user(wallet_id = wallet_id)
     with pytest.raises(ValueError, 
                        match=f"Key (wallet_id)=({wallet_id}) already exists"):
@@ -60,7 +60,7 @@ async def test_update_user_happy_path(user_crud: UserCRUD) -> None:
     """
     Happy path for update_user method
     """
-    user = await user_crud.create_user(wallet_id = "wallet_123")
+    user = await user_crud.create_user(wallet_id = "wallet_111")
     updated_user = await user_crud.update_user(user.id, wallet_id = "wallet_456")
     assert updated_user.wallet_id == "wallet_456"
 
@@ -70,7 +70,7 @@ async def test_update_user_non_existent(user_crud: UserCRUD) -> None:
     Negative test for update_user method: non-existent user
     """
     non_existent_id = uuid.uuid4()
-    result = await user_crud.update_user(non_existent_id, wallet_id = "wallet_456")
+    result = await user_crud.update_user(non_existent_id, wallet_id = "wallet_444")
     assert result is None
 
 @pytest.mark.asyncio
@@ -79,9 +79,15 @@ async def test_delete_user_happy_path(user_crud: UserCRUD) -> None:
     Positive test for delete_user method.
     """
     user = await user_crud.create_user(wallet_id = "wallet_789")
+
+    # verify user exists before deletion
+    pre_delete_check = await user_crud.get_user(user.id)
+    assert pre_delete_check is not None
+
+    # Perform deletion
     await user_crud.delete_user(user.id)
-    deleted_user = await user_crud.get_user(user.id)
-    assert deleted_user is None
+    post_delete_check = await user_crud.get_user(user.id)
+    assert post_delete_check is None
 
 @pytest.mark.asyncio
 async def test_delete_user_non_existent(user_crud: UserCRUD) -> None:
@@ -89,7 +95,7 @@ async def test_delete_user_non_existent(user_crud: UserCRUD) -> None:
     Negative test for delete_user method: non-existent user
     """
     non_existent_id = uuid.uuid4()
-    with pytest.raises(ValueError, match=f"User {non_existent_id}does not exist"):
+    with pytest.raises(ValueError, match=f"User {non_existent_id} does not exist"):
         await user_crud.delete_user(non_existent_id)
 #----------------------------------------------------------------------------------
 
@@ -102,7 +108,7 @@ async def test_add_deposit_happy_path(user_crud: UserCRUD) -> None:
     deposit = await user_crud.add_deposit(user.id, 
                                     amount=Decimal("100.00"),
                                     token = "USDT",
-                                    transaction_id = "tx123")
+                                    transaction_id = "tx323")
     assert deposit.user_id == user.id
     assert deposit.amount == Decimal("100.00")
 
@@ -117,7 +123,7 @@ async def test_add_deposit_non_existent_user(user_crud: UserCRUD) -> None:
         await user_crud.add_deposit(non_existent_id, 
                                     amount=Decimal("100.00"),
                                     token = "USDT",
-                                    transaction_id = "tx123")
+                                    transaction_id = "tx923")
 
 @pytest.mark.asyncio
 async def test_add_deposit_invalid_amount(user_crud: UserCRUD) -> None:
@@ -125,11 +131,11 @@ async def test_add_deposit_invalid_amount(user_crud: UserCRUD) -> None:
     Negative test for add_deposit method: Invalid amount
     """
     user = await user_crud.create_user(wallet_id = "wallet_000")
-    with pytest.raises(ValueError, match="Amount must be greater than zero"):
+    with pytest.raises(ValueError, match="Deposit amount must be greater than zero"):
         await user_crud.add_deposit(user.id, 
                                     amount=Decimal("0.00"),
                                     token = "USDT",
-                                    transaction_id = "tx123")
+                                    transaction_id = "tx223")
 #----------------------------------------------------------------------------------
 
 @pytest.mark.asyncio
@@ -142,7 +148,7 @@ async def test_add_margin_position_happy_path(user_crud: UserCRUD) -> None:
         user.id, 
         borrowed_amount=Decimal("100.00"), 
         multiplier=5,
-        transaction_id = "tx123")
+        transaction_id = "tx523")
     assert margin_position.user_id == user.id
     assert margin_position.borrowed_amount == Decimal("100.00")
 
@@ -165,11 +171,11 @@ async def test_add_margin_position_invalid_amount(user_crud: UserCRUD) -> None:
     Negative test for add_margin_position method: Invalid borrowed_amount
     """
     user = await user_crud.create_user(wallet_id = "wallet_023")
-    with pytest.raises(ValueError, match="Leverage must be greater than zero"):
+    with pytest.raises(ValueError, match="Borrowed amount must be greater than zero"):
         await user_crud.add_margin_position(user.id, 
                                             borrowed_amount=Decimal("0.00"), 
                                             multiplier=5,
-                                            transaction_id = "tx123")
+                                            transaction_id = "tx133")
 
 @pytest.mark.asyncio
 async def test_add_margin_position_invalid_multiplier(user_crud: UserCRUD) -> None:
@@ -177,5 +183,8 @@ async def test_add_margin_position_invalid_multiplier(user_crud: UserCRUD) -> No
     Negative test for add_margin_position method: Invalid multiplier
     """
     user = await user_crud.create_user(wallet_id = "wallet_007")
-    with pytest.raises(ValueError, match="Leverage must be greater than zero"):
-        await user_crud.add_margin_position(user.id, size=Decimal("10.00"), leverage=0)
+    with pytest.raises(ValueError, match="Multiplier must be greater than zero"):
+        await user_crud.add_margin_position(user.id, 
+                                            borrowed_amount=Decimal("10.00"), 
+                                            multiplier=0,
+                                            transaction_id = "tx023")
