@@ -116,8 +116,10 @@ class UserCRUD(DBConnector):
             raise ValueError(f"User {user_id} does not exist.")
         
         new_deposit = Deposit(
-            user_id=user_id, amount=amount, 
-            token=token, transaction_id=transaction_id
+            user_id=user_id, 
+            amount=amount, 
+            token=token, 
+            transaction_id=transaction_id
         )
         async with self.session() as session:
             session.add(new_deposit)
