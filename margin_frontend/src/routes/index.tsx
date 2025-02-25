@@ -36,11 +36,7 @@ function Content() {
         Trade smarter, earn bigger, and grow your portfolio with confidence.
       </p>
       <div className="flex justify-center mt-12">
-        <Button
-          variant={"outline"}
-          size={"lg"}
-          className="w-[219px] text-baseWhite text-xl font-normal "
-        >
+        <Button variant={"outline"} size={"lg"} className="w-[219px]">
           Launch app
         </Button>
       </div>

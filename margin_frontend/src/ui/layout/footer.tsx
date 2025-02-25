@@ -1,16 +1,16 @@
 const socials = [
   {
-    icon: "src/assets/images/DiscordLogo.png",
+    icon: "src/assets/img/DiscordLogo.png",
     link: "https://discord.com/",
     title: "Discord",
   },
   {
-    icon: "src/assets/images/XLogo.png",
+    icon: "src/assets/img/XLogo.png",
     link: "https://twitter.com/SpotNet_123",
     title: "X",
   },
   {
-    icon: "src/assets/images/TelegramLogo.png",
+    icon: "src/assets/img/TelegramLogo.png",
     link: "https://t.me/djeck_vorobey1",
     title: "Telegram",
   },
