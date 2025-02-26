@@ -178,4 +178,6 @@ async def test_close_margin_position_db_error(
             with pytest.raises(Exception) as exc_info:
                 await margin_crud.close_margin_position(position_id=sample_position_id)
 
+            assert mock_get.called
+            assert mock_write.called
             assert "Database error" in str(exc_info.value)
