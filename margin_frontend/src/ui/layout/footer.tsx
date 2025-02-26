@@ -1,18 +1,18 @@
 const socials = [
   {
-    icon: "src/assets/img/DiscordLogo.png",
-    link: "https://discord.com/",
-    title: "Discord",
+    icon: 'src/assets/img/DiscordLogo.png',
+    link: 'https://discord.com/',
+    title: 'Discord',
   },
   {
-    icon: "src/assets/img/XLogo.png",
-    link: "https://twitter.com/SpotNet_123",
-    title: "X",
+    icon: 'src/assets/img/XLogo.png',
+    link: 'https://twitter.com/SpotNet_123',
+    title: 'X',
   },
   {
-    icon: "src/assets/img/TelegramLogo.png",
-    link: "https://t.me/djeck_vorobey1",
-    title: "Telegram",
+    icon: 'src/assets/img/TelegramLogo.png',
+    link: 'https://t.me/djeck_vorobey1',
+    title: 'Telegram',
   },
 ];
 export function Footer() {
