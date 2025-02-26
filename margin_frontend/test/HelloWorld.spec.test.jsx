@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, it } from 'vitest';
 import HelloWorld from "../components/HelloWorld";
 
-describe("HelloWorld test component", async () => {
+describe("HelloWorld test component", () => {
   it("renders name and counter works", async () => {
     render(<HelloWorld name="Vitest" />);
 
