@@ -1,8 +1,14 @@
+import PostsDemo from "../components/PostsDemo";
 import "./index.css";
-import { Home } from "./routes/index.tsx";
+import { Home } from "./routes/index";
 
 function App() {
-  return <Home />;
+  return (
+    <>
+      <Home />
+      <PostsDemo />
+    </>
+  );
 }
 
 export default App;
