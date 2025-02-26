@@ -10,11 +10,7 @@
     "allowUnreachableCode": false,
     "strict": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@ui/*": ["src/ui/*"],
-      "@utils/*": ["src/utils/*"],
-      "@routes/*": ["src/routes/*"],
-      "@assets/*": ["src/assets/*"]
+      "@/*": ["src/*"]
     }
   }
 }
