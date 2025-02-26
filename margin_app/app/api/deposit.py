@@ -2,8 +2,7 @@
 This module contains the API routes for deposit.
 """
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter
 from uuid import UUID
 
 from app.crud.deposit import deposit_crud
@@ -16,7 +15,6 @@ router = APIRouter()
 async def update_deposit(
     deposit_id: UUID,
     deposit_update: DepositUpdate,
-    db: AsyncSession = Depends(deposit_crud.get_db)
 ):
     """
     Update a deposit by ID.
@@ -25,4 +23,6 @@ async def update_deposit(
     :param db: AsyncSession
     :return: Deposit
     """
-    return await deposit_crud.update_deposit(deposit_id, deposit_update, db)
+    return await deposit_crud.update_deposit(
+        deposit_id, deposit_update.model_dump(exclude_none=True)
+    )
