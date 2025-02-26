@@ -9,6 +9,12 @@ from app.crud.user import UserCRUD
 from app.models.user import User
 
 
+class User(User):
+    """
+    Test User model for the UserCRUD tests.
+    """
+
+
 @pytest.fixture
 def user_crud() -> UserCRUD:
     """Create instance of UserCRUD"""

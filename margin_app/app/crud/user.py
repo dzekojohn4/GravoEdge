@@ -7,6 +7,7 @@ import uuid
 from typing import Optional
 from uuid import UUID
 from sqlalchemy.sql import text
+from sqlalchemy.exc import IntegrityError
 from decimal import Decimal
 
 from app.models.deposit import Deposit
@@ -38,9 +39,19 @@ class UserCRUD(DBConnector):
         :return: User
         """
         new_user = User(wallet_id=wallet_id)
-        return await self.write_to_db(new_user)
+        new_user = User(wallet_id=wallet_id)
+        async with self.session() as session:
+            try:
+                session.add(new_user)
+                await session.commit()
+                await session.refresh(new_user)
+                return new_user
+            except IntegrityError as e:
+                await session.rollback()
+                if "unique constraint" in str(e).lower():
+                    raise ValueError(f"{wallet_id} already exists") from e
+                raise
 
-         
 
     async def update_user(self, user_id: UUID, **kwargs) -> Optional[User]:
         """
@@ -49,7 +60,7 @@ class UserCRUD(DBConnector):
         :return: User
         """
 
-        with self.session() as session:
+        async with self.session() as session:
             user = await session.get(User, user_id)
             if not user:
                 return None
