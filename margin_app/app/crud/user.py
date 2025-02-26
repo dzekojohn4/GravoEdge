@@ -39,18 +39,7 @@ class UserCRUD(DBConnector):
         :return: User
         """
         new_user = User(wallet_id=wallet_id)
-        new_user = User(wallet_id=wallet_id)
-        async with self.session() as session:
-            try:
-                session.add(new_user)
-                await session.commit()
-                await session.refresh(new_user)
-                return new_user
-            except IntegrityError as e:
-                await session.rollback()
-                if "unique constraint" in str(e).lower():
-                    raise ValueError(f"{wallet_id} already exists") from e
-                raise
+        return await self.write_to_db(new_user)
 
 
     async def update_user(self, user_id: UUID, **kwargs) -> Optional[User]:

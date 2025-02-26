@@ -7,7 +7,7 @@ import uuid
 from typing import Type, TypeVar
 from app.models.base import BaseModel
 
-from typing import AsyncIterator
+from typing import AsyncIterator, Callable
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from contextlib import asynccontextmanager
@@ -28,14 +28,17 @@ class DBConnector:
     - remove_object: Removes an object by its ID from the database.
     """
 
-    def __init__(self):
+    def __init__(self, session_factory: Callable[[], AsyncSession] = None):
         """
         Initialize the database connection and session factory.
         :param db_url: str = None
         """
-        self.engine = create_async_engine(settings.db_url)
-        self.session_maker = async_sessionmaker(bind=self.engine)
-        
+        if session_factory is None:
+            self.engine = create_async_engine(settings.db_url)
+            self.session_maker = async_sessionmaker(bind=self.engine)
+        else:
+            self.session_factory = session_factory
+            
     @asynccontextmanager
     async def session(self) -> AsyncIterator[AsyncSession]:
         """
@@ -57,7 +60,7 @@ class DBConnector:
                 await session.execute(query)
                 await session.commit()
         """
-        session: AsyncSession = self.session_maker()
+        session: AsyncSession = self.session_factory()
 
         try:
             yield session
