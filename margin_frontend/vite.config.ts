@@ -5,12 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   test: {
-    name: "react",
-    browser: {
-      enabled: true,
-      provider: "playwright",
-      headless: true,
-    },
-    exclude: ["test/browser/**/*"],
+    globals: true,    
+    environment: 'jsdom',
   },
 });
