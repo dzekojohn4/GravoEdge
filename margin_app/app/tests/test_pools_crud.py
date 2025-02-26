@@ -130,7 +130,8 @@ async def test_update_user_pool(user_pool_crud, mock_db_session):
     user_pool_id = uuid.uuid4()
     new_amount = Decimal("1500.75")
 
-    existing_user_pool = UserPool(user_id=uuid.uuid4(), pool_id=uuid.uuid4(), amount=Decimal("1000"))
+    existing_user_pool = UserPool(user_id=uuid.uuid4(), 
+                                  pool_id=uuid.uuid4(), amount=Decimal("1000"))
     existing_user_pool.id = user_pool_id
 
     mock_db_session.get = AsyncMock(return_value=existing_user_pool)
