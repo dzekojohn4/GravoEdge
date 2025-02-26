@@ -48,7 +48,8 @@ class UserCRUD(DBConnector):
         :param user_id: UUID
         :return: User
         """
-        async with self.session() as session:
+
+        with self.session() as session:
             user = await session.get(User, user_id)
             if not user:
                 return None
@@ -117,5 +118,6 @@ class UserCRUD(DBConnector):
             transaction_id=transaction_id
         )
         return await self.write_to_db(new_margin_position)
+
 
 user_crud = UserCRUD()
