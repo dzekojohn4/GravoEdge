@@ -4,21 +4,43 @@ This is the test module for the UserCRUD class.
 
 import uuid
 import pytest
+import pytest_asyncio
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
 from decimal import Decimal
 from app.crud.user import UserCRUD
 from app.models.user import User
+from app.models.deposit import Deposit
+from app.models.margin_position import MarginPosition
+from app.models.base import BaseModel
 
+TEST_DATABASE_URL = "postgresql+asyncpg://test_user:test_password@localhost/test_db"
 
-class User(User):
-    """
-    Test User model for the UserCRUD tests.
-    """
+@pytest_asyncio.fixture(scope="session")
+async def async_engine():
+    '''Isolated async Engine'''
+    engine = create_async_engine(TEST_DATABASE_URL, echo=True)
+    async with engine.begin() as conn:
+        # Create all tables; ensure that BaseModel.metadata includes your User model and others.
+        await conn.run_sync(BaseModel.metadata.create_all)
+    yield engine
+    async with engine.begin() as conn:
+        await conn.run_sync(BaseModel.metadata.drop_all)
+    await engine.dispose()
 
+@pytest_asyncio.fixture
+async def db_session(async_engine):
+    '''Isolated Db Session'''
+    async_session = sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
+    async with async_session() as session:
+        yield session
+        # Optionally rollback any changes to keep tests isolated.
+        await session.rollback()
 
-@pytest.fixture
-def user_crud() -> UserCRUD:
+@pytest_asyncio.fixture
+async def user_crud(db_session) -> UserCRUD:
     """Create instance of UserCRUD"""
-    return UserCRUD()
+    return UserCRUD(session_factory=lambda: db_session)
 
 @pytest.mark.asyncio
 async def test_test_connection(user_crud: UserCRUD) -> None:
