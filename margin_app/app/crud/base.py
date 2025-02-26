@@ -28,16 +28,13 @@ class DBConnector:
     - remove_object: Removes an object by its ID from the database.
     """
 
-    def __init__(self, session_factory: Callable[[], AsyncSession] = None):
+    def __init__(self):
         """
         Initialize the database connection and session factory.
         :param db_url: str = None
         """
-        if session_factory is None:
-            self.engine = create_async_engine(settings.db_url)
-            self.session_maker = async_sessionmaker(bind=self.engine)
-        else:
-            self.session_factory = session_factory
+        self.engine = create_async_engine(settings.db_url)
+        self.session_maker = async_sessionmaker(bind=self.engine)
             
     @asynccontextmanager
     async def session(self) -> AsyncIterator[AsyncSession]:
@@ -60,7 +57,7 @@ class DBConnector:
                 await session.execute(query)
                 await session.commit()
         """
-        session: AsyncSession = self.session_factory()
+        session: AsyncSession = self.session_maker()
 
         try:
             yield session
