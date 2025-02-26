@@ -1,3 +1,7 @@
+"""
+This module contains Pydantic schemas for User.
+"""
+
 from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 from datetime import datetime
