@@ -6,7 +6,11 @@ from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 from typing import Optional
 from decimal import Decimal
+
 from app.models.pool import PoolRiskStatus
+
+from typing import Optional
+
 
 
 class UserPoolBase(BaseModel):
