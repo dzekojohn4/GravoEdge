@@ -16,7 +16,6 @@ from app.models.base import BaseModel
 
 TEST_DATABASE_URL = "postgresql+asyncpg://test_user:test_password@localhost/test_db"
 
-<<<<<<< HEAD
 @pytest_asyncio.fixture(scope="session")
 async def async_engine():
     '''Isolated async Engine'''
@@ -40,10 +39,6 @@ async def db_session(async_engine):
 
 @pytest_asyncio.fixture
 async def user_crud(db_session) -> UserCRUD:
-=======
-@pytest.fixture
-def user_crud() -> UserCRUD:
->>>>>>> parent of d49a4f86 (testing async session)
     """Create instance of UserCRUD"""
     return UserCRUD(session_factory=lambda: db_session)
 

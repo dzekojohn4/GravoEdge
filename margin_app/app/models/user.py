@@ -12,7 +12,7 @@ from .margin_position import MarginPosition
 
 class User(BaseModel):
     """
-    User model. With one-to-many realtionships to Deposit and MarginPosition models.
+    User model. With one-to-many relationships to Deposit and MarginPosition models.
     """
     __tablename__ = "user"
 
