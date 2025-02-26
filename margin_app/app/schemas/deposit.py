@@ -1,14 +1,16 @@
 from pydantic import BaseModel
 from decimal import Decimal
 from uuid import UUID
+from typing import Optional
+from datetime import datetime
 
 class DepositUpdate(BaseModel):
     """
     Pydantic model for updating a Deposit.
     """
-    token: str
-    amount: Decimal
-    transaction_id: str
+    token: Optional[str] = None
+    amount: Optional[Decimal] = None
+    transaction_id: Optional[str] = None
 
 
 class DepositResponse(BaseModel):
@@ -20,5 +22,5 @@ class DepositResponse(BaseModel):
     token: str
     amount: Decimal
     transaction_id: str
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
