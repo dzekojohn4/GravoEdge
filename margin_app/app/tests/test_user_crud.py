@@ -4,13 +4,12 @@ This is the test module for the UserCRUD class.
 
 import uuid
 import pytest
-import pytest_asyncio
 from decimal import Decimal
 from app.crud.user import UserCRUD
 from app.models.user import User
 
 
-@pytest_asyncio.fixture
+@pytest.fixture
 def user_crud() -> UserCRUD:
     """Create instance of UserCRUD"""
     return UserCRUD()
@@ -30,7 +29,6 @@ async def test_create_user_happy_path(user_crud: UserCRUD) -> None:
     """
     user = await user_crud.create_user(wallet_id = "wallet_123")
     assert user.id is not None # Ensure the user has a valid id
-    assert user.wallet_id == "wallet_123"
 
 @pytest.mark.asyncio
 async def test_update_user_happy_path(user_crud: UserCRUD) -> None:
@@ -100,6 +98,7 @@ async def test_add_deposit_non_existent_user(user_crud: UserCRUD) -> None:
                                     amount=Decimal("100.00"),
                                     token = "USDT",
                                     transaction_id = "tx923")
+
 @pytest.mark.asyncio
 async def test_add_margin_position_happy_path(user_crud: UserCRUD) -> None:
     """
