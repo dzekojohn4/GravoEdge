@@ -2,9 +2,13 @@ name: Run Margin App Frontend Tests
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'margin_frontend/**'
   pull_request:
+    branches:
+      - main
     paths:
       - 'margin_frontend/**'
 
@@ -19,7 +23,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20'
+        node-version: '22'
 
     - name: Create .env file
       run: cp .env.example .env
