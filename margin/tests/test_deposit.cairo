@@ -14,7 +14,7 @@ const HYPOTHETICAL_OWNER_ADDR: felt252 =
     0x059a943ca214c10234b9a3b61c558ac20c005127d183b86a99a8f3c60a08b4ff;
 
 #[test]
-#[should_panic(expected: 'amount = 0')]
+#[should_panic(expected: 'Amount is zero')]
 fn test_deposit_zero_amount() {
     // Setup
     let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
