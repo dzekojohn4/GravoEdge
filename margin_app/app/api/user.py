@@ -1,9 +1,8 @@
 """
 This module contains the API routes for the user.
 """
-from fastapi import APIRouter, HTTPException, status, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from ..database import get_db
+from fastapi import APIRouter,status, HTTPException
+from loguru import logger
 from ..crud.user import user_crud as crud_create_user
 from app.schemas.user import UserResponse, UserCreate
 
@@ -16,7 +15,8 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     )
 
-async def user_crud(user: UserCreate, db: AsyncSession = Depends(get_db))-> UserResponse:
+async def create_user(user: UserCreate)-> UserResponse:
+
     """
     Create a new user.
 
@@ -26,7 +26,12 @@ async def user_crud(user: UserCreate, db: AsyncSession = Depends(get_db))-> User
     Returns:
     - UserResponse: The created user object
     """
-    db_user = await crud_create_user(db, user.wallet_id)
-    if db_user is None:
-        raise HTTPException(status_code=400, detail="User could not be created")
-    return db_user
+    try:
+        user = await crud_create_user.create_user(user.wallet_id)
+    except Exception as e:
+        logger.error(f"Error creating user pool: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Something went wrong.",
+        ) from e
+    return user
