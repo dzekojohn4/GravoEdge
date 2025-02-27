@@ -1,18 +1,11 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "../ui/core/button";
-import { Footer } from "../ui/layout/footer";
-import { Header } from "../ui/layout/header";
 
-export function Home() {
-  return (
-    <div className="flex flex-col w-screen min-h-screen bg-pageBg md:justify-between">
-      <Header />
-      <Content />
-      <Footer />
-    </div>
-  );
-}
+export const Route = createFileRoute("/")({
+  component: Home,
+});
 
-function Content() {
+function Home() {
   return (
     <div className="mt-[100px] md:mt-0 pb-[112px] md:pb-0">
       <h1 className="hidden text-center uppercase md:block text-header-text-size leading-header-text-lineheight font-pilotCommandSpaced text-headerText">
