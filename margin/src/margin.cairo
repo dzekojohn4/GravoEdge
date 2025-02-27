@@ -46,13 +46,13 @@ pub mod Margin {
             );
             assert(token_dispatcher.balance_of(depositor) >= amount, 'Insufficient balance');
 
-            token_dispatcher.transfer_from(depositor, contract, amount);
-
             let user_balance = self.treasury_balances.entry((depositor, token)).read();
             self.treasury_balances.entry((depositor, token)).write(user_balance + amount);
 
             let pool_value = self.pools.entry(token).read();
             self.pools.entry(token).write(pool_value + amount);
+
+            token_dispatcher.transfer_from(depositor, contract, amount);
 
             self.emit(Deposit { depositor, token, amount });
         }
