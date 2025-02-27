@@ -2,7 +2,6 @@
 This module contains the API routes for margin positions.
 """
 
-from typing import NoReturn
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -19,14 +18,16 @@ router = APIRouter()
 
 
 @router.post("/open", response_model=MarginPositionResponse)
-async def open_margin_position(position_data: MarginPositionCreate):
+async def open_margin_position(
+    position_data: MarginPositionCreate,
+    db: AsyncSession = Depends(margin_position_crud.session),
+):
     """
     Opens a margin position by creating an entry record in the database.
     :param position_data: MarginPositionCreate
     :param db: AsyncSession
     :return: MarginPositionResponse
     """
-    margin_position_crud.db = db
     position = await margin_position_crud.open_margin_position(
         user_id=position_data.user_id,
         borrowed_amount=position_data.borrowed_amount,
@@ -37,7 +38,10 @@ async def open_margin_position(position_data: MarginPositionCreate):
 
 
 @router.post("/close/{position_id}", response_model=CloseMarginPositionResponse)
-async def close_margin_position(position_id: UUID) -> CloseMarginPositionResponse:
+async def close_margin_position(
+    position_id: UUID, 
+    db: AsyncSession = Depends(margin_position_crud.session),
+) -> CloseMarginPositionResponse:
     """
     Close a margin position endpoint.
 
