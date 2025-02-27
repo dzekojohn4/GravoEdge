@@ -1,12 +1,15 @@
-import { expect, test } from "vitest";
-import { render } from "vitest-browser-react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, it } from 'vitest';
 import HelloWorld from "../components/HelloWorld";
 
-test("renders name", async () => {
-  const { getByText, getByRole } = render(<HelloWorld name="Vitest" />);
+describe("HelloWorld test component", () => {
+  it("renders name and counter works", async () => {
+    render(<HelloWorld name="Vitest" />);
 
-  await expect.element(getByText("Hello Vitest x1!")).toBeInTheDocument();
-  await getByRole("button", { name: "Increment " }).click();
+    await screen.findByText("Hello Vitest x1!");
+    await userEvent.click(screen.getByRole("button", { name: "Increment" }));
 
-  await expect.element(getByText("Hello Vitest x2!")).toBeInTheDocument();
+    await screen.findByText("Hello Vitest x2!");
+  });
 });
