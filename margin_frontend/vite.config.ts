@@ -1,16 +1,19 @@
-import { defineConfig } from "vitest/config";
-import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vitest/config";
+import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    TanStackRouterVite({
+      target: "react",
+      autoCodeSplitting: true,
+    }),
+    react(),
+    tailwindcss(),
+  ],
   test: {
-    name: "react",
-    browser: {
-      enabled: true,
-      provider: "playwright",
-      headless: true,
-    },
-    exclude: ["test/browser/**/*"],
+    globals: true,
+    environment: "jsdom",
   },
 });
