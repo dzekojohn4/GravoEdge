@@ -28,18 +28,21 @@ async def open_margin_position(
     :param db: AsyncSession
     :return: MarginPositionResponse
     """
-    position = await margin_position_crud.open_margin_position(
-        user_id=position_data.user_id,
-        borrowed_amount=position_data.borrowed_amount,
-        multiplier=position_data.multiplier,
-        transaction_id=position_data.transaction_id,
-    )
-    return position
+    try:
+        position = await margin_position_crud.open_margin_position(
+            user_id=position_data.user_id,
+            borrowed_amount=position_data.borrowed_amount,
+            multiplier=position_data.multiplier,
+            transaction_id=position_data.transaction_id,
+        )
+        return position
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 @router.post("/close/{position_id}", response_model=CloseMarginPositionResponse)
 async def close_margin_position(
-    position_id: UUID, 
+    position_id: UUID,
     db: AsyncSession = Depends(margin_position_crud.session),
 ) -> CloseMarginPositionResponse:
     """
