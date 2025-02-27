@@ -41,15 +41,12 @@ async def open_margin_position(
 
 
 @router.post("/close/{position_id}", response_model=CloseMarginPositionResponse)
-async def close_margin_position(
-    position_id: UUID, db: AsyncSession = Depends(get_db)
-) -> CloseMarginPositionResponse:
+async def close_margin_position(position_id: UUID) -> CloseMarginPositionResponse:
     """
     Close a margin position endpoint.
 
     Args:
         position_id (UUID): The unique identifier of the margin position to close
-        db (AsyncSession): Database session dependency injected by FastAPI
 
     Returns:
         CloseMarginPositionResponse: Object containing the position ID and its updated status
