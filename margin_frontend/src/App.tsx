@@ -4,12 +4,9 @@ import Pool from './routes/pool.tsx';
 
 function App() {
   return (
-    <>
-      <Home />
-      <div className="w-screen min-h-screen bg-pageBg ">
-        <Pool />
-      </div>
-    </>
+    <div className="w-screen min-h-screen bg-pageBg ">
+      <Pool />
+    </div>
   );
 }
 
