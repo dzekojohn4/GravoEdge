@@ -1,7 +1,5 @@
 """
 Main entry point for the application.
-
-This module initializes the FastAPI application and includes all routers.
 """
 
 import sys
@@ -9,10 +7,12 @@ from fastapi import FastAPI, Request
 from loguru import logger
 
 from app.api.deposit import router as deposit_router
+
 from app.api.liquidation import router as liquidation_router
 from app.api.margin_position import router as margin_position_router
 from app.api.pools import router as pool_router
 from app.api.user import router as user_router
+from app.api.deposit import router as deposit_router
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -24,6 +24,7 @@ app = FastAPI(
 # Include routers
 app.include_router(liquidation_router, prefix="/api/liquidation", tags=["Liquidation"])
 app.include_router(pool_router, prefix="/api/pool", tags=["Pool"])
+app.include_router(margin_position_router, prefix="/api/margin", tags=["MarginPosition"])
 app.include_router(
     margin_position_router, prefix="/api/margin-positions", tags=["margin-positions"]
 )
@@ -41,7 +42,6 @@ logger.add(
     diagnose=True,
 )
 
-
 @app.on_event("startup")
 async def startup_event():
     """
@@ -49,7 +49,6 @@ async def startup_event():
     For example, database connection setup or loading configurations.
     """
     logger.info("Application startup: Initializing resources.")
-
 
 @app.on_event("shutdown")
 async def shutdown_event():
@@ -70,17 +69,7 @@ async def log_requests(request: Request, call_next):
     logger.info(f"Response: {response.status_code} {request.url}")
     return response
 
-
-# Example route
-@app.get("/")
-async def read_root():
-    """
-    Basic endpoint for testing.
-    """
-    logger.info("Root endpoint accessed.")
-    return {"message": "Welcome to the FastAPI application!"}
-
-
+  
 # Additional route
 @app.get("/health")
 async def health_check():
