@@ -104,7 +104,7 @@ class TestLiquidation:
             raise Exception(error_message)
 
         monkeypatch.setattr(
-            "app.api.liquidation.liquidation_crud.liquidate_position",
+            "app.crud.liquidation.liquidation_crud.liquidate_position",
             mock_liquidate_position,
         )
 
