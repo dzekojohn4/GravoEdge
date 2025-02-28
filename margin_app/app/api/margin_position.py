@@ -43,7 +43,6 @@ async def open_margin_position(
 @router.post("/close/{position_id}", response_model=CloseMarginPositionResponse)
 async def close_margin_position(
     position_id: UUID,
-    db: AsyncSession = Depends(margin_position_crud.session),
 ) -> CloseMarginPositionResponse:
     """
     Close a margin position endpoint.
