@@ -15,7 +15,7 @@ pub struct MarginTestSuite {
 }
 
 pub fn ERC20_MOCK_CONTRACT() -> ContractAddress {
-    contract_address_const::<'erc20mock'>()
+    contract_address_const::<'ERC20Mock'>()
 }
 
 pub fn deploy_erc20_mock() -> ContractAddress {

@@ -12,3 +12,10 @@ pub trait IMargin<TContractState> {
 
     fn liquidate(ref self: TContractState, user: ContractAddress);
 }
+
+#[starknet::interface]
+pub trait IERC20MetadataForPragma<TState> {
+    fn name(self: @TState) -> ByteArray;
+    fn symbol(self: @TState) -> felt252;
+    fn decimals(self: @TState) -> felt252;
+}
