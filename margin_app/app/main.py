@@ -6,8 +6,6 @@ import sys
 from fastapi import FastAPI, Request
 from loguru import logger
 
-from app.api.deposit import router as deposit_router
-
 from app.api.liquidation import router as liquidation_router
 from app.api.margin_position import router as margin_position_router
 from app.api.pools import router as pool_router

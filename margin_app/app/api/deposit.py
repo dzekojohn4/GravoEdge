@@ -1,8 +1,9 @@
 """
 This module contains the API routes for the Deposit model.
 """
+from typing import Optional
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, HTTPException
 
 from uuid import UUID
 from app.crud.deposit import deposit_crud
@@ -19,15 +20,24 @@ async def create_deposit(deposit_in: DepositCreate) -> DepositResponse:
 
     :return: DepositResponse: The created deposit object with db ID assigned.
     """
-    return await deposit_crud.create_deposit(
-        deposit_in.user_id,
-        deposit_in.token,
-        deposit_in.amount,
-        deposit_in.transaction_id,
-    )
+    # TODO: get user by id, and throw a 400 if user does not exist
+    #   Crud method for getting <obj> by id does not exist yet.
+
+    try:
+        return await deposit_crud.create_deposit(
+            deposit_in.user_id,
+            deposit_in.token,
+            deposit_in.amount,
+            deposit_in.transaction_id,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create deposit.",
+        ) from e
 
 
-@router.post("/update/{deposit_id}", response_model=DepositResponse)
+@router.post("/{deposit_id}", response_model=Optional[DepositResponse])
 async def update_deposit(
     deposit_id: UUID,
     deposit_update: DepositUpdate,
@@ -36,7 +46,7 @@ async def update_deposit(
     Update a deposit by ID.
     :param deposit_id: str
     :param deposit_update: DepositUpdate data
-    :param db: AsyncSession
+
     :return: Deposit
     """
     return await deposit_crud.update_deposit(

@@ -4,9 +4,11 @@ This module contains endpoints for managing liquidations.
 
 from uuid import UUID
 from decimal import Decimal
-from fastapi import HTTPException
+from fastapi import HTTPException, APIRouter
 from app.crud.liquidation import liquidation_crud  # Using the instance from the specified module
 from app.schemas.liquidation import LiquidationResponse
+
+router = APIRouter()
 
 async def liquidate_position(
     margin_position_id: UUID,
