@@ -13,9 +13,6 @@ from fastapi.testclient import TestClient
 from app.api.user import router
 from app.schemas.user import UserResponse
 
-# pylint: disable=redefined-outer-name
-# The above disables the redefined-outer-name warning for the entire file
-
 
 @pytest.fixture
 def app():
