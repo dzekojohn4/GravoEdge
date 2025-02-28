@@ -6,7 +6,7 @@ from app.crud.user import UserCRUD
 from app.db.sessions import get_db
 from app.schemas.user import (AddMarginPositionRequest,
                               AddMarginPositionResponse, AddUserDepositRequest,
-                              AddUserDepositResponse)
+                              AddUserDepositResponse, UserResponse, UserCreate)
 from fastapi import APIRouter, Depends, HTTPException, status
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
