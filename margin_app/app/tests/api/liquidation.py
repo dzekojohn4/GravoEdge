@@ -65,6 +65,7 @@ class TestLiquidation:
             assert margin_position_id == self.test_margin_position_id
             assert bonus_amount == self.test_bonus_amount
             assert bonus_token == self.test_bonus_token
+
             return mock_entry
 
         monkeypatch.setattr(
