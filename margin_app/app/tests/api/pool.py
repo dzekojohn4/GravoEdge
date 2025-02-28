@@ -1,4 +1,4 @@
-""" The module contains tests for `app/api/pools.py`"""
+""" The module contains tests for `margin_app/app/api/pools.py`"""
 
 import uuid
 from unittest.mock import AsyncMock, patch
