@@ -12,7 +12,7 @@ alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.g
 
 
 [dev-dependencies]
-snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry", tag = "v0.32.0" }
+snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry", tag = "v0.37.0" }
 assert_macros = "2.9.4"
 
 [[target.starknet-contract]]
