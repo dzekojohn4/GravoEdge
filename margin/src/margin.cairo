@@ -17,10 +17,19 @@ pub mod Margin {
         amount: TokenAmount,
     }
 
+    #[derive(starknet::Event, Drop)]
+    struct Withdraw {
+        withdrawer: ContractAddress,
+        token: ContractAddress,
+        amount: TokenAmount,
+    }
+
+
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
         Deposit: Deposit,
+        Withdraw: Withdraw,
     }
 
     #[storage]
@@ -57,7 +66,24 @@ pub mod Margin {
             self.emit(Deposit { depositor, token, amount });
         }
 
-        fn withdraw(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {}
+        fn withdraw(ref self: ContractState, token: ContractAddress, amount: TokenAmount) {
+            assert(amount > 0, 'Withdraw amount is zero');
+
+            let withdrawer = get_caller_address();
+
+            let user_treasury_amount = self.treasury_balances.entry((withdrawer, token)).read();
+            assert(amount <= user_treasury_amount, 'Insufficient user treasury');
+
+            self.treasury_balances.entry((withdrawer, token)).write(user_treasury_amount - amount);
+
+            let token_dispatcher = IERC20Dispatcher { contract_address: token };
+            token_dispatcher.transfer(withdrawer, amount);
+
+            let pool_value = self.pools.entry(token).read();
+            self.pools.entry(token).write(pool_value - amount);
+
+            self.emit(Withdraw { withdrawer, token, amount });
+        }
 
         // TODO: Add Ekubo data for swap
         fn open_margin_position(ref self: ContractState, position_parameters: PositionParameters) {}

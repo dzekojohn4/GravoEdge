@@ -6,6 +6,7 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
 };
 use snforge_std::{declare, ContractClassTrait, DeclareResultTrait};
 use alexandria_math::fast_power::fast_power;
+use margin::types::TokenAmount;
 
 #[derive(Drop)]
 pub struct MarginTestSuite {
@@ -56,4 +57,28 @@ pub fn setup_user(suite: @MarginTestSuite, user: ContractAddress, amount: u256) 
     start_cheat_caller_address(*suite.token.contract_address, user);
     (*suite.token).approve((*suite.margin).contract_address, amount);
     stop_cheat_caller_address(*suite.token.contract_address);
+}
+
+// Helper function to read treasury balances directly from storage
+pub fn get_treasury_balance(
+    margin_address: ContractAddress, depositor: ContractAddress, token: ContractAddress,
+) -> TokenAmount {
+    // Calculate storage address for treasury_balances
+    // This depends on the exact storage layout in the contract
+    let balance_key = snforge_std::map_entry_address(
+        selector!("treasury_balances"), array![depositor.into(), token.into()].span(),
+    );
+
+    let balances = snforge_std::load(margin_address, balance_key, 1);
+    let amount: TokenAmount = (*balances[0]).into();
+    amount
+}
+
+// Helper function to read pool values directly from storage
+pub fn get_pool_value(margin_address: ContractAddress, token: ContractAddress) -> TokenAmount {
+    // Calculate storage address for pools
+    let pool_key = snforge_std::map_entry_address(selector!("pools"), array![token.into()].span());
+
+    let pool_value = snforge_std::load(margin_address, pool_key, 1);
+    (*pool_value[0]).into()
 }
