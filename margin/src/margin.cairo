@@ -7,8 +7,12 @@ pub mod Margin {
         storage::{StoragePointerReadAccess, StoragePointerWriteAccess, StoragePathEntry, Map},
         ContractAddress, get_contract_address, get_caller_address,
     };
-    use margin::{interface::IMargin, types::{Position, TokenAmount, PositionParameters}};
+    use margin::{
+        interface::IMargin, 
+        types::{Position, TokenAmount, PositionParameters, SwapData, SwapResult}
+    };
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher};
+    use ekubo::{interfaces::core::ICoreDispatcher};
 
     #[derive(starknet::Event, Drop)]
     struct Deposit {
@@ -25,10 +29,22 @@ pub mod Margin {
 
     #[storage]
     struct Storage {
+        ekubo_core: ICoreDispatcher,
         treasury_balances: Map<(ContractAddress, ContractAddress), TokenAmount>,
         pools: Map<ContractAddress, TokenAmount>,
         positions: Map<ContractAddress, Position>,
     }
+
+
+    #[generate_trait]
+    impl InternalImpl of InternalTrait {
+        fn swap(ref self: ContractState, swap_data: SwapData) -> SwapResult {
+            ekubo::components::shared_locker::call_core_with_callback(
+                self.ekubo_core.read(), @swap_data
+            )
+        }
+    }
+
 
     #[abi(embed_v0)]
     impl Margin of IMargin<ContractState> {

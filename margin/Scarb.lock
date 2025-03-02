@@ -7,10 +7,16 @@ version = "0.2.1"
 source = "git+https://github.com/keep-starknet-strange/alexandria.git#74cafd429eef374730f2c6fed9a74753103c6fdb"
 
 [[package]]
+name = "ekubo"
+version = "0.1.0"
+source = "git+https://github.com/ekuboprotocol/abis?rev=edb6de8#edb6de8c9baf515f1053bbab3d86825d54a63bc3"
+
+[[package]]
 name = "margin"
 version = "0.1.0"
 dependencies = [
  "alexandria_math",
+ "ekubo",
  "openzeppelin_token",
  "snforge_std",
 ]

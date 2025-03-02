@@ -9,6 +9,7 @@ edition = "2023_11"
 starknet = "2.9.4"
 openzeppelin_token = "1.0.0"
 alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.git" }
+ekubo = { git = "https://github.com/ekuboprotocol/abis", rev = "edb6de8" }
 
 
 [dev-dependencies]
