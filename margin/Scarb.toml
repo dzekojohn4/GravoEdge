@@ -7,13 +7,17 @@ edition = "2023_11"
 
 [dependencies]
 starknet = "2.9.4"
+openzeppelin_token = "1.0.0"
+alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.git" }
+
 
 [dev-dependencies]
-snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry", tag = "v0.32.0" }
+snforge_std = { git = "https://github.com/foundry-rs/starknet-foundry", tag = "v0.37.0" }
 assert_macros = "2.9.4"
 
 [[target.starknet-contract]]
 sierra = true
+
 
 [scripts]
 test = "snforge test"
@@ -24,7 +28,7 @@ unstable-add-statements-functions-debug-info = true
 inlining-strategy = "avoid"
 
 [tool.snforge]
-fuzzer_runs = 50 
+fuzzer_runs = 50
 
 [[tool.snforge.fork]]
 name = "MAINNET"
