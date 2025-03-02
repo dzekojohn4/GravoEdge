@@ -27,9 +27,3 @@ pub struct SwapData {
     pub pool_key: PoolKey,
     pub caller: ContractAddress
 }
-
-
-#[derive(Copy, Drop, Serde)]
-pub struct SwapResult {
-    pub delta: Delta,
-}
