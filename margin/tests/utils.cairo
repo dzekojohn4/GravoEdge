@@ -19,6 +19,10 @@ pub fn ERC20_MOCK_CONTRACT() -> ContractAddress {
     contract_address_const::<'ERC20Mock'>()
 }
 
+pub fn ERC20_MOCK_CONTRACT_2() -> ContractAddress {
+    contract_address_const::<'ERC20Mock2'>()
+}
+
 pub fn deploy_erc20_mock() -> ContractAddress {
     let contract = declare("ERC20Mock").unwrap().contract_class();
     let name: ByteArray = "erc20 mock";
@@ -36,6 +40,25 @@ pub fn deploy_erc20_mock() -> ContractAddress {
 
     contract_addr
 }
+
+pub fn deploy_erc20_mock_2() -> ContractAddress {
+    let contract = declare("ERC20Mock").unwrap().contract_class();
+    let name: ByteArray = "erc20 mock";
+    let symbol: ByteArray = "ERC20MOCK";
+    let initial_supply: u256 = 100 * fast_power(10, 18);
+    let recipient: ContractAddress = get_contract_address();
+
+    let mut calldata: Array<felt252> = array![];
+    Serde::serialize(@name, ref calldata);
+    Serde::serialize(@symbol, ref calldata);
+    Serde::serialize(@initial_supply, ref calldata);
+    Serde::serialize(@recipient, ref calldata);
+
+    let (contract_addr, _) = contract.deploy_at(@calldata, ERC20_MOCK_CONTRACT_2()).unwrap();
+
+    contract_addr
+}
+
 
 pub fn setup_test_suite(owner: ContractAddress, token_address: ContractAddress) -> MarginTestSuite {
     let contract = declare("Margin").unwrap().contract_class();
