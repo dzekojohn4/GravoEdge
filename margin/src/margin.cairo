@@ -12,7 +12,10 @@ pub mod Margin {
         types::{Position, TokenAmount, PositionParameters, SwapData}
     };
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher};
-    use ekubo::{interfaces::core::{ICoreDispatcher, ILocker, ICoreDispatcherTrait}, types::delta::Delta};
+    use ekubo::{
+        interfaces::core::{ICoreDispatcher, ILocker, ICoreDispatcherTrait}, types::delta::Delta,
+        components::shared_locker::{consume_callback_data, handle_delta, call_core_with_callback}
+    };
 
     #[derive(starknet::Event, Drop)]
     struct Deposit {
@@ -39,9 +42,7 @@ pub mod Margin {
     #[generate_trait]
     pub impl InternalImpl of InternalTrait {
         fn swap(ref self: ContractState, swap_data: SwapData) -> Delta {
-            ekubo::components::shared_locker::call_core_with_callback(
-                self.ekubo_core.read(), @swap_data
-            )
+            call_core_with_callback(self.ekubo_core.read(), @swap_data)
         }
     }
 
@@ -86,17 +87,11 @@ pub mod Margin {
     impl Locker of ILocker<ContractState> {
         fn locked(ref self: ContractState, id: u32, data: Span<felt252>) -> Span<felt252> {
             let core = self.ekubo_core.read();
-            let SwapData { pool_key, params, caller } =
-                ekubo::components::shared_locker::consume_callback_data::<
-                SwapData
-            >(core, data);
+            let SwapData { pool_key, params, caller } = consume_callback_data(core, data);
             let delta = core.swap(pool_key, params);
-            ekubo::components::shared_locker::handle_delta(
-                core, pool_key.token0, delta.amount0, caller
-            );
-            ekubo::components::shared_locker::handle_delta(
-                core, pool_key.token1, delta.amount1, caller
-            );
+            
+            handle_delta(core, pool_key.token0, delta.amount0, caller);
+            handle_delta(core, pool_key.token1, delta.amount1, caller);
 
             let mut arr: Array<felt252> = ArrayTrait::new();
             Serde::serialize(@delta, ref arr);
