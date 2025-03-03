@@ -5,7 +5,8 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
 };
 use margin::interface::{IMarginDispatcherTrait};
 use super::utils::{
-    setup_test_suite, deploy_erc20_mock, setup_user, get_treasury_balance, get_pool_value,
+    setup_test_suite, deploy_erc20_mock, deploy_erc20_mock_2, setup_user, get_treasury_balance,
+    get_pool_value,
 };
 
 const WITHDRAW_MOCK_USER: felt252 =
@@ -237,7 +238,7 @@ fn test_withdraw_from_separate_pools() {
     let suite = setup_test_suite(HYPOTHETICAL_OWNER_ADDR.try_into().unwrap(), deploy_erc20_mock());
 
     // Deploy a second token
-    let token2_address = deploy_erc20_mock();
+    let token2_address = deploy_erc20_mock_2();
 
     let deposit_amount1: u256 = 1000;
     let deposit_amount2: u256 = 2000;
