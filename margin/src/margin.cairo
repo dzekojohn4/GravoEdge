@@ -58,9 +58,7 @@ pub mod Margin {
             let user_balance = self.treasury_balances.entry((depositor, token)).read();
             self.treasury_balances.entry((depositor, token)).write(user_balance + amount);
 
-            let pool_value = self.pools.entry(token).read();
-            self.pools.entry(token).write(pool_value + amount);
-
+            self.pools.entry(token).write(self.pools.entry(token).read() + amount);
             token_dispatcher.transfer_from(depositor, contract, amount);
 
             self.emit(Deposit { depositor, token, amount });
@@ -75,13 +73,9 @@ pub mod Margin {
             assert(amount <= user_treasury_amount, 'Insufficient user treasury');
 
             self.treasury_balances.entry((withdrawer, token)).write(user_treasury_amount - amount);
+            IERC20Dispatcher { contract_address: token }.transfer(withdrawer, amount);
 
-            let token_dispatcher = IERC20Dispatcher { contract_address: token };
-            token_dispatcher.transfer(withdrawer, amount);
-
-            let pool_value = self.pools.entry(token).read();
-            self.pools.entry(token).write(pool_value - amount);
-
+            self.pools.entry(token).write(self.pools.entry(token).read() - amount);
             self.emit(Withdraw { withdrawer, token, amount });
         }
 
