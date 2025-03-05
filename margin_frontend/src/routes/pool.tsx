@@ -5,12 +5,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Input } from "../ui/core/input";
 import PoolCard from "../ui/core/pool-card";
 import PoolTable from "../ui/core/pool-table";
+import { Tabs } from "../ui/core/tab";
+import { Button } from "../ui/core/button";
 export const Route = createFileRoute("/pool")({
 	component: Pool,
 });
 
 function Pool() {
-	const [activeTab, setActiveTab] = useState("all");
+
 
 	// Sample pool data
 	const pools = Array(8)
@@ -25,15 +27,28 @@ function Pool() {
 			riskLevel: "Low",
 			isDegen: true,
 		}));
-
+		const Tab = [
+			{
+				label: 'All',
+				content:<PoolTable pools={pools}/>
+			},
+			{
+				label: 'Stable',
+				content: 'to be replced with stable component'
+			},
+			{
+				label: 'Volatile',
+				content: 'to be replaced with volatile component'
+			},
+		]
 	return (
-		<div className="flex-1 max-w-7xl mx-auto w-full px-4 pb-6 pt-2 " style={{border:'1px solid red'}}>
+		<div className="flex-1 max-w-7xl mx-auto w-full px-4 pb-6 pt-2 " >
 			<div className="flex md:hidden items-center justify-between mb-8">
 				<div className="relative flex-1 max-w-md">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#848484]" />
 					<Input
 						placeholder="Search..."
-						className="pl-10 h-12 w-full bg-[#1a1a1a] border-[#333] rounded-full text-[#848484]"
+						className="pl-10 h-[48px] w-full max-w-[305px] text-[#848484] bg-transparent border-[#191819] border-solid border-[1px] rounded-[8px] text-[#848484] bricolage"
 					/>
 				</div>
 				<button className="ml-4 text-gray-400 md:hidden">
@@ -49,70 +64,24 @@ function Pool() {
 				</p>
 			</div>
 
-			{/* <div className="hidden lg:grid grid-cols-7 gap-4">
-				<div className=" col-span-5">
-					<div className="border-b border-[#333] mb-6">
-						<div className="flex">
-							<button
-								onClick={() => {
-									setActiveTab("all");
-								}}
-								className={`px-6 py-4 font-medium text-sm relative ${
-									activeTab === "all" ? "text-white" : "text-gray-400"
-								}`}
-							>
-								All
-								{activeTab === "all" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white"></span>}
-							</button>
-							<button
-								onClick={() => {
-									setActiveTab("stable");
-								}}
-								className={`px-6 py-4 font-medium text-sm relative ${
-									activeTab === "stable" ? "text-white" : "text-gray-400"
-								}`}
-							>
-								Stable
-								{activeTab === "stable" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white"></span>}
-							</button>
-							<button
-								onClick={() => {
-									setActiveTab("volatile");
-								}}
-								className={`px-6 py-4 font-medium text-sm relative ${
-									activeTab === "volatile" ? "text-white" : "text-gray-400"
-								}`}
-							>
-								Volatile
-								{activeTab === "volatile" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white"></span>}
-							</button>
-						</div>
-					</div>
-					<div className="hidden lg:block">
-						<PoolTable pools={pools} />
-					</div>{" "}
+			<div className="grid lg:grid-cols-7 gap-4">
+				<div className="col-span-5">
+					<Tabs defaultActiveIndex={0} tabs={Tab} />
 				</div>
-				<div className="col-span-2">
+				<div className="col-span-2 hidden lg:block">
 					<div className="flex  items-center justify-between mb-8">
 						<div className="relative flex-1 max-w-md">
 							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#848484]" />
 							<Input
 								placeholder="Search..."
-								className="pl-10 h-12 w-full bg-[#1a1a1a] border-[#333] rounded-full text-[#848484]"
+								className="pl-10 h-[48px] w-full max-w-[305px] text-[#848484] bg-transparent border-[#191819] border-solid border-[1px] rounded-[8px] text-[#848484] bricolage"
 							/>
 						</div>
-						<button className="ml-4 text-gray-400 lg:hidden">
-							<Menu size={24} />
-						</button>
 					</div>
 				</div>
-			</div> */}
+			</div>
 
-			{/* <div className="lg:hidden space-y-4">
-				{pools.map((pool) => (
-					<PoolCard key={pool.id} pool={pool} />
-				))}
-			</div> */}
+		
 		</div>
 	);
 }
