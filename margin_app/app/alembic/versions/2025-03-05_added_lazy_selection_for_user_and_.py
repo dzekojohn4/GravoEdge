@@ -1,8 +1,8 @@
-"""empty message
+"""added lazy selection for user and deposits
 
-Revision ID: ce3cb999a141
+Revision ID: 04844aee175f
 Revises: fe041c2f01ee
-Create Date: 2025-03-05 18:46:25.835969
+Create Date: 2025-03-05 19:14:50.050535
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'ce3cb999a141'
+revision: str = '04844aee175f'
 down_revision: Union[str, None] = 'fe041c2f01ee'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
