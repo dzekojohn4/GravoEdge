@@ -27,11 +27,10 @@ export default function PoolCard({ pool }: PoolCardProps) {
 						</div>
 					</div>
 					<div>
-						<h3 className="font-bold text-lg">{pool.name}</h3>
-						<div className="flex items-center text-sm text-gray-400">
-							<span>{pool.type}</span>
-							<span className="mx-2">•</span>
-							<span>{pool.baseApy}</span>
+						<div className="font-bold text-md">{pool.name}</div>
+						<div className="text-sm font-semibold text-headerText flex jusify-between gap-3">
+							<section>{pool.type}</section>
+							<section> {pool.baseApy}</section>
 						</div>
 					</div>
 				</div>
@@ -41,16 +40,16 @@ export default function PoolCard({ pool }: PoolCardProps) {
 
 			<div className="grid grid-cols-3 gap-4 mb-4 justify-between">
 				<div>
-					<div className="text-gray-400 text-sm mb-1">Liquidity</div>
-					<div className="font-bold">{pool.liquidity}</div>
+					<div className="text-tableHeads text-sm font-semibold mb-1">Liquidity</div>
+					<div className="font-bold text-riskandliquidity text-md">{pool.liquidity}</div>
 				</div>
 				<div className="text-center">
-					<div className="text-gray-400 text-sm mb-1">APY</div>
-					<div className="font-bold text-[#58c15d]">{pool.totalApy}</div>
+					<div className="text-tableHeads text-sm font-semibold mb-1">APY</div>
+					<div className="font-bold text-APY">{pool.totalApy}</div>
 				</div>
 				<div className=" text-end">
-					<div className="text-gray-400 text-sm mb-1">Risk Level</div>
-					<div className="font-bold">{pool.riskLevel}</div>
+					<div className="text-tableHeads text-sm font-semibold mb-1">Risk Level</div>
+					<div className="font-bold text-riskandliquidity text-md">{pool.riskLevel}</div>
 				</div>
 			</div>
 
