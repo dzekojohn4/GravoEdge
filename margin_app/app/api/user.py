@@ -33,7 +33,8 @@ async def create_user(user: UserCreate)-> UserResponse:
     user_db = await user_crud.get_object_by_field(field="wallet_id", value=user.wallet_id)
 
     if user_db:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User with such wallet_id laready exist.")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="User with such wallet_id laready exist.")
 
     try:
         user = await user_crud.create_user(user.wallet_id)

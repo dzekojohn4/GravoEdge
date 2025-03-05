@@ -107,7 +107,7 @@ class DBConnector:
         """
         async with self.session() as db:
             result = await db.execute(select(model).where(getattr(model, field) == value))
-            return result.scalar_one()
+            return result.scalar_one_or_none()
 
     async def delete_object_by_id(
         self, model: Type[ModelType] = None, obj_id: uuid = None
