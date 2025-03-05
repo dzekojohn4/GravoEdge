@@ -99,3 +99,9 @@
   --text-header-text-size: 64px;
   --leading-header-text-lineheight: 68.35px;
 }
+#root{
+  overflow-x: hidden;
+}
+.bricolage{
+  font-family: var(--font-bricolageGrotesque), sans-serif;
+}

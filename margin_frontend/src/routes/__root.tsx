@@ -14,13 +14,13 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
 	return (
 		<>
-			<div className="flex flex-col w-screen min-h-screen bg-pageBg md:justify-between">
-				<Header />
+			<div className="flex flex-col w-screen min-h-screen bg-pageBg md:justify-between overflow-x-hidden">
+				{/* <Header /> */}
 				<Outlet />
-				<Footer />
+				{/* <Footer /> */}
 			</div>
-			<ReactQueryDevtools buttonPosition="top-right" />
-			<TanStackRouterDevtools position="bottom-right" />
+			{/* <ReactQueryDevtools buttonPosition="top-right" />
+			<TanStackRouterDevtools position="bottom-right" /> */}
 		</>
 	);
 }

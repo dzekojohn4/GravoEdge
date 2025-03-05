@@ -5,8 +5,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Input } from "../ui/core/input";
 import PoolCard from "../ui/core/pool-card";
 import PoolTable from "../ui/core/pool-table";
-import { Footer } from "../ui/layout/footer";
-import { Header } from "../ui/layout/header";
 export const Route = createFileRoute("/pool")({
 	component: Pool,
 });
@@ -29,8 +27,8 @@ function Pool() {
 		}));
 
 	return (
-		<div className="flex-1 max-w-7xl mx-auto w-full px-4 py-6">
-			<div className="flex lg:hidden items-center justify-between mb-8">
+		<div className="flex-1 max-w-7xl mx-auto w-full px-4 pb-6 pt-2 " style={{border:'1px solid red'}}>
+			<div className="flex md:hidden items-center justify-between mb-8">
 				<div className="relative flex-1 max-w-md">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#848484]" />
 					<Input
@@ -38,20 +36,20 @@ function Pool() {
 						className="pl-10 h-12 w-full bg-[#1a1a1a] border-[#333] rounded-full text-[#848484]"
 					/>
 				</div>
-				<button className="ml-4 text-gray-400 lg:hidden">
+				<button className="ml-4 text-gray-400 md:hidden">
 					<Menu size={24} />
 				</button>
 			</div>
 
 			<div className="my-8 max-w-[400px]">
-				<h1 className="text-4xl font-bold mb-3 text-btnBorderColor">POOLS</h1>
-				<p className="text-baseWhite ">
+				<h1 className="text-[26px] font-[700] mb-3 text-btnBorderColor bricolage">POOLS</h1>
+				<p className="text-baseWhite bricolage text-[14px] font-[400]">
 					Earn passive income by providing liquidity to top trading pairs. Choose a pool, deposit funds, and start
 					earning.
 				</p>
 			</div>
 
-			<div className="hidden lg:grid grid-cols-7 gap-4">
+			{/* <div className="hidden lg:grid grid-cols-7 gap-4">
 				<div className=" col-span-5">
 					<div className="border-b border-[#333] mb-6">
 						<div className="flex">
@@ -108,13 +106,13 @@ function Pool() {
 						</button>
 					</div>
 				</div>
-			</div>
+			</div> */}
 
-			<div className="lg:hidden space-y-4">
+			{/* <div className="lg:hidden space-y-4">
 				{pools.map((pool) => (
 					<PoolCard key={pool.id} pool={pool} />
 				))}
-			</div>
+			</div> */}
 		</div>
 	);
 }
