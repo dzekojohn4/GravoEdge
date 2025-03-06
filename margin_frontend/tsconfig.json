@@ -11,6 +11,9 @@
 			"@/*": ["src/*"]
 		},
 		"module": "nodenext",
-		"moduleResolution": "nodenext"
-	}
+		"moduleResolution": "nodenext",
+		"outDir": "./dist",
+		"declaration": true,
+		"emitDeclarationOnly": false,
+	},	
 }
