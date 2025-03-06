@@ -17,7 +17,9 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true
+		"noUncheckedSideEffectImports": true,
+		"declaration": true,
+		"outDir": "./dist",
 	},
 	"include": ["src", "components/PostsDemo.tsx"]
 }
