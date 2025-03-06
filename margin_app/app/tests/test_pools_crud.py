@@ -63,10 +63,6 @@ async def test_create_pool_debug(pool_crud, mock_db_session):
 
     result = await pool_crud.create_pool(token, risk_status)
 
-    print(f"Result: {result}")
-    print(f"Session add called: {mock_session_instance.add.called}")
-    print(f"Session merge called: {mock_session_instance.merge.called}")
-
     assert result is not None
 
 
