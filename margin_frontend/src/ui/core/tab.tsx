@@ -21,6 +21,7 @@ export function Tabs({ tabs, defaultActiveIndex = 0, className = "" }: TabsProps
 				{tabs.map((tab) => (
 					<button
 						key={tab.id}
+						type="button"
 						className={`p-4 text-sm  font-medium focus:outline-none transition-colors min-w-[100px] ${
 							activeIndex === tabs.indexOf(tab)
 								? " rounded-t-lg text-baseWhite bg-navbg border-b border-activeTab "
