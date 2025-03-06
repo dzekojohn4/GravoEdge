@@ -38,7 +38,7 @@ function Pool() {
 						className="pl-10 h-12 w-full bg-[#1a1a1a] border-[#333] rounded-full text-[#848484]"
 					/>
 				</div>
-				<button className="ml-4 text-gray-400 lg:hidden">
+				<button type="button" className="ml-4 text-gray-400 lg:hidden">
 					<Menu size={24} />
 				</button>
 			</div>
@@ -56,6 +56,7 @@ function Pool() {
 					<div className="border-b border-[#333] mb-6">
 						<div className="flex">
 							<button
+								type="button"
 								onClick={() => {
 									setActiveTab("all");
 								}}
@@ -67,6 +68,7 @@ function Pool() {
 								{activeTab === "all" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white" />}
 							</button>
 							<button
+								type="button"
 								onClick={() => {
 									setActiveTab("stable");
 								}}
@@ -78,6 +80,7 @@ function Pool() {
 								{activeTab === "stable" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white" />}
 							</button>
 							<button
+								type="button"
 								onClick={() => {
 									setActiveTab("volatile");
 								}}
@@ -103,7 +106,7 @@ function Pool() {
 								className="pl-10 h-12 w-full bg-[#1a1a1a] border-[#333] rounded-full text-[#848484]"
 							/>
 						</div>
-						<button className="ml-4 text-gray-400 lg:hidden">
+						<button type="button" className="ml-4 text-gray-400 lg:hidden">
 							<Menu size={24} />
 						</button>
 					</div>
