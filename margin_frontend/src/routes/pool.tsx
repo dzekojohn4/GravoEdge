@@ -64,7 +64,7 @@ function Pool() {
 								}`}
 							>
 								All
-								{activeTab === "all" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white"></span>}
+								{activeTab === "all" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white" />}
 							</button>
 							<button
 								onClick={() => {
@@ -75,7 +75,7 @@ function Pool() {
 								}`}
 							>
 								Stable
-								{activeTab === "stable" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white"></span>}
+								{activeTab === "stable" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white" />}
 							</button>
 							<button
 								onClick={() => {
@@ -86,7 +86,7 @@ function Pool() {
 								}`}
 							>
 								Volatile
-								{activeTab === "volatile" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white"></span>}
+								{activeTab === "volatile" && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-white" />}
 							</button>
 						</div>
 					</div>

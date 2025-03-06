@@ -8,7 +8,7 @@ const queryClient = new QueryClient();
 
 const router = createRouter({
 	routeTree,
-	defaultPendingComponent: () => <div></div>,
+	defaultPendingComponent: () => <div />,
 	defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
 	defaultNotFoundComponent: () => {
 		return (
