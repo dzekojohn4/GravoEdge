@@ -5,8 +5,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Input } from "../ui/core/input";
 import PoolCard from "../ui/core/pool-card";
 import PoolTable from "../ui/core/pool-table";
-import { Footer } from "../ui/layout/footer";
-import { Header } from "../ui/layout/header";
 export const Route = createFileRoute("/pool")({
 	component: Pool,
 });
