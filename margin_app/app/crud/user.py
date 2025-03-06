@@ -119,7 +119,14 @@ class UserCRUD(DBConnector):
         )
         return await self.write_to_db(new_margin_position)
 
-    async def get_object_by_field(self, field: str, value:str, model = User):
+    async def get_object_by_field(self, field: str, value:str, model = User) -> Optional[User]:
+        """
+        Retrieves an object by a specified field from the database.
+        :param model: = User
+        :param field: str = None
+        :param value: str = None
+        :return: Base | None
+        """
         return await super().get_object_by_field(model, field, value)
 
 
