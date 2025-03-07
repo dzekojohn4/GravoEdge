@@ -62,10 +62,12 @@ class OrderCRUD(DBConnector):
                 return False
 
             # Order execution logic would go here
-            # This could include updating the order status, processing the transaction, etc.
             logger.info(f"Order {order_id} executed successfully")
             return True
 
         except Exception as e:
             logger.error(f"Failed to execute order {order_id}: {str(e)}")
             return False
+
+
+order_crud = OrderCRUD()
