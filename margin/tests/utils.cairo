@@ -6,6 +6,7 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
 };
 use snforge_std::{declare, ContractClassTrait, DeclareResultTrait};
 use alexandria_math::fast_power::fast_power;
+use super::constants::contracts::EKUBO_CORE_SEPOLIA;
 
 #[derive(Drop)]
 pub struct MarginTestSuite {
@@ -39,7 +40,7 @@ pub fn deploy_erc20_mock() -> ContractAddress {
 pub fn setup_test_suite(owner: ContractAddress, token_address: ContractAddress) -> MarginTestSuite {
     let contract = declare("Margin").unwrap().contract_class();
 
-    let (margin_contract, _) = contract.deploy(@array![]).unwrap();
+    let (margin_contract, _) = contract.deploy(@array![EKUBO_CORE_SEPOLIA]).unwrap();
 
     MarginTestSuite {
         margin: IMarginDispatcher { contract_address: margin_contract },
