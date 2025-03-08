@@ -38,6 +38,14 @@ pub mod Margin {
         positions: Map<ContractAddress, Position>,
     }
 
+    #[constructor]
+    fn constructor(
+        ref self: ContractState,
+        ekubo_core: ICoreDispatcher,
+    ) {
+        self.ekubo_core.write(ekubo_core);
+    }
+
 
     #[generate_trait]
     pub impl InternalImpl of InternalTrait {
