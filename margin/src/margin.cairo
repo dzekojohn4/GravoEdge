@@ -9,11 +9,11 @@ pub mod Margin {
     };
     use margin::{
         interface::IMargin, 
-        types::{Position, TokenAmount, PositionParameters, SwapData}
+        types::{Position, TokenAmount, PositionParameters, SwapData, TokenPrice, EkuboSlippageLimits},
     };
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher};
     use ekubo::{
-        interfaces::core::{ICoreDispatcher, ILocker, ICoreDispatcherTrait}, types::delta::Delta,
+        interfaces::core::{ICoreDispatcher, ILocker, ICoreDispatcherTrait}, types::{keys::PoolKey, delta::Delta},
         components::shared_locker::{consume_callback_data, handle_delta, call_core_with_callback}
     };
 
@@ -104,10 +104,18 @@ pub mod Margin {
             self.emit(Withdraw { withdrawer, token, amount });
         }
 
-        // TODO: Add Ekubo data for swap
-        fn open_margin_position(ref self: ContractState, position_parameters: PositionParameters) {}
-        fn close_position(ref self: ContractState) {}
-        fn liquidate(ref self: ContractState, user: ContractAddress) {}
+        fn open_margin_position(
+            ref self: ContractState, position_parameters: PositionParameters,
+            pool_key: PoolKey, ekubo_limits: EkuboSlippageLimits, pool_price: TokenPrice
+        ) {}
+        fn close_position(
+            ref self: ContractState, pool_key: PoolKey, 
+            ekubo_limits: EkuboSlippageLimits, pool_price: TokenPrice
+        ) {}
+        fn liquidate(
+            ref self: ContractState, user: ContractAddress, pool_key: PoolKey, 
+            ekubo_limits: EkuboSlippageLimits, pool_price: TokenPrice
+        ) {}
     }
 
 

@@ -2,6 +2,7 @@ use starknet::ContractAddress;
 use ekubo::{interfaces::core::SwapParameters, types::{delta::Delta, keys::PoolKey}};
 
 pub type TokenAmount = u256;
+pub type TokenPrice = u128;
 pub type Timestamp = u128;
 
 #[derive(Serde, Drop)]
@@ -26,4 +27,10 @@ pub struct SwapData {
     pub params: SwapParameters,
     pub pool_key: PoolKey,
     pub caller: ContractAddress
+}
+
+#[derive(Copy, Drop, Serde)]
+pub struct EkuboSlippageLimits {
+    pub lower: u256,
+    pub upper: u256
 }
