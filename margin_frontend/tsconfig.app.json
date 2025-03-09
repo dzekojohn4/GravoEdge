@@ -19,7 +19,7 @@
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true,
 		"declaration": true,
-		"outDir": "./dist",
+		"outDir": "./dist"
 	},
 	"include": ["src", "components/PostsDemo.tsx"]
 }

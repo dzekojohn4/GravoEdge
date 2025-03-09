@@ -4,4 +4,5 @@ interface ImportMeta {
       // Add other environment variables as needed
     };
   }
-  
+
+declare module '*.css';
