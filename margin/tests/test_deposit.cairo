@@ -4,15 +4,15 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address,
 };
 use margin::interface::{IMarginDispatcherTrait};
-use super::utils::{
-    setup_test_suite, deploy_erc20_mock, setup_user, get_treasury_balance, get_pool_value,
+use super::{
+    utils::{
+        setup_test_suite, deploy_erc20_mock, setup_user, get_treasury_balance, get_pool_value,
+    },
+    constants::{
+        DEPOSIT_MOCK_USER, DEPOSIT_MOCK_USER_2, HYPOTHETICAL_OWNER_ADDR,
+    },
 };
 
-const DEPOSIT_MOCK_USER: felt252 =
-    0x0038925b0bcf4dce081042ca26a96300d9e181b910328db54a6c89e5451503f5;
-const DEPOSIT_MOCK_USER_2: felt252 = 0x1234;
-const HYPOTHETICAL_OWNER_ADDR: felt252 =
-    0x059a943ca214c10234b9a3b61c558ac20c005127d183b86a99a8f3c60a08b4ff;
 
 #[test]
 #[should_panic(expected: 'Amount is zero')]
