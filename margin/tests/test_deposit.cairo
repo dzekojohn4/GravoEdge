@@ -4,9 +4,10 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
     start_cheat_caller_address, stop_cheat_caller_address,
 };
 use margin::interface::{IMarginDispatcherTrait};
-use margin::types::TokenAmount;
 use super::{
-    utils::{setup_test_suite, deploy_erc20_mock, setup_user},
+    utils::{
+        setup_test_suite, deploy_erc20_mock, setup_user, get_treasury_balance, get_pool_value,
+    },
     constants::{
         DEPOSIT_MOCK_USER, DEPOSIT_MOCK_USER_2, HYPOTHETICAL_OWNER_ADDR,
     },
@@ -143,29 +144,6 @@ fn test_multiple_users_deposit() {
     assert(final_contract_balance == deposit_amount1 + deposit_amount2, 'Wrong total deposits');
 }
 
-// Helper function to read treasury balances directly from storage
-fn get_treasury_balance(
-    margin_address: ContractAddress, depositor: ContractAddress, token: ContractAddress,
-) -> TokenAmount {
-    // Calculate storage address for treasury_balances
-    // This depends on the exact storage layout in the contract
-    let balance_key = snforge_std::map_entry_address(
-        selector!("treasury_balances"), array![depositor.into(), token.into()].span(),
-    );
-
-    let balances = snforge_std::load(margin_address, balance_key, 1);
-    let amount: TokenAmount = (*balances[0]).into();
-    amount
-}
-
-// Helper function to read pool values directly from storage
-fn get_pool_value(margin_address: ContractAddress, token: ContractAddress) -> TokenAmount {
-    // Calculate storage address for pools
-    let pool_key = snforge_std::map_entry_address(selector!("pools"), array![token.into()].span());
-
-    let pool_value = snforge_std::load(margin_address, pool_key, 1);
-    (*pool_value[0]).into()
-}
 
 #[test]
 fn test_storage_updates() {

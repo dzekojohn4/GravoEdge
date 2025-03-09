@@ -6,6 +6,7 @@ use snforge_std::cheatcodes::execution_info::caller_address::{
 };
 use snforge_std::{declare, ContractClassTrait, DeclareResultTrait};
 use alexandria_math::fast_power::fast_power;
+use margin::types::TokenAmount;
 use super::constants::contracts::EKUBO_CORE_SEPOLIA;
 
 #[derive(Drop)]
@@ -17,6 +18,10 @@ pub struct MarginTestSuite {
 
 pub fn ERC20_MOCK_CONTRACT() -> ContractAddress {
     contract_address_const::<'ERC20Mock'>()
+}
+
+pub fn ERC20_MOCK_CONTRACT_2() -> ContractAddress {
+    contract_address_const::<'ERC20Mock2'>()
 }
 
 pub fn deploy_erc20_mock() -> ContractAddress {
@@ -36,6 +41,25 @@ pub fn deploy_erc20_mock() -> ContractAddress {
 
     contract_addr
 }
+
+pub fn deploy_erc20_mock_2() -> ContractAddress {
+    let contract = declare("ERC20Mock").unwrap().contract_class();
+    let name: ByteArray = "erc20 mock";
+    let symbol: ByteArray = "ERC20MOCK";
+    let initial_supply: u256 = 100 * fast_power(10, 18);
+    let recipient: ContractAddress = get_contract_address();
+
+    let mut calldata: Array<felt252> = array![];
+    Serde::serialize(@name, ref calldata);
+    Serde::serialize(@symbol, ref calldata);
+    Serde::serialize(@initial_supply, ref calldata);
+    Serde::serialize(@recipient, ref calldata);
+
+    let (contract_addr, _) = contract.deploy_at(@calldata, ERC20_MOCK_CONTRACT_2()).unwrap();
+
+    contract_addr
+}
+
 
 pub fn setup_test_suite(owner: ContractAddress, token_address: ContractAddress) -> MarginTestSuite {
     let contract = declare("Margin").unwrap().contract_class();
@@ -57,4 +81,28 @@ pub fn setup_user(suite: @MarginTestSuite, user: ContractAddress, amount: u256) 
     start_cheat_caller_address(*suite.token.contract_address, user);
     (*suite.token).approve((*suite.margin).contract_address, amount);
     stop_cheat_caller_address(*suite.token.contract_address);
+}
+
+// Helper function to read treasury balances directly from storage
+pub fn get_treasury_balance(
+    margin_address: ContractAddress, depositor: ContractAddress, token: ContractAddress,
+) -> TokenAmount {
+    // Calculate storage address for treasury_balances
+    // This depends on the exact storage layout in the contract
+    let balance_key = snforge_std::map_entry_address(
+        selector!("treasury_balances"), array![depositor.into(), token.into()].span(),
+    );
+
+    let balances = snforge_std::load(margin_address, balance_key, 1);
+    let amount: TokenAmount = (*balances[0]).into();
+    amount
+}
+
+// Helper function to read pool values directly from storage
+pub fn get_pool_value(margin_address: ContractAddress, token: ContractAddress) -> TokenAmount {
+    // Calculate storage address for pools
+    let pool_key = snforge_std::map_entry_address(selector!("pools"), array![token.into()].span());
+
+    let pool_value = snforge_std::load(margin_address, pool_key, 1);
+    (*pool_value[0]).into()
 }
