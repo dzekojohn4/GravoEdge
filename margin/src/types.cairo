@@ -1,14 +1,13 @@
 use starknet::ContractAddress;
-use ekubo::{interfaces::core::SwapParameters, types::{delta::Delta, keys::PoolKey}};
+use ekubo::{interfaces::core::SwapParameters, types::keys::PoolKey};
 
 pub type TokenAmount = u256;
-pub type TokenPrice = u128;
 pub type Timestamp = u128;
 
 #[derive(Serde, Drop)]
 pub struct PositionParameters {
     pub initial_token: ContractAddress,
-    pub debt_token: ContractAddress, 
+    pub debt_token: ContractAddress,
     pub amount: TokenAmount,
 }
 
@@ -26,11 +25,11 @@ pub struct Position {
 pub struct SwapData {
     pub params: SwapParameters,
     pub pool_key: PoolKey,
-    pub caller: ContractAddress
+    pub caller: ContractAddress,
 }
 
 #[derive(Copy, Drop, Serde)]
 pub struct EkuboSlippageLimits {
     pub lower: u256,
-    pub upper: u256
+    pub upper: u256,
 }

@@ -8,13 +8,14 @@ pub mod Margin {
         ContractAddress, get_contract_address, get_caller_address,
     };
     use margin::{
-        interface::IMargin, 
-        types::{Position, TokenAmount, PositionParameters, SwapData, TokenPrice, EkuboSlippageLimits},
+        interface::IMargin,
+        types::{Position, TokenAmount, PositionParameters, SwapData, EkuboSlippageLimits},
     };
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher};
     use ekubo::{
-        interfaces::core::{ICoreDispatcher, ILocker, ICoreDispatcherTrait}, types::{keys::PoolKey, delta::Delta},
-        components::shared_locker::{consume_callback_data, handle_delta, call_core_with_callback}
+        interfaces::core::{ICoreDispatcher, ILocker, ICoreDispatcherTrait},
+        types::{keys::PoolKey, delta::Delta},
+        components::shared_locker::{consume_callback_data, handle_delta, call_core_with_callback},
     };
 
     #[derive(starknet::Event, Drop)]
@@ -48,10 +49,7 @@ pub mod Margin {
     }
 
     #[constructor]
-    fn constructor(
-        ref self: ContractState,
-        ekubo_core: ICoreDispatcher,
-    ) {
+    fn constructor(ref self: ContractState, ekubo_core: ICoreDispatcher) {
         self.ekubo_core.write(ekubo_core);
     }
 
@@ -105,16 +103,19 @@ pub mod Margin {
         }
 
         fn open_margin_position(
-            ref self: ContractState, position_parameters: PositionParameters,
-            pool_key: PoolKey, ekubo_limits: EkuboSlippageLimits, pool_price: TokenPrice
+            ref self: ContractState,
+            position_parameters: PositionParameters,
+            pool_key: PoolKey,
+            ekubo_limits: EkuboSlippageLimits,
         ) {}
         fn close_position(
-            ref self: ContractState, pool_key: PoolKey, 
-            ekubo_limits: EkuboSlippageLimits, pool_price: TokenPrice
+            ref self: ContractState, pool_key: PoolKey, ekubo_limits: EkuboSlippageLimits,
         ) {}
         fn liquidate(
-            ref self: ContractState, user: ContractAddress, pool_key: PoolKey, 
-            ekubo_limits: EkuboSlippageLimits, pool_price: TokenPrice
+            ref self: ContractState,
+            user: ContractAddress,
+            pool_key: PoolKey,
+            ekubo_limits: EkuboSlippageLimits,
         ) {}
     }
 
@@ -125,7 +126,7 @@ pub mod Margin {
             let core = self.ekubo_core.read();
             let SwapData { pool_key, params, caller } = consume_callback_data(core, data);
             let delta = core.swap(pool_key, params);
-            
+
             handle_delta(core, pool_key.token0, delta.amount0, caller);
             handle_delta(core, pool_key.token1, delta.amount1, caller);
 

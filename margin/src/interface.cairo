@@ -1,5 +1,5 @@
 use starknet::ContractAddress;
-use crate::types::{TokenAmount, PositionParameters, TokenPrice, EkuboSlippageLimits};
+use crate::types::{TokenAmount, PositionParameters, EkuboSlippageLimits};
 use ekubo::types::keys::PoolKey;
 
 #[starknet::interface]
@@ -9,17 +9,20 @@ pub trait IMargin<TContractState> {
 
     // TODO: Add Ekubo data for swap
     fn open_margin_position(
-        ref self: TContractState, position_parameters: PositionParameters,
-        pool_key: PoolKey, ekubo_limits: EkuboSlippageLimits, pool_price: TokenPrice
+        ref self: TContractState,
+        position_parameters: PositionParameters,
+        pool_key: PoolKey,
+        ekubo_limits: EkuboSlippageLimits,
     );
     fn close_position(
-        ref self: TContractState, pool_key: PoolKey,
-        ekubo_limits: EkuboSlippageLimits, pool_price: TokenPrice
+        ref self: TContractState, pool_key: PoolKey, ekubo_limits: EkuboSlippageLimits,
     );
 
     fn liquidate(
-        ref self: TContractState, user: ContractAddress, pool_key: PoolKey, 
-        ekubo_limits: EkuboSlippageLimits, pool_price: TokenPrice
+        ref self: TContractState,
+        user: ContractAddress,
+        pool_key: PoolKey,
+        ekubo_limits: EkuboSlippageLimits,
     );
 }
 
