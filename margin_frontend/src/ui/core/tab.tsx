@@ -35,7 +35,7 @@ export function Tabs({ tabs, defaultActiveIndex = 0, className = "" }: TabsProps
 					</button>
 				))}
 			</div>
-			<div className="p-4">{tabs[activeIndex]?.content}</div>
+			<div className="pt-4">{tabs[activeIndex]?.content}</div>
 		</div>
 	);
 }

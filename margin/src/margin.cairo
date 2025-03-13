@@ -7,8 +7,16 @@ pub mod Margin {
         storage::{StoragePointerReadAccess, StoragePointerWriteAccess, StoragePathEntry, Map},
         ContractAddress, get_contract_address, get_caller_address,
     };
-    use margin::{interface::IMargin, types::{Position, TokenAmount, PositionParameters}};
+    use margin::{
+        interface::IMargin,
+        types::{Position, TokenAmount, PositionParameters, SwapData, EkuboSlippageLimits},
+    };
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher};
+    use ekubo::{
+        interfaces::core::{ICoreDispatcher, ILocker, ICoreDispatcherTrait},
+        types::{keys::PoolKey, delta::Delta},
+        components::shared_locker::{consume_callback_data, handle_delta, call_core_with_callback},
+    };
 
     #[derive(starknet::Event, Drop)]
     struct Deposit {
@@ -34,10 +42,25 @@ pub mod Margin {
 
     #[storage]
     struct Storage {
+        ekubo_core: ICoreDispatcher,
         treasury_balances: Map<(ContractAddress, ContractAddress), TokenAmount>,
         pools: Map<ContractAddress, TokenAmount>,
         positions: Map<ContractAddress, Position>,
     }
+
+    #[constructor]
+    fn constructor(ref self: ContractState, ekubo_core: ICoreDispatcher) {
+        self.ekubo_core.write(ekubo_core);
+    }
+
+
+    #[generate_trait]
+    pub impl InternalImpl of InternalTrait {
+        fn swap(ref self: ContractState, swap_data: SwapData) -> Delta {
+            call_core_with_callback(self.ekubo_core.read(), @swap_data)
+        }
+    }
+
 
     #[abi(embed_v0)]
     impl Margin of IMargin<ContractState> {
@@ -79,9 +102,37 @@ pub mod Margin {
             self.emit(Withdraw { withdrawer, token, amount });
         }
 
-        // TODO: Add Ekubo data for swap
-        fn open_margin_position(ref self: ContractState, position_parameters: PositionParameters) {}
-        fn close_position(ref self: ContractState) {}
-        fn liquidate(ref self: ContractState, user: ContractAddress) {}
+        fn open_margin_position(
+            ref self: ContractState,
+            position_parameters: PositionParameters,
+            pool_key: PoolKey,
+            ekubo_limits: EkuboSlippageLimits,
+        ) {}
+        fn close_position(
+            ref self: ContractState, pool_key: PoolKey, ekubo_limits: EkuboSlippageLimits,
+        ) {}
+        fn liquidate(
+            ref self: ContractState,
+            user: ContractAddress,
+            pool_key: PoolKey,
+            ekubo_limits: EkuboSlippageLimits,
+        ) {}
+    }
+
+
+    #[abi(embed_v0)]
+    impl Locker of ILocker<ContractState> {
+        fn locked(ref self: ContractState, id: u32, data: Span<felt252>) -> Span<felt252> {
+            let core = self.ekubo_core.read();
+            let SwapData { pool_key, params, caller } = consume_callback_data(core, data);
+            let delta = core.swap(pool_key, params);
+
+            handle_delta(core, pool_key.token0, delta.amount0, caller);
+            handle_delta(core, pool_key.token1, delta.amount1, caller);
+
+            let mut arr: Array<felt252> = ArrayTrait::new();
+            Serde::serialize(@delta, ref arr);
+            arr.span()
+        }
     }
 }

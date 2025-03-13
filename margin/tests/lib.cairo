@@ -5,3 +5,5 @@ mod utils;
 mod mocks {
     mod erc20_mock;
 }
+
+mod constants;
