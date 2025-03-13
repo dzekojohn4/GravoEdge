@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Menu, Search } from "lucide-react";
-import { useState } from "react";
 import { Input } from "../ui/core/input";
 import PoolTable from "../ui/core/pool-table";
 import { Tabs } from "../ui/core/tab";
@@ -26,14 +25,17 @@ function Pool() {
 		{
 			label: "All",
 			content: <PoolTable pools={pools} />,
+			id: "all-tab",
 		},
 		{
 			label: "Stable",
 			content: "to be replced with stable component",
+			id: "stable-tab",
 		},
 		{
 			label: "Volatile",
 			content: "to be replaced with volatile component",
+			id: "volatile-tab",
 		},
 	];
 	return (
