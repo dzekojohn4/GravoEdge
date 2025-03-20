@@ -25,9 +25,6 @@ app = FastAPI(
 app.include_router(liquidation_router, prefix="/api/liquidation", tags=["Liquidation"])
 app.include_router(pool_router, prefix="/api/pool", tags=["Pool"])
 app.include_router(margin_position_router, prefix="/api/margin", tags=["MarginPosition"])
-app.include_router(
-    margin_position_router, prefix="/api/margin-positions", tags=["margin-positions"]
-)
 app.include_router(user_router, prefix="/api/user", tags=["User"])
 app.include_router(deposit_router, prefix="/api/deposit", tags=["Deposit"])
 app.include_router(order_router, prefix="/api/order", tags=["Order"])

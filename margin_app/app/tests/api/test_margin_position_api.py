@@ -10,7 +10,7 @@ import pytest
 from app.models.margin_position import MarginPositionStatus
 from app.schemas.margin_position import MarginPositionResponse
 
-MARGIN_POSITION_URL = "api/margin-positions"
+MARGIN_POSITION_URL = "api/margin"
 
 
 @pytest.fixture
