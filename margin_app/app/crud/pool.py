@@ -26,6 +26,13 @@ class PoolCRUD(DBConnector):
         pool_entry: Pool = Pool(token=token, risk_status=risk_status)
         return await self.write_to_db(pool_entry)
 
+    async def get_all_pools(self) -> list[Pool]:
+        """
+        Fetches all pool entries from the database.
+        :return: List[Pool]: List of all pool records fetched from the database
+        """
+        return await self.get_objects(Pool)
+
 
 class UserPoolCRUD(DBConnector):
     """
