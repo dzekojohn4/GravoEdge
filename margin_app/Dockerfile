@@ -1,14 +1,12 @@
 FROM python:3.12-slim
-# TODO: Adjust if needed
 
 # Environment settings
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 # Set PATH for Poetry
 ENV PATH "/root/.local/bin:$PATH"
 
-# Add system-level dependencies (including gcc and npm)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        libpq-dev gcc g++ make libffi-dev build-essential \
