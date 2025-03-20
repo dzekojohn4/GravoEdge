@@ -8,6 +8,7 @@ from typing import Optional
 from decimal import Decimal
 
 from app.models.pool import PoolRiskStatus
+from datetime import datetime
 
 from typing import Optional
 
@@ -58,7 +59,7 @@ class UserPoolUpdateResponse(UserPoolBase):
     """
 
     id: UUID
-    updated_at: str
+    updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -68,7 +69,7 @@ class PoolBase(BaseModel):
     Pool base model
     """
 
-    name: Optional[str] = None
+    token: str
     risk_status: Optional[PoolRiskStatus] = PoolRiskStatus.LOW
 
 
