@@ -51,6 +51,33 @@ async def create_pool(token: str, risk_status: PoolRiskStatus) -> PoolResponse:
     return created_pool
 
 
+@router.get(
+    "/get_all_pools",
+    response_model=list[PoolResponse],
+    status_code=status.HTTP_200_OK,
+)
+async def get_all_pools() -> list[PoolResponse]:
+    """
+    Fetch all pools
+
+    :return: list[PoolResponse] List of all pool entries fetched from the database
+    """
+    try:
+        fetched_pools = await pool_crud.get_all_pools()
+        if not fetched_pools:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No pools found.",
+            )
+        return fetched_pools
+    except Exception as e:
+        logger.error(f"Error fetching pools: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Something went wrong.",
+        ) from e
+
+
 @router.post(
     "/create_user_pool",
     response_model=UserPoolResponse,
