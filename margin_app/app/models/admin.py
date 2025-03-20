@@ -6,7 +6,6 @@ from sqlalchemy import Boolean, String
 from sqlalchemy.orm import Mapped, mapped_column
 from .base import BaseModel  
 
-
 class Admin(BaseModel):
     """
     Represents an administrative user with elevated privileges.
@@ -17,6 +16,8 @@ class Admin(BaseModel):
         is_super_admin (bool): Indicates if the admin has super admin privileges.
         password (str): The hashed password of the admin (stored as a hashed value).
     """
+    __tablename__ = "admins"  # Added table name for SQLAlchemy mapping
+
     email: Mapped[str] = mapped_column(
         String(255),
         unique=True,
@@ -32,9 +33,7 @@ class Admin(BaseModel):
         Boolean,
         default=False,
         nullable=False,
-        comment=(
-            "Indicates if the admin has super admin privileges."
-        )
+        comment="Indicates if the admin has super admin privileges."
     )
     password: Mapped[str] = mapped_column(
         String(255),
