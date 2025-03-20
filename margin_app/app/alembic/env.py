@@ -1,7 +1,6 @@
 """
 Alembic environment configuration for database migrations.
 """
-
 import alembic_postgresql_enum
 import os
 import asyncio
@@ -14,8 +13,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from alembic import context
 from app.core.config import settings
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+# This is the Alembic Config object, which provides access to the values within the .ini file in use.
 config = context.config
 
 config.set_main_option(
@@ -26,7 +24,7 @@ config.set_main_option(
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
+# Add your model's MetaData object here
 target_metadata = BaseModel.metadata
 
 def run_migrations_offline() -> None:

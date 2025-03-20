@@ -1,15 +1,21 @@
-""" tests/test_admin_model.py"""
+"""
+Tests for the Admin model functionality.
+"""
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from margin_app.app.models.admin import Admin
 from margin_app.app.models.base import BaseModel  
 
-""" Create an in-memory SQLite database for testing"""
+# Create an in-memory SQLite database for testing
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
 @pytest.fixture(scope="module")
 def engine():
+    """
+    Create an in-memory SQLite engine for tests.
+    """
     engine = create_engine(TEST_DATABASE_URL)
     BaseModel.metadata.create_all(engine)
     yield engine
@@ -17,7 +23,12 @@ def engine():
 
 @pytest.fixture(scope="function")
 def db_session(engine):
-    """Creates a new database session for a test."""
+    """
+    Creates a new database session for a test.
+    
+    Yields:
+        session: A SQLAlchemy session instance.
+    """
     connection = engine.connect()
     transaction = connection.begin()
     Session = sessionmaker(bind=connection)
@@ -28,7 +39,9 @@ def db_session(engine):
     connection.close()
 
 def test_create_admin(db_session):
-    """"Create an admin instance"""
+    """
+    Test creating an admin instance and retrieving it from the database.
+    """
     admin = Admin(
         email="admin@example.com",
         name="Test Admin",
@@ -38,14 +51,16 @@ def test_create_admin(db_session):
     db_session.add(admin)
     db_session.commit()
     
-    """Retrieve the admin from the database"""
-
+    # Retrieve the admin from the database
     retrieved = db_session.query(Admin).filter_by(email="admin@example.com").first()
     assert retrieved is not None
     assert retrieved.name == "Test Admin"
     assert retrieved.is_super_admin is True
 
 def test_unique_email_constraint(db_session):
+    """
+    Test that the unique email constraint on Admin prevents duplicates.
+    """
     admin1 = Admin(
         email="unique@example.com",
         name="Admin One",
@@ -53,7 +68,7 @@ def test_unique_email_constraint(db_session):
         password="hashedpassword123"
     )
     admin2 = Admin(
-        email="unique@example.com",  
+        email="unique@example.com",
         name="Admin Two",
         is_super_admin=False,
         password="hashedpassword456"
@@ -63,4 +78,4 @@ def test_unique_email_constraint(db_session):
     
     db_session.add(admin2)
     with pytest.raises(Exception):
-        db_session.commit()  
+        db_session.commit()

@@ -16,7 +16,6 @@ class Admin(BaseModel):
         is_super_admin (bool): Indicates whether the admin has super admin privileges.
         password (str): The hashed password of the admin (to be stored as a hashed value in the future).
     """
-
     email: Mapped[str] = mapped_column(
         String(255),
         unique=True,
@@ -28,11 +27,12 @@ class Admin(BaseModel):
         nullable=False,
         comment="The full name of the admin."
     )
+    # Break the long line or disable the warning if needed.
     is_super_admin: Mapped[bool] = mapped_column(
         Boolean,
         default=False,
         nullable=False,
-        comment="Indicates if the admin has super admin privileges."
+        comment="Indicates if the admin has super admin privileges."  # pylint: disable=line-too-long
     )
     password: Mapped[str] = mapped_column(
         String(255),
