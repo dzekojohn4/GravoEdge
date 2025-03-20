@@ -5,26 +5,31 @@ Tests for the Admin model functionality.
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from margin_app.app.models.admin import Admin
-from margin_app.app.models.base import BaseModel  
+from app.models.admin import Admin
+from app.models.base import BaseModel  
 
 # Create an in-memory SQLite database for testing
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
+
 @pytest.fixture(scope="module")
 def engine():
     """
-    Create an in-memory SQLite engine for tests.
+    Create an in-memory SQLite engine for tests and set up the database schema.
+    
+    Yields:
+        engine: A SQLAlchemy engine connected to an in-memory SQLite database.
     """
     engine = create_engine(TEST_DATABASE_URL)
     BaseModel.metadata.create_all(engine)
     yield engine
     BaseModel.metadata.drop_all(engine)
 
+
 @pytest.fixture(scope="function")
 def db_session(engine):
     """
-    Creates a new database session for a test.
+    Create a new database session for each test function.
     
     Yields:
         session: A SQLAlchemy session instance.
@@ -38,10 +43,12 @@ def db_session(engine):
     transaction.rollback()
     connection.close()
 
+
 def test_create_admin(db_session):
     """
     Test creating an admin instance and retrieving it from the database.
     """
+    # Create an admin instance
     admin = Admin(
         email="admin@example.com",
         name="Test Admin",
@@ -53,13 +60,14 @@ def test_create_admin(db_session):
     
     # Retrieve the admin from the database
     retrieved = db_session.query(Admin).filter_by(email="admin@example.com").first()
-    assert retrieved is not None
-    assert retrieved.name == "Test Admin"
-    assert retrieved.is_super_admin is True
+    assert retrieved is not None, "Admin instance should exist in the database."
+    assert retrieved.name == "Test Admin", "Admin name should match the created value."
+    assert retrieved.is_super_admin is True, "Admin super status should be True."
+
 
 def test_unique_email_constraint(db_session):
     """
-    Test that the unique email constraint on Admin prevents duplicates.
+    Test that the unique email constraint on the Admin model prevents duplicate emails.
     """
     admin1 = Admin(
         email="unique@example.com",
