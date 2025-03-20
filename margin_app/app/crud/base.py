@@ -102,7 +102,8 @@ class DBConnector:
         Retrieves a list of objects from the database that match the specified criteria if provided.
         :param model: type[Base] = None - Model class to query
         :param kwargs: Filtering criteria
-        :return: list[Base] - List of matching model instances (returns empty list if no matches found)
+        :return: list[Base] - List of matching model instances
+        (returns empty list if no matches found)
         """
         async with self.session() as db:
             stmt = select(model).filter_by(**kwargs)
