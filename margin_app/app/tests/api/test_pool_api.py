@@ -29,12 +29,12 @@ def test_create_pool(client):
         "app.crud.pool.pool_crud.create_pool", new_callable=AsyncMock
     ) as mock_create_pool:
         mock_pool = PoolResponse(
-            id=str(uuid.uuid4()), name="TEST", risk_status=PoolRiskStatus("low")
+            id=str(uuid.uuid4()), token="TEST", risk_status=PoolRiskStatus("low")
         )
         mock_create_pool.return_value = mock_pool.model_dump()
         response = client.post(POOL_URL + "/create_pool?token=TEST&risk_status=low")
         assert response.status_code == 201
-        assert response.json().get("name") == "TEST"
+        assert response.json().get("token") == "TEST"
 
 
 @pytest.mark.asyncio
