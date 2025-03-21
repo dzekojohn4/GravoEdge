@@ -72,7 +72,8 @@ async def get_all_users(
     - HTTPException (422): If query params are invalid.
     """   
     try:
-        users = await user_crud.get_all(limit,offset)
+        users = await user_crud.get_all(limit, offset)
+
         return users
     except ValueError as e:        
         raise HTTPException(status_code=400, detail=str(e))
