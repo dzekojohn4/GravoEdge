@@ -7,11 +7,11 @@ fixtures to set up and tear down test environments, as well as tests for
 creating, retrieving, updating, and deleting objects in the database.
 """
 
-import pytest
 import uuid
 from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock
 
+import pytest
 from isort.io import Empty
 
 from app.crud.pool import PoolCRUD, UserPoolCRUD
@@ -101,7 +101,7 @@ async def test_get_all_pools(pool_crud, mock_db_session):
     """Test retrieving all pools."""
     pools = [
         Pool(token="BTC", risk_status=PoolRiskStatus.LOW),
-        Pool(token="ETH", risk_status=PoolRiskStatus.HIGH)
+        Pool(token="ETH", risk_status=PoolRiskStatus.HIGH),
     ]
 
     mock_result = MagicMock()
@@ -134,6 +134,7 @@ async def test_get_all_pools_empty(pool_crud, mock_db_session):
 
     mock_db_session.execute.assert_called_once()
 
+
 @pytest.mark.asyncio
 async def test_get_all_pools_with_internal_exception(pool_crud, mock_db_session):
     """Test retrieving all pools when there is an internal exception."""
@@ -141,6 +142,7 @@ async def test_get_all_pools_with_internal_exception(pool_crud, mock_db_session)
 
     with pytest.raises(Exception):
         await pool_crud.get_all_pools()
+
 
 @pytest.mark.asyncio
 async def test_create_user_pool(user_pool_crud, mock_db_session):

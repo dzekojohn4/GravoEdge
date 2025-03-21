@@ -4,15 +4,16 @@ This module contains the base crud database configuration.
 
 import logging
 import uuid
-from typing import Type, TypeVar
-from app.models.base import BaseModel
+from contextlib import asynccontextmanager
+from typing import AsyncIterator, Callable, Type, TypeVar
 
-from typing import AsyncIterator, Callable
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from contextlib import asynccontextmanager
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
 from app.core.config import settings
+from app.models.base import BaseModel
+
 logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=BaseModel)
 
@@ -68,7 +69,6 @@ class DBConnector:
         finally:
             await session.close()
 
-
     async def write_to_db(self, obj: ModelType = None) -> ModelType:
         """
         Writes an object to the database. Rolls back the transaction if there's an error.
@@ -96,14 +96,14 @@ class DBConnector:
             return await db.get(model, obj_id)
 
     async def get_objects(
-            self, model: Type[ModelType] = None, **kwargs
+        self, model: Type[ModelType] = None, **kwargs
     ) -> list[ModelType]:
         """
         Retrieves a list of objects from the database that match the specified criteria if provided.
         :param model: type[Base] = None - Model class to query
         :param kwargs: Filtering criteria
         :return: list[Base] - List of matching model instances
-        (returns empty list if no matches found)
+            (returns empty list if no matches found)
         """
         async with self.session() as db:
             stmt = select(model).filter_by(**kwargs)
@@ -121,7 +121,9 @@ class DBConnector:
         :return: Base | None
         """
         async with self.session() as db:
-            result = await db.execute(select(model).where(getattr(model, field) == value))
+            result = await db.execute(
+                select(model).where(getattr(model, field) == value)
+            )
             return result.scalar_one_or_none()
 
     async def delete_object_by_id(

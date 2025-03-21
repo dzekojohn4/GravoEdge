@@ -6,9 +6,9 @@ CRUD operations for the UserPool model.
 import uuid
 from decimal import Decimal
 from typing import Optional
-from app.models.pool import Pool, PoolRiskStatus, UserPool
-from app.crud.base import DBConnector
 
+from app.crud.base import DBConnector
+from app.models.pool import Pool, PoolRiskStatus, UserPool
 
 """This module contains the PoolCRUD class for managing Pool relation in database."""
 
