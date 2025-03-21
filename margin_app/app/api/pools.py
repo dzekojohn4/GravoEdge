@@ -63,8 +63,7 @@ async def get_all_pools() -> list[PoolResponse]:
         (empty list if no pools exist)
     """
     try:
-        fetched_pools = await pool_crud.get_all_pools()
-        return fetched_pools
+        return await pool_crud.get_all_pools()
     except Exception as e:
         logger.error(f"Error fetching pools: {e}")
         raise HTTPException(
