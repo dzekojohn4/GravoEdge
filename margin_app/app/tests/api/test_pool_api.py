@@ -5,7 +5,6 @@ from http import HTTPStatus
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from starlette import status
 
@@ -110,9 +109,7 @@ async def test_get_all_pools_internal_error(mock_get_all_pools, client):
     ]
 
     mock_get_all_pools.return_value = mock_response
-    mock_get_all_pools.side_effect = HTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-    )
+    mock_get_all_pools.side_effect = Exception("Internal error")
 
     response = client.get(POOL_URL + "/get_all_pools")
 
