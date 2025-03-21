@@ -69,14 +69,9 @@ async def close_margin_position(
 
 
 @router.get("/liquidated", response_model=List[MarginPositionResponse])
-async def get_all_liquidated_positions(
-    db: AsyncSession = Depends(margin_position_crud.session),
-) -> List[MarginPositionResponse]:
+async def get_all_liquidated_positions() -> List[MarginPositionResponse]:
     """
     Retrieve all liquidated margin positions.
-
-    Args:
-        db (AsyncSession): Database session dependency injected by FastAPI
 
     Returns:
         List[MarginPositionResponse]: List of all liquidated margin positions
