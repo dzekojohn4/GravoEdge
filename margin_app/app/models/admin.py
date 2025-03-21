@@ -16,7 +16,7 @@ class Admin(BaseModel):
         is_super_admin (bool): Indicates if the admin has super admin privileges.
         password (str): The hashed password of the admin (stored as a hashed value).
     """
-    __tablename__ = "admins"  # Added table name for SQLAlchemy mapping
+    __tablename__ = "admins"  
 
     email: Mapped[str] = mapped_column(
         String(255),
