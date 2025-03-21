@@ -18,9 +18,22 @@ router = APIRouter()
     description="Gets all orders from database",
 )
 async def get_all_orders():
-    order = await order_crud.get_object(UserOrder)
+    """
+    Gets and sends all orders from user_order table.
 
-    return "Hello all orders"
+    Returns: list of orders
+
+    Raises:
+        HTTPException: If there's an error getting orders
+    """
+    try:
+        orders = await order_crud.get_objects(UserOrder)
+        return orders
+    except SQLAlchemyError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get orders: {str(e)}",
+        )
 
 @router.post(
     "/create_order",
