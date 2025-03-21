@@ -139,7 +139,7 @@ class UserCRUD(DBConnector):
         :param offset: Optional[int] - start retrieving at.
         :return: list[User]
         """
-        return await self.get_objects(User,limit,offset)
+        return await self.get_objects(User, limit, offset)
 
 
 user_crud = UserCRUD()
