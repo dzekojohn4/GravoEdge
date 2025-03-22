@@ -25,9 +25,16 @@ async def open_margin_position(
 ):
     """
     Opens a margin position by creating an entry record in the database.
-    :param position_data: MarginPositionCreate
-    :param db: AsyncSession
-    :return: MarginPositionResponse
+    
+    Args:
+        position_data: MarginPositionCreate - The margin position data
+        db: AsyncSession - Database session dependency injected by FastAPI
+        
+    Returns:
+        MarginPositionResponse: The created margin position
+        
+    Raises:
+        HTTPException: 400 error if the margin position could not be created
     """
     try:
         position = await margin_position_crud.open_margin_position(
@@ -50,7 +57,6 @@ async def close_margin_position(
 
     Args:
         position_id (UUID): The unique identifier of the margin position to close
-        db (AsyncSession): Database session dependency injected by FastAPI
 
     Returns:
         CloseMarginPositionResponse: Object containing the position ID and its updated status
@@ -77,7 +83,7 @@ async def get_all_liquidated_positions() -> List[MarginPositionResponse]:
         List[MarginPositionResponse]: List of all liquidated margin positions
 
     Raises:
-        HTTPException: If there's an error retrieving the positions
+        HTTPException: 500 error if there's an error retrieving the positions
     """
     try:
         positions = await margin_position_crud.get_all_liquidated_positions()
