@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+
 from faker import Faker
 from asyncio import run
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,8 +15,9 @@ from app.models import (
     Admin,
     Liquidation,
 )
-from app.db.sessions import get_db
+from app.db.sessions import AsyncSessionLocal
 from hashlib import sha256
+from datetime import datetime
 
 
 class SeedDataGenerator:
@@ -20,7 +25,7 @@ class SeedDataGenerator:
         self.amount = amount
         self.faker = Faker()
 
-    def generate_wallet_id(self) -> str:
+    def generate_hex(self) -> str:
         """Generate a hex-encoded hash prefixed with '0x'."""
         random_string = self.faker.uuid4()
         return "0x" + sha256(random_string.encode()).hexdigest()
@@ -29,7 +34,7 @@ class SeedDataGenerator:
         users = []
         for _ in range(self.amount):
             user = User(
-                wallet_id=self.generate_wallet_id(),
+                wallet_id=self.generate_hex(),
             )
             users.append(user)
         session.add_all(users)
@@ -47,7 +52,7 @@ class SeedDataGenerator:
                     amount=self.faker.pydecimal(
                         left_digits=5, right_digits=2, positive=True
                     ),
-                    transaction_id=self.faker.uuid4(),
+                    transaction_id=self.generate_hex(),
                 )
                 deposits.append(deposit)
         session.add_all(deposits)
@@ -66,7 +71,7 @@ class SeedDataGenerator:
                         left_digits=5, right_digits=2, positive=True
                     ),
                     status=self.faker.random_element(elements=["Open", "Closed"]),
-                    transaction_id=self.faker.uuid4(),
+                    transaction_id=self.generate_hex(),
                 )
                 positions.append(position)
         session.add_all(positions)
@@ -78,7 +83,7 @@ class SeedDataGenerator:
             pool = Pool(
                 token=self.faker.currency_code(),
                 risk_status=self.faker.random_element(
-                    elements=["LOW", "MEDIUM", "HIGH"]
+                    elements=["low", "medium", "high"]
                 ),
             )
             pools.append(pool)
@@ -118,24 +123,22 @@ class SeedDataGenerator:
 
     async def generate_liquidations(self, session: AsyncSession):
         liquidations = []
-        users = await session.execute(select(User))
-        users = users.scalars().all()
-        for user in users:
-            for _ in range(self.amount):
-                liquidation = Liquidation(
-                    user_id=user.id,
-                    amount=self.faker.pydecimal(
-                        left_digits=5, right_digits=2, positive=True
-                    ),
-                    status=self.faker.random_element(elements=["Pending", "Completed"]),
-                    transaction_id=self.faker.uuid4(),
-                )
-                liquidations.append(liquidation)
+        positions = await session.execute(select(MarginPosition))
+        positions = positions.scalars().all()
+        for position in positions:
+            liquidation = Liquidation(
+                margin_position_id=position.id,
+                bonus_amount=self.faker.pydecimal(left_digits=5, right_digits=2, positive=True),
+                bonus_token=self.faker.currency_code(),
+            )
+            liquidations.append(liquidation)
+            position.liquidated_at = datetime.now()
+            await session.merge(position)
         session.add_all(liquidations)
         await session.commit()
 
     async def generate_all(self):
-        async with get_db() as session:
+        async with AsyncSessionLocal() as session:
             await self.generate_users(session)
             print("Successfully generated users")
             await self.generate_deposits(session)
