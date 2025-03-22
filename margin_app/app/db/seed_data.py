@@ -1,5 +1,8 @@
+"""Module for generating seed data"""
+
 import sys
 import os
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from faker import Faker
@@ -14,7 +17,7 @@ from app.models import (
     UserPool,
     Admin,
     Liquidation,
-    Order
+    Order,
 )
 from app.db.sessions import AsyncSessionLocal
 from hashlib import sha256
@@ -22,16 +25,34 @@ from datetime import datetime
 
 
 class SeedDataGenerator:
+    """
+    SeedDataGenerator is responsible for generating seed data for the database.
+    """
+
     def __init__(self, amount: int = 5):
+        """
+        Initialize the generator with the specified amount of data to generate.
+
+        :param amount: Number of records to generate for each model.
+        """
         self.amount = amount
         self.faker = Faker()
 
     def generate_hex(self) -> str:
-        """Generate a hex-encoded hash prefixed with '0x'."""
+        """
+        Generate a hex-encoded hash prefixed with '0x'.
+
+        :return: A hex-encoded string.
+        """
         random_string = self.faker.uuid4()
         return "0x" + sha256(random_string.encode()).hexdigest()
 
     async def generate_users(self, session: AsyncSession):
+        """
+        Generate user records and add them to the session.
+
+        :param session: The database session.
+        """
         users = []
         for _ in range(self.amount):
             user = User(
@@ -42,6 +63,11 @@ class SeedDataGenerator:
         await session.commit()
 
     async def generate_deposits(self, session: AsyncSession):
+        """
+        Generate deposit records for each user and add them to the session.
+
+        :param session: The database session.
+        """
         deposits = []
         users = await session.execute(select(User))
         users = users.scalars().all()
@@ -60,6 +86,11 @@ class SeedDataGenerator:
         await session.commit()
 
     async def generate_margin_positions(self, session: AsyncSession):
+        """
+        Generate margin position records for each user and add them to the session.
+
+        :param session: The database session.
+        """
         positions = []
         users = await session.execute(select(User))
         users = users.scalars().all()
@@ -79,6 +110,11 @@ class SeedDataGenerator:
         await session.commit()
 
     async def generate_pools(self, session: AsyncSession):
+        """
+        Generate pool records and add them to the session.
+
+        :param session: The database session.
+        """
         pools = []
         for _ in range(self.amount):
             pool = Pool(
@@ -92,6 +128,11 @@ class SeedDataGenerator:
         await session.commit()
 
     async def generate_user_pools(self, session: AsyncSession):
+        """
+        Generate user pool records for each user and pool, and add them to the session.
+
+        :param session: The database session.
+        """
         user_pools = []
         users = await session.execute(select(User))
         users = users.scalars().all()
@@ -111,6 +152,11 @@ class SeedDataGenerator:
         await session.commit()
 
     async def generate_admins(self, session: AsyncSession):
+        """
+        Generate admin records and add them to the session.
+
+        :param session: The database session.
+        """
         admins = []
         for _ in range(self.amount):
             admin = Admin(
@@ -123,13 +169,20 @@ class SeedDataGenerator:
         await session.commit()
 
     async def generate_liquidations(self, session: AsyncSession):
+        """
+        Generate liquidation records for each margin position and add them to the session.
+
+        :param session: The database session.
+        """
         liquidations = []
         positions = await session.execute(select(MarginPosition))
         positions = positions.scalars().all()
         for position in positions:
             liquidation = Liquidation(
                 margin_position_id=position.id,
-                bonus_amount=self.faker.pydecimal(left_digits=5, right_digits=2, positive=True),
+                bonus_amount=self.faker.pydecimal(
+                    left_digits=5, right_digits=2, positive=True
+                ),
                 bonus_token=self.faker.currency_code(),
             )
             liquidations.append(liquidation)
@@ -137,19 +190,25 @@ class SeedDataGenerator:
             await session.merge(position)
         session.add_all(liquidations)
         await session.commit()
-        
+
     async def generate_orders(self, session: AsyncSession):
+        """
+        Generate order records for each user and add them to the session.
+
+        :param session: The database session.
+        """
         orders = []
         users = await session.execute(select(User))
         users = users.scalars().all()
         for user in users:
             position = await session.scalar(
-                select(MarginPosition)
-                .where(MarginPosition.user_id == user.id)
+                select(MarginPosition).where(MarginPosition.user_id == user.id)
             )
             order = Order(
                 user_id=user.id,
-                price=self.faker.pydecimal(left_digits=5, right_digits=2, positive=True),
+                price=self.faker.pydecimal(
+                    left_digits=5, right_digits=2, positive=True
+                ),
                 token=self.faker.currency_code(),
                 position=position.id,
             )
@@ -158,6 +217,9 @@ class SeedDataGenerator:
         await session.commit()
 
     async def generate_all(self):
+        """
+        Generate all types of records and add them to the session.
+        """
         async with AsyncSessionLocal() as session:
             await self.generate_users(session)
             print("Successfully generated users")
