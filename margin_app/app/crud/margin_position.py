@@ -51,7 +51,11 @@ class MarginPositionCRUD(DBConnector):
             await self.write_to_db(position)
             return position.status
 
-    async def get_objects(self, model: Type[ModelType], where_clause: Optional[Any] = None) -> List[ModelType]:
+    async def get_objects(
+        self, 
+        model: Type[ModelType], 
+        where_clause: Optional[Any] = None
+    ) -> List[ModelType]:
         """
         Retrieves all objects of the specified model type with an optional where clause.
         
