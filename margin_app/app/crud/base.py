@@ -96,6 +96,11 @@ class DBConnector:
             return await db.get(model, obj_id)
     
     async def get_objects(self, model: Type[ModelType]) -> list[ModelType]:
+        """
+        Retrieves all objects with model type from the database.
+        :param: model: Type[Base]
+        :return: list[Base]
+        """
         async with self.session() as db:
             result = await db.execute(select(model))
             return result.scalars().all()
