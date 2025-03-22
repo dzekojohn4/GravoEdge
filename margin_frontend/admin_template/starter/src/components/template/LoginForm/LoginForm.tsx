@@ -1,47 +1,47 @@
-import { useState } from 'react'
 import { FormItem, FormContainer } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
-import ActionLink from '@/components/shared/ActionLink'
-import { apiLogin } from '@/services/AuthService'
+import { apiSignIn } from '@/services/AuthService'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
-import { Field, Form, Formik } from 'formik'
+import { Field, Form, Formik, FormikProps } from 'formik'
 import * as Yup from 'yup'
 import type { CommonProps } from '@/@types/common'
 import type { AxiosError } from 'axios'
 
 interface LoginFormProps extends CommonProps {
     disableSubmit?: boolean
-    signInUrl?: string
 }
 
 type LoginFormSchema = {
-    email: string
+    userName: string
     password: string
 }
 
 const validationSchema = Yup.object().shape({
-    email: Yup.string().required('Please enter your email'),
+    userName: Yup.string().required('Please enter your name'),
+    password: Yup.string().required('Please enter your password'),
 })
 
 const LoginForm = (props: LoginFormProps) => {
-    const { disableSubmit = false, className, signInUrl = '/sign-in' } = props
-
-    const [emailSent, setEmailSent] = useState(false)
+    const { disableSubmit = false, className } = props
 
     const [message, setMessage] = useTimeOutMessage()
 
-    const onSendMail = async (
+    const initialValues: LoginFormSchema = {
+        userName: '',
+        password: '',
+    }
+
+    const onSendForm = async (
         values: LoginFormSchema,
         setSubmitting: (isSubmitting: boolean) => void,
     ) => {
         setSubmitting(true)
         try {
-            const resp = await apiLogin(values)
+            const resp = await apiSignIn(values)
             if (resp.data) {
                 setSubmitting(false)
-                setEmailSent(true)
             }
         } catch (errors) {
             setMessage(
@@ -54,56 +54,56 @@ const LoginForm = (props: LoginFormProps) => {
 
     return (
         <div className={className}>
-            <div className="mb-6">
-                {emailSent ? (
-                    <>
-                        <h3 className="mb-1">Check your email</h3>
-                        <p>
-                            We have sent a password recovery instruction to your
-                            email
-                        </p>
-                    </>
-                ) : (
-                    <>
-                        <h3 className="mb-1">Forgot Password</h3>
-                        <p>
-                            Please enter your email address to receive a
-                            verification code
-                        </p>
-                    </>
-                )}
-            </div>
             {message && (
                 <Alert showIcon className="mb-4" type="danger">
                     {message}
                 </Alert>
             )}
             <Formik
-                initialValues={{
-                    email: 'admin@mail.com',
-                }}
+                initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={(values, { setSubmitting }) => {
+                onSubmit={(
+                    values: LoginFormSchema,
+                    {
+                        setSubmitting,
+                    }: { setSubmitting: (isSubmitting: boolean) => void },
+                ) => {
                     if (!disableSubmit) {
-                        onSendMail(values, setSubmitting)
+                        onSendForm(values, setSubmitting)
                     } else {
                         setSubmitting(false)
                     }
                 }}
             >
-                {({ touched, errors, isSubmitting }) => (
+                {({ touched, errors, isSubmitting }: FormikProps) => (
                     <Form>
                         <FormContainer>
-                            <div className={emailSent ? 'hidden' : ''}>
+                            <div>
                                 <FormItem
-                                    invalid={errors.email && touched.email}
-                                    errorMessage={errors.email}
+                                    invalid={
+                                        errors.userName && touched.userName
+                                    }
+                                    errorMessage={errors.userName}
                                 >
                                     <Field
-                                        type="email"
+                                        type="text"
                                         autoComplete="off"
-                                        name="email"
-                                        placeholder="Email"
+                                        name="userName"
+                                        placeholder="Name"
+                                        component={Input}
+                                    />
+                                </FormItem>
+                                <FormItem
+                                    invalid={
+                                        errors.password && touched.password
+                                    }
+                                    errorMessage={errors.password}
+                                >
+                                    <Field
+                                        type="password"
+                                        autoComplete="off"
+                                        name="password"
+                                        placeholder="Password"
                                         component={Input}
                                     />
                                 </FormItem>
@@ -114,12 +114,8 @@ const LoginForm = (props: LoginFormProps) => {
                                 variant="solid"
                                 type="submit"
                             >
-                                {emailSent ? 'Resend Email' : 'Send Email'}
+                                {'Login'}
                             </Button>
-                            <div className="mt-4 text-center">
-                                <span>Back to </span>
-                                <ActionLink to={signInUrl}>Sign in</ActionLink>
-                            </div>
                         </FormContainer>
                     </Form>
                 )}
