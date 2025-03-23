@@ -99,7 +99,7 @@ const ResetPasswordForm = () => {
             )}
 
 
-            <div className='text-center flex gap-1 justify-center'>
+            <div className='text-center text-sm flex gap-1 justify-center'>
                 <span>
                     Back to
                 </span>
