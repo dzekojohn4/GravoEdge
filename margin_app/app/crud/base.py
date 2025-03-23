@@ -1,12 +1,12 @@
 """
-This module contains the base crud database configuration.
+This module contains the base CRUD database configuration.
 """
 
 import logging
 import uuid
 
 from contextlib import asynccontextmanager
-from typing import AsyncIterator, Callable, Type, TypeVar, List, Optional 
+from typing import AsyncIterator, Callable, Type, TypeVar, List, Optional, Any
 
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
@@ -34,7 +34,6 @@ class DBConnector:
     def __init__(self):
         """
         Initialize the database connection and session factory.
-        :param db_url: str = None
         """
         self.engine = create_async_engine(settings.db_url)
         self.session_maker = async_sessionmaker(bind=self.engine)
@@ -66,8 +65,8 @@ class DBConnector:
             yield session
         except SQLAlchemyError as e:
             await session.rollback()
-            logger.error(f"Error while process database operation: {e}")
-            raise Exception("Error while process database operation") from e
+            logger.error(f"Error while processing database operation: {e}")
+            raise Exception("Error while processing database operation") from e
         finally:
             await session.close()
 
@@ -96,21 +95,6 @@ class DBConnector:
         """
         async with self.session() as db:
             return await db.get(model, obj_id)
-
-    async def get_objects(
-        self, model: Type[ModelType] = None, **kwargs
-    ) -> list[ModelType]:
-        """
-        Retrieves a list of objects from the database that match the specified criteria if provided.
-        :param model: type[Base] = None - Model class to query
-        :param kwargs: Filtering criteria
-        :return: list[Base] - List of matching model instances
-            (returns empty list if no matches found)
-        """
-        async with self.session() as db:
-            stmt = select(model).filter_by(**kwargs)
-            result = await db.execute(stmt)
-            return result.scalars().all()
 
     async def get_object_by_field(
         self, model: Type[ModelType] = None, field: str = None, value: str = None
@@ -147,7 +131,7 @@ class DBConnector:
     async def delete_object(self, model: ModelType) -> None:
         """
         Deletes an object from the database.
-        :param object: Object to delete
+        :param model: Object to delete
         """
         async with self.session() as db:
             await db.delete(model)
@@ -158,19 +142,28 @@ class DBConnector:
         model: Type[ModelType] = None,
         limit: Optional[int] = 25,
         offset: Optional[int] = 0,
+        where_clause: Optional[Any] = None,
         **kwargs,
     ) -> list[ModelType] | None:
         """
         Retrieves objects by filter from the database.
-        :param: model: type[Base] = None
+        :param model: type[Base] = None - Model class to query
         :param limit: Optional[int] = None
-        :param offset: Optional[int] = None       
+        :param offset: Optional[int] = None
+        :param where_clause: Optional[Any] = None - SQLAlchemy expression for filtering
+                             Example: Model.field == value or Model.field.isnot(None)
         :return: list[Base] | None
         """
         async with self.session() as db:
             query = select(model).limit(limit).offset(offset)
+
+            # Apply where_clause if provided (for complex SQLAlchemy expressions)
+            if where_clause is not None:
+                query = query.where(where_clause)
+
+            # Apply filter_by for keyword arguments (simple equality filters)
             if kwargs:
                 query = query.filter_by(**kwargs)
 
-            result = await db.execute(query)            
+            result = await db.execute(query)
             return result.scalars().all()
