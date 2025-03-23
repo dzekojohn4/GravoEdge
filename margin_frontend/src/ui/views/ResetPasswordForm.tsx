@@ -67,7 +67,7 @@ const ResetPasswordForm = () => {
 
                     <form action="" className='flex gap-4 flex-col' onSubmit={(e) => { e.preventDefault(); onSubmit() }}>
                         {passwordInput("Password", setNewInput, passwordVisibleNew, setPasswordNewVisibility)}
-                        {passwordInput("Confirm", setConfirmInput, passwordVisibleConfirm, setPasswordConfirmVisibility)}
+                        {passwordInput("Confirm password", setConfirmInput, passwordVisibleConfirm, setPasswordConfirmVisibility)}
 
                         <div className='text-red-400 h-4'>
                             {(newInput !== confirmInput && confirmInput.length > 0) && "Your passwords do not match"}
