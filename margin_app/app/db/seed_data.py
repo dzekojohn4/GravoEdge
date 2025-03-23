@@ -17,7 +17,7 @@ from app.models import (
     UserPool,
     Admin,
     Liquidation,
-    Order,
+    UserOrder,
 )
 from app.db.sessions import AsyncSessionLocal
 from hashlib import sha256
@@ -191,20 +191,20 @@ class SeedDataGenerator:
         session.add_all(liquidations)
         await session.commit()
 
-    async def generate_orders(self, session: AsyncSession):
+    async def generate_user_orders(self, session: AsyncSession):
         """
         Generate order records for each user and add them to the session.
 
         :param session: The database session.
         """
-        orders = []
+        user_orders = []
         users = await session.execute(select(User))
         users = users.scalars().all()
         for user in users:
             position = await session.scalar(
                 select(MarginPosition).where(MarginPosition.user_id == user.id)
             )
-            order = Order(
+            user_order = UserOrder(
                 user_id=user.id,
                 price=self.faker.pydecimal(
                     left_digits=5, right_digits=2, positive=True
@@ -212,8 +212,8 @@ class SeedDataGenerator:
                 token=self.faker.currency_code(),
                 position=position.id,
             )
-            orders.append(order)
-        session.add_all(orders)
+            user_orders.append(user_order)
+        session.add_all(user_orders)
         await session.commit()
 
     async def generate_all(self):
@@ -235,7 +235,7 @@ class SeedDataGenerator:
             print("Successfully generated admins")
             await self.generate_liquidations(session)
             print("Successfully generated liquidations")
-            await self.generate_orders(session)
+            await self.generate_user_orders(session)
             print("Successfully generated orders")
 
 

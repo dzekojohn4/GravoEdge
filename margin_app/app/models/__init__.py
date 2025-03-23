@@ -9,5 +9,3 @@ from app.models.margin_position import MarginPosition
 from app.models.pool import UserPool, Pool
 from app.models.user_order import UserOrder
 from app.models.admin import Admin  
-from app.models.order import Order
-
