@@ -17,6 +17,17 @@ const ResetPasswordForm = () => {
         setResetDone(true);
     }
 
+    const getHeader = (title: string, caption: string) => {
+        return (
+            <header>
+                <h1 className='font-bold text-xl'>{title}</h1>
+                <div className='text-gray-400 text-sm'>
+                    {caption}
+                </div>
+            </header>
+        )
+    }
+
     const passwordInput = (label: string,
         onChange: (value: string) => void,
         passwordVisible: boolean,
@@ -52,16 +63,11 @@ const ResetPasswordForm = () => {
         <Card className='text-white flex gap-6 flex-col'>
             {!resetDone ? (
                 <>
-                    <header>
-                        <h1 className='font-bold text-xl'>Set new Password</h1>
-                        <div className='text-gray-400 text-sm'>
-                            Fill in your new password and confirm it
-                        </div>
-                    </header>
+                    {getHeader("Set new Password", "Fill in your new password and confirm it")}
 
                     <form action="" className='flex gap-4 flex-col' onSubmit={(e) => { e.preventDefault(); onSubmit() }}>
-                        {passwordInput("Password", setNewInput,passwordVisibleNew,setPasswordNewVisibility)}
-                        {passwordInput("Confirm", setConfirmInput,passwordVisibleConfirm,setPasswordConfirmVisibility)}
+                        {passwordInput("Password", setNewInput, passwordVisibleNew, setPasswordNewVisibility)}
+                        {passwordInput("Confirm", setConfirmInput, passwordVisibleConfirm, setPasswordConfirmVisibility)}
 
                         <div className='text-red-400 h-4'>
                             {(newInput !== confirmInput && confirmInput.length > 0) && "Your passwords do not match"}
@@ -80,17 +86,11 @@ const ResetPasswordForm = () => {
                 </>
             ) : (
                 <>
-                    <header>
-                        <h1 className='font-bold text-xl'>Reset done</h1>
-                        <div className='text-gray-400 text-sm'>
-                            Your password has been successfully reset
-                        </div>
-                    </header>
+                    {getHeader("Reset done", "Your password has been successfully reset")}
 
                     <Button
                         variant={"outline"}
                         size={"md"}
-                        onClick={() => setResetDone(false)}
                         className='mt-1'
                     >
                         Continue
