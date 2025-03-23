@@ -1,3 +1,7 @@
+"""
+Tests for the authentication service.
+"""
+
 from app.services.auth import get_password_hash, verify_password
 
 
