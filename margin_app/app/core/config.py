@@ -9,6 +9,7 @@ from sqlalchemy import URL
 
 class Settings(BaseSettings):
     """Configuration settings for the application."""
+
     # Application settings
     app_env: str = "development"
     secret_key: str = "SECRET_KEY"
@@ -37,5 +38,6 @@ class Settings(BaseSettings):
             database=self.db_name,
             port=self.db_port,
         )
+
 
 settings = Settings()
