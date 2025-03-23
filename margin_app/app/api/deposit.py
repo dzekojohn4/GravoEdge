@@ -3,7 +3,7 @@ This module contains the API routes for the Deposit model.
 """
 from typing import Optional, List
 
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, Query
 
 
 from app.models.deposit import Deposit
@@ -62,8 +62,8 @@ async def get_all_deposits() -> List[DepositResponse]:
     :return: List of DepositResponse schemas
     """
     try:
-        deposits = await deposit_crud.get_all(model=Deposit)
-        return [DepositResponse.from_orm(deposit) for deposit in deposits]
+        deposits = await deposit_crud.get_objects(model=Deposit)
+        return deposits
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
