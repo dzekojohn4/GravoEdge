@@ -10,104 +10,123 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as TradeImport } from './routes/trade'
-import { Route as PoolImport } from './routes/pool'
-import { Route as IndexImport } from './routes/index'
+import { Route as rootRoute } from './routes/__root';
+import { Route as TradeImport } from './routes/trade';
+import { Route as PoolImport } from './routes/pool';
+import { Route as LoginImport } from './routes/login';
+import { Route as IndexImport } from './routes/index';
 
 // Create/Update Routes
 
 const TradeRoute = TradeImport.update({
   id: '/trade',
   path: '/trade',
-  getParentRoute: () => rootRoute,
-} as any)
+  getParentRoute: () => rootRoute
+} as any);
 
 const PoolRoute = PoolImport.update({
   id: '/pool',
   path: '/pool',
-  getParentRoute: () => rootRoute,
-} as any)
+  getParentRoute: () => rootRoute
+} as any);
+
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute
+} as any);
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
+  getParentRoute: () => rootRoute
+} as any);
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/login': {
+      id: '/login';
+      path: '/login';
+      fullPath: '/login';
+      preLoaderRoute: typeof LoginImport;
+      parentRoute: typeof rootRoute;
+    };
     '/pool': {
-      id: '/pool'
-      path: '/pool'
-      fullPath: '/pool'
-      preLoaderRoute: typeof PoolImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/pool';
+      path: '/pool';
+      fullPath: '/pool';
+      preLoaderRoute: typeof PoolImport;
+      parentRoute: typeof rootRoute;
+    };
     '/trade': {
-      id: '/trade'
-      path: '/trade'
-      fullPath: '/trade'
-      preLoaderRoute: typeof TradeImport
-      parentRoute: typeof rootRoute
-    }
+      id: '/trade';
+      path: '/trade';
+      fullPath: '/trade';
+      preLoaderRoute: typeof TradeImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/pool': typeof PoolRoute
-  '/trade': typeof TradeRoute
+  '/': typeof IndexRoute;
+  '/login': typeof LoginRoute;
+  '/pool': typeof PoolRoute;
+  '/trade': typeof TradeRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/pool': typeof PoolRoute
-  '/trade': typeof TradeRoute
+  '/': typeof IndexRoute;
+  '/login': typeof LoginRoute;
+  '/pool': typeof PoolRoute;
+  '/trade': typeof TradeRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/pool': typeof PoolRoute
-  '/trade': typeof TradeRoute
+  __root__: typeof rootRoute;
+  '/': typeof IndexRoute;
+  '/login': typeof LoginRoute;
+  '/pool': typeof PoolRoute;
+  '/trade': typeof TradeRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pool' | '/trade'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pool' | '/trade'
-  id: '__root__' | '/' | '/pool' | '/trade'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: '/' | '/login' | '/pool' | '/trade';
+  fileRoutesByTo: FileRoutesByTo;
+  to: '/' | '/login' | '/pool' | '/trade';
+  id: '__root__' | '/' | '/login' | '/pool' | '/trade';
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  PoolRoute: typeof PoolRoute
-  TradeRoute: typeof TradeRoute
+  IndexRoute: typeof IndexRoute;
+  LoginRoute: typeof LoginRoute;
+  PoolRoute: typeof PoolRoute;
+  TradeRoute: typeof TradeRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
   PoolRoute: PoolRoute,
-  TradeRoute: TradeRoute,
-}
+  TradeRoute: TradeRoute
+};
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
@@ -116,12 +135,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/login",
         "/pool",
         "/trade"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/login": {
+      "filePath": "login.tsx"
     },
     "/pool": {
       "filePath": "pool.tsx"
