@@ -1,5 +1,5 @@
 """
-JWT auth
+This module contains authentication related services.
 """
 
 from typing import Annotated
@@ -10,7 +10,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from dotenv import load_dotenv
-
+from passlib.context import CryptContext
 from app.models.user import User
 from app.crud.user import user_crud
 
@@ -18,7 +18,7 @@ load_dotenv()
 
 ALGORITHM = "HS256"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_access_token(wallet_id: str, expires_delta: timedelta | None = None):
     """
@@ -67,3 +67,28 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> Use
         return user
     except InvalidTokenError as e:
         raise Exception("jwt expired") from e
+
+
+def verify_password(plain_password, hashed_password) -> bool:
+    """
+    Verify that a plain text password matches a hashed password.
+
+    :param plain_password: str - The plain password to be verified.
+    :param hashed_password: str - The hashed password against which the plain
+     one will be verified.
+
+    :return: bool - True if the plain password matches the hashed password,
+     False if not.
+    """
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password) -> str:
+    """
+    Hashes the provided password according to the specified hashing context.
+
+    :param password: str - The password to be hashed.
+
+    :return: str - The hashed password.
+    """
+    return pwd_context.hash(password)
