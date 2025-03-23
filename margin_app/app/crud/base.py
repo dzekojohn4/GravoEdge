@@ -174,3 +174,13 @@ class DBConnector:
 
             result = await db.execute(query)            
             return result.scalars().all()
+
+    async def get_all(self, model: Type[ModelType]) -> list[ModelType]:
+        """
+        Retrieves all records from the specified model/table in the database.
+        :param model: The model class representing the table to query.
+        :return: List of records from the table.
+        """
+        async with self.session() as db:
+            result = await db.execute(select(model))
+            return result.scalars().all()
