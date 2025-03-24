@@ -9,12 +9,12 @@ import os
 import pytest
 import jwt
 from dotenv import load_dotenv
-
+from app.core.config import settings
 from app.services.auth import create_access_token, get_current_user
 from app.crud.user import user_crud
 
 load_dotenv()
-ALGORITHM = "HS256"
+ALGORITHM = settings.algorithm
 
 
 def test_create_access_token_with_expires_delta():

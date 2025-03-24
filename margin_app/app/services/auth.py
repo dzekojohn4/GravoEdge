@@ -5,18 +5,15 @@ from typing import Annotated
 from datetime import datetime, timedelta, timezone
 import os
 import jwt
-from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from dotenv import load_dotenv
 from passlib.context import CryptContext
 from app.models.user import User
 from app.crud.user import user_crud
+from app.core.config import settings
 
 load_dotenv()
 
-ALGORITHM = "HS256"
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_access_token(wallet_id: str, expires_delta: timedelta | None = None):
@@ -34,10 +31,13 @@ def create_access_token(wallet_id: str, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode = {"sub": wallet_id, "exp": expire}
-    return jwt.encode(to_encode, os.environ.get("SECRET_KEY"), algorithm=ALGORITHM)
+    return jwt.encode(
+        to_encode,
+        os.environ.get("SECRET_KEY"),
+        algorithm=settings.algorithm)
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
+async def get_current_user(token: str) -> User:
     """
     Retrieves the current user based on the provided JWT token.
 
@@ -55,7 +55,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> Use
 
     try:
         payload = jwt.decode(
-            token, os.environ.get("SECRET_KEY"), algorithms=[ALGORITHM]
+            token, os.environ.get("SECRET_KEY"), algorithms=[settings.algorithm]
         )
         wallet_id = payload.get("sub")
         if wallet_id is None:
