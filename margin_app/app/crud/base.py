@@ -8,6 +8,7 @@ import uuid
 from contextlib import asynccontextmanager
 from typing import AsyncIterator, Callable, Type, TypeVar, List, Optional, Any
 
+
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -167,3 +168,4 @@ class DBConnector:
 
             result = await db.execute(query)
             return result.scalars().all()
+          
