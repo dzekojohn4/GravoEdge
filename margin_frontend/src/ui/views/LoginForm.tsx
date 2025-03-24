@@ -1,14 +1,16 @@
 import { useState } from 'react';
 
-import { Input } from '../../core/input';
-import { Card } from '../../core/card';
-import { Button } from '../../core/button';
+import { Input } from '../core/input';
+import { Card } from '../core/card';
+import { Button } from '../core/button';
 
 const textData = {
   h1: 'Welcome back!',
   hint: 'Please enter your credentials to sign in!',
   email: 'Email',
+  emailPlaceholder: 'Enter your email',
   password: 'Password',
+  passwordPlaceholder: 'Enter your password',
   login: 'Sign In',
   rememberMe: 'Remember Me',
   forgotPassword: 'Forgot Password?',
@@ -24,8 +26,8 @@ type LoginFormSchema = {
 
 const LoginForm = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const [email, setEmail] = useState('login@mail.com');
-  const [password, setPassword] = useState('password');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
   const onSendForm = async () => {
@@ -41,14 +43,15 @@ const LoginForm = () => {
   return (
     <Card className='text-white flex gap-6 flex-col font-bricolageGrotesque'>
       <div className='flex flex-col gap-2'>
-        <h1 className='text-2xl font-bold text-center'>{textData.login}</h1>
-        <p>{textData.hint}</p>
+        <h1 className='text-2xl font-bold text-center'>{textData.h1}</h1>
+        <p className='text-center'>{textData.hint}</p>
       </div>
       <div className='flex flex-col'>
         <label>{textData.email}</label>
         <Input
           className='w-100'
           type='email'
+          placeholder={textData.emailPlaceholder}
           onChange={e => setEmail(e.target.value)}
           value={email}
         />
@@ -59,6 +62,7 @@ const LoginForm = () => {
           <Input
             className='w-100 pr-10'
             type={passwordVisibility ? 'text' : 'password'}
+            placeholder={textData.passwordPlaceholder}
             onChange={e => setPassword(e.target.value)}
             value={password}
           />
