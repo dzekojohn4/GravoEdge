@@ -2,7 +2,6 @@
 This module contains authentication related services.
 """
 from datetime import datetime, timedelta, timezone
-import os
 import jwt
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
@@ -29,7 +28,7 @@ def create_access_token(email: str, expires_delta: timedelta | None = None):
     to_encode = {"sub": email, "exp": expire}
     return jwt.encode(
         to_encode,
-        os.environ.get("SECRET_KEY"),
+        settings.secret_key,
         algorithm=settings.algorithm)
 
 
@@ -51,7 +50,7 @@ async def get_current_user(token: str) -> Admin:
 
     try:
         payload = jwt.decode(
-            token, os.environ.get("SECRET_KEY"), algorithms=[settings.algorithm]
+            token, settings.secret_key, algorithms=[settings.algorithm]
         )
         email = payload.get("sub")
         if email is None:
