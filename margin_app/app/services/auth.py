@@ -5,13 +5,10 @@ from datetime import datetime, timedelta, timezone
 import os
 import jwt
 from jwt.exceptions import InvalidTokenError
-from dotenv import load_dotenv
 from passlib.context import CryptContext
 from app.crud.admin import admin_crud
 from app.core.config import settings
 from app.models.admin import Admin
-
-load_dotenv()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

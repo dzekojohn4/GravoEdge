@@ -3,7 +3,6 @@ CRUD operations for Admin model
 """
 
 from typing import Optional
-from sqlalchemy.sql import text
 from app.models.admin import Admin
 from .base import DBConnector
 
@@ -11,16 +10,6 @@ class AdminCRUD(DBConnector):
     """
     AdminCRUD class for handling database operations for the Admin model.
     """
-
-    async def test_connection(self):
-        """
-        Test the database connection.
-        :return
-        """
-        async with self.session() as session:
-            result = await session.execute(text("SELECT version()"))
-            return f"PostgreSQL version: {result.scalar()}"
-
 
     async def get_object_by_field(self, field: str, value:str, model = Admin) -> Optional[Admin]:
         """

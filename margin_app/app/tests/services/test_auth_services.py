@@ -8,12 +8,10 @@ import uuid
 import os
 import pytest
 import jwt
-from dotenv import load_dotenv
 from app.core.config import settings
 from app.services.auth import create_access_token, get_current_user
 from app.crud.admin import admin_crud
 
-load_dotenv()
 ALGORITHM = settings.algorithm
 
 
