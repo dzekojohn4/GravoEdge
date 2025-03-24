@@ -15,6 +15,8 @@ import { Route as TradeImport } from './routes/trade';
 import { Route as PoolImport } from './routes/pool';
 import { Route as LoginImport } from './routes/login';
 import { Route as IndexImport } from './routes/index';
+import { Route as ChangePasswordImport } from './routes/change-password'
+
 
 // Create/Update Routes
 
@@ -23,6 +25,7 @@ const TradeRoute = TradeImport.update({
   path: '/trade',
   getParentRoute: () => rootRoute
 } as any);
+
 
 const PoolRoute = PoolImport.update({
   id: '/pool',
@@ -35,6 +38,12 @@ const LoginRoute = LoginImport.update({
   path: '/login',
   getParentRoute: () => rootRoute
 } as any);
+
+const ChangePasswordRoute = ChangePasswordImport.update({
+  id: '/change-password',
+  path: '/change-password',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -60,6 +69,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport;
       parentRoute: typeof rootRoute;
     };
+     '/change-password': {
+      id: '/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof ChangePasswordImport
+      parentRoute: typeof rootRoute
+    }
     '/pool': {
       id: '/pool';
       path: '/pool';
@@ -82,6 +98,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
   '/login': typeof LoginRoute;
+  '/change-password': typeof ChangePasswordRoute
   '/pool': typeof PoolRoute;
   '/trade': typeof TradeRoute;
 }
@@ -89,6 +106,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
   '/login': typeof LoginRoute;
+  '/change-password': typeof ChangePasswordRoute
   '/pool': typeof PoolRoute;
   '/trade': typeof TradeRoute;
 }
@@ -97,22 +115,24 @@ export interface FileRoutesById {
   __root__: typeof rootRoute;
   '/': typeof IndexRoute;
   '/login': typeof LoginRoute;
+  '/change-password': typeof ChangePasswordRoute
   '/pool': typeof PoolRoute;
   '/trade': typeof TradeRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/login' | '/pool' | '/trade';
+  fullPaths: '/' | '/login' | '/change-password | '/pool' | '/trade';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/login' | '/pool' | '/trade';
-  id: '__root__' | '/' | '/login' | '/pool' | '/trade';
+  to: '/' | '/login' | '/change-password | '/pool' | '/trade';
+  id: '__root__' | '/' | '/login' | '/change-password | '/pool' | '/trade';
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   LoginRoute: typeof LoginRoute;
+  ChangePasswordRoute: typeof ChangePasswordRoute
   PoolRoute: typeof PoolRoute;
   TradeRoute: typeof TradeRoute;
 }
@@ -120,6 +140,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  ChangePasswordRoute: ChangePasswordRoute,
   PoolRoute: PoolRoute,
   TradeRoute: TradeRoute
 };
@@ -136,6 +157,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/login",
+        "/change-password",
         "/pool",
         "/trade"
       ]
@@ -145,6 +167,9 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/change-password": {
+      "filePath": "change-password.tsx"
     },
     "/pool": {
       "filePath": "pool.tsx"
