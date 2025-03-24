@@ -5,7 +5,6 @@ Tests for services/auth.
 from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock, patch
 import uuid
-import os
 import pytest
 import jwt
 from app.core.config import settings
@@ -24,7 +23,7 @@ def test_create_access_token_with_expires_delta():
 
     token = create_access_token(email, exception)
 
-    payload = jwt.decode(token, os.environ.get("SECRET_KEY"), algorithms=[ALGORITHM])
+    payload = jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
     assert email == payload.get("sub")
     assert _time == payload.get("exp")
 
@@ -37,7 +36,7 @@ def test_create_access_token_without_expires_delta():
 
     token = create_access_token(email)
 
-    payload = jwt.decode(token, os.environ.get("SECRET_KEY"), algorithms=[ALGORITHM])
+    payload = jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
     assert email == payload.get("sub")
     assert _time == payload.get("exp")
 
@@ -76,7 +75,7 @@ async def test_get_current_user_fails_with_expired_jwt():
         "sub": email,
         "exp": datetime.now(timezone.utc) - timedelta(minutes=25),
     }
-    token = jwt.encode(to_encode, os.environ.get("SECRET_KEY"), algorithm=ALGORITHM)
+    token = jwt.encode(to_encode, settings.secret_key, algorithm=ALGORITHM)
 
     with pytest.raises(Exception, match="jwt expired"):
         await get_current_user(token)
@@ -87,7 +86,7 @@ async def test_get_current_user_fails_with_invalid_jwt():
     """Test fails with invalid jwt"""
 
     to_encode = {"exp": datetime.now(timezone.utc) + timedelta(minutes=25)}
-    token = jwt.encode(to_encode, os.environ.get("SECRET_KEY"), algorithm=ALGORITHM)
+    token = jwt.encode(to_encode, settings.secret_key, algorithm=ALGORITHM)
 
     with pytest.raises(Exception, match="Invalid jwt"):
         await get_current_user(token)
@@ -100,7 +99,7 @@ async def test_get_current_user_fails_if_usr_not_found():
         "sub": "xxx",
         "exp": datetime.now(timezone.utc) + timedelta(minutes=25),
     }
-    token = jwt.encode(to_encode, os.environ.get("SECRET_KEY"), algorithm=ALGORITHM)
+    token = jwt.encode(to_encode, settings.secret_key, algorithm=ALGORITHM)
 
     with patch.object(
         admin_crud, "get_object_by_field", new_callable=AsyncMock
