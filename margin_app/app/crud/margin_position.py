@@ -5,9 +5,11 @@ updating and closing margin positions.
 
 import uuid
 from decimal import Decimal
+from typing import List
 from app.crud.base import DBConnector
 from app.models.margin_position import MarginPosition
 from app.models.margin_position import MarginPositionStatus
+from app.schemas.margin_position import MarginPositionResponse
 
 
 class MarginPositionCRUD(DBConnector):
@@ -47,5 +49,29 @@ class MarginPositionCRUD(DBConnector):
             position.status = MarginPositionStatus.CLOSED
             await self.write_to_db(position)
             return position.status
+            
+    async def get_all_liquidated_positions(self) -> List[MarginPositionResponse]:
+        """
+        Retrieves all liquidated margin positions from the database.
+        
+        Uses the get_objects method with a where_clause to filter for liquidated positions.
+
+        Returns:
+            List[MarginPositionResponse]: List of all liquidated margin positions
+            
+        Raises:
+            Exception: If there's an error retrieving the positions
+        """
+        try:
+            positions = await self.get_objects(
+                model=MarginPosition,
+                limit=None,  # No limit to return all liquidated positions
+                offset=0,
+                where_clause=MarginPosition.liquidated_at.isnot(None)
+            )
+            return [MarginPositionResponse.from_orm(pos) for pos in positions]
+        except Exception as e:
+            # Log the error or handle it as needed
+            raise Exception(f"Error retrieving liquidated positions: {str(e)}") from e
 
 margin_position_crud = MarginPositionCRUD()
