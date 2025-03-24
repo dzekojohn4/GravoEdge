@@ -1,16 +1,15 @@
 """
 This module contains authentication related services.
 """
-from typing import Annotated
 from datetime import datetime, timedelta, timezone
 import os
 import jwt
 from jwt.exceptions import InvalidTokenError
 from dotenv import load_dotenv
 from passlib.context import CryptContext
-from app.models.user import User
-from app.crud.user import user_crud
+from app.crud.admin import admin_crud
 from app.core.config import settings
+from app.models.admin import Admin
 
 load_dotenv()
 
@@ -37,7 +36,7 @@ def create_access_token(email: str, expires_delta: timedelta | None = None):
         algorithm=settings.algorithm)
 
 
-async def get_current_user(token: str) -> User:
+async def get_current_user(token: str) -> Admin:
     """
     Retrieves the current user based on the provided JWT token.
 
@@ -57,10 +56,10 @@ async def get_current_user(token: str) -> User:
         payload = jwt.decode(
             token, os.environ.get("SECRET_KEY"), algorithms=[settings.algorithm]
         )
-        wallet_id = payload.get("sub")
-        if wallet_id is None:
+        email = payload.get("sub")
+        if email is None:
             raise Exception("Invalid jwt")
-        user = await user_crud.get_object_by_field(field="wallet_id", value=wallet_id)
+        user = await admin_crud.get_object_by_field(field="email", value=email)
         if user is None:
             raise Exception("User not found")
         return user
