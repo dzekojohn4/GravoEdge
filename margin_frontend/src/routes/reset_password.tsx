@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type React from "react";
-
+// import React from "react";
 import { useState } from "react";
+
 
 export const Route = createFileRoute("/reset_password")({
   component: ResetPassword,
@@ -19,7 +19,7 @@ function ResetPassword() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md px-6">
-        <div className="text-center">
+        <div className="">
           <h1 className="text-4xl font-medium text-white mb-2">
             Forgot Password
           </h1>

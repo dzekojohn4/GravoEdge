@@ -10,11 +10,19 @@
 
 // Import Routes
 
+<<<<<<< HEAD
 import { Route as rootRoute } from "./routes/__root";
 import { Route as TradeImport } from "./routes/trade";
 import { Route as ResetpasswordImport } from "./routes/reset_password";
 import { Route as PoolImport } from "./routes/pool";
 import { Route as IndexImport } from "./routes/index";
+=======
+import { Route as rootRoute } from './routes/__root'
+import { Route as TradeImport } from './routes/trade'
+import { Route as PoolImport } from './routes/pool'
+import { Route as ChangePasswordImport } from './routes/change-password'
+import { Route as IndexImport } from './routes/index'
+>>>>>>> upstream/main
 
 // Create/Update Routes
 
@@ -30,11 +38,18 @@ const ResetpasswordRoute = ResetpasswordImport.update({
   getParentRoute: () => rootRoute,
 } as any);
 
+
 const PoolRoute = PoolImport.update({
   id: "/pool",
   path: "/pool",
   getParentRoute: () => rootRoute,
 } as any);
+
+const ChangePasswordRoute = ChangePasswordImport.update({
+  id: '/change-password',
+  path: '/change-password',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: "/",
@@ -46,6 +61,7 @@ const IndexRoute = IndexImport.update({
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
+<<<<<<< HEAD
     "/": {
       id: "/";
       path: "/";
@@ -74,12 +90,43 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof TradeImport;
       parentRoute: typeof rootRoute;
     };
+=======
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/change-password': {
+      id: '/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof ChangePasswordImport
+      parentRoute: typeof rootRoute
+    }
+    '/pool': {
+      id: '/pool'
+      path: '/pool'
+      fullPath: '/pool'
+      preLoaderRoute: typeof PoolImport
+      parentRoute: typeof rootRoute
+    }
+    '/trade': {
+      id: '/trade'
+      path: '/trade'
+      fullPath: '/trade'
+      preLoaderRoute: typeof TradeImport
+      parentRoute: typeof rootRoute
+    }
+>>>>>>> upstream/main
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
+<<<<<<< HEAD
   "/": typeof IndexRoute;
   "/pool": typeof PoolRoute;
   "/reset_password": typeof ResetpasswordRoute;
@@ -115,10 +162,48 @@ export interface RootRouteChildren {
   PoolRoute: typeof PoolRoute;
   ResetpasswordRoute: typeof ResetpasswordRoute;
   TradeRoute: typeof TradeRoute;
+=======
+  '/': typeof IndexRoute
+  '/change-password': typeof ChangePasswordRoute
+  '/pool': typeof PoolRoute
+  '/trade': typeof TradeRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/change-password': typeof ChangePasswordRoute
+  '/pool': typeof PoolRoute
+  '/trade': typeof TradeRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/change-password': typeof ChangePasswordRoute
+  '/pool': typeof PoolRoute
+  '/trade': typeof TradeRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/change-password' | '/pool' | '/trade'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/change-password' | '/pool' | '/trade'
+  id: '__root__' | '/' | '/change-password' | '/pool' | '/trade'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  ChangePasswordRoute: typeof ChangePasswordRoute
+  PoolRoute: typeof PoolRoute
+  TradeRoute: typeof TradeRoute
+>>>>>>> upstream/main
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChangePasswordRoute: ChangePasswordRoute,
   PoolRoute: PoolRoute,
   ResetpasswordRoute: ResetpasswordRoute,
   TradeRoute: TradeRoute,
@@ -135,6 +220,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/change-password",
         "/pool",
         "/reset_password",
         "/trade"
@@ -142,6 +228,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/change-password": {
+      "filePath": "change-password.tsx"
     },
     "/pool": {
       "filePath": "pool.tsx"
