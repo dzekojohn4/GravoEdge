@@ -56,14 +56,12 @@ async def get_all_orders(
 )
 async def create_order(
     order_data: UserOrderCreate,
-    db: AsyncSession = Depends(order_crud.session),
 ) -> UserOrder:
     """
     Create a new order with the provided order data.
 
     Args:
         order_data: The order data to create
-        order_crud: The OrderCRUD instance for database operations
 
     Returns:
         The created order
