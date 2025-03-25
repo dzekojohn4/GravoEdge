@@ -11,7 +11,7 @@ from app.crud.base import DBConnector
 from app.models.admin import Admin
 from app.schemas.admin import AdminRequest, AdminResponse
 
-router = APIRouter(prefix="/admin")
+router = APIRouter(prefix="")
 
 
 @router.post(
