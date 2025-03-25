@@ -76,7 +76,7 @@ async def close_margin_position(
     return CloseMarginPositionResponse(position_id=position_id, status=status)
 
 
-@router.get("/", response_model=List[MarginPositionResponse])
+@router.get("/all", response_model=List[MarginPositionResponse])
 async def get_all_positions(
         limit: Optional[int] = Query(None, description="limit margin positions"),
         offset: int = Query(0, description="offset margin positions"),
