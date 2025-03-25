@@ -14,8 +14,8 @@ const textData = {
   login: 'Sign In',
   rememberMe: 'Remember Me',
   forgotPassword: 'Forgot Password?',
-  singUp: 'Sign Up',
-  singUpHint: 'Don’t have an account yet?'
+  signUp: 'Sign Up',
+  signUpHint: 'Don’t have an account yet?'
 };
 
 type LoginFormSchema = {
@@ -127,9 +127,9 @@ const LoginForm = () => {
         {textData.login}
       </Button>
       <div className='flex justify-center gap-2 text-xs'>
-        <p>{textData.singUpHint}</p>
+        <p>{textData.signUpHint}</p>
         <a href='#' className='underline'>
-          {textData.singUp}
+          {textData.signUp}
         </a>
       </div>
     </Card>
