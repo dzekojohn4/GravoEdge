@@ -1,12 +1,14 @@
 """
 API endpoints for admin management.
 """
+from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from loguru import logger
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
+from app.crud.admin import admin_crud
 from app.crud.base import DBConnector
 from app.models.admin import Admin
 from app.schemas.admin import AdminRequest, AdminResponse
@@ -54,6 +56,39 @@ async def add_admin(
         ) from e
 
     return AdminResponse(id=new_admin.id, name=new_admin.name, email=new_admin.email)
+
+
+@router.get(
+    "/all",
+    response_model=list[AdminResponse],
+    status_code=status.HTTP_200_OK,
+    summary="Get all admin",
+    description="Get all admin",
+)
+async def get_all_admin(
+    limit: Optional[int] = Query(25, description="Number of admins to retrieve"),
+    offset: Optional[int] = Query(0, description="Number of admins to skip"),
+) -> list[AdminResponse]:
+    """
+        Return all admins.
+
+        Parameters:
+        - limit: Optional[int] - max admins to be retrieved
+        - offset: Optional[int] - start retrieving at
+
+        Returns:
+        - list[AdminResponse]: a list of admins
+
+        Raises:
+            HTTPException: If there's an error retrieving admins
+        """
+    try:
+        return await admin_crud.get_all(limit, offset)
+    except SQLAlchemyError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get admins: {str(e)}",
+        )
 
 
 @router.get(
