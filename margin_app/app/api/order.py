@@ -5,10 +5,12 @@ API endpoints for order management.
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
+import uuid
 
 from app.crud.order import order_crud
 from app.models.user_order import UserOrder
 from app.schemas.order import UserOrderCreate, UserOrderResponse
+
 
 from typing import Optional
 
@@ -81,4 +83,25 @@ async def create_order(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create order: {str(e)}",
+        )
+
+
+@router.get(
+    "/{order_id}",
+    response_model=UserOrderResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_order(order_id: uuid.UUID) -> UserOrder:
+    try:
+        order = await order_crud.get_by_id(order_id)
+        if not order:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Order not found"
+            )
+        return order
+    except SQLAlchemyError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get order: {str(e)}"
         )
