@@ -11,7 +11,8 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.crud.admin import admin_crud
 from app.crud.base import DBConnector
 from app.models.admin import Admin
-from app.schemas.admin import AdminRequest, AdminResponse
+from app.schemas.admin import AdminRequest, AdminResponse, AdminResetPassword
+from app.services.auth import get_password_hash, verify_password
 
 router = APIRouter(prefix="")
 
@@ -41,7 +42,7 @@ async def add_admin(
     """
     new_admin = Admin(
         email=data.email,
-        password=data.password,
+        password=get_password_hash(data.password),
         name=data.name,
     )
 
@@ -118,3 +119,39 @@ async def get_admin(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admin not found.")
 
     return AdminResponse(id=admin.id, name=admin.name, email=admin.email)
+
+
+@router.post(
+    "/reset_password",
+    response_model=AdminResponse,
+    status_code=status.HTTP_200_OK,
+    summary="password reset for admin",
+    description="change password for admin",
+)
+async def add_admin(
+        data: AdminResetPassword,
+) -> AdminResponse:
+    """
+    Reset of admin password.
+
+    Parameters:
+        data: The admin data to be reseted
+
+    Returns:
+        Admin with new password
+
+    Raises:
+        HTTPException: Admin wis this email was not found
+        HTTPException: Typed old password do not match
+    """
+    admin = await admin_crud.get_object_by_field(field="email", value=data.email)
+
+    if not admin:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admin wis this email was not found.")
+
+
+    if not verify_password(data.old_password, admin.password):
+        raise HTTPException(status_code=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION, detail="Typed old password do not match.")
+
+    admin.password = get_password_hash(data.new_password)
+    return await admin_crud.write_to_db(admin)
