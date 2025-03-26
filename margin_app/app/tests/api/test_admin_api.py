@@ -34,7 +34,7 @@ def test_get_all_admins(client, mock_get_all_admin, limit, offset):
         admins.append({
             "name": f"name{str(i)}",
             "id": str(uuid.uuid4()),
-            "email": f"email{str(i)}",
+            "email": f"email{str(i)}@mail.ru",
         })
 
     mock_get_all_admin.return_value = admins[:3]
