@@ -1,9 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./rootReducer";
+import { configureStore } from '@reduxjs/toolkit';
+import cryptoDashboardReducer from './cryptoDashboard/cryptoDashboardSlice';
 
-const store = configureStore({
-    reducer: rootReducer,
+export const store = configureStore({
+  reducer: {
+    cryptoDashboard: cryptoDashboardReducer,
+  },
 });
-
-export default store;
-export type AppDispatch = typeof store.dispatch;
