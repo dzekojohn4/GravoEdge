@@ -10,6 +10,7 @@ from typing import AsyncIterator, Callable, Type, TypeVar, List, Optional, Any
 
 
 from sqlalchemy import select
+from sqlalchemy.sql import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -168,4 +169,14 @@ class DBConnector:
 
             result = await db.execute(query)
             return result.scalars().all()
-          
+    
+
+    async def test_connection(self):
+        """
+        Test the database connection.
+        :return
+        """
+        async with self.session() as session:
+            result = await session.execute(text("SELECT version()"))
+            return f"PostgreSQL version: {result.scalar()}"
+        
