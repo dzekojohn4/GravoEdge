@@ -139,8 +139,8 @@ async def update_user_pool(user_pool: UserPoolUpdate) -> UserPoolUpdateResponse:
     status_code=status.HTTP_200_OK,
 )
 async def get_all_user_pools(
-    limit: Optional[int] = Query(25),
-    offset: Optional[int] = Query(0),
+    limit: Optional[int] = Query(25, gt=0),
+    offset: Optional[int] = Query(0, ge=0)
 ) -> list[UserPoolResponse]:
     """
     Fetch all user pools
