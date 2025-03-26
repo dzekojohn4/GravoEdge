@@ -1,3 +1,4 @@
+"""Email service implementation using SendGrid."""
 
 from typing import List, Optional, Union, Dict, Any
 from sendgrid import SendGridAPIClient
@@ -8,6 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class EmailService:
+    """SendGrid email operations."""
 
     def __init__(self) -> None:
         self.client = SendGridAPIClient(settings.sendgrid_api_key)
@@ -25,6 +27,7 @@ class EmailService:
         template_id: Optional[str] = None,
         template_data: Optional[Dict[str, Any]] = None
     ) -> bool:
+        """Send email through SendGrid."""
         try:
             to_emails = [to_email] if isinstance(to_email, str) else to_email
             
