@@ -6,7 +6,7 @@ from sendgrid.helpers.mail import Mail, Email, To, Content, TemplateId
 from app.core.config import settings
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("EmailService")
 
 class EmailService:
     """SendGrid email operations."""
@@ -20,7 +20,7 @@ class EmailService:
 
     async def send_email(
         self,
-        to_email: Union[str, List[str]],
+        to_email: str | list[str],
         subject: str,
         content: str,
         is_html: bool = False,
