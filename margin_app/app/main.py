@@ -13,6 +13,7 @@ from app.api.margin_position import router as margin_position_router
 from app.api.order import router as order_router
 from app.api.pools import router as pool_router
 from app.api.user import router as user_router
+from app.api.admin import router as admin_router
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -28,6 +29,7 @@ app.include_router(margin_position_router, prefix="/api/margin", tags=["MarginPo
 app.include_router(user_router, prefix="/api/user", tags=["User"])
 app.include_router(deposit_router, prefix="/api/deposit", tags=["Deposit"])
 app.include_router(order_router, prefix="/api/order", tags=["Order"])
+app.include_router(admin_router, prefix="/api/admin", tags=["Admin"])
 
 # Configure Loguru
 logger.remove()  # Remove default logger to configure custom settings
