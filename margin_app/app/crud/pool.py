@@ -85,12 +85,18 @@ class UserPoolCRUD(DBConnector):
             await db.refresh(user_pool)
             return user_pool
 
-    async def get_all_user_pools(self) -> list[UserPool]:
+    async def get_all_user_pools(self, limit: Optional[int] = 25, offset: Optional[int] = 0
+                                 ) -> list[UserPool]:
         """
         Fetches all user pool entries from the database.
+
+        Parameters:
+        - limit: Optional[int] - maximum number of user pools to be retrieved
+        - offset: Optional[int] - skip N first user pools
+
         :return: List[UserPool]: List of all pool records fetched from the database
         """
-        return await self.get_objects(UserPool)
+        return await self.get_objects(UserPool, limit, offset)
 
 
 pool_crud = PoolCRUD()
