@@ -1,3 +1,7 @@
+"""
+Unit tests for Admin API endpoints using function-based approach without async/await.
+"""
+
 import uuid
 from unittest.mock import patch, AsyncMock
 
