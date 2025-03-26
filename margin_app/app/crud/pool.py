@@ -86,7 +86,7 @@ class UserPoolCRUD(DBConnector):
             return user_pool
 
     async def get_all_user_pools(
-        self, limit: Optional[int] = 25, offset: Optional[int] = 0
+        self, limit: Optional[int] = None, offset: Optional[int] = None
     ) -> list[UserPool]:
         """
         Fetches all user pool entries from the database.
