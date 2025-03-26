@@ -2,7 +2,6 @@
 MarginPosition model
 """
 
-import uuid
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
@@ -11,10 +10,12 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import BaseModel
 
+
 class MarginPositionStatus(Enum):
     """MarginPositionStatus Enum"""
     OPEN = "Open"
     CLOSED = "Closed"
+
 
 class MarginPosition(BaseModel):
     """
@@ -31,8 +32,8 @@ class MarginPosition(BaseModel):
     __tablename__ = 'margin_position'
 
     user_id: Mapped[UUID] = mapped_column(
-        UUID(as_uuid=True), 
-        ForeignKey('user.id'), 
+        UUID(as_uuid=True),
+        ForeignKey('user.id'),
         nullable=False
     )
     multiplier: Mapped[int] = mapped_column(nullable=False)
@@ -54,4 +55,3 @@ class MarginPosition(BaseModel):
         CheckConstraint('multiplier >= 1 AND multiplier <= 20', name='check_multiplier_range'),
         CheckConstraint("status IN ('Open', 'Closed')", name='check_valid_status'),
     )
-
