@@ -24,6 +24,12 @@ class Settings(BaseSettings):
     db_host: str = Field(default="localhost", alias="DB_HOST")
     db_port: int = 5432
 
+    # Email settings
+    sendgrid_api_key: str = Field(default="", alias="SENDGRID_API_KEY")
+    email_sender: str = Field(default="", alias="EMAIL_SENDER")
+    email_sender_name: str = Field(default="", alias="EMAIL_SENDER_NAME")
+    email_test_mode: bool = Field(default=False, alias="EMAIL_TEST_MODE")
+
     @computed_field
     @property
     def db_url(self) -> URL:
