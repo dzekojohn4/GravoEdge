@@ -4,16 +4,16 @@ Main FastAPI application entry point.
 
 import sys
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from loguru import logger
 
+from app.api.admin import router as admin_router
 from app.api.deposit import router as deposit_router
 from app.api.liquidation import router as liquidation_router
 from app.api.margin_position import router as margin_position_router
 from app.api.order import router as order_router
 from app.api.pools import router as pool_router
 from app.api.user import router as user_router
-from app.api.admin import router as admin_router
 from app.services.auth import get_current_user
 
 # Initialize FastAPI app
@@ -26,7 +26,9 @@ app = FastAPI(
 # Include routers
 app.include_router(liquidation_router, prefix="/api/liquidation", tags=["Liquidation"])
 app.include_router(pool_router, prefix="/api/pool", tags=["Pool"])
-app.include_router(margin_position_router, prefix="/api/margin", tags=["MarginPosition"])
+app.include_router(
+    margin_position_router, prefix="/api/margin", tags=["MarginPosition"]
+)
 app.include_router(user_router, prefix="/api/user", tags=["User"])
 app.include_router(deposit_router, prefix="/api/deposit", tags=["Deposit"])
 app.include_router(order_router, prefix="/api/order", tags=["Order"])
@@ -74,7 +76,7 @@ async def log_requests(request: Request, call_next):
 
 
 @app.middleware("http")
-async def auth_admin_user(request:Request, call_next):
+async def auth_admin_user(request: Request, call_next):
     """
     Middleware to authenticate admin users.
     """
@@ -90,12 +92,16 @@ async def auth_admin_user(request:Request, call_next):
         header_parts = auth_header.split()
         if len(header_parts) != 2:
             logger.error("Invalid authorization header format.")
-            raise HTTPException(status_code=401, detail="Invalid authorization header format.")
+            raise HTTPException(
+                status_code=401, detail="Invalid authorization header format."
+            )
 
         auth_scheme, token = header_parts
         if auth_scheme.lower() != "bearer":
             logger.error("Invalid authentication scheme.")
-            raise HTTPException(status_code=401, detail="Invalid authentication scheme.")
+            raise HTTPException(
+                status_code=401, detail="Invalid authentication scheme."
+            )
         if not token:
             logger.error("Missing bearer token.")
             raise HTTPException(status_code=401, detail="Missing bearer token.")
