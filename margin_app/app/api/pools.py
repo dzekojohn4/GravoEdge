@@ -160,4 +160,3 @@ async def get_all_user_pools(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Something went wrong.",
         ) from e
-get_all_user_pools(limit=15, offset=15)
