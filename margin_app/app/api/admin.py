@@ -147,11 +147,15 @@ async def add_admin(
     admin = await admin_crud.get_object_by_field(field="email", value=data.email)
 
     if not admin:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admin wis this email was not found.")
+        raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Admin wis this email was not found.")
 
 
     if not verify_password(data.old_password, admin.password):
-        raise HTTPException(status_code=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION, detail="Typed old password do not match.")
+        raise HTTPException(
+                status_code=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
+                detail="Typed old password do not match.")
 
     admin.password = get_password_hash(data.new_password)
     return await admin_crud.write_to_db(admin)
