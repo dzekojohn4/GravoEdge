@@ -130,31 +130,6 @@ async def add_user_deposit(user_deposit: AddUserDepositRequest):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
 
 
-@router.post(
-    "/add_user_deposit",
-    status_code=status.HTTP_201_CREATED,
-    response_model=AddUserDepositResponse,
-)
-async def add_user_deposit(user_deposit: AddUserDepositRequest):
-    """
-    Add an user deposit
-
-    :param user_deposit: user id, amount, token, transaction_id
-    :return: deposit id
-    """
-    try:
-        deposit = await deposit_crud.create_deposit(
-            user_id=user_deposit.user_id,
-            token=user_deposit.token,
-            amount=user_deposit.amount,
-            transaction_id=user_deposit.transaction_id,
-        )
-        return AddUserDepositResponse(deposit_id=deposit.id)
-    except Exception as e:
-        logger.error(f"Error adding user deposit: {e}")
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
-
-
 @router.post("/add_margin_position", response_model=AddMarginPositionResponse)
 async def add_margin_position(
     request: AddMarginPositionRequest,
@@ -187,6 +162,15 @@ async def add_margin_position(
             multiplier=request.multiplier,
             transaction_id=request.transaction_id,
         )
-        return {"margin_position_id": margin_position.id}
+        return AddMarginPositionResponse(
+            margin_position_id=margin_position.id,
+            user_id=margin_position.user_id,
+            multiplier=margin_position.multiplier,
+            borrowed_amount=margin_position.borrowed_amount,
+            transaction_id=margin_position.transaction_id,
+            liquidated_at=margin_position.liquidated_at,
+            status=margin_position.status
+        )
+    
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
