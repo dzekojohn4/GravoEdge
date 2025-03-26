@@ -59,35 +59,6 @@ async def add_admin(
 
 
 @router.get(
-    "/{admin_id}",
-    response_model=AdminResponse,
-    status_code=status.HTTP_200_OK,
-    summary="get an admin",
-    description="Get an admin by ID",
-)
-async def get_admin(
-        admin_id: UUID,
-        db: DBConnector = Depends(DBConnector),
-) -> AdminResponse:
-    """
-    Get admin.
-
-    Parameters:
-    - admin_id: UUID, the ID of the admin
-
-    Returns:
-    - AdminResponse: The admin object
-    """
-    admin = await db.get_object(Admin, admin_id)
-
-    if not admin:
-        logger.error(f"Admin with id: '{admin_id}' not found")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admin not found.")
-
-    return AdminResponse(id=admin.id, name=admin.name, email=admin.email)
-
-
-@router.get(
     "/all",
     response_model=list[AdminResponse],
     status_code=status.HTTP_200_OK,
@@ -118,3 +89,32 @@ async def get_all_admin(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get admins: {str(e)}",
         )
+
+
+@router.get(
+    "/{admin_id}",
+    response_model=AdminResponse,
+    status_code=status.HTTP_200_OK,
+    summary="get an admin",
+    description="Get an admin by ID",
+)
+async def get_admin(
+        admin_id: UUID,
+        db: DBConnector = Depends(DBConnector),
+) -> AdminResponse:
+    """
+    Get admin.
+
+    Parameters:
+    - admin_id: UUID, the ID of the admin
+
+    Returns:
+    - AdminResponse: The admin object
+    """
+    admin = await db.get_object(Admin, admin_id)
+
+    if not admin:
+        logger.error(f"Admin with id: '{admin_id}' not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admin not found.")
+
+    return AdminResponse(id=admin.id, name=admin.name, email=admin.email)
