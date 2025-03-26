@@ -11,7 +11,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.api.order import router
-from app.models.user_order import Order
+from app.models.user_order import UserOrder
 
 
 @pytest.fixture
@@ -47,7 +47,7 @@ def create_mock_order():
     user_id = uuid.uuid4()
     position_id = uuid.uuid4()
 
-    mock_order = MagicMock(spec=Order)
+    mock_order = MagicMock(spec=UserOrder)
     mock_order.id = order_id
     mock_order.user_id = user_id
     mock_order.price = 100.50
