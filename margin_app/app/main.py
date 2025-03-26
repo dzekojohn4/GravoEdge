@@ -14,6 +14,7 @@ from app.api.order import router as order_router
 from app.api.pools import router as pool_router
 from app.api.user import router as user_router
 from app.api.admin import router as admin_router
+from app.services.auth import get_current_user
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -70,6 +71,27 @@ async def log_requests(request: Request, call_next):
     response = await call_next(request)
     logger.info(f"Response: {response.status_code} {request.url}")
     return response
+
+
+@app.middleware("http")
+async def auth_admin_user(request:Request, call_next):
+    auth_header = request.headers.get("Authorization")
+
+    if not auth_header:
+        request.state.admin_user = None
+
+    try:
+        auth_scheme, token = auth_header.split()
+        if auth_scheme.lower() != "bearer":
+            logger.error("Invalid authentication scheme.")
+            request.state.admin_user = None
+        else:
+            request.state.admin_user = await get_current_user(token)
+    except Exception as e:
+        logger.error(f"Error authenticating admin user: {e}")
+        request.state.admin_user = None
+
+    return await call_next(request)
 
 
 # Additional route
