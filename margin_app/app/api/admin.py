@@ -4,16 +4,17 @@ API endpoints for admin management.
 
 from typing import Optional
 from uuid import UUID
+from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from fastapi.responses import RedirectResponse
 from loguru import logger
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-import requests
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.sessions import get_db
 from app.services.auth import google_auth
+from app.services.auth import save_token_to_session
 from app.crud.admin import admin_crud
 from app.crud.base import DBConnector
 from app.models.admin import Admin
@@ -68,9 +69,8 @@ async def add_admin(
 async def login_google() -> RedirectResponse:
     """
     Redirect to Google login page.
-
-    Returns:
-        dict: A dictionary containing the Google login URL.
+    
+    :return: RedirectResponse - Redirect to Google login page.    
     """
     return RedirectResponse(url=google_auth.google_login_url)
 
@@ -84,28 +84,44 @@ async def logout_user() -> dict:
     """
     Logout the user.
 
-    Returns:
-        dict: A dictionary confirming the logout action.
+    :return: dict - A success message.
     """
     return {"message": "User logged out successfully."}
 
 
 @router.get("/auth/google", status_code=status.HTTP_200_OK)
-async def auth_google(code: str, db: AsyncSession = Depends(get_db)):
+async def auth_google(code: str, request: Request, db: AsyncSession = Depends(get_db)):
     """
-    Authenticate with Google OAuth and create an access token.
+    Authenticate with Google OAuth, create an access token, and save it in the session.
 
     :param code: str - The code received from Google OAuth.
     :param db: AsyncSession - The database session.
+    :param request: Request - The HTTP request object to access the session.
+
+    :return: dict - A success message.
     """
     try:
-        user = await google_auth.get_user(code=code, db=db)
+        user_data = await google_auth.get_user(code=code, db=db)
+
+        if not user_data:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Failed to authenticate user.",
+            )
+
+        save_token_to_session(
+            email=user_data["user"].email,
+            request=request,
+            expires_delta=timedelta(minutes=15)
+        )
+
+        return {"message": "Authentication successful"}
     except Exception as e:
         logger.error(f"Failed to authenticate user: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Failed to authenticate user.",
-        ) from e
+        )
 
 
 @router.get(

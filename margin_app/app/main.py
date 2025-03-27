@@ -5,9 +5,11 @@ Main FastAPI application entry point.
 import sys
 
 from fastapi import FastAPI, Request
+from starlette.middleware.sessions import SessionMiddleware 
 from loguru import logger
 
 from app.api.deposit import router as deposit_router
+from app.core.config import settings
 from app.api.liquidation import router as liquidation_router
 from app.api.margin_position import router as margin_position_router
 from app.api.order import router as order_router
@@ -21,6 +23,12 @@ app = FastAPI(
     description="API for managing margin trading positions",
     version="1.0.0",
 )
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.secret_key, 
+)
+
 
 # Include routers
 app.include_router(liquidation_router, prefix="/api/liquidation", tags=["Liquidation"])
