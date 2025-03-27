@@ -1,3 +1,7 @@
+"""
+Testing module for auth admin user middleware (app.main.auth_admin_user).
+"""
+
 import pytest
 from fastapi import status
 
@@ -42,7 +46,8 @@ def test_auth_admin_user_middleware_guarded_url_invalid_authorization_header(
     client, auth_header_content, expected_error_message
 ):
     """
-    Test that guarded URL return UNAUTHORIZED status code when authorization header is invalid (different scenarios).
+    Test that guarded URL return UNAUTHORIZED status code when authorization header is invalid
+     with(different scenarios).
     """
     response = client.get(
         API_ADMIN_URL + ADMIN_ROUTE_TO_TEST,
