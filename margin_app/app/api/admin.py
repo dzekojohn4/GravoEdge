@@ -213,7 +213,8 @@ async def change_password(
     admin_email: EmailStr,
 ):
     """
-    Asynchronously handles the process of changing an admin's password by sending a reset password email.
+    Asynchronously handles the process of changing an admin's password
+    by sending a reset password email.
     Args:
         admin_email (EmailStr): The email address of the admin whose password needs to be changed.
     Raises:
