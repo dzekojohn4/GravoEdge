@@ -32,7 +32,7 @@ async def get_all_orders(
     - offset: Optional[int] - start retrieving at
 
     Returns:
-    - orders  list[UserOrder]: a list of orders
+    - UserOrderGetAllResponse
 
     Raises:
         HTTPException: If there's an error retrieving orders
