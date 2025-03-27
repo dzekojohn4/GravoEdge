@@ -12,6 +12,7 @@ from app.core.config import settings
 from app.models.admin import Admin
 from app.schemas.admin import AdminResponse
 from app.crud.admin import admin_crud
+from fastapi import Request
 import requests
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -33,6 +34,26 @@ def create_access_token(email: str, expires_delta: timedelta | None = None):
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode = {"sub": email, "exp": expire}
     return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
+
+
+def save_token_to_session(
+    email: str,
+    request: Request,
+    expires_delta: timedelta | None = None
+) -> None:
+    """
+    Save the token to the session.
+
+    Parameters:
+    - email (str): The email of the user associated with the token.
+    - request (Request): The FastAPI request object.
+    - expires_delta (timedelta | None, optional): The expiration time of the token.
+
+    Returns:
+    - None
+    """
+    token = create_access_token(email=email, expires_delta=expires_delta)
+    request.session["access_token"] = token
 
 
 async def get_current_user(token: str) -> Admin:
