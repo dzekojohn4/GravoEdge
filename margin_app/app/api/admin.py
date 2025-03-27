@@ -1,10 +1,11 @@
 """
 API endpoints for admin management.
 """
+
 from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from loguru import logger
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
@@ -12,6 +13,7 @@ from app.crud.admin import admin_crud
 from app.crud.base import DBConnector
 from app.models.admin import Admin
 from app.schemas.admin import AdminRequest, AdminResponse
+from app.services.auth import get_admin_user_from_state
 
 router = APIRouter(prefix="")
 
@@ -24,8 +26,9 @@ router = APIRouter(prefix="")
     description="Adds a new admin in the application",
 )
 async def add_admin(
-        data: AdminRequest,
-        db: DBConnector = Depends(DBConnector),
+    data: AdminRequest,
+    db: DBConnector = Depends(DBConnector),
+    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
     Add a new admin with the provided admin data.
@@ -68,20 +71,21 @@ async def add_admin(
 async def get_all_admin(
     limit: Optional[int] = Query(25, description="Number of admins to retrieve"),
     offset: Optional[int] = Query(0, description="Number of admins to skip"),
+    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> list[AdminResponse]:
     """
-        Return all admins.
+    Return all admins.
 
-        Parameters:
-        - limit: Optional[int] - max admins to be retrieved
-        - offset: Optional[int] - start retrieving at
+    Parameters:
+    - limit: Optional[int] - max admins to be retrieved
+    - offset: Optional[int] - start retrieving at
 
-        Returns:
-        - list[AdminResponse]: a list of admins
+    Returns:
+    - list[AdminResponse]: a list of admins
 
-        Raises:
-            HTTPException: If there's an error retrieving admins
-        """
+    Raises:
+        HTTPException: If there's an error retrieving admins
+    """
     try:
         return await admin_crud.get_all(limit, offset)
     except SQLAlchemyError as e:
@@ -99,8 +103,9 @@ async def get_all_admin(
     description="Get an admin by ID",
 )
 async def get_admin(
-        admin_id: UUID,
-        db: DBConnector = Depends(DBConnector),
+    admin_id: UUID,
+    db: DBConnector = Depends(DBConnector),
+    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
     Get admin.
@@ -115,6 +120,8 @@ async def get_admin(
 
     if not admin:
         logger.error(f"Admin with id: '{admin_id}' not found")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admin not found.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Admin not found."
+        )
 
     return AdminResponse(id=admin.id, name=admin.name, email=admin.email)

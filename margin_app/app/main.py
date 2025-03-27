@@ -4,7 +4,7 @@ Main FastAPI application entry point.
 
 import sys
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from loguru import logger
 from starlette.responses import JSONResponse
 

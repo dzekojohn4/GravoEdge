@@ -1,15 +1,20 @@
 """
 This module contains authentication related services.
 """
+
 from datetime import datetime, timedelta, timezone
+
 import jwt
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
-from app.crud.admin import admin_crud
+from starlette.requests import Request
+
 from app.core.config import settings
+from app.crud.admin import admin_crud
 from app.models.admin import Admin
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 def create_access_token(email: str, expires_delta: timedelta | None = None):
     """
@@ -26,10 +31,7 @@ def create_access_token(email: str, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode = {"sub": email, "exp": expire}
-    return jwt.encode(
-        to_encode,
-        settings.secret_key,
-        algorithm=settings.algorithm)
+    return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
 
 
 async def get_current_user(token: str) -> Admin:
@@ -86,3 +88,14 @@ def get_password_hash(password) -> str:
     :return: str - The hashed password.
     """
     return pwd_context.hash(password)
+
+
+async def get_admin_user_from_state(req: Request) -> Admin | None:
+    """
+    Retrieves the admin user from the request state if it exists.
+
+    :param req: Request - The incoming request object.
+
+    :return: Admin | None - The admin user if it exists, None otherwise.
+    """
+    return getattr(req.state, "admin_user", None)
