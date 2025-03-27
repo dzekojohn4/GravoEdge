@@ -78,17 +78,17 @@ class TestLiquidation:
         )
 
         request_data = {
-            "margin_position_id": self.test_margin_position_id,
-            "bonus_amount": self.test_bonus_amount,
+            "margin_position_id": str(self.test_margin_position_id),
+            "bonus_amount": str(self.test_bonus_amount),
             "bonus_token": self.test_bonus_token
         }
         response = client.post(MARGIN_POSITION_URL + "/liquidate", json=request_data)
         assert response.status_code == status.HTTP_200_OK
 
         response_data = response.json()
-        assert response_data["margin_position_id"] == str(self.margin_position_id)
-        assert response_data["bonus_amount"] == str(self.bonus_amount)
-        assert response_data["bonus_token"] == self.bonus_token
+        assert response_data["margin_position_id"] == str(self.test_margin_position_id)
+        assert response_data["bonus_amount"] == str(self.test_bonus_amount)
+        assert response_data["bonus_token"] == self.test_bonus_token
         assert response_data["status"] == "success"
 
     @pytest.mark.asyncio
@@ -118,13 +118,11 @@ class TestLiquidation:
         )
 
         request_data = {
-            "margin_position_id": self.test_margin_position_id,
-            "bonus_amount": self.test_bonus_amount,
+            "margin_position_id": str(self.test_margin_position_id),
+            "bonus_amount": str(self.test_bonus_amount),
             "bonus_token": self.test_bonus_token
         }
 
-        with pytest.raises(HTTPException) as exc_info:
-            response = client.post(MARGIN_POSITION_URL + "/liquidate", json=request_data)
-
-        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
-        assert error_message in exc_info.value.detail
+        response = client.post(MARGIN_POSITION_URL + "/liquidate", json=request_data)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "detail" in response.json()
