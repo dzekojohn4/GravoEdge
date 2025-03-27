@@ -6,6 +6,7 @@ import sys
 
 from fastapi import FastAPI, HTTPException, Request
 from loguru import logger
+from starlette.responses import JSONResponse
 
 from app.api.admin import router as admin_router
 from app.api.deposit import router as deposit_router
@@ -83,35 +84,35 @@ async def auth_admin_user(request: Request, call_next):
     if not request.url.path.startswith("/api/admin"):
         return await call_next(request)
 
-    auth_header = request.headers.get("Authorization")
-    if not auth_header:
-        logger.error("Missing authorization header.")
-        raise HTTPException(status_code=401, detail="Missing authorization header.")
-
     try:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            logger.error("Missing authorization header.")
+            return JSONResponse(
+                status_code=401, content={"detail": "Missing authorization header."}
+            )
+
         header_parts = auth_header.split()
         if len(header_parts) != 2:
             logger.error("Invalid authorization header format.")
-            raise HTTPException(
-                status_code=401, detail="Invalid authorization header format."
+            return JSONResponse(
+                status_code=401,
+                content={"detail": "Invalid authorization header format."},
             )
 
         auth_scheme, token = header_parts
         if auth_scheme.lower() != "bearer":
             logger.error("Invalid authentication scheme.")
-            raise HTTPException(
-                status_code=401, detail="Invalid authentication scheme."
+            return JSONResponse(
+                status_code=401, content={"detail": "Invalid authentication scheme."}
             )
-        if not token:
-            logger.error("Missing bearer token.")
-            raise HTTPException(status_code=401, detail="Missing bearer token.")
 
         request.state.admin_user = await get_current_user(token)
-    except HTTPException:
-        raise
     except Exception as e:
         logger.error(f"Error authenticating admin user: {e}")
-        raise HTTPException(status_code=401, detail="Authentication error.")
+        return JSONResponse(
+            status_code=401, content={"detail": "Authentication error."}
+        )
 
     return await call_next(request)
 
