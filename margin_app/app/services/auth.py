@@ -3,12 +3,15 @@ This module contains authentication related services.
 """
 
 from datetime import datetime, timedelta, timezone
+
 import jwt
 from jwt.exceptions import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
-from app.crud.admin import admin_crud
+from starlette.requests import Request
+
 from app.core.config import settings
+from app.crud.admin import admin_crud
 from app.models.admin import Admin
 from app.schemas.admin import AdminResponse
 from app.crud.admin import admin_crud
@@ -35,8 +38,7 @@ def create_access_token(email: str, expires_delta: timedelta | None = None):
     to_encode = {"sub": email, "exp": expire}
     return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
 
-
-def save_token_to_session(
+  def save_token_to_session(
     email: str,
     request: Request,
     expires_delta: timedelta | None = None
@@ -112,6 +114,7 @@ def get_password_hash(password) -> str:
     return pwd_context.hash(password)
 
 
+
 class GoogleAuth:
     """
     Google authentication service.
@@ -183,3 +186,13 @@ class GoogleAuth:
 
 
 google_auth = GoogleAuth()
+
+async def get_admin_user_from_state(req: Request) -> Admin | None:
+    """
+    Retrieves the admin user from the request state if it exists.
+
+    :param req: Request - The incoming request object.
+
+    :return: Admin | None - The admin user if it exists, None otherwise.
+    """
+    return getattr(req.state, "admin_user", None)

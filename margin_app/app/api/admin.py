@@ -8,6 +8,7 @@ from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from fastapi.responses import RedirectResponse
+
 from loguru import logger
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
@@ -19,6 +20,7 @@ from app.crud.admin import admin_crud
 from app.crud.base import DBConnector
 from app.models.admin import Admin
 from app.schemas.admin import AdminRequest, AdminResponse
+from app.services.auth import get_admin_user_from_state
 
 router = APIRouter(prefix="")
 
@@ -33,6 +35,7 @@ router = APIRouter(prefix="")
 async def add_admin(
     data: AdminRequest,
     db: DBConnector = Depends(DBConnector),
+    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
     Add a new admin with the provided admin data.
@@ -134,6 +137,7 @@ async def auth_google(code: str, request: Request, db: AsyncSession = Depends(ge
 async def get_all_admin(
     limit: Optional[int] = Query(25, description="Number of admins to retrieve"),
     offset: Optional[int] = Query(0, description="Number of admins to skip"),
+    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> list[AdminResponse]:
     """
     Return all admins.
@@ -167,6 +171,7 @@ async def get_all_admin(
 async def get_admin(
     admin_id: UUID,
     db: DBConnector = Depends(DBConnector),
+    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
     Get admin.
