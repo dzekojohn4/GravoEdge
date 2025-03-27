@@ -2,9 +2,11 @@
 This module contains Pydantic schemas for User.
 """
 
+from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 from app.schemas.deposit import DepositResponse
+from app.models.margin_position import MarginPositionStatus
 from pydantic import BaseModel, ConfigDict
 
 
@@ -71,3 +73,9 @@ class AddMarginPositionResponse(BaseModel):
     """
 
     margin_position_id: UUID
+    user_id: UUID
+    multiplier: int
+    borrowed_amount: Decimal
+    transaction_id: str
+    liquidated_at: datetime
+    status: MarginPositionStatus

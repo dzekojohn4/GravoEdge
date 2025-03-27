@@ -2,10 +2,13 @@
 Tests for user API endpoints.
 """
 
+from datetime import datetime
+import json
 import uuid
 from decimal import Decimal
 from unittest.mock import AsyncMock, patch, MagicMock
 
+from app.models.margin_position import MarginPositionStatus
 import pytest
 from fastapi import status
 
@@ -150,6 +153,8 @@ def test_add_margin_position_success(client, mock_add_margin_position):
     """Test successfully adding a margin position."""
     user_id = uuid.uuid4()
     position_id = uuid.uuid4()
+    liquidated_at = datetime.now()
+    positionStatus = MarginPositionStatus.OPEN
 
     request_data = {
         "user_id": str(user_id),
@@ -161,12 +166,28 @@ def test_add_margin_position_success(client, mock_add_margin_position):
 
     mock_position = MagicMock()
     mock_position.id = position_id
+    mock_position.user_id = user_id
+    mock_position.multiplier = request_data["multiplier"]
+    mock_position.borrowed_amount = request_data["borrowed_amount"]
+    mock_position.transaction_id = request_data["transaction_id"]
+    mock_position.liquidated_at = liquidated_at
+    mock_position.status = (positionStatus)    
+
     mock_add_margin_position.return_value = mock_position
 
     response = client.post(USER_URL + "add_margin_position", json=request_data)
-
+    
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"margin_position_id": str(position_id)}
+    assert response.json() =={
+        "margin_position_id": str(position_id),
+        "user_id": str(user_id),
+        "multiplier": request_data["multiplier"],
+        "borrowed_amount": request_data["borrowed_amount"],
+        "transaction_id": request_data["transaction_id"],
+        "liquidated_at": (liquidated_at.isoformat()),
+        "status": "Open"
+        }
+    
     mock_add_margin_position.assert_called_once_with(
         user_id=user_id,
         borrowed_amount=Decimal("100.0"),
