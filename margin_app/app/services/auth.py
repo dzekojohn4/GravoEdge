@@ -38,10 +38,9 @@ def create_access_token(email: str, expires_delta: timedelta | None = None):
     to_encode = {"sub": email, "exp": expire}
     return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
 
-  def save_token_to_session(
-    email: str,
-    request: Request,
-    expires_delta: timedelta | None = None
+
+def save_token_to_session(
+    email: str, request: Request, expires_delta: timedelta | None = None
 ) -> None:
     """
     Save the token to the session.
@@ -95,10 +94,10 @@ def verify_password(plain_password, hashed_password) -> bool:
 
     :param plain_password: str - The plain password to be verified.
     :param hashed_password: str - The hashed password against which the plain
-     one will be verified.
+    one will be verified.
 
     :return: bool - True if the plain password matches the hashed password,
-     False if not.
+    False if not.
     """
     return pwd_context.verify(plain_password, hashed_password)
 
@@ -112,7 +111,6 @@ def get_password_hash(password) -> str:
     :return: str - The hashed password.
     """
     return pwd_context.hash(password)
-
 
 
 class GoogleAuth:
@@ -186,6 +184,7 @@ class GoogleAuth:
 
 
 google_auth = GoogleAuth()
+
 
 async def get_admin_user_from_state(req: Request) -> Admin | None:
     """
