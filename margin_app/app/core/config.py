@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     secret_key: str = "SECRET_KEY"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
+    reset_password_expire_minutes: int = 15
     host: str = "localhost"
     forget_password_url: str = "/admin/reset-password"
 

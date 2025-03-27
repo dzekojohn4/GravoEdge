@@ -73,7 +73,8 @@ class EmailService:
         Returns:
             Coroutine: A coroutine that sends the email asynchronously.
         """
-        token = create_access_token(email=to_email, expires_delta=settings.access_token_expire_minutes)
+        token = create_access_token(email=to_email,
+                                    expires_delta=settings.reset_password_expire_minutes)
         return await self.send_email(
             to_email=to_email,
             subject="Reset your password",
