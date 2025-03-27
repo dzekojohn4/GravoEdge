@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Email, To, Content, TemplateId
 from app.core.config import settings
-from app.services.auth import create_access_token
+from app.services.auth import create_access_token, get_expire_time
 import logging
 
 logger = logging.getLogger("EmailService")
@@ -74,7 +74,7 @@ class EmailService:
             Coroutine: A coroutine that sends the email asynchronously.
         """
         token = create_access_token(email=to_email,
-                                    expires_delta=settings.reset_password_expire_minutes)
+                                    expires_delta=get_expire_time(settings.reset_password_expire_minutes))
         return await self.send_email(
             to_email=to_email,
             subject="Reset your password",
