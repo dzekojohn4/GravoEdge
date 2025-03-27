@@ -14,7 +14,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.crud.liquidation import liquidation_crud
 from app.crud.margin_position import margin_position_crud
 
-from app.schemas.liquidation import LiquidationResponse
+from app.schemas.liquidation import LiquidationRequest, LiquidationResponse
 from app.schemas.margin_position import (
     CloseMarginPositionResponse,
     MarginPositionCreate,
@@ -132,9 +132,7 @@ async def get_all_liquidated_positions() -> List[MarginPositionResponse]:
 
 @router.post("/liquidate", response_model=LiquidationResponse)
 async def liquidate_position(
-        margin_position_id: UUID,
-        bonus_amount: Decimal,
-        bonus_token: str,
+        data: LiquidationRequest
 ) -> LiquidationResponse:
     """
     Liquidates a margin position by creating a liquidation record.
@@ -149,7 +147,7 @@ async def liquidate_position(
     """
     try:
         liquidation_entry = await liquidation_crud.liquidate_position(
-            margin_position_id, bonus_amount, bonus_token
+            data.margin_position_id, data.bonus_amount, data.bonus_token
         )
         return LiquidationResponse(
             margin_position_id=liquidation_entry.margin_position_id,
