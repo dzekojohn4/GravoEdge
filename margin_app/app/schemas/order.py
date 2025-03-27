@@ -6,7 +6,7 @@ import uuid
 from decimal import Decimal
 
 from app.models.user_order import UserOrder
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class UserOrderCreate(BaseModel):
@@ -39,7 +39,4 @@ class UserOrderGetAllResponse(BaseModel):
     orders:list[UserOrderResponse]
     total:int
 
-    class Config:
-            """Pydantic model configuration"""
-            arbitrary_types_allowed = True
-            from_attributes = True
+    model_config = ConfigDict( from_attributes=True)
