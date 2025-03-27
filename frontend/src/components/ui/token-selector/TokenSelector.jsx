@@ -2,7 +2,8 @@ import React from 'react';
 import ETH from '@/assets/icons/ethereum.svg?react';
 import USDC from '@/assets/icons/borrow_usdc.svg?react';
 import STRK from '@/assets/icons/strk.svg?react';
-import KSTRK from '@/assets/icons/Kstrk.svg?react';
+import KSTRK from '@/assets/icons/kstrk.svg?react';
+
 
 const Tokens = [
   { id: 'ethOption', component: <ETH />, label: 'ETH' },
