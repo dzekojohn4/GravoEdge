@@ -64,6 +64,15 @@ class EmailService:
             raise
 
     async def reset_password_mail(self, to_email: str):
+        """
+        Sends a password reset email to the specified recipient.
+        This method generates a password reset token for the given email address
+        and sends an email containing a link to reset the password.
+        Args:
+            to_email (str): The recipient's email address.
+        Returns:
+            Coroutine: A coroutine that sends the email asynchronously.
+        """
         token = create_access_token(email=to_email)
         return await self.send_email(
             to_email=to_email,
