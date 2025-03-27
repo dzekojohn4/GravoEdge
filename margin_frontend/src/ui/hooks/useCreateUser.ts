@@ -1,25 +1,25 @@
 import { useMutation } from "@tanstack/react-query";
 
-const API_URL = "http://localhost:8000/api/admin/add";
+const useCreateUser = () => {
+  return useMutation(async (formData: { userName: string; email: string; password: string }) => {
+    const response = await fetch("http://localhost:8000/api/admin/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.userName, // Map to API expected field
+        email: formData.email,
+        password: formData.password,
+      }),
+    });
 
-const createUser = async (userData: { userName: string; email: string; password: string }) => {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(userData),
-  });
+    if (!response.ok) {
+      throw new Error("Failed to create user");
+    }
 
-  if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
-  }
-
-  return response.json();
-};
-
-export const useCreateUser = () => {
-  return useMutation({
-    mutationFn: createUser,
+    return response.json();
   });
 };
+
+export default useCreateUser;
