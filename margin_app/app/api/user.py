@@ -4,9 +4,15 @@ This module contains the API routes for the user.
 from app.crud.deposit import deposit_crud
 from app.crud.user import user_crud
 from app.db.sessions import get_db
-from app.schemas.user import (AddMarginPositionRequest,
-                              AddMarginPositionResponse, AddUserDepositRequest,
-                              AddUserDepositResponse, UserGetAllResponse, UserResponse, UserCreate)
+from app.schemas.user import (
+    AddMarginPositionRequest,
+    AddMarginPositionResponse,
+    AddUserDepositRequest,
+    AddUserDepositResponse,    
+    UserResponse,
+    UserCreate,
+    UserGetAllResponse,
+)
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from loguru import logger
 from typing import Optional
