@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     secret_key: str = "SECRET_KEY"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
+    host: str = "localhost"
+    forget_password_url: str = f"{host}/admin/reset-password"
 
     # Database settings
     db_driver: str = "postgresql+asyncpg"
