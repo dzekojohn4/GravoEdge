@@ -16,14 +16,14 @@ class AdminCRUD(DBConnector):
         Retrieves an object by a specified field from the database.
         :param field: str = None
         :param value: str = None
-        :param model: = Admin        
+        :param model: = Admin
         :return: Base | None
         """
         return await super().get_object_by_field(model, field, value)
 
 
     async def get_all(
-        self, limit:int = 25, offset:int = 0
+        self, limit: Optional[int] = None, offset: Optional[int] = None
     ) -> list[Admin]:
         """
         Retrieves all admins.
