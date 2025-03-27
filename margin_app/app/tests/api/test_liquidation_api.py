@@ -12,6 +12,9 @@ from fastapi.testclient import TestClient
 from app.schemas.liquidation import LiquidationResponse
 
 
+MARGIN_POSITION_URL = "api/margin"
+
+
 class MockLiquidationEntry:
     """
     A mock liquidation entry.
@@ -75,11 +78,11 @@ class TestLiquidation:
         )
 
         request_data = {
-            "margin_position_id": str(self.test_margin_position_id),
-            "bonus_amount": str(self.test_bonus_amount),
+            "margin_position_id": self.test_margin_position_id,
+            "bonus_amount": self.test_bonus_amount,
             "bonus_token": self.test_bonus_token
         }
-        response = client.post("/liquidate", json=request_data)
+        response = client.post(MARGIN_POSITION_URL + "/liquidate", json=request_data)
         assert response.status_code == status.HTTP_200_OK
 
         response_data = response.json()
@@ -115,13 +118,13 @@ class TestLiquidation:
         )
 
         request_data = {
-            "margin_position_id": str(self.test_margin_position_id),
-            "bonus_amount": str(self.test_bonus_amount),
+            "margin_position_id": self.test_margin_position_id,
+            "bonus_amount": self.test_bonus_amount,
             "bonus_token": self.test_bonus_token
         }
 
         with pytest.raises(HTTPException) as exc_info:
-            response = client.post("/liquidate", json=request_data)
+            response = client.post(MARGIN_POSITION_URL + "/liquidate", json=request_data)
 
         assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
         assert error_message in exc_info.value.detail
