@@ -35,9 +35,9 @@ class Settings(BaseSettings):
     email_test_mode: bool = False
 
     # Google authentication settings
-    google_client_id: str = Field(alias="GOOGLE_CLIENT_ID")
-    google_client_secret: str = Field(alias="GOOGLE_CLIENT_SECRET")
-    google_redirect_url: str = Field(alias="GOOGLE_REDIRECT_URI")
+    google_client_id: str = Field(default="test-id", alias="GOOGLE_CLIENT_ID")
+    google_client_secret: str = Field(default="test-secret", alias="GOOGLE_CLIENT_SECRET")
+    google_redirect_url: str = Field(default="test-uri", alias="GOOGLE_REDIRECT_URI")
 
     @computed_field
     @property
