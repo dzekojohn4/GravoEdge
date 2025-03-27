@@ -11,7 +11,9 @@ from loguru import logger
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 import requests
 
-from app.core.config import settings
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.sessions import get_db
+from app.services.auth import google_auth
 from app.crud.admin import admin_crud
 from app.crud.base import DBConnector
 from app.models.admin import Admin
@@ -62,23 +64,15 @@ async def add_admin(
     return AdminResponse(id=new_admin.id, name=new_admin.name, email=new_admin.email)
 
 
-@router.get(
-    "/login", response_model=dict, status_code=status.HTTP_307_TEMPORARY_REDIRECT
-)
-async def login_google() -> dict:
+@router.get("/login", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+async def login_google() -> RedirectResponse:
     """
     Redirect to Google login page.
 
     Returns:
-        RedirectResponse: Redirects to Google OAuth login page.
+        dict: A dictionary containing the Google login URL.
     """
-    google_login_url = (
-        f"https://accounts.google.com/o/oauth2/auth?"
-        f"response_type=code&client_id={settings.google_client_id}"
-        f"&redirect_uri={settings.google_redirect_url}"
-        f"&scope=openid%20profile%20email&access_type=offline"
-    )
-    return {"url": google_login_url}
+    return RedirectResponse(url=google_auth.google_login_url)
 
 
 @router.get(
@@ -86,7 +80,7 @@ async def login_google() -> dict:
     response_model=dict,
     status_code=status.HTTP_200_OK,
 )
-async def logout_user(response: RedirectResponse) -> dict:
+async def logout_user() -> dict:
     """
     Logout the user.
 
@@ -96,45 +90,22 @@ async def logout_user(response: RedirectResponse) -> dict:
     return {"message": "User logged out successfully."}
 
 
-@router.get("/auth/google", response_model=dict, status_code=status.HTTP_200_OK)
-async def auth_google(code: str) -> dict:
+@router.get("/auth/google", status_code=status.HTTP_200_OK)
+async def auth_google(code: str, db: AsyncSession = Depends(get_db)):
     """
-    Authenticate with Google OAuth.
+    Authenticate with Google OAuth and create an access token.
 
     :param code: str - The code received from Google OAuth.
-
-    :return: dict - The user information received from Google OAuth.
+    :param db: AsyncSession - The database session.
     """
-    token_url = "https://accounts.google.com/o/oauth2/token"
-    data = {
-        "code": code,
-        "client_id": settings.google_client_id,
-        "client_secret": settings.google_client_secret,
-        "redirect_uri": settings.google_redirect_url,
-        "grant_type": "authorization_code",
-    }
     try:
-        response = requests.post(token_url, data=data)
-        response.raise_for_status()
-        access_token = response.json().get("access_token")
-        if not access_token:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Failed to obtain access token",
-            )
-
-        user_info = requests.get(
-            "https://www.googleapis.com/oauth2/v1/userinfo",
-            headers={"Authorization": f"Bearer {access_token}"},
-        )
-        user_info.raise_for_status()
-        return user_info.json()
-    except requests.RequestException as e:
-        logger.error(f"Google authentication failed: {str(e)}")
+        user = await google_auth.get_user(code=code, db=db)
+    except Exception as e:
+        logger.error(f"Failed to authenticate user: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Authentication with Google failed",
-        )
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Failed to authenticate user.",
+        ) from e
 
 
 @router.get(
