@@ -8,7 +8,6 @@ from fastapi import FastAPI, Request
 from loguru import logger
 
 from app.api.deposit import router as deposit_router
-from app.api.liquidation import router as liquidation_router
 from app.api.margin_position import router as margin_position_router
 from app.api.order import router as order_router
 from app.api.pools import router as pool_router
@@ -23,7 +22,6 @@ app = FastAPI(
 )
 
 # Include routers
-app.include_router(liquidation_router, prefix="/api/liquidation", tags=["Liquidation"])
 app.include_router(pool_router, prefix="/api/pool", tags=["Pool"])
 app.include_router(margin_position_router, prefix="/api/margin", tags=["MarginPosition"])
 app.include_router(user_router, prefix="/api/user", tags=["User"])

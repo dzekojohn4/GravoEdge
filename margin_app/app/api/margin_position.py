@@ -3,6 +3,7 @@ This module contains the API routes for margin positions.
 """
 
 from uuid import UUID
+from decimal import Decimal
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -10,7 +11,10 @@ from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.crud.liquidation import liquidation_crud
 from app.crud.margin_position import margin_position_crud
+
+from app.schemas.liquidation import LiquidationResponse
 from app.schemas.margin_position import (
     CloseMarginPositionResponse,
     MarginPositionCreate,
@@ -124,3 +128,34 @@ async def get_all_liquidated_positions() -> List[MarginPositionResponse]:
             status_code=500,
             detail=f"Error retrieving liquidated positions: {str(e)}"
         ) from e
+
+
+@router.post("/liquidate", response_model=LiquidationResponse)
+async def liquidate_position(
+        margin_position_id: UUID,
+        bonus_amount: Decimal,
+        bonus_token: str,
+) -> LiquidationResponse:
+    """
+    Liquidates a margin position by creating a liquidation record.
+
+    Args:
+        margin_position_id (UUID): The ID of the margin position.
+        bonus_amount (Decimal): The bonus amount applied.
+        bonus_token (str): The token used for the bonus.
+
+    Returns:
+        LiquidationResponse: Details of the liquidation entry.
+    """
+    try:
+        liquidation_entry = await liquidation_crud.liquidate_position(
+            margin_position_id, bonus_amount, bonus_token
+        )
+        return LiquidationResponse(
+            margin_position_id=liquidation_entry.margin_position_id,
+            bonus_amount=liquidation_entry.bonus_amount,
+            bonus_token=liquidation_entry.bonus_token,
+            status="success",
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid request") from e
