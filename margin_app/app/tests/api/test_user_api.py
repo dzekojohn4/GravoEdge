@@ -2,10 +2,13 @@
 Tests for user API endpoints.
 """
 
+from datetime import datetime
+import json
 import uuid
 from decimal import Decimal
 from unittest.mock import AsyncMock, patch, MagicMock
 
+from app.models.margin_position import MarginPositionStatus
 import pytest
 from fastapi import status
 
@@ -86,6 +89,64 @@ def test_create_user_success(client, mock_create_user, mock_get_user):
     mock_create_user.assert_called_once_with(wallet_id)
 
 
+def test_get_user_by_id(client, mock_get_user):
+    """Test found by user_id response"""
+    wallet_id = "0x1234567890abcdef1234567890abcdef12345678"
+    user_id = uuid.uuid4()
+
+    mock_get_user.return_value = UserResponse(
+        id=user_id,
+        wallet_id=wallet_id,
+    )
+
+    response = client.get(USER_URL + "user_id/" + str(user_id))
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "id": str(user_id),
+        "wallet_id": wallet_id,
+        "deposit": [],
+    }
+
+
+def test_get_user_by_id_not_found(client):
+    """Test not found response"""
+    user_id = uuid.uuid4()
+    response = client.get(USER_URL + "user_id/" + str(user_id))
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "User not found."}
+
+
+def test_get_user_by_wallet_id(client, mock_get_user):
+    """Test found by wallet_id response"""
+    wallet_id = "0x1234567890abcdef1234567890abcdef12345678"
+    user_id = uuid.uuid4()
+
+    mock_get_user.return_value = UserResponse(
+        id=user_id,
+        wallet_id=wallet_id,
+    )
+
+    response = client.get(USER_URL + "wallet_id/" + wallet_id)
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "id": str(user_id),
+        "wallet_id": wallet_id,
+        "deposit": [],
+    }
+
+
+def test_get_user_by_wallet_id_not_found(client):
+    """Test not found response"""
+    wallet_id = "0x1234567890abcdef1234567890abcdef12345678"
+    response = client.get(USER_URL + "wallet_id/" + wallet_id)
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "User not found."}
+
+
 def test_create_user_error(client, mock_create_user, mock_get_user):
     """Test error handling when creating a user."""
     wallet_id = "0x1234567890abcdef1234567890abcdef12345678"
@@ -150,6 +211,8 @@ def test_add_margin_position_success(client, mock_add_margin_position):
     """Test successfully adding a margin position."""
     user_id = uuid.uuid4()
     position_id = uuid.uuid4()
+    liquidated_at = datetime.now()
+    positionStatus = MarginPositionStatus.OPEN
 
     request_data = {
         "user_id": str(user_id),
@@ -161,12 +224,28 @@ def test_add_margin_position_success(client, mock_add_margin_position):
 
     mock_position = MagicMock()
     mock_position.id = position_id
+    mock_position.user_id = user_id
+    mock_position.multiplier = request_data["multiplier"]
+    mock_position.borrowed_amount = request_data["borrowed_amount"]
+    mock_position.transaction_id = request_data["transaction_id"]
+    mock_position.liquidated_at = liquidated_at
+    mock_position.status = (positionStatus)    
+
     mock_add_margin_position.return_value = mock_position
 
     response = client.post(USER_URL + "add_margin_position", json=request_data)
-
+    
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"margin_position_id": str(position_id)}
+    assert response.json() =={
+        "margin_position_id": str(position_id),
+        "user_id": str(user_id),
+        "multiplier": request_data["multiplier"],
+        "borrowed_amount": request_data["borrowed_amount"],
+        "transaction_id": request_data["transaction_id"],
+        "liquidated_at": (liquidated_at.isoformat()),
+        "status": "Open"
+        }
+    
     mock_add_margin_position.assert_called_once_with(
         user_id=user_id,
         borrowed_amount=Decimal("100.0"),
@@ -242,43 +321,47 @@ def test_get_all_users(client, mock_get_all):
     """Test successfully return all users"""
     users = []
     for i in range(10):
-        users.append({
-            "wallet_id": str(i),
-            "id": str(uuid.uuid4()),
-            "deposit": [],
-        })
-        
+        users.append(
+            {
+                "wallet_id": str(i),
+                "id": str(uuid.uuid4()),
+                "deposit": [],
+            }
+        )
+
     mock_get_all.return_value = users
     response = client.get(USER_URL + "get_all_users")
 
     assert response.status_code == 200
-    assert response.json() == users 
+    assert response.json() == users
 
 
 def test_get_all_users(client, mock_get_all):
     """Test successfully return all users with limit and offset applied."""
     users = []
     for i in range(10):
-        users.append({
-            "wallet_id": str(i),
-            "id": str(uuid.uuid4()),
-            "deposit": [],
-        })
-        
+        users.append(
+            {
+                "wallet_id": str(i),
+                "id": str(uuid.uuid4()),
+                "deposit": [],
+            }
+        )
+
     mock_get_all.return_value = users[:3]
     response = client.get(USER_URL + "get_all_users" + f"?limit=3")
     assert response.status_code == 200
-    assert response.json() == users[:3] 
+    assert response.json() == users[:3]
 
     mock_get_all.return_value = users[-3:]
     response = client.get(USER_URL + "get_all_users" + f"?limit=3&offset=7")
     assert response.status_code == 200
-    assert response.json() == users[-3:] 
+    assert response.json() == users[-3:]
 
     mock_get_all.return_value = users[-5:]
     response = client.get(USER_URL + "get_all_users" + f"?offset=5")
     assert response.status_code == 200
-    assert response.json() == users[-5:] 
+    assert response.json() == users[-5:]
 
 
 def test_get_all_users_invalid_params(client, mock_get_all):
