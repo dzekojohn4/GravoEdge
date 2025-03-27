@@ -3,10 +3,11 @@ CRUD operations for Admin model
 """
 
 from typing import Optional, List
+from sqlalchemy import select
+
+from app.services.auth import get_password_hash
 from app.models.admin import Admin
 from .base import DBConnector
-from app.core.security import get_password_hash
-from sqlalchemy import select
 
 class AdminCRUD(DBConnector):
     """
@@ -28,7 +29,7 @@ class AdminCRUD(DBConnector):
         """
         async with self.session() as db:
             result = await db.execute(
-                select(Admin).where(Admin.is_super_admin == True)
+                select(Admin).where(Admin.is_super_admin.is_(True))
             )
             return list(result.scalars().all())
 
@@ -43,7 +44,9 @@ class AdminCRUD(DBConnector):
         """
         return await self.get_objects(Admin, limit, offset)
 
-    async def create_admin(self, email: str, name: str, password: str, is_super_admin: bool = False) -> Admin:
+    async def create_admin(
+        self, email: str, name: str, password: str, is_super_admin: bool = False
+    ) -> Admin:
         """
         Create a new admin in the database.
         :param email: str
@@ -70,14 +73,11 @@ class AdminCRUD(DBConnector):
         """
         if "password" in kwargs:
             kwargs["password"] = get_password_hash(kwargs["password"])
-        
         admin = await self.get_object_by_field(Admin, "id", admin_id)
         if not admin:
             return None
-            
         for field, value in kwargs.items():
             setattr(admin, field, value)
-            
         return await self.write_to_db(admin)
 
 admin_crud = AdminCRUD()
