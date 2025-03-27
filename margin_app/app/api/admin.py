@@ -72,8 +72,8 @@ async def add_admin(
 async def login_google() -> RedirectResponse:
     """
     Redirect to Google login page.
-    
-    :return: RedirectResponse - Redirect to Google login page.    
+
+    :return: RedirectResponse - Redirect to Google login page.
     """
     return RedirectResponse(url=google_auth.google_login_url)
 
@@ -115,7 +115,7 @@ async def auth_google(code: str, request: Request, db: AsyncSession = Depends(ge
         save_token_to_session(
             email=user_data["user"].email,
             request=request,
-            expires_delta=timedelta(minutes=15)
+            expires_delta=timedelta(minutes=15),
         )
 
         return {"message": "Authentication successful"}
