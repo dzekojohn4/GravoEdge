@@ -1,6 +1,7 @@
 """
 API endpoints for admin management.
 """
+
 from typing import Optional
 from uuid import UUID
 
@@ -25,8 +26,8 @@ router = APIRouter(prefix="")
     description="Adds a new admin in the application",
 )
 async def add_admin(
-        data: AdminRequest,
-        db: DBConnector = Depends(DBConnector),
+    data: AdminRequest,
+    db: DBConnector = Depends(DBConnector),
 ) -> AdminResponse:
     """
     Add a new admin with the provided admin data.
@@ -71,18 +72,18 @@ async def get_all_admin(
     offset: Optional[int] = Query(0, description="Number of admins to skip"),
 ) -> list[AdminResponse]:
     """
-        Return all admins.
+    Return all admins.
 
-        Parameters:
-        - limit: Optional[int] - max admins to be retrieved
-        - offset: Optional[int] - start retrieving at
+    Parameters:
+    - limit: Optional[int] - max admins to be retrieved
+    - offset: Optional[int] - start retrieving at
 
-        Returns:
-        - list[AdminResponse]: a list of admins
+    Returns:
+    - list[AdminResponse]: a list of admins
 
-        Raises:
-            HTTPException: If there's an error retrieving admins
-        """
+    Raises:
+        HTTPException: If there's an error retrieving admins
+    """
     try:
         return await admin_crud.get_all(limit, offset)
     except SQLAlchemyError as e:
@@ -100,8 +101,8 @@ async def get_all_admin(
     description="Get an admin by ID",
 )
 async def get_admin(
-        admin_id: UUID,
-        db: DBConnector = Depends(DBConnector),
+    admin_id: UUID,
+    db: DBConnector = Depends(DBConnector),
 ) -> AdminResponse:
     """
     Get admin.
@@ -116,7 +117,9 @@ async def get_admin(
 
     if not admin:
         logger.error(f"Admin with id: '{admin_id}' not found")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admin not found.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Admin not found."
+        )
 
     return AdminResponse(id=admin.id, name=admin.name, email=admin.email)
 
@@ -128,14 +131,14 @@ async def get_admin(
     summary="password reset for admin",
     description="change password for admin",
 )
-async def add_admin(
-        data: AdminResetPassword,
+async def reset_password(
+    data: AdminResetPassword,
 ) -> AdminResponse:
     """
     Reset of admin password.
 
     Parameters:
-        data: The admin data to be reseted
+        data: The admin data to reset
 
     Returns:
         Admin with new password
@@ -148,14 +151,15 @@ async def add_admin(
 
     if not admin:
         raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Admin wis this email was not found.")
-
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Admin with this email was not found.",
+        )
 
     if not verify_password(data.old_password, admin.password):
         raise HTTPException(
-                status_code=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
-                detail="Typed old password do not match.")
+            status_code=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION,
+            detail="The provided old password does not match",
+        )
 
     admin.password = get_password_hash(data.new_password)
     return await admin_crud.write_to_db(admin)
