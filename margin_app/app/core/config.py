@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     email_sender_name: Optional[str] = None
     email_test_mode: bool = False
 
+    # Google authentication settings
+    google_client_id: str = Field(alias="GOOGLE_CLIENT_ID")
+    google_client_secret: str = Field(alias="GOOGLE_CLIENT_SECRET")
+    google_redirect_url: str = Field(alias="GOOGLE_REDIRECT_URI")
+
     @computed_field
     @property
     def db_url(self) -> URL:
