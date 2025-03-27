@@ -23,7 +23,12 @@ from app.crud.admin import admin_crud
 from app.crud.base import DBConnector
 from app.models.admin import Admin
 from app.schemas.admin import AdminRequest, AdminResponse, AdminResetPassword
-from app.services.auth import get_password_hash, verify_password, get_current_user, get_admin_user_from_state
+from app.services.auth import (
+    get_password_hash,
+    verify_password,
+    get_current_user,
+    get_admin_user_from_state,
+)
 from app.services.emails import email_service
 from app.schemas.admin import AdminRequest, AdminResponse
 
@@ -231,7 +236,9 @@ async def change_password(
             detail="Error while sending email.",
         )
 
-    return JSONResponse(content={"message": "Password reset email has been sent successfully"})
+    return JSONResponse(
+        content={"message": "Password reset email has been sent successfully"}
+    )
 
 
 @router.post(
