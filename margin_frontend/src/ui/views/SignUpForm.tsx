@@ -2,6 +2,7 @@ import { Button } from '../core/button';
 import { Card } from '../core/card';
 import { Input } from '../core/input';
 import { useState } from 'react';
+import { useCreateUser } from '../hooks/useCreateUser';
 
 // Form schema includes confirm password
 type SignUpFormData = {
@@ -83,17 +84,18 @@ const SignUpForm = () => {
     password: false,
     confirmPassword: false,
   });
-
+  const mutation = useCreateUser();
+  
   const validateForm = (): boolean => {
     const newErrors: Partial<SignUpFormData> = {};
-
+  
     // Username validation
     if (!formData.userName.trim()) {
       newErrors.userName = 'Username is required';
     } else if (formData.userName.length < 3) {
       newErrors.userName = 'Username must be at least 3 characters';
     }
-
+  
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim()) {
@@ -101,25 +103,25 @@ const SignUpForm = () => {
     } else if (!emailRegex.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-
+  
     // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
     }
-
+  
     // Confirm password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -134,27 +136,35 @@ const SignUpForm = () => {
       }));
     }
   };
-
+  
   const togglePasswordVisibility = (field: 'password' | 'confirmPassword') => {
     setPasswordVisibility((prev) => ({
       ...prev,
       [field]: !prev[field],
     }));
   };
-
+  
   const onSignUp = async () => {
     if (!validateForm()) {
       return;
     }
-
+  
     const apiData: SignUpApiData = {
       userName: formData.userName,
       password: formData.password,
       email: formData.email,
     };
-
-    console.log({ apiData });
+  
+    mutation.mutate(apiData, {
+      onSuccess: () => {
+        alert('User created successfully!');
+      },
+      onError: (error: any) => {
+        alert(error.message);
+      },
+    });
   };
+  
 
   return (
     <Card className='text-white flex gap-5 flex-col px-8'>
