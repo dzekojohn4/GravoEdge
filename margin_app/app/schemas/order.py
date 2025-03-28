@@ -36,7 +36,7 @@ class UserOrderResponse(BaseModel):
 class UserOrderGetAllResponse(BaseModel):
     """Schema retrieving all users"""
 
-    orders:list[UserOrderResponse]
-    total:int
+    orders: list[UserOrderResponse]
+    total: int
 
-    model_config = ConfigDict( from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
