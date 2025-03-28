@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.crud.margin_position import margin_position_crud
+from app.models.margin_position import MarginPosition
 from app.schemas.margin_position import (
     CloseMarginPositionResponse,
     MarginPositionCreate,
@@ -78,8 +79,8 @@ async def close_margin_position(
 
 @router.get("/all", response_model=List[MarginPositionResponse])
 async def get_all_positions(
-        limit: Optional[int] = Query(None, description="limit margin positions"),
-        offset: int = Query(0, description="offset margin positions"),
+    limit: Optional[int] = Query(None, description="limit margin positions"),
+    offset: int = Query(0, description="offset margin positions"),
 ) -> list[MarginPositionResponse]:
     """
     Retrieve all margin positions.
@@ -93,9 +94,11 @@ async def get_all_positions(
 
     Raises:
         HTTPException: 500 error if there's an error retrieving the positions
-"""
+    """
     try:
-        positions = await margin_position_crud.get_all_positions(limit=limit, offset=offset)
+        positions = await margin_position_crud.get_all_positions(
+            limit=limit, offset=offset
+        )
         return positions
     except SQLAlchemyError as e:
         logger.error("Error retrieving all margin positions")
@@ -103,6 +106,32 @@ async def get_all_positions(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error retrieving all margin positions.",
         ) from e
+
+
+@router.get(
+    "/{margin_position_id}",
+    response_model=MarginPositionResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_margin_by_id(
+    margin_position_id: UUID,
+) -> MarginPositionResponse:
+    """
+    Get margin position by ID.
+
+    :param margin_position_id: UUID - The ID of the margin position to retrieve
+    :return: MarginPositionResponse - The margin position object
+    """
+
+    position = await margin_position_crud.get_object(MarginPosition, margin_position_id)
+
+    if not position:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Margin position with id {margin_position_id} not found",
+        )
+
+    return position
 
 
 @router.get("/liquidated", response_model=List[MarginPositionResponse])
@@ -121,6 +150,5 @@ async def get_all_liquidated_positions() -> List[MarginPositionResponse]:
         return positions
     except Exception as e:
         raise HTTPException(
-            status_code=500,
-            detail=f"Error retrieving liquidated positions: {str(e)}"
+            status_code=500, detail=f"Error retrieving liquidated positions: {str(e)}"
         ) from e
