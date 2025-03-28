@@ -23,7 +23,7 @@ class UserOrderCRUD(DBConnector):
     """
 
     async def get_all(
-        self, limit: Optional[int] = None, offset:  Optional[int] = None
+        self, limit: Optional[int] = None, offset: Optional[int] = None
     ) -> list[UserOrder]:
         """
         Retrieves all orders.
@@ -68,6 +68,10 @@ class UserOrderCRUD(DBConnector):
 
         # Order execution logic would go here
         return True
+
+    async def get_by_id(self, order_id: uuid.UUID) -> UserOrder | None:
+        """Get order by ID."""
+        return await self.get_object(UserOrder, order_id)
 
 
 order_crud = UserOrderCRUD()
