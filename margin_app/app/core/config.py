@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     # Google authentication settings
     google_client_id: Optional[str] = None
     google_client_secret: Optional[str] = None
-    google_redirect_url: str = "/auth/google"
+    google_redirect_url: str = f"{host}/api/auth/google"
 
     @computed_field
     @property
