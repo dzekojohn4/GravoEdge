@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Activate virtual environment"
-source $(poetry env info --path)/bin/activate
+# source $(poetry env info --path)/bin/activate
 
 echo "Run migration with alembic"
 poetry run alembic -c web_app/alembic.ini upgrade head

@@ -7,10 +7,10 @@ from decimal import Decimal
 from uuid import UUID
 from app.schemas.deposit import DepositResponse
 from app.models.margin_position import MarginPositionStatus
-from pydantic import BaseModel, ConfigDict
+from margin_app.app.schemas.base import BaseSchema
 
 
-class UserBase(BaseModel):
+class UserBase(BaseSchema):
     """
     User base model
     """
@@ -33,10 +33,9 @@ class UserResponse(UserBase):
 
     id: UUID
     deposit: list[DepositResponse] = []
-    model_config = ConfigDict(from_attributes=True)
 
 
-class AddUserDepositRequest(BaseModel):
+class AddUserDepositRequest(BaseSchema):
     """
     Request model for adding user deposit
     """
@@ -47,7 +46,7 @@ class AddUserDepositRequest(BaseModel):
     transaction_id: str
 
 
-class AddUserDepositResponse(BaseModel):
+class AddUserDepositResponse(BaseSchema):
     """
     Response model for adding user deposit
     """
@@ -55,7 +54,7 @@ class AddUserDepositResponse(BaseModel):
     deposit_id: UUID
 
 
-class AddMarginPositionRequest(BaseModel):
+class AddMarginPositionRequest(BaseSchema):
     """
     Request model for adding margin position
     """
@@ -67,7 +66,7 @@ class AddMarginPositionRequest(BaseModel):
     transaction_id: str
 
 
-class AddMarginPositionResponse(BaseModel):
+class AddMarginPositionResponse(BaseSchema):
     """
     Response model for adding margin position
     """
