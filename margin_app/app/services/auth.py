@@ -6,7 +6,6 @@ from datetime import datetime, timedelta, timezone
 
 import jwt
 from jwt.exceptions import InvalidTokenError
-from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
 from starlette.requests import Request
 

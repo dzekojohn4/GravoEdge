@@ -1,3 +1,7 @@
+"""
+API endpoints for auth logic.
+"""
+
 from datetime import timedelta
 
 from fastapi import APIRouter, HTTPException, status, Request
