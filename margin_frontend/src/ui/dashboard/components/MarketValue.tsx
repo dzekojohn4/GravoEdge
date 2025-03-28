@@ -1,9 +1,9 @@
 import classNames from 'classnames'
-import Card from '@/components/ui/Card'
-import Avatar from '@/components/ui/Avatar'
-import Button from '@/components/ui/Button'
-import Table from '@/components/ui/Table'
-import growShrinkColor from '@/utils/growShrinkColor'
+import Card from '../../../../admin_template/demo/src/components/ui/Card'
+import Avatar from '../../../../admin_template/demo/src/components/ui/Avatar'
+import Button from '../../../../admin_template/demo/src/components/ui/Button'
+import Table from '../../../../admin_template/demo/src/components/ui/Table'
+import growShrinkColor from '../../../../admin_template/demo/src/utils/growShrinkColor'
 import { NumericFormat } from 'react-number-format'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -13,7 +13,6 @@ import {
     createColumnHelper,
 } from '@tanstack/react-table'
 import type { Market } from '../store'
-
 type MarketValueProps = {
     data?: Market[]
     className?: string

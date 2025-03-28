@@ -1,7 +1,7 @@
-import Button from '@/components/ui/Button'
+import Button from '../../../../admin_template/demo/src/components/ui/Button'
 import RecentAcivity, {
     RecentAcivityProps,
-} from '@/views/crypto/Portfolio/components/RecentAcivity'
+} from '../../../../admin_template/demo/src/views/crypto/Portfolio/components/RecentAcivity'
 import { useNavigate } from 'react-router-dom'
 
 type RecentActivitiesProps = RecentAcivityProps
