@@ -64,20 +64,26 @@ class AdminCRUD(DBConnector):
         )
         return await self.write_to_db(new_admin)
 
-    async def update_admin(self, admin_id: int, **kwargs) -> Optional[Admin]:
+    async def update_admin(self, admin_id: int, model: Admin) -> Optional[Admin]:
         """
         Update an admin in the database.
         :param admin_id: int
-        :param kwargs: dict - fields to update
+        :param model: Admin - The admin model with updated fields
         :return: Optional[Admin]
         """
-        if "password" in kwargs:
-            kwargs["password"] = get_password_hash(kwargs["password"])
         admin = await self.get_object_by_field(Admin, "id", admin_id)
         if not admin:
             return None
-        for field, value in kwargs.items():
-            setattr(admin, field, value)
+
+        # Update fields from the model
+        for field in ["name", "email", "is_super_admin"]:
+            if hasattr(model, field):
+                setattr(admin, field, getattr(model, field))
+
+        # Handle password separately to ensure hashing
+        if hasattr(model, "password") and model.password:
+            admin.password = get_password_hash(model.password)
+
         return await self.write_to_db(admin)
 
 admin_crud = AdminCRUD()
