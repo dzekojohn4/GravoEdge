@@ -92,6 +92,17 @@ async def create_order(
     status_code=status.HTTP_200_OK,
 )
 async def get_order(order_id: uuid.UUID) -> UserOrder:
+    """Get order by ID.
+
+    Args:
+        order_id: UUID of the order to retrieve
+
+    Returns:
+        UserOrder: The requested order
+
+    Raises:
+        HTTPException: If order not found or database error occurs
+    """
     try:
         order = await order_crud.get_by_id(order_id)
         if not order:
