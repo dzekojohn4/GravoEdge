@@ -41,8 +41,8 @@ class UserGetAllResponse(BaseModel):
     User response model for getting all users
     """
 
-    users:list[UserResponse]
-    total:int
+    users: list[UserResponse]
+    total: int
 
 
 class AddUserDepositRequest(BaseModel):
