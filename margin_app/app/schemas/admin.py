@@ -2,8 +2,9 @@
 This module contains Pydantic schemas for admin.
 """
 from uuid import UUID
+from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class AdminBase(BaseModel):
@@ -29,3 +30,5 @@ class AdminResponse(AdminBase):
     """
 
     id: UUID
+
+    model_config = ConfigDict(from_attributes=True)
