@@ -23,14 +23,12 @@ router = APIRouter()
 @router.post("/open", response_model=MarginPositionResponse)
 async def open_margin_position(
     position_data: MarginPositionCreate,
-    db: AsyncSession = Depends(margin_position_crud.session),
 ):
     """
     Opens a margin position by creating an entry record in the database.
 
     Args:
         position_data: MarginPositionCreate - The margin position data
-        db: AsyncSession - Database session dependency injected by FastAPI
 
     Returns:
         MarginPositionResponse: The created margin position
