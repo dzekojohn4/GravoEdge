@@ -1,12 +1,11 @@
 import { useState } from 'react'
-import Card from '@/components/ui/Card'
-import Dialog from '@/components/ui/Dialog'
-import TradeForm, { FormModel } from '@/views/crypto/TradeForm'
-import ProceedTrade from '@/views/crypto/ProceedTrade'
+import Card from '../../../../admin_template/demo/src/components/ui/Card'
+import Dialog from '../../../../admin_template/demo/src/components/ui/Dialog'
+import TradeForm, { FormModel } from '../../../../admin_template/demo/src/views/crypto/TradeForm'
+import ProceedTrade from '../../../../admin_template/demo/src/views/crypto/ProceedTrade'
 import { toggleTradeDialog, useAppDispatch, useAppSelector } from '../store'
 import { useNavigate } from 'react-router-dom'
 import isEmpty from 'lodash/isEmpty'
-
 const FastTrade = ({ className }: { className?: string }) => {
     const dispatch = useAppDispatch()
 
