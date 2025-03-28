@@ -1,19 +1,19 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, HTTPException, status, Request
 from fastapi.responses import RedirectResponse, JSONResponse
 from loguru import logger
 from pydantic import EmailStr
 
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.sessions import get_db
-from app.services.auth import google_auth, save_token_to_session
+from app.core.config import settings
+from app.services.auth import google_auth
 from app.crud.admin import admin_crud
 from app.schemas.admin import AdminResetPassword
 from app.services.auth import (
     get_password_hash,
     verify_password,
     get_current_user,
+    create_access_token
 )
 from app.services.emails import email_service
 
@@ -62,14 +62,15 @@ async def auth_google(code: str, request: Request):
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Failed to authenticate user.",
             )
-
-        save_token_to_session(
-            email=user_data.email,
-            request=request,
-            expires_delta=timedelta(minutes=15),
+        
+        token = create_access_token(
+            user_data.email, 
+            expires_delta=timedelta(
+                minutes=settings.access_token_expire_minutes
+            )
         )
 
-        return {"message": "Authentication successful"}
+        return {"access_token": token, "token_type": "bearer"}
     except Exception as e:
         logger.error(f"Failed to authenticate user: {str(e)}")
         raise HTTPException(

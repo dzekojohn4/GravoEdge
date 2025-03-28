@@ -45,24 +45,6 @@ def create_access_token(email: str, expires_delta: timedelta | None = None):
     return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
 
 
-def save_token_to_session(
-    email: str, request: Request, expires_delta: timedelta | None = None
-) -> None:
-    """
-    Save the token to the session.
-
-    Parameters:
-    - email (str): The email of the user associated with the token.
-    - request (Request): The FastAPI request object.
-    - expires_delta (timedelta | None, optional): The expiration time of the token.
-
-    Returns:
-    - None
-    """
-    token = create_access_token(email=email, expires_delta=expires_delta)
-    request.session["access_token"] = token
-
-
 async def get_current_user(token: str) -> Admin:
     """
     Retrieves the current user based on the provided JWT token.
