@@ -24,6 +24,15 @@ class AdminRequest(AdminBase):
     password: str
 
 
+class AdminResetPassword(BaseModel):
+    """
+    Admin reset password model
+    """
+
+    old_password: str
+    new_password: str
+
+
 class AdminResponse(AdminBase):
     """
     Admin response model

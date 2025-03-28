@@ -5,7 +5,7 @@ Main FastAPI application entry point.
 import sys
 
 from fastapi import FastAPI, Request
-from starlette.middleware.sessions import SessionMiddleware 
+from starlette.middleware.sessions import SessionMiddleware
 from loguru import logger
 from starlette.responses import JSONResponse
 
@@ -28,7 +28,7 @@ app = FastAPI(
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key=settings.secret_key, 
+    secret_key=settings.secret_key,
 )
 
 
