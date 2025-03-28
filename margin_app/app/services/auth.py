@@ -165,7 +165,7 @@ class GoogleAuth:
         response.raise_for_status()
         return response.json()
 
-    async def get_user(self, code: str, db: AsyncSession) -> dict:
+    async def get_user(self, code: str) -> dict:
         """
         Authenticate with Google OAuth and create an access token.
 
@@ -185,8 +185,10 @@ class GoogleAuth:
         name = user_info["name"]
         user = await admin_crud.get_object_by_field(field="email", value=email)
         if not user:
-            return await admin_crud.create_admin(email=email, name=name, db=db)
-        return {"user": AdminResponse(id=user.id, name=user.name, email=user.email)}
+            return AdminResponse.model_validate(
+                await admin_crud.create_admin(email=email, name=name)
+            )
+        return AdminResponse(id=user.id, name=user.name, email=user.email)
 
 
 google_auth = GoogleAuth()

@@ -44,7 +44,7 @@ async def logout_user() -> dict:
 
 
 @router.get("/google", status_code=status.HTTP_200_OK)
-async def auth_google(code: str, request: Request, db: AsyncSession = Depends(get_db)):
+async def auth_google(code: str, request: Request):
     """
     Authenticate with Google OAuth, create an access token, and save it in the session.
 
@@ -55,7 +55,7 @@ async def auth_google(code: str, request: Request, db: AsyncSession = Depends(ge
     :return: dict - A success message.
     """
     try:
-        user_data = await google_auth.get_user(code=code, db=db)
+        user_data = await google_auth.get_user(code=code)
 
         if not user_data:
             raise HTTPException(
@@ -64,7 +64,7 @@ async def auth_google(code: str, request: Request, db: AsyncSession = Depends(ge
             )
 
         save_token_to_session(
-            email=user_data["user"].email,
+            email=user_data.email,
             request=request,
             expires_delta=timedelta(minutes=15),
         )
