@@ -44,7 +44,6 @@ router = APIRouter(prefix="")
 )
 async def add_admin(
     data: AdminRequest,
-    db: DBConnector = Depends(DBConnector),
     admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
@@ -103,18 +102,17 @@ async def logout_user() -> dict:
 
 
 @router.get("/auth/google", status_code=status.HTTP_200_OK)
-async def auth_google(code: str, request: Request, db: AsyncSession = Depends(get_db)):
+async def auth_google(code: str, request: Request):
     """
     Authenticate with Google OAuth, create an access token, and save it in the session.
 
     :param code: str - The code received from Google OAuth.
-    :param db: AsyncSession - The database session.
     :param request: Request - The HTTP request object to access the session.
 
     :return: dict - A success message.
     """
     try:
-        user_data = await google_auth.get_user(code=code, db=db)
+        user_data = await google_auth.get_user(code=code)
 
         if not user_data:
             raise HTTPException(
@@ -180,7 +178,6 @@ async def get_all_admin(
 )
 async def get_admin(
     admin_id: UUID,
-    db: DBConnector = Depends(DBConnector),
     admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
