@@ -2,6 +2,7 @@
 This module contains CRUD operations for orders.
 """
 
+import asyncio
 import logging
 import uuid
 from decimal import Decimal
@@ -9,6 +10,7 @@ from typing import Optional
 
 from app.crud.base import DBConnector
 from app.models.user_order import UserOrder
+from app.schemas.order import UserOrderGetAllResponse
 
 logger = logging.getLogger(__name__)
 
@@ -23,15 +25,23 @@ class UserOrderCRUD(DBConnector):
     """
 
     async def get_all(
-        self, limit: Optional[int] = None, offset: Optional[int] = None
-    ) -> list[UserOrder]:
+        self, limit: Optional[int] = None, offset:  Optional[int] = None
+    ) -> UserOrderGetAllResponse:
         """
         Retrieves all orders.
         :param limit: Optional[int] - max orders to be retrieved
         :param offset: Optional[int] - start retrieving at.
         :return: list[UUserOrderser]
         """
-        return await self.get_objects(UserOrder, limit, offset)
+        
+        orders, total = await asyncio.gather(
+            self.get_objects(UserOrder, limit, offset),
+            self.get_objects_amounts(UserOrder)
+        )
+        return UserOrderGetAllResponse(
+            orders=orders,
+            total=total
+        )
 
     async def add_new_order(
         self, user_id: uuid.UUID, price: Decimal, token: str, position: uuid.UUID

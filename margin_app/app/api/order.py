@@ -9,7 +9,7 @@ import uuid
 
 from app.crud.order import order_crud
 from app.models.user_order import UserOrder
-from app.schemas.order import UserOrderCreate, UserOrderResponse
+from app.schemas.order import UserOrderCreate, UserOrderGetAllResponse, UserOrderResponse
 
 
 from typing import Optional
@@ -25,7 +25,7 @@ router = APIRouter()
 )
 async def get_all_orders(
     limit: Optional[int] = Query(25, gt=0), offset: Optional[int] = Query(0, ge=0)
-) -> list[UserOrderResponse]:
+) -> UserOrderGetAllResponse:
     """
     Return all orders.
 
@@ -34,14 +34,13 @@ async def get_all_orders(
     - offset: Optional[int] - start retrieving at
 
     Returns:
-    - list[UserOrder]: a list of orders
+    - UserOrderGetAllResponse
 
     Raises:
         HTTPException: If there's an error retrieving orders
     """
     try:
-        orders = await order_crud.get_all(limit, offset)
-        return orders
+        return await order_crud.get_all(limit, offset)       
     except SQLAlchemyError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -66,7 +65,7 @@ async def create_order(
         order_data: The order data to create
 
     Returns:
-        The created order
+        GetAllOrdersResponse: a dictionary containing a list of orders and the total count
 
     Raises:
         HTTPException: If there's an error creating the order
