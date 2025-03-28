@@ -1,4 +1,4 @@
-import React from 'react';
+
 import FastTrade from './components/FastTrade';
 import Holding from './components/Holding';
 import MarketValue from './components/MarketValue';
