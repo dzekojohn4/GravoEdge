@@ -35,6 +35,15 @@ class UserResponse(UserBase):
     deposit: list[DepositResponse] = []
 
 
+class UserGetAllResponse(BaseSchema):
+    """
+    User response model for getting all users
+    """
+
+    users: list[UserResponse]
+    total: int
+
+
 class AddUserDepositRequest(BaseSchema):
     """
     Request model for adding user deposit

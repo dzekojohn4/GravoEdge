@@ -84,3 +84,14 @@ class PoolResponse(PoolBase):
     """
 
     id: UUID
+
+
+class PoolGetAllResponse(BaseSchema):
+    """
+    User pool update model
+    """
+
+    pools: list[PoolResponse]
+    total: int
+
+
