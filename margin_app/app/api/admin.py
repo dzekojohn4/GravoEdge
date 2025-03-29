@@ -23,12 +23,8 @@ from app.crud.admin import admin_crud
 from app.crud.base import DBConnector
 from app.models.admin import Admin
 from app.schemas.admin import AdminRequest, AdminResponse, AdminResetPassword
-from app.services.auth import (
-    get_password_hash,
-    verify_password,
-    get_current_user,
-    get_admin_user_from_state,
-)
+from app.services.auth import get_admin_user_from_state
+from margin_app.auth.security import get_password_hash
 from app.services.emails import email_service
 from app.schemas.admin import AdminRequest, AdminResponse
 
@@ -263,7 +259,7 @@ async def reset_password(data: AdminResetPassword, token: str):
         JSONResponse: A response indicating that the password was successfully changed.
     """
 
-    admin = await get_current_user(token=token)
+    admin = await get_admin_user_from_state(token=token)
 
     if not verify_password(data.old_password, admin.password):
         raise HTTPException(

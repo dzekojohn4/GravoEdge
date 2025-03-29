@@ -14,7 +14,7 @@ from app.core.config import settings
 from app.crud.admin import admin_crud
 from app.models.admin import Admin
 from app.schemas.admin import AdminResponse
-from app.crud.admin import admin_crud
+from margin_app.auth.security import get_password_hash
 from fastapi import Request
 import requests
 

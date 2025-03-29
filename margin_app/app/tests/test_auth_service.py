@@ -2,7 +2,8 @@
 Tests for the authentication service.
 """
 
-from app.services.auth import get_password_hash, verify_password
+from margin_app.auth.security import get_password_hash
+from app.services.auth import verify_password
 
 
 def test_verify_password():
