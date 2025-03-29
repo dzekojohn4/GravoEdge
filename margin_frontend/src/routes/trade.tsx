@@ -8,7 +8,7 @@ export const Route = createFileRoute("/trade")({
 
 function RouteComponent() {
 	return (
-		<div className="flex flex-col lg:flex-row h-full gap-[24px]">
+		<div className="flex flex-col lg:flex-row h-full gap-[24px] mt-[28px]">
 			<div className="collapse lg:visible bg-[#0C1219] h-0 lg:h-[633px] pt-[20px] pr-[12px] 
 			rounded-tr-2xl flex flex-col justify-between text-xs text-[#97A0A6] font-medium">
 				<ul>
@@ -35,7 +35,28 @@ function RouteComponent() {
 				<Graph></Graph>
 			</div>
 
-			<div className="w-full flex flex-col mr-[80px] items-center">
+			<div className="w-full flex flex-col mr-[80px] items-center lg:items-end r">
+
+				<div className="collapse lg:visible text-[#656D77] text-sm flex
+				 bg-[#0E1114] mb-[28px] gap-[2px] rounded-[6px]">
+					<div className="w-[32px] h-[32px] flex items-center justify-center
+					text-[#F1F7FF] font-bold bg-[#12181F] rounded-[6px]">
+						1H
+					</div>
+					<div className="w-[32px] h-[32px] flex items-center justify-center">
+						1D
+					</div>
+					<div className="w-[32px] h-[32px] flex items-center justify-center">
+						1W
+					</div>
+					<div className="w-[32px] h-[32px] flex items-center justify-center">
+						1M
+					</div>
+					<div className="w-[32px] h-[32px] flex items-center justify-center">
+						1Y
+					</div>
+				</div>
+
 				<div className="w-full max-w-[300px]">
 					<div className="flex justify-between items-center w-full font-bricolageGrotesque">
 						<div className="flex items-center  h-[37px] gap-[16px] text-[#556571]">
