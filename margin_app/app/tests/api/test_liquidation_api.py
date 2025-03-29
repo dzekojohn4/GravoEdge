@@ -6,7 +6,7 @@ from decimal import Decimal
 from uuid import UUID, uuid4
 
 import pytest
-from fastapi import HTTPException, status
+from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.schemas.liquidation import LiquidationResponse
