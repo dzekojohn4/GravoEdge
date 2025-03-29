@@ -8,8 +8,8 @@ export const Route = createFileRoute("/trade")({
 
 function RouteComponent() {
 	return (
-		<div className="flex h-full gap-[24px] flex-col lg:flex-row ">
-			<div className="collapse lg:visible md:w-1/4 sm:w-0  bg-[#0C1219]  h-[633px] pt-[20px] pr-[12px] 
+		<div className="flex flex-col lg:flex-row h-full gap-[24px]">
+			<div className="collapse lg:visible bg-[#0C1219] h-0 lg:h-[633px] pt-[20px] pr-[12px] 
 			rounded-tr-2xl flex flex-col justify-between text-xs text-[#97A0A6] font-medium">
 				<ul>
 					<li className="px-[16px] py-[12px]">Trade</li>
@@ -31,15 +31,11 @@ function RouteComponent() {
 				<p className="text-[#F1F7FF]">
 					Trade with precision. Multiplier your gain.
 				</p>
-				
+
 				<Graph></Graph>
 			</div>
 
-
-
-
-
-			<div className="w-full md:w-2/6 flex flex-col mr-[80px]">
+			<div className="w-full flex flex-col mr-[80px] items-center">
 				<div className="w-full max-w-[300px]">
 					<div className="flex justify-between items-center w-full font-bricolageGrotesque">
 						<div className="flex items-center  h-[37px] gap-[16px] text-[#556571]">
@@ -146,7 +142,7 @@ function RouteComponent() {
 				</form>
 			</div>
 
-		
+
 
 
 		</div>
