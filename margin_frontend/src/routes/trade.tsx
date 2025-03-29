@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Slider } from "../ui/core/trade/slider";
 import { Graph } from "../ui/core/trade/graph";
 import '../ui/core/trade/trade.css';
+import { PeriodPicker } from "../ui/core/trade/period-picker";
 
 export const Route = createFileRoute("/trade")({
 	component: RouteComponent,
@@ -38,25 +39,7 @@ function RouteComponent() {
 
 			<div className="w-full flex flex-col mr-[80px] items-center lg:items-end r">
 
-				<div className="collapse lg:visible text-[#656D77] text-sm flex
-				 bg-[#0E1114] mb-[28px] gap-[2px] rounded-[6px]">
-					<div className="w-[32px] h-[32px] flex items-center justify-center
-					text-[#F1F7FF] font-bold bg-[#12181F] rounded-[6px]">
-						1H
-					</div>
-					<div className="w-[32px] h-[32px] flex items-center justify-center">
-						1D
-					</div>
-					<div className="w-[32px] h-[32px] flex items-center justify-center">
-						1W
-					</div>
-					<div className="w-[32px] h-[32px] flex items-center justify-center">
-						1M
-					</div>
-					<div className="w-[32px] h-[32px] flex items-center justify-center">
-						1Y
-					</div>
-				</div>
+				<PeriodPicker className=" mb-[28px]"></PeriodPicker>
 
 				<div className="w-full max-w-[300px]">
 					<div className="flex justify-between items-center w-full font-bricolageGrotesque">
