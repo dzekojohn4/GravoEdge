@@ -2,7 +2,7 @@ import { Button } from '../core/button';
 import { Card } from '../core/card';
 import { Input } from '../core/input';
 import { useState } from 'react';
-import { useCreateUser } from '../hooks/useCreateUser';
+import  useCreateUser  from '../hooks/useCreateUser';
 
 type SignUpFormData = {
   name: string;
@@ -133,7 +133,7 @@ const SignUpForm = () => {
     <Card className='text-white flex gap-5 flex-col px-8'>
       <div className='flex flex-col gap-2 text-center'>
         <h1 className='text-2xl font-bold'>Sign Up</h1>
-        <p>And lets get started with your free trial</p>
+        <p>And let's get started with your free trial</p>
       </div>
       
       {fields.map(({ name, placeholder }) => (
