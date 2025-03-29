@@ -13,7 +13,7 @@ export function Slider({ className = "" }: SliderProps) {
     const rangeRef = useRef<HTMLInputElement>(null);
 
 
-    function sliderChanged(value: number) {       
+    function sliderChanged(value: number) {
         setValue(value);
         const mult = (value / 10.0).toFixed(1);
         setMultiplayer(mult);
@@ -39,7 +39,7 @@ export function Slider({ className = "" }: SliderProps) {
         ctx.font = "10px serif";
         ctx.fillStyle = '#556571';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const x = 18//20;
+        const x = 18
 
         const gap = (canvas.width - x - x) / 90
         for (let i = 0; i <= 90; ++i) {
@@ -64,7 +64,7 @@ export function Slider({ className = "" }: SliderProps) {
 
 
     useEffect(() => {
-        rangeRef.current!.value = 10
+        rangeRef.current!.value = '10'
         sliderChanged(10)
 
     }, []);
@@ -84,12 +84,14 @@ export function Slider({ className = "" }: SliderProps) {
                 </div>
 
                 <div className="no-select absolute -top-[2px] z-10 text-[#06336E] text-[10px] font-semibold"
-                    style={{ left: `calc(${_value}% - 22px - ${_value*0.1}px)` }}>
+                    style={{ left: `calc(${_value}% - 22px - ${_value * 0.1}px)` }}>
 
                     {multiplayer}
                 </div>
 
-                <input ref={rangeRef} onInput={event => sliderChanged(event.target.value)} type="range" min="10" max="100"
+                <input ref={rangeRef}
+                    onInput={event => sliderChanged(Number((event.target as HTMLInputElement).value))}
+                    type="range" min="10" max="100"
                     className="absolute -top-[4px] left-0 right-0" />
             </div>
 
