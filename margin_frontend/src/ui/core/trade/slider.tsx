@@ -57,7 +57,7 @@ export function Slider({ className = "" }: SliderProps) {
         }
 
         ctx.beginPath();
-        ctx.arc(current * gap - 28, 3, 3, 0, 2 * Math.PI);
+        ctx.arc(current * gap - 20, 3, 3, 0, 2 * Math.PI);
         ctx.fillStyle = "#00D1FF";
         ctx.fill();
     }
@@ -79,12 +79,12 @@ export function Slider({ className = "" }: SliderProps) {
             <div className={className}>
                 <div className={`absolute rounded-full  bg-[#00D1FF] 
                 left-[0px] right-[0px]
-                 top-0 bottom-0 inset-shadow-[#171E2852]/32 pointer-events-none`}
+                 top-0 bottom-0 inset-shadow-[#171E2852]/32 pointer-events-none z-8`}
                     style={{ right: `calc(${100 - Number(multiplayer) * 10}%  + 25px)` }}>
                 </div>
 
                 <div className="no-select absolute -top-[2px] z-10 text-[#06336E] text-[10px] font-semibold"
-                    style={{ left: `calc(${_value}% - 30px)` }}>
+                    style={{ left: `calc(${_value}% - 22px - ${_value*0.1}px)` }}>
 
                     {multiplayer}
                 </div>
