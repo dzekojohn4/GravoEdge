@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Slider } from "../ui/core/trade/slider";
 import { Graph } from "../ui/core/trade/graph";
+import '../ui/core/trade/trade.css';
 
 export const Route = createFileRoute("/trade")({
 	component: RouteComponent,
