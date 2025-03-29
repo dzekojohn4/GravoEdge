@@ -7,33 +7,17 @@ interface SliderProps {
 
 
 export function Slider({ className = "" }: SliderProps) {
-    const [_value, setValue] = useState<number>(0);
-    const [multiplayer, setMultiplayer] = useState<string>('0');
+    const [_value, setValue] = useState<number>(1);
+    const [multiplayer, setMultiplayer] = useState<string>('1.0');
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const array = [0, 10, 21, 31, 41, 51, 62, 72, 82, 100]
+    const rangeRef = useRef<HTMLInputElement>(null);
 
-    function getRulerValue(rangeValue: number) {
-        let i = 0;
-        while (i < array.length - 1 && rangeValue > array[i + 1]) {
-            i++;
-        }
 
-        if (rangeValue === 100) {
-            return 10;
-        }
-
-        const rulerValue = (i + 1) + (rangeValue - array[i]) / (array[i + 1] - array[i]);
-        return rulerValue;
-
-    }
-
-    function sliderChanged(event: React.FormEvent<HTMLInputElement>) {
-        const value = Number(event.target.value);
+    function sliderChanged(value: number) {       
         setValue(value);
-
-        const mult = getRulerValue(value).toFixed(1);
+        const mult = (value / 10.0).toFixed(1);
         setMultiplayer(mult);
-        drawRuler(Math.floor(mult * 10));
+        drawRuler(Math.floor(value));
     }
 
     function drawRuler(current: number) {
@@ -59,19 +43,29 @@ export function Slider({ className = "" }: SliderProps) {
 
         const gap = (canvas.width - x - x) / 90
         for (let i = 0; i <= 90; ++i) {
-            ctx.fillStyle = current - 10 === i ? '#fff' : '#556571';
             if (i % 10 == 0) {
+                if (i + 10 == Math.floor((current) / 10.0) * 10) {
+                    ctx.fillStyle = '#fff';
+                }
                 ctx.fillText(String((i / 10) + 1), x + i * gap - 2, 22);
+                ctx.fillStyle = '#556571'
                 ctx.fillRect(x + i * gap, 0, 2, 10)
             } else {
                 ctx.fillRect(x + i * gap, 0, 2, 4)
             }
+
         }
+
+        ctx.beginPath();
+        ctx.arc(current * gap - 28, 3, 3, 0, 2 * Math.PI);
+        ctx.fillStyle = "#00D1FF";
+        ctx.fill();
     }
 
 
     useEffect(() => {
-        drawRuler(0);
+        rangeRef.current!.value = 10
+        sliderChanged(10)
 
     }, []);
 
@@ -89,21 +83,14 @@ export function Slider({ className = "" }: SliderProps) {
                     style={{ right: `calc(${100 - Number(multiplayer) * 10}%  + 25px)` }}>
                 </div>
 
-                <div className=" relative h-3">
-                    <div className="absolute rounded-full  w-[38px] bg-[#00D1FF]
-                -top-[50%] bottom-0  inset-shadow-[#171E2852]/32 px-[4px] py-[6px] h-[24px]
-                text-[10px] text-[#06336E]  flex items-center justify-center
-                pointer-events-none shadow-lg"
-                        style={{ left: `${_value - (9.0 * 1.0 / (100 - _value))}%` }}>
-                        {_value}|{multiplayer}
-                    </div>
+                <div className="no-select absolute -top-[2px] z-10 text-[#06336E] text-[10px] font-semibold"
+                    style={{ left: `calc(${_value}% - 30px)` }}>
+
+                    {multiplayer}
                 </div>
 
-
-
-                <input onInput={v => sliderChanged(v)} type="range" min="0" max="100"
-                    // value={_value}
-                    className="absolute top-0 left-0 opacity-0 right-0" />
+                <input ref={rangeRef} onInput={event => sliderChanged(event.target.value)} type="range" min="10" max="100"
+                    className="absolute -top-[4px] left-0 right-0" />
             </div>
 
             <canvas ref={canvasRef} className="h-[50px] mt-[12px] left-[10px] right-[10px]  block w-full">
