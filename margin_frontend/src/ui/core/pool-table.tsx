@@ -31,9 +31,9 @@ export default function PoolTable({ pools }: PoolTableProps) {
 					<thead className="">
 						<tr className="text-left text-tableHeads py-4">
 							<th className="text-sm font-semibold pb-4 w-1/4 lg:w-1/3 pl-4">Pool</th>
-							<th className="text-sm font-semibold pb-4">APY %</th>
-							<th className="text-sm font-semibold pb-4">Risk Level</th>
-							<th className="text-sm font-semibold pb-4">Liquidity</th>
+							<th className="text-sm font-semibold pb-4 pl-6">APY %</th>
+							<th className="text-sm font-semibold pb-4 pl-6 ">Risk Level</th>
+							<th className="text-sm font-semibold pb-4 pl-6">Liquidity</th>
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-grayborder text-baseWhite border-grayborder border-solid border-1">
