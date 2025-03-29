@@ -8,7 +8,7 @@ import uuid
 import pytest
 import jwt
 from app.core.config import settings
-from app.auth.base import create_access_token, get_current_user
+from app.services.auth.base import create_access_token, get_current_user
 from app.models.admin import Admin
 from app.crud.admin import admin_crud
 
