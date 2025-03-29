@@ -4,7 +4,7 @@ Test auth service.
 
 import pytest
 from app.services.auth.security import get_password_hash, verify_password
-from app.auth.base import create_access_token, get_current_user
+from app.services.auth.base import create_access_token, get_current_user
 
 
 def test_verify_password():

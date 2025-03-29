@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 from fastapi import status
-from app.auth.base import create_access_token
+from app.services.auth.base import create_access_token
 from app.models.admin import Admin
 from app.crud.admin import admin_crud
 
