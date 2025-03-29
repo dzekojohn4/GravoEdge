@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Slider } from "../ui/core/trade/slider";
+import { Graph } from "../ui/core/trade/graph";
 
 export const Route = createFileRoute("/trade")({
 	component: RouteComponent,
@@ -7,8 +8,8 @@ export const Route = createFileRoute("/trade")({
 
 function RouteComponent() {
 	return (
-		<div className="flex h-full gap-[24px]">
-			<div className="w-1/4 bg-[#0C1219]  h-[633px] pt-[20px] pr-[12px]
+		<div className="flex h-full gap-[24px] flex-col lg:flex-row ">
+			<div className="collapse lg:visible md:w-1/4 sm:w-0  bg-[#0C1219]  h-[633px] pt-[20px] pr-[12px] 
 			rounded-tr-2xl flex flex-col justify-between text-xs text-[#97A0A6] font-medium">
 				<ul>
 					<li className="px-[16px] py-[12px]">Trade</li>
@@ -30,95 +31,15 @@ function RouteComponent() {
 				<p className="text-[#F1F7FF]">
 					Trade with precision. Multiplier your gain.
 				</p>
-				<div className="w-full h-[426px] bg-[#0E1116] p-[20px] flex flex-col
-				 mt-[20px] border-1 border-[#12181F]  rounded-[12px]">
-					<div className="flex items-center">
-						<button className="px-[8px] py-[4px] text-[#A2B1C6]">
-							ETH / USD
-						</button>
-						<div className="px-[8px] py-[4px] text-[#556571] text-xs">
-							7:45AM | MAR 10 | UTC 9:45
-						</div>
-					</div>
-					<div className="mt-[24px] flex justify-between">
-						<div>
-							<div className="font-bricolageGrotesque font-semibold">
-								<span className=" text-[#F1F7FF] text-[32px]">$2,505.58</span>
-								<span className="ml-1 text-sm text-[#B4B4B4]">USD</span>
-							</div>
-							<span className="bg-[#12181F] text-[#E5E5E5] px-[12px] py-[6px] rounded-full text-sm">
-								0.51(0.08%)
-							</span>
-						</div>
-						<div className="flex h-[59px] font-bricolageGrotesque gap-[20px]">
-							<div className="">
-								<div className="text-xs text-[#556571]">Market Cap</div>
-								<div className="font-bold text-[#F1F7FF] text-sm mt-[8px]">$499 M USD</div>
-							</div>
-							<div>
-								<div className="text-xs text-[#556571]">24h Flight</div>
-								<div className="font-bold text-[#F1F7FF] text-sm mt-[8px]">$6 M USD</div>
-							</div>
-							<div>
-								<div className="text-xs text-[#556571]">Liquidity</div>
-								<div className="font-bold text-[#F1F7FF] text-sm mt-[8px]">$238 M USD</div>
-							</div>
-						</div>
-					</div>
-
-					<div className="h-full mt-[24px] flex flex-col text-[#556571] text-xs relative
-									font-bricolageGrotesque font-bold">
-						<div className="flex w-full grow relative">
-							<div className="flex flex-col justify-around h-full items-center
-							 w-[35px] pb-[35px] border-r-1">
-								<div>1H</div>
-								<div>1H</div>
-								<div>1H</div>
-								<div>1H</div>
-								<div>1H</div>
-							</div>
-							<div className="flex-1 grow flex flex-col">
-								<div className="grow">DASHBOARD</div>
-								<div className="flex  justify-around items-center w-full  h-[35px]
-							 border-t-1">
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-									<div>1H</div>
-								</div>
-							</div>
-							<div className="flex flex-col justify-around h-full  px-[10px]">
-								<div>3.6784</div>
-								<div>3.6784</div>
-								<div>3.6784</div>
-								<div>3.6784</div>
-								<div>3.6784</div>
-							</div>
-
-							<div className="absolute top-[50%] flex items-center left-[35px] right-0">
-								<span className="grow border-1 w-full border-dashed border-[#2A3335]"></span>
-								<span className="bg-[#2A3335] rounded-full w-[8px] h-[8px]"></span>
-								<span className="bg-[#00D1FF] px-[10px] py-[8px] rounded-full text-xs
-									text-[#06336E] font-semibold ml-[8px]">3.6784</span>
-							</div>
-						</div>
-					</div>
-				</div>
+				
+				<Graph></Graph>
 			</div>
 
 
 
 
 
-			<div className="w-2/6 flex flex-col mr-[80px]">
+			<div className="w-full md:w-2/6 flex flex-col mr-[80px]">
 				<div className="w-full max-w-[300px]">
 					<div className="flex justify-between items-center w-full font-bricolageGrotesque">
 						<div className="flex items-center  h-[37px] gap-[16px] text-[#556571]">
@@ -159,7 +80,7 @@ function RouteComponent() {
 
 					<div className="mt-[4px] w-full items-center bg-[#0E1116] py-[8px] px-[12px] rounded-b-xl">
 						<div className="">
-							<div className="text-xs text-[#556571] h-[18px] flex items-center">Sell</div>
+							<div className="text-xs text-[#556571] h-[18px] flex items-center">Buy</div>
 						</div>
 						<div className="mt-[16px] flex justify-between">
 							<div>
@@ -189,7 +110,7 @@ function RouteComponent() {
 
 
 
-				<form className="w-lg block  border-1 border-[#17191B] rounded-xl p-[24px] h-fit mt-16">
+				<form className="max-w-lg min-w-md block  border-1 border-[#17191B] rounded-xl p-[24px] h-fit mt-16">
 					<div className="w-full">
 						<label className="uppercase text-xs text-[#556571]">health factor level</label>
 						<input type="number" className="rounded-full border-1 border-[#17191B] 
