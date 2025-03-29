@@ -2,19 +2,19 @@ import { Button } from '../core/button';
 import { Card } from '../core/card';
 import { Input } from '../core/input';
 import { useState } from 'react';
-import useCreateUser from '../hooks/useCreateUser';
+import { useCreateUser } from '../hooks/useCreateUser';
 
 type SignUpFormData = {
   name: string;
+  email: string;
   password: string;
   confirmPassword: string;
-  email: string;
 };
 
 type SignUpApiData = {
   name: string;
-  password: string;
   email: string;
+  password: string;
 };
 
 const PasswordVisibilityIcon = ({
@@ -47,7 +47,7 @@ const PasswordVisibilityIcon = ({
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState<SignUpFormData>({
-    name: '', 
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -64,9 +64,9 @@ const SignUpForm = () => {
     const newErrors: Partial<SignUpFormData> = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Username is required';
+      newErrors.name = 'Name is required';
     } else if (formData.name.length < 3) {
-      newErrors.name = 'Username must be at least 3 characters';
+      newErrors.name = 'Name must be at least 3 characters';
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -84,10 +84,9 @@ const SignUpForm = () => {
 
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password.toLowerCase() !== formData.confirmPassword.toLowerCase()) {
+    } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -95,7 +94,10 @@ const SignUpForm = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
     if (errors[name as keyof SignUpFormData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -107,19 +109,25 @@ const SignUpForm = () => {
 
   const onSignUp = () => {
     if (!validateForm()) return;
-  
+
     const apiData: SignUpApiData = {
-      name: formData.name, 
-      password: formData.password,
+      name: formData.name,
       email: formData.email,
+      password: formData.password,
     };
-  
+
     mutation.mutate(apiData, {
       onSuccess: () => alert('User created successfully!'),
       onError: (error: any) => alert(error.message),
     });
   };
-  
+
+  const fields = [
+    { name: 'name', placeholder: 'Enter your full name' },
+    { name: 'email', placeholder: 'Enter your email address' },
+    { name: 'password', placeholder: 'Create a password' },
+    { name: 'confirmPassword', placeholder: 'Confirm your password' },
+  ];
 
   return (
     <Card className='text-white flex gap-5 flex-col px-8'>
@@ -128,27 +136,27 @@ const SignUpForm = () => {
         <p>And let's get started with your free trial</p>
       </div>
       
-      {['name', 'email', 'password' , 'confirmPassword'].map((field) => (
-        <div key={field} className='flex flex-col'>
-          <label>{field === 'confirmPassword' ? 'Confirm Password' : field.charAt(0).toUpperCase() + field.slice(1)}</label>
+      {fields.map(({ name, placeholder }) => (
+        <div key={name} className='flex flex-col'>
+          <label>{name === 'confirmPassword' ? 'Confirm Password' : name.charAt(0).toUpperCase() + name.slice(1)}</label>
           <div className='w-100 relative flex items-center justify-center'>
             <Input
-              className={`w-100 ${errors[field as keyof SignUpFormData] ? 'border-red-500' : ''}`}
-              type={field.includes('password') && !passwordVisibility[field as 'password' | 'confirmPassword'] ? 'password' : 'text'}
-              name={field}
-              placeholder={`Enter your ${field}`}
+              className={`w-100 ${errors[name as keyof SignUpFormData] ? 'border-red-500' : ''}`}
+              type={name.toLowerCase().includes('password') && !passwordVisibility[name as 'password' | 'confirmPassword'] ? 'password' : 'text'}
+              name={name}
+              placeholder={placeholder}
               onChange={handleChange}
-              value={formData[field as keyof SignUpFormData]}
+              value={formData[name as keyof SignUpFormData]}
             />
-            {field.includes('password') && (
+            {name.toLowerCase().includes('password') && (
               <PasswordVisibilityIcon
-                isVisible={passwordVisibility[field as 'password' | 'confirmPassword']}
-                onClick={() => togglePasswordVisibility(field as 'password' | 'confirmPassword')}
+                isVisible={passwordVisibility[name as 'password' | 'confirmPassword']}
+                onClick={() => togglePasswordVisibility(name as 'password' | 'confirmPassword')}
               />
             )}
           </div>
-          {errors[field as keyof SignUpFormData] && (
-            <span className='text-red-500 text-xs mt-1'>{errors[field as keyof SignUpFormData]}</span>
+          {errors[name as keyof SignUpFormData] && (
+            <span className='text-red-500 text-xs mt-1'>{errors[name as keyof SignUpFormData]}</span>
           )}
         </div>
       ))}
