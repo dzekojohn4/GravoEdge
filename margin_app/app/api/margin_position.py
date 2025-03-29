@@ -23,7 +23,7 @@ router = APIRouter()
 @router.post("/open", response_model=MarginPositionResponse)
 async def open_margin_position(
     position_data: MarginPositionCreate,
-):
+) -> MarginPositionResponse:
     """
     Opens a margin position by creating an entry record in the database.
 
