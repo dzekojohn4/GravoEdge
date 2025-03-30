@@ -223,3 +223,25 @@ class ExtraDeposit(Base):
     __table_args__ = (
         UniqueConstraint("position_id", "token_symbol", name="_position_token_uc"),
     )
+
+
+class Pool(Base):
+    """
+    SQLAlchemy model for liquidity pools.
+    """
+
+    __tablename__ = "pool"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    token_a = Column(String, nullable=False)
+    token_b = Column(String, nullable=False)
+    liquidity = Column(DECIMAL, nullable=False)
+    fee = Column(DECIMAL, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=func.now())
+    updated_at = Column(
+        DateTime, nullable=False, default=func.now(), onupdate=func.now()
+    )
+
+    __table_args__ = (
+        UniqueConstraint("token_a", "token_b", name="_token_pair_uc"),
+    )
