@@ -8,8 +8,8 @@ interface TradeViewProps {
 type TradeState = {
     buyToken: string;
     sellToken: string;
-    buyValue: number;
-    sellValue: number;
+    buyValue: string;
+    sellValue: string;
 }
 
 export function TradeView({ className = "" }: TradeViewProps) {
@@ -17,8 +17,8 @@ export function TradeView({ className = "" }: TradeViewProps) {
     const [state, setState] = useState<TradeState>({
         buyToken: 'STRK',
         sellToken: 'ETH',
-        buyValue: 0,
-        sellValue: 0
+        buyValue: '0',
+        sellValue: '0'
     });
 
     //crypto to usd
@@ -29,33 +29,39 @@ export function TradeView({ className = "" }: TradeViewProps) {
     } as any;
 
     function onBuyChanged(value: string) {
-        console.log('onBuyChanged', value)
-        //TODO check number
+        console.log('onBuyChanged', value, Number(value))
+        if (isNaN(Number(value)) || value.trim() === '') {
+            return;
+        }
+
         setState(prevState => {
-            const num =  Number(value);
+            const num = Number(value);
             return {
                 ...prevState,
-                buyValue: num,
-                sellValue: num * mock[prevState.buyToken] / mock[prevState.sellToken] 
+                buyValue: String(num),
+                sellValue: String(num * mock[prevState.buyToken] / mock[prevState.sellToken])
             }
         })
     }
 
     function onSellChanged(value: string) {
-        console.log('onSellChanged', value)
-        //TODO check number
+        console.log('onSellChanged', value, Number(value))
+        if (isNaN(Number(value)) || value.trim() === '') {
+            return;
+        }
+
         setState(prevState => {
-            const num =  Number(value);
+            const num = Number(value);
             return {
                 ...prevState,
-                sellValue: num,
-                buyValue: num * mock[prevState.sellToken] / mock[prevState.buyToken] 
+                sellValue: String(num),
+                buyValue: String(num * mock[prevState.sellToken] / mock[prevState.buyToken])
             }
         })
     }
 
     return (
-        <div className="w-full max-w-[300px]">
+        <div className={classBuilder(className, "w-full max-w-[300px]")}>
             <div className="flex justify-between items-center w-full font-bricolageGrotesque">
                 <div className="flex items-center  h-[37px] gap-[16px] text-[#556571]">
                     {['Trade', 'Send', 'Receive'].map((tab, index) => (
@@ -82,9 +88,10 @@ export function TradeView({ className = "" }: TradeViewProps) {
                 </div>
                 <div className="mt-[16px] flex justify-between w-full">
                     <div className="">
-                        <div className="text-[18px] text-[#97A0A6] font-[700]" contentEditable
-                            onInput={v => onSellChanged(v.target.innerText)}>{state.sellValue}</div>
-                        <div className="text-[#556571] text-[10px]">$ {(state.sellValue * mock[state.sellToken]).toFixed(2)}</div>
+                        <input type="number" className="text-[18px] text-[#97A0A6] font-[700] max-w-[140px]"
+                            onChange={event => onSellChanged((event.target as HTMLInputElement).value)}
+                            value={state.sellValue} />
+                        <div className="text-[#556571] text-[10px]">$ {(Number(state.sellValue) * mock[state.sellToken]).toFixed(2)}</div>
                     </div>
                     <div className="rounded-full p-[8px] bg-[#12181F] text-[#97A0A6] flex items-center min-w-[120px]">
                         <img src="src/assets/img/ETH.png" className="size-[24px]" />
@@ -105,9 +112,9 @@ export function TradeView({ className = "" }: TradeViewProps) {
                 </div>
                 <div className="mt-[16px] flex justify-between">
                     <div>
-                        <div className="text-[18px] text-[#97A0A6] font-[700]" contentEditable
-                            onInput={v => onBuyChanged(v.target.innerText)}>{state.buyValue}</div>
-                        <div className="text-[#556571] text-[10px]">$ {(state.buyValue * mock[state.buyToken]).toFixed(2)}</div>
+                        <input type="number" className="text-[18px] text-[#97A0A6] font-[700] max-w-[140px]"
+                            onChange={event => onBuyChanged((event.target as HTMLInputElement).value)} value={state.buyValue} />
+                        <div className="text-[#556571] text-[10px]">$ {(Number(state.buyValue) * mock[state.buyToken]).toFixed(2)}</div>
                     </div>
                     <div className="rounded-full p-[8px] bg-[#12181F] text-[#97A0A6] flex items-center min-w-[120px]">
                         <img src="src/assets/img/STRK.png" className="size-[24px]" />
