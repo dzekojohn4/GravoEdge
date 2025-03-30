@@ -6,7 +6,7 @@ import { PeriodPicker } from "../ui/core/trade/period-picker";
 import { TradeView } from "../ui/core/trade/trade-view";
 
 export const Route = createFileRoute("/trade")({
-	component: RouteComponent,
+  component: RouteComponent,
 });
 
 function RouteComponent() {
