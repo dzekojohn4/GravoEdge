@@ -2,14 +2,15 @@
 API endpoints for admin management.
 """
 
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
-from loguru import logger
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from fastapi import APIRouter, HTTPException, Query, status
+from loguru import logger
+from sqlalchemy.exc import IntegrityError
+
+from app.api.common import GetAllMediator
 from app.crud.admin import admin_crud
-from app.crud.base import DBConnector
 from app.models.admin import Admin
 from app.schemas.admin import AdminRequest, AdminResponse, AdminResetPassword
 from app.services.auth.base import get_admin_user_from_state
@@ -30,7 +31,6 @@ router = APIRouter(prefix="")
 )
 async def add_admin(
     data: AdminRequest,
-    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
     Add a new admin with the provided admin data.
@@ -51,7 +51,7 @@ async def add_admin(
     )
 
     try:
-        new_admin = await db.write_to_db(new_admin)
+        new_admin = await admin_crud.write_to_db(new_admin)
 
     except IntegrityError as e:
         logger.error(f"Error adding admin: email '{data.email}' is exists")
@@ -65,36 +65,22 @@ async def add_admin(
 
 @router.get(
     "/all",
-    response_model=list[AdminResponse],
+    response_model=List[AdminResponse],
     status_code=status.HTTP_200_OK,
     summary="Get all admin",
-    description="Get all admin",
 )
 async def get_all_admin(
     limit: Optional[int] = Query(25, description="Number of admins to retrieve"),
     offset: Optional[int] = Query(0, description="Number of admins to skip"),
-    admin_user: Admin = Depends(get_admin_user_from_state),
-) -> list[AdminResponse]:
+) -> List[AdminResponse]:
     """
-    Return all admins.
-
-    Parameters:
-    - limit: Optional[int] - max admins to be retrieved
-    - offset: Optional[int] - start retrieving at
-
-    Returns:
-    - list[AdminResponse]: a list of admins
-
-    Raises:
-        HTTPException: If there's an error retrieving admins
+    Get all admins.
+    :param limit: Limit of admins to return
+    :param offset: Offset of admins to return
+    :return: Response with list of admins
     """
-    try:
-        return await admin_crud.get_all(limit, offset)
-    except SQLAlchemyError as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to get admins: {str(e)}",
-        )
+    mediator = GetAllMediator(admin_crud.get_all, limit, offset)
+    return await mediator.execute()
 
 
 @router.get(
@@ -106,7 +92,6 @@ async def get_all_admin(
 )
 async def get_admin(
     admin_id: UUID,
-    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
     Get admin.
@@ -117,7 +102,7 @@ async def get_admin(
     Returns:
     - AdminResponse: The admin object
     """
-    admin = await db.get_object(Admin, admin_id)
+    admin = await admin_crud.get_object(Admin, admin_id)
 
     if not admin:
         logger.error(f"Admin with id: '{admin_id}' not found")

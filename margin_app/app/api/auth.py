@@ -4,7 +4,7 @@ API endpoints for auth logic.
 
 from datetime import timedelta
 
-from fastapi import APIRouter, HTTPException, status, Request, Depends
+from fastapi import APIRouter, HTTPException, status, Request
 from fastapi.responses import RedirectResponse, JSONResponse
 from loguru import logger
 from pydantic import EmailStr
@@ -13,19 +13,18 @@ from app.core.config import settings
 from app.services.auth.base import (
     google_auth,
     create_access_token,
-    get_current_user,
-    get_admin_user_from_state
+    get_current_user
 )
 from app.crud.admin import admin_crud
-from app.schemas.admin import AdminResetPassword, AdminResponse
+from app.schemas.admin import AdminResetPassword
 from app.services.auth import (
     get_password_hash,
     verify_password,
 )
 from app.services.emails import email_service
-from app.models.admin import Admin
 
 router = APIRouter()
+
 
 @router.get("/login", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
 async def login_google() -> RedirectResponse:
@@ -70,12 +69,10 @@ async def auth_google(code: str, request: Request):
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Failed to authenticate user.",
             )
-        
+
         token = create_access_token(
-            user_data.email, 
-            expires_delta=timedelta(
-                minutes=settings.access_token_expire_minutes
-            )
+            user_data.email,
+            expires_delta=timedelta(minutes=settings.access_token_expire_minutes),
         )
 
         return {"access_token": token, "token_type": "bearer"}
@@ -85,8 +82,8 @@ async def auth_google(code: str, request: Request):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Failed to authenticate user.",
         )
-        
-        
+
+
 @router.post(
     "/change_password",
     status_code=status.HTTP_200_OK,
