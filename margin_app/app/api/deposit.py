@@ -57,7 +57,7 @@ async def update_deposit(
 
 
 @router.get(
-    "/deposits", response_model=List[DepositResponse], status_code=status.HTTP_200_OK
+    "/all", response_model=List[DepositResponse], status_code=status.HTTP_200_OK
 )
 async def get_all_deposits(
     limit: Optional[int] = Query(25, description="Number of deposits to retrieve"),

@@ -3,13 +3,14 @@ This module contains the API routes for the pools.
 """
 
 from typing import Optional
+from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Query, status
 from loguru import logger
 
 from app.api.common import GetAllMediator
 from app.crud.pool import pool_crud, user_pool_crud
-from app.schemas.pools import (PoolCreate, PoolGetAllResponse, PoolResponse,
+from app.schemas.pools import (PoolGetAllResponse, PoolResponse,
                                PoolRiskStatus, UserPoolCreate,
                                UserPoolResponse, UserPoolUpdate,
                                UserPoolUpdateResponse)
@@ -58,6 +59,40 @@ async def get_all_pools() -> PoolGetAllResponse:
     try:
         return await pool_crud.get_all_pools()
     except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Something went wrong.",
+        ) from e
+
+
+@router.get(
+    "/{pool_id}",
+    response_model=PoolResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_pool(pool_id: UUID) -> PoolResponse:
+    """
+    Get a pool by its ID
+
+    :param pool_id: UUID of the pool to fetch
+    :return: PoolResponse - The pool if found
+    :raises: HTTPException with 404 if pool not found
+    """
+    try:
+        pool = await pool_crud.get_pool_by_id(pool_id)
+        if not pool:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Pool with id {pool_id} not found",
+            )
+        return pool
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
+    except Exception as e:
+        logger.error(f"Error fetching pool: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Something went wrong.",

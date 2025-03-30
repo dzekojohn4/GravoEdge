@@ -5,9 +5,8 @@ API endpoints for order management.
 import uuid
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.order import order_crud
 from app.models.user_order import UserOrder
@@ -18,7 +17,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/get_all_orders",
+    "/all",
     status_code=status.HTTP_200_OK,
     summary="Get all orders",
     description="Gets all orders from database",

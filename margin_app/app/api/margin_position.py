@@ -74,7 +74,7 @@ async def close_margin_position(
 
 
 @router.get(
-    "/positions",
+    "/all",
     response_model=List[MarginPositionResponse],
     status_code=status.HTTP_200_OK,
 )
