@@ -2,22 +2,19 @@
 This module contains the API routes for margin positions.
 """
 
-from uuid import UUID
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Query, status
-from loguru import logger
-from sqlalchemy.exc import SQLAlchemyError
 
+from app.api.common import GetAllMediator
 from app.crud.liquidation import liquidation_crud
 from app.crud.margin_position import margin_position_crud
 from app.models.margin_position import MarginPosition
 from app.schemas.liquidation import LiquidationRequest, LiquidationResponse
-from app.schemas.margin_position import (
-    CloseMarginPositionResponse,
-    MarginPositionCreate,
-    MarginPositionResponse,
-)
+from app.schemas.margin_position import (CloseMarginPositionResponse,
+                                         MarginPositionCreate,
+                                         MarginPositionResponse)
 
 router = APIRouter()
 
@@ -76,35 +73,23 @@ async def close_margin_position(
     return CloseMarginPositionResponse(position_id=position_id, status=position_status)
 
 
-@router.get("/all", response_model=List[MarginPositionResponse])
+@router.get(
+    "/positions",
+    response_model=List[MarginPositionResponse],
+    status_code=status.HTTP_200_OK,
+)
 async def get_all_positions(
-    limit: Optional[int] = Query(None, description="limit margin positions"),
-    offset: int = Query(0, description="offset margin positions"),
-) -> list[MarginPositionResponse]:
+    limit: Optional[int] = Query(None, description="Limit margin positions"),
+    offset: int = Query(0, description="Offset for margin positions"),
+) -> List[MarginPositionResponse]:
     """
-    Retrieve all margin positions.
-
-    params:
-        - limit: optional limit for margin positions.
-        - offset: optional offset for margin position if limit used.
-
-    Returns:
-        List[MarginPositionResponse]: List of all margin positions
-
-    Raises:
-        HTTPException: 500 error if there's an error retrieving the positions
+    Get all margin positions.
+    :param limit: Limit of margin positions to return
+    :param offset: offset of margin positions to return
+    :return: List of margin positions
     """
-    try:
-        positions = await margin_position_crud.get_all_positions(
-            limit=limit, offset=offset
-        )
-        return positions
-    except SQLAlchemyError as e:
-        logger.error("Error retrieving all margin positions")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error retrieving all margin positions.",
-        ) from e
+    mediator = GetAllMediator(margin_position_crud.get_all_positions, limit, offset)
+    return await mediator.execute()
 
 
 @router.get(
@@ -154,9 +139,7 @@ async def get_all_liquidated_positions() -> List[MarginPositionResponse]:
 
 
 @router.post("/liquidate", response_model=LiquidationResponse)
-async def liquidate_position(
-        data: LiquidationRequest
-) -> LiquidationResponse:
+async def liquidate_position(data: LiquidationRequest) -> LiquidationResponse:
     """
     Liquidates a margin position by creating a liquidation record.
 
@@ -180,6 +163,5 @@ async def liquidate_position(
         )
     except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid request"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid request"
         ) from e
