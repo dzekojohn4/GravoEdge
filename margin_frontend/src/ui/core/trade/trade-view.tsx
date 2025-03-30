@@ -62,7 +62,7 @@ export function TradeView({ className = "" }: TradeViewProps) {
                         <span
                             className={classBuilder(
                                 index === currentTab && "nt-extrabold text-[#00D1FF]  border-y-1 border-y-[#00D1FF]",
-                                "p-[10px]")}
+                                "p-[10px] cursor-pointer")}
                             key={index}
                             onClick={() => setTab(index)}>{tab}</span>
                     ))}
