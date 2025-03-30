@@ -2,14 +2,16 @@
 This module contains the API routes for the pools.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from loguru import logger
+from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.pool import pool_crud, user_pool_crud
 from app.db.sessions import get_db
 from app.schemas.pools import (
     PoolCreate,
+    PoolGetAllResponse,
     PoolResponse,
     PoolRiskStatus,
     UserPoolCreate,
@@ -52,15 +54,17 @@ async def create_pool(token: str, risk_status: PoolRiskStatus) -> PoolResponse:
 
 @router.get(
     "/get_all_pools",
-    response_model=list[PoolResponse],
+    response_model=PoolGetAllResponse,
     status_code=status.HTTP_200_OK,
 )
-async def get_all_pools() -> list[PoolResponse]:
+async def get_all_pools() -> PoolGetAllResponse:
     """
     Fetch all pools
 
-    :return: List[PoolResponse] - List of all pool entries fetched from the database
-        (empty list if no pools exist)
+    :return: PoolGetAllResponse
+        where:
+        pools:List[Pool] List of all pool records fetched from the database
+        total:int total number of pools.
     """
     try:
         return await pool_crud.get_all_pools()
@@ -131,3 +135,31 @@ async def update_user_pool(user_pool: UserPoolUpdate) -> UserPoolUpdateResponse:
         ) from e
 
     return updated_pool
+
+@router.get(
+    "/get_all_user_pools",
+    response_model=list[UserPoolResponse],
+    status_code=status.HTTP_200_OK,
+)
+async def get_all_user_pools(
+    limit: Optional[int] = Query(25, gt=0),
+    offset: Optional[int] = Query(0, ge=0)
+) -> list[UserPoolResponse]:
+    """
+    Fetch all user pools
+
+    Parameters:
+    - limit: Optional[int] - maximum number of user pools to be retrieved
+    - offset: Optional[int] - skip N first user pools
+
+    :return: List[UserPoolResponse] - List of all user pool entries fetched from the database.
+        An empty list is returned if no user pools exist)
+    """
+    try:
+        return await user_pool_crud.get_all_user_pools(limit, offset)
+    except Exception as e:
+        logger.error(f"Error fetching user pools: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Something went wrong.",
+        ) from e
