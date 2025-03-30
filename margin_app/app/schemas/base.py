@@ -9,3 +9,4 @@ class BaseSchema(BaseModel):
     Represents Base Class That Serves As Parent For Other Schemas
     """
     model_config = ConfigDict(from_attributes=True)
+    
