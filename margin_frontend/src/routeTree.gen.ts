@@ -22,14 +22,14 @@ import { Route as IndexImport } from './routes/index'
 // Create/Update Routes
 
 const TradeRoute = TradeImport.update({
-  id: '/trade',
-  path: '/trade',
+  id: "/trade",
+  path: "/trade",
   getParentRoute: () => rootRoute,
 } as any)
 
 const SignUpRoute = SignUpImport.update({
-  id: '/sign-up',
-  path: '/sign-up',
+  id: "/sign-up",
+  path: "/sign-up",
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -40,32 +40,32 @@ const ResetPasswordRoute = ResetPasswordImport.update({
 } as any)
 
 const PoolRoute = PoolImport.update({
-  id: '/pool',
-  path: '/pool',
+  id: "/pool",
+  path: "/pool",
   getParentRoute: () => rootRoute,
 } as any)
 
 const LoginRoute = LoginImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => rootRoute,
 } as any)
 
 const ChangePasswordRoute = ChangePasswordImport.update({
-  id: '/change-password',
-  path: '/change-password',
+  id: "/change-password",
+  path: "/change-password",
   getParentRoute: () => rootRoute,
 } as any)
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
     '/': {
       id: '/'

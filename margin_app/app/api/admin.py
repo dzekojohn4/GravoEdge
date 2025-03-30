@@ -2,17 +2,22 @@
 API endpoints for admin management.
 """
 
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
-from loguru import logger
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from fastapi import APIRouter, HTTPException, Query, status
+from loguru import logger
+from sqlalchemy.exc import IntegrityError
+
+from app.api.common import GetAllMediator
 from app.crud.admin import admin_crud
-from app.crud.base import DBConnector
 from app.models.admin import Admin
-from app.schemas.admin import AdminRequest, AdminResponse
-from app.services.auth import get_password_hash, get_admin_user_from_state
+from app.schemas.admin import AdminRequest, AdminResponse, AdminResetPassword
+from app.services.auth.base import get_admin_user_from_state
+from app.services.auth.security import get_password_hash, verify_password
+from app.services.emails import email_service
+from fastapi.responses import JSONResponse
+from pydantic import EmailStr
 
 router = APIRouter(prefix="")
 
@@ -26,8 +31,6 @@ router = APIRouter(prefix="")
 )
 async def add_admin(
     data: AdminRequest,
-    db: DBConnector = Depends(DBConnector),
-    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
     Add a new admin with the provided admin data.
@@ -48,7 +51,7 @@ async def add_admin(
     )
 
     try:
-        new_admin = await db.write_to_db(new_admin)
+        new_admin = await admin_crud.write_to_db(new_admin)
 
     except IntegrityError as e:
         logger.error(f"Error adding admin: email '{data.email}' is exists")
@@ -62,36 +65,22 @@ async def add_admin(
 
 @router.get(
     "/all",
-    response_model=list[AdminResponse],
+    response_model=List[AdminResponse],
     status_code=status.HTTP_200_OK,
     summary="Get all admin",
-    description="Get all admin",
 )
 async def get_all_admin(
     limit: Optional[int] = Query(25, description="Number of admins to retrieve"),
     offset: Optional[int] = Query(0, description="Number of admins to skip"),
-    admin_user: Admin = Depends(get_admin_user_from_state),
-) -> list[AdminResponse]:
+) -> List[AdminResponse]:
     """
-    Return all admins.
-
-    Parameters:
-    - limit: Optional[int] - max admins to be retrieved
-    - offset: Optional[int] - start retrieving at
-
-    Returns:
-    - list[AdminResponse]: a list of admins
-
-    Raises:
-        HTTPException: If there's an error retrieving admins
+    Get all admins.
+    :param limit: Limit of admins to return
+    :param offset: Offset of admins to return
+    :return: Response with list of admins
     """
-    try:
-        return await admin_crud.get_all(limit, offset)
-    except SQLAlchemyError as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to get admins: {str(e)}",
-        )
+    mediator = GetAllMediator(admin_crud.get_all, limit, offset)
+    return await mediator.execute()
 
 
 @router.get(
@@ -103,8 +92,6 @@ async def get_all_admin(
 )
 async def get_admin(
     admin_id: UUID,
-    db: DBConnector = Depends(DBConnector),
-    admin_user: Admin = Depends(get_admin_user_from_state),
 ) -> AdminResponse:
     """
     Get admin.
@@ -115,7 +102,7 @@ async def get_admin(
     Returns:
     - AdminResponse: The admin object
     """
-    admin = await db.get_object(Admin, admin_id)
+    admin = await admin_crud.get_object(Admin, admin_id)
 
     if not admin:
         logger.error(f"Admin with id: '{admin_id}' not found")
@@ -124,3 +111,76 @@ async def get_admin(
         )
 
     return AdminResponse(id=admin.id, name=admin.name, email=admin.email)
+
+
+@router.post(
+    "/change_password",
+    status_code=status.HTTP_200_OK,
+    summary="password change for admin",
+    description="Sends an email with a reset password link",
+)
+async def change_password(
+    admin_email: EmailStr,
+):
+    """
+    Asynchronously handles the process of changing an admin's password
+    by sending a reset password email.
+    Args:
+        admin_email (EmailStr): The email address of the admin whose password needs to be changed.
+    Raises:
+        HTTPException: If the admin with the given email is not found (404).
+        HTTPException: If there is an error while sending the reset password email (500).
+    Returns:
+        JSONResponse: A response indicating that the reset password email was successfully sent.
+    """
+    admin = await admin_crud.get_object_by_field(field="email", value=admin_email)
+
+    if not admin:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Admin with this email was not found.",
+        )
+
+    if not await email_service.reset_password_mail(to_email=admin.email):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error while sending email.",
+        )
+
+    return JSONResponse(
+        content={"message": "Password reset email has been sent successfully"}
+    )
+
+
+@router.post(
+    "/reset_password/{token}",
+    status_code=status.HTTP_200_OK,
+    summary="password reset for admin",
+    description="change password for admin",
+)
+async def reset_password(data: AdminResetPassword, token: str):
+    """
+    Reset the password for an admin user.
+    This function verifies the provided old password, updates the password
+    to a new one if the verification is successful, and saves the changes
+    to the database.
+    Args:
+        data (AdminResetPassword): An object containing the old and new passwords.
+        token (str): The authentication token of the current admin user.
+    Raises:
+        HTTPException: If the provided old password does not match the stored password.
+    Returns:
+        JSONResponse: A response indicating that the password was successfully changed.
+    """
+
+    admin = await get_admin_user_from_state(token=token)
+
+    if not verify_password(data.old_password, admin.password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="The provided old password does not match",
+        )
+
+    admin.password = get_password_hash(data.new_password)
+    await admin_crud.write_to_db(admin)
+    return JSONResponse(content={"message": "Password was changed"})

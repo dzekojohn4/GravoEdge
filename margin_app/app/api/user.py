@@ -2,28 +2,24 @@
 This module contains the API routes for the user.
 """
 
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Query, status
+from loguru import logger
+
+from app.api.common import GetAllMediator
 from app.crud.deposit import deposit_crud
 from app.crud.user import user_crud
-from app.db.sessions import get_db
-from app.schemas.user import (
-    AddMarginPositionRequest,
-    AddMarginPositionResponse,
-    AddUserDepositRequest,
-    AddUserDepositResponse,    
-    UserResponse,
-    UserCreate,
-    UserGetAllResponse,
-)
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from loguru import logger
-from typing import Optional
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.schemas.user import (AddMarginPositionRequest,
+                              AddMarginPositionResponse, AddUserDepositRequest,
+                              AddUserDepositResponse, UserCreate,
+                              UserGetAllResponse, UserResponse)
 
 router = APIRouter()
 
 
 @router.post(
-    "/",
+    "",
     response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
 )
@@ -59,34 +55,18 @@ async def create_user(user: UserCreate) -> UserResponse:
     return user
 
 
-@router.get(
-    "/get_all_users",
-    response_model=UserGetAllResponse,
-    status_code=status.HTTP_200_OK,
-)
+@router.get("/all", response_model=UserGetAllResponse, status_code=status.HTTP_200_OK)
 async def get_all_users(
-    limit: Optional[int] = Query(25, gt=0),
-    offset: Optional[int] = Query(0, ge=0)
+    limit: Optional[int] = Query(25, gt=0), offset: Optional[int] = Query(0, ge=0)
 ) -> UserGetAllResponse:
-
     """
-    Return all users and total users count.
-
-    Parameters:
-    - limit: Optional[int] - max users to be retrieved
-    - offset: Optional[int] - start retrieving at.
-
-    Returns:
-    - UserGetAllResponse: contains users:list[UserResponse] and a total number of users
-
-    Raises:
-    - HTTPException (400): If any validation fails.
-    - HTTPException (422): If query params are invalid.
+    Get all users.
+    :param limit: limit of users to return
+    :param offset: offset of users to return
+    :return: UserGetAllResponse
     """
-    try:
-        return await user_crud.get_all(limit, offset)       
-    except ValueError as e:        
-        raise HTTPException(status_code=400, detail=str(e)) from e
+    mediator = GetAllMediator(user_crud.get_all, limit, offset)
+    return await mediator.execute()
 
 
 @router.get(
@@ -201,8 +181,8 @@ async def add_margin_position(
             borrowed_amount=margin_position.borrowed_amount,
             transaction_id=margin_position.transaction_id,
             liquidated_at=margin_position.liquidated_at,
-            status=margin_position.status
+            status=margin_position.status,
         )
-    
+
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
