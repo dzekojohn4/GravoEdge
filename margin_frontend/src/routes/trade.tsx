@@ -12,7 +12,7 @@ export const Route = createFileRoute("/trade")({
 function RouteComponent() {
 	return (
 		<div className="flex flex-col lg:flex-row h-full gap-[24px] mt-[28px]">
-			<div className="collapse lg:visible bg-[#0C1219] h-0 lg:h-[633px] pt-[20px] pr-[12px] 
+			<div className="collapse lg:visible bg-[#0C1219] min-w-0 lg:min-w-[223px] h-0 lg:h-[633px] pt-[20px] pr-[12px] 
 			rounded-tr-2xl flex flex-col justify-between text-xs text-[#97A0A6] font-medium">
 				<ul>
 					<li className="px-[16px] py-[12px]">Trade</li>
