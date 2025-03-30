@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./slider.css";
+import { classBuilder } from "../../../utils/utils";
 
 interface SliderProps {
     className?: string;
@@ -70,13 +71,10 @@ export function Slider({ className = "" }: SliderProps) {
     }, []);
 
 
-    className += " w-full h-[12px] relative bg-[#01060D] rounded-full";
-
-
     return (
         <div className="w-full relative flex flex-col items-center">
 
-            <div className={className}>
+            <div className={classBuilder(className, "w-full h-[12px] relative bg-[#01060D] rounded-full")}>
                 <div className={`absolute rounded-full  bg-[#00D1FF] 
                 left-[0px] right-[0px]
                  top-0 bottom-0 inset-shadow-[#171E2852]/32 pointer-events-none z-8`}
