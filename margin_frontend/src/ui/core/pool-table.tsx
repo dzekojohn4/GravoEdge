@@ -33,10 +33,10 @@ export default function PoolTable({ pools }: PoolTableProps) {
 							<th className="text-sm font-semibold pb-4 w-1/4 lg:w-1/3 pl-4">Pool</th>
 							<th className="text-sm font-semibold pb-4 pl-6">APY %</th>
 							<th className="text-sm font-semibold pb-4 pl-6 ">Risk Level</th>
-							<th className="text-sm font-semibold pb-4 pl-6">Liquidity</th>
+							<th className="text-sm font-semibold pb-4 ">Liquidity</th>
 						</tr>
 					</thead>
-					<tbody className="divide-y divide-grayborder text-baseWhite border-grayborder border-solid border-1">
+					<tbody className="divide-y divide-grayborder text-gray-300 border-grayborder border-solid border-1">
 						{pools.map((pool) => (
 							<tr key={pool.id} className="hover:bg-[#1a1a1a]">
 								<td className="py-4">
@@ -47,10 +47,7 @@ export default function PoolTable({ pools }: PoolTableProps) {
 											<td className=" py-4 whitespace-nowrap font-medium ">{pool.pair} <p className='text-xs pt-1 text-gray-600 flex gap-3'>
                    Stable <span>0.500%</span> </p>  </td>
                   
-											<div className="text-sm font-semibold text-headerText flex jusify-between gap-3">
-												
-												
-											</div>
+											
 										</div>
 									</div>
 								</td>
