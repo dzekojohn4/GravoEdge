@@ -16,20 +16,21 @@ import { Route as SignUpImport } from './routes/sign-up'
 import { Route as ResetPasswordImport } from './routes/reset-password'
 import { Route as PoolImport } from './routes/pool'
 import { Route as LoginImport } from './routes/login'
+import { Route as DashboardImport } from './routes/dashboard'
 import { Route as ChangePasswordImport } from './routes/change-password'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
 const TradeRoute = TradeImport.update({
-  id: "/trade",
-  path: "/trade",
+  id: '/trade',
+  path: '/trade',
   getParentRoute: () => rootRoute,
 } as any)
 
 const SignUpRoute = SignUpImport.update({
-  id: "/sign-up",
-  path: "/sign-up",
+  id: '/sign-up',
+  path: '/sign-up',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -40,32 +41,38 @@ const ResetPasswordRoute = ResetPasswordImport.update({
 } as any)
 
 const PoolRoute = PoolImport.update({
-  id: "/pool",
-  path: "/pool",
+  id: '/pool',
+  path: '/pool',
   getParentRoute: () => rootRoute,
 } as any)
 
 const LoginRoute = LoginImport.update({
-  id: "/login",
-  path: "/login",
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRoute,
 } as any)
 
 const ChangePasswordRoute = ChangePasswordImport.update({
-  id: "/change-password",
-  path: "/change-password",
+  id: '/change-password',
+  path: '/change-password',
   getParentRoute: () => rootRoute,
 } as any)
 
 const IndexRoute = IndexImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
       id: '/'
@@ -79,6 +86,13 @@ declare module "@tanstack/react-router" {
       path: '/change-password'
       fullPath: '/change-password'
       preLoaderRoute: typeof ChangePasswordImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
     '/login': {
@@ -124,6 +138,7 @@ declare module "@tanstack/react-router" {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/change-password': typeof ChangePasswordRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/pool': typeof PoolRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -134,6 +149,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/change-password': typeof ChangePasswordRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/pool': typeof PoolRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -145,6 +161,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/change-password': typeof ChangePasswordRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/pool': typeof PoolRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -157,6 +174,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/change-password'
+    | '/dashboard'
     | '/login'
     | '/pool'
     | '/reset-password'
@@ -166,6 +184,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/change-password'
+    | '/dashboard'
     | '/login'
     | '/pool'
     | '/reset-password'
@@ -175,6 +194,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/change-password'
+    | '/dashboard'
     | '/login'
     | '/pool'
     | '/reset-password'
@@ -186,6 +206,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChangePasswordRoute: typeof ChangePasswordRoute
+  DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   PoolRoute: typeof PoolRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -196,6 +217,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChangePasswordRoute: ChangePasswordRoute,
+  DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   PoolRoute: PoolRoute,
   ResetPasswordRoute: ResetPasswordRoute,
@@ -215,6 +237,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/change-password",
+        "/dashboard",
         "/login",
         "/pool",
         "/reset-password",
@@ -227,6 +250,9 @@ export const routeTree = rootRoute
     },
     "/change-password": {
       "filePath": "change-password.tsx"
+    },
+    "/dashboard": {
+      "filePath": "dashboard.tsx"
     },
     "/login": {
       "filePath": "login.tsx"
