@@ -4,16 +4,23 @@ API endpoints for auth logic.
 
 from datetime import timedelta
 
-from fastapi import APIRouter, HTTPException, Request, status
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi import APIRouter, HTTPException, status, Request
+from fastapi.responses import RedirectResponse, JSONResponse
 from loguru import logger
 from pydantic import EmailStr
 
 from app.core.config import settings
+from app.services.auth.base import (
+    google_auth,
+    create_access_token,
+    get_current_user
+)
 from app.crud.admin import admin_crud
 from app.schemas.admin import AdminResetPassword
-from app.services.auth import (create_access_token, get_current_user,
-                               get_password_hash, google_auth, verify_password)
+from app.services.auth import (
+    get_password_hash,
+    verify_password,
+)
 from app.services.emails import email_service
 
 router = APIRouter()
