@@ -2,7 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 
 const API_URL = "http://localhost:8000/api/admin/add";
 
-const createUser = async (userData: { name: string; email: string; password: string }) => {
+const createUser = async (userData: {
+  name: string;
+  email: string;
+  password: string;
+}) => {
   const response = await fetch(API_URL, {
     method: "POST",
     headers: {
