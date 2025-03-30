@@ -1,3 +1,4 @@
+import React from "react";
 import { connect, disconnect, getSelectedConnectorWallet } from "starknetkit";
 import { InjectedConnector } from "starknetkit/injected";
 import {
@@ -104,11 +105,7 @@ export async function getTokenBalances(walletAddress: string) {
   }
 }
 
-export async function getTokenBalance(
-  wallet: any,
-  walletAddress: string,
-  tokenAddress: string
-) {
+export async function getTokenBalance(wallet, walletAddress, tokenAddress) {
   try {
     const response = await wallet.provider.callContract({
       contractAddress: tokenAddress,
@@ -127,10 +124,7 @@ export async function getTokenBalance(
   }
 }
 
-export const getBalances = async (
-  walletId: string,
-  setBalances: React.Dispatch<React.SetStateAction<any>>
-) => {
+export const getBalances = async (walletId, setBalances) => {
   if (!walletId) return;
   try {
     const data = await getTokenBalances(walletId);
