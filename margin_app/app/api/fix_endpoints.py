@@ -21,16 +21,19 @@ def fix_file(path):
     content = route_regex.sub(fix_route, content)
 
     def add_params(match):
+        # Adds `limit` and `offset` parameters to `get_all` functions if missing.
         sig = match.group(0)
         if "limit:" in sig and "offset:" in sig:
             return sig
         print(f"Adding limit and offset to endpoint in {path}")
         return re.sub(
             r'\(',
-            '(limit: int = Query(25, description="Number of deposits to retrieve"), offset: int = Query(0, description="Number of deposits to skip"), ',
+            'limit: int = Query(25, description="Number of records to retrieve"), '
+            'offset: int = Query(0, description="Number of records to skip"), ',
             sig,
             count=1
         )
+    
     content, count = func_def_regex.subn(add_params, content)
     if count:
         print(f"Modified {count} function signature(s) in {path}")
@@ -40,6 +43,7 @@ def fix_file(path):
     print(f"Finished processing {path}\n")
 
 def main():
+    # Scans all Python files in `ROUTES_DIR` and applies fixes.
     if not os.path.exists(ROUTES_DIR):
         print(f"Directory {ROUTES_DIR} does not exist. Please check the path.")
         return
