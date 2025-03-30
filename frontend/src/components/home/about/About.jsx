@@ -49,7 +49,7 @@ const About = () => {
         {CardData.map((card, index) => (
           <div key={index} className="relative flex flex-col items-center">
             <div className="absolute -top-[2em] left-1/2 z-10 -translate-x-1/2 md:-top-[1em] lg:-top-[1.5em] 2xl:-top-[1.5em]">
-              <div className="bg-primary-color text-brand font-text z-7 min-w-[70px] rounded-xl border-[0.8px] border-[var(--brand)] bg-black px-4 py-1 text-center text-[32px] font-semibold text-[var(--brand)] md:min-w-[45px] md:text-[18px] lg:min-w-[60px] lg:text-[25px] xl:text-[30px]">
+              <div className="bg-primary-color text-brand font-text z-7 min-w-[70px] rounded-xl border-[0.8px] border-[var(--brand)]  px-4 py-1 text-center text-[32px] font-semibold md:min-w-[45px] md:text-[18px] lg:min-w-[60px] lg:text-[25px] xl:text-[30px]">
                 {card.number}
               </div>
             </div>
@@ -59,18 +59,18 @@ const About = () => {
                 <card.icon />
               </div>
 
-              <h4 className="font-text text-primary text-center text-[26px] leading-[108%] font-medium text-white md:text-[15px] lg:text-[18px] xl:text-[22px]">
+              <h4 className="font-text text-primary text-center text-[26px] leading-[108%] font-medium md:text-[15px] lg:text-[18px] xl:text-[22px]">
                 {card.title}
               </h4>
 
-              <p className="font-text text-secondary lg:text-md text-center text-[20px] leading-[140%] font-normal text-white md:text-[11px] xl:text-base">
+              <p className="font-text text-secondary lg:text-md text-center text-[20px] leading-[140%] font-normal md:text-[11px] xl:text-base">
                 {card.description}
               </p>
             </div>
           </div>
         ))}
       </div>
-      <div className="absolute top-[25em] right-[25em] z-0 hidden h-[232px] w-[208px] rounded-[2000px_2000px_0_0] bg-[linear-gradient(73deg,_#74d6fd_1.13%,_#e01dee_103.45%)] blur-[100px] lg:block"></div>
+      <div className="absolute top-[25em] right-0 z-0 hidden h-[232px] w-[208px] rounded-[2000px_2000px_0_0] bg-[linear-gradient(73deg,_#74d6fd_1.13%,_#e01dee_103.45%)] blur-[100px] lg:block"></div>
     </div>
   );
 };
