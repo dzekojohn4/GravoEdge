@@ -6,21 +6,21 @@ import { Footer } from "../ui/layout/footer";
 import { Header } from "../ui/layout/header";
 
 export const Route = createRootRouteWithContext<{
-	queryClient: QueryClient;
+  queryClient: QueryClient;
 }>()({
-	component: RootComponent,
+  component: RootComponent,
 });
 
 function RootComponent() {
-	return (
-		<>
-			<div className="flex flex-col w-screen min-h-screen bg-AppBg md:justify-between overflow-x-hidden">
-				<Header />
-				<Outlet />
-				<Footer />
-			</div>
-			<ReactQueryDevtools buttonPosition="top-right" />
-			<TanStackRouterDevtools position="bottom-right" />
-		</>
-	);
+  return (
+    <>
+      <div className="flex flex-col w-screen min-h-screen bg-AppBg md:justify-between overflow-x-hidden">
+        <Header />
+        <Outlet />
+        <Footer />
+      </div>
+      <ReactQueryDevtools buttonPosition="top-right" />
+      <TanStackRouterDevtools position="bottom-right" />
+    </>
+  );
 }
