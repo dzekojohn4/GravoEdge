@@ -293,11 +293,18 @@ export function Graph({ className = "" }: GraphProps) {
         <div className="w-full h-[426px] bg-[#0E1116] p-[20px] flex flex-col
 				 mt-[20px] border-1 border-[#12181F]  rounded-[12px]">
             <div className="flex items-center">
-                <button className="px-[8px] py-[4px] text-[#A2B1C6]">
-                    ETH / USD
+                <button className="px-[8px] py-[4px] text-[#A2B1C6] flex items-center gap-[8px] cursor-pointer">
+                    <span>ETH / USD</span>
+                    <svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.692 1.94217L7.44205 8.19217C7.384 8.25028 7.31507 8.29638 7.2392 8.32783C7.16332 8.35928 7.082 8.37547 6.99986 8.37547C6.91773 8.37547 6.8364 8.35928 6.76052 8.32783C6.68465 8.29638 6.61572 8.25028 6.55767 8.19217L0.307672 1.94217C0.190396 1.82489 0.124512 1.66583 0.124512 1.49998C0.124512 1.33413 0.190396 1.17507 0.307672 1.05779C0.424947 0.940518 0.584007 0.874634 0.749859 0.874634C0.915712 0.874634 1.07477 0.940518 1.19205 1.05779L6.99986 6.86639L12.8077 1.05779C12.8657 0.999725 12.9347 0.953662 13.0106 0.922235C13.0864 0.890809 13.1677 0.874634 13.2499 0.874634C13.332 0.874634 13.4133 0.890809 13.4892 0.922235C13.565 0.953662 13.634 0.999725 13.692 1.05779C13.7501 1.11586 13.7962 1.1848 13.8276 1.26067C13.859 1.33654 13.8752 1.41786 13.8752 1.49998C13.8752 1.5821 13.859 1.66342 13.8276 1.73929C13.7962 1.81516 13.7501 1.8841 13.692 1.94217Z" fill="#556571" />
+                    </svg>
                 </button>
-                <div className="px-[8px] py-[4px] text-[#556571] text-xs">
-                    7:45AM | MAR 10 | UTC 9:45
+                <div className="px-[8px] py-[4px] text-[#556571] text-xs flex gap-[4px]">
+                    <span>7:45AM</span>
+                    <span className="w-[2px] rounded-[4px] bg-[#17191B] h-auto"></span>
+                    <span>MAR 10</span>
+                    <span className="w-[2px] rounded-[4px] bg-[#17191B] h-auto"></span>
+                    <span>UTC 9:45</span>                   
                 </div>
             </div>
             <div className="mt-[24px] flex justify-between">
@@ -305,6 +312,7 @@ export function Graph({ className = "" }: GraphProps) {
                     <div className="font-bricolageGrotesque font-semibold">
                         <span className=" text-[#F1F7FF] text-[32px]">$2,505.58</span>
                         <span className="ml-1 text-sm text-[#B4B4B4]">USD</span>
+
                     </div>
                     <span className="bg-[#12181F] text-[#E5E5E5] px-[12px] py-[6px] rounded-full text-sm">
                         0.51(0.08%)
