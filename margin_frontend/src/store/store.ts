@@ -1,6 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
-import cryptoDashboardReducer from './cryptoDashboard/cryptoDashboardSlice';
- const store = configureStore({
+import { configureStore } from "@reduxjs/toolkit";
+import cryptoDashboardReducer from "./cryptoDashboard/cryptoDashboardSlice";
+const store = configureStore({
   reducer: {
     cryptoDashboard: cryptoDashboardReducer,
   },
