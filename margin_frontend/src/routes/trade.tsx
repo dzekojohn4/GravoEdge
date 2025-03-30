@@ -43,7 +43,7 @@ function RouteComponent() {
 
 				<div className="flex flex-col lg:flex-row gap-[24px] grow-1  flex-wrap mr-0 lg:mr-[80px]
 				 max-w-fit  mt-[20px] items-center md:items-start">
-					<div className="flex-1 grow-2 max-w-[1000px]">					
+					<div className="flex-1 grow-2 max-w-[800px] basis-full md:basis-auto">					
 						<Graph className="min-w-lg"></Graph>
 					</div>
 
