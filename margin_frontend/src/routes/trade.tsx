@@ -11,7 +11,7 @@ export const Route = createFileRoute("/trade")({
 
 function RouteComponent() {
 	return (
-		<div className="flex flex-col lg:flex-row h-full gap-[24px] mt-[28px]">
+		<div className="flex flex-col lg:flex-row h-full gap-[24px] mt-[28px]  w-full">
 			<div className="collapse lg:visible bg-[#0C1219] min-w-0 lg:min-w-[223px] h-0 lg:h-[633px] pt-[20px] pr-[12px] 
 			rounded-tr-2xl flex flex-col justify-between text-xs text-[#97A0A6] font-medium">
 				<ul>
@@ -27,33 +27,36 @@ function RouteComponent() {
 					<li className="px-[16px] py-[12px]">Log Out</li>
 				</ul>
 			</div>
-			<div className="w-full">
-				<h1 className="font-extrabold text-3xl text-[#1A232A]">
-					TRADE
-				</h1>
-				<p className="text-[#F1F7FF]">
-					Trade with precision. Multiplier your gain.
-				</p>
+			<div className="flex flex-col lg:flex-row gap-[24px] grow-1  flex-wrap mr-0 lg:mr-[80px] max-w-fit">
+				<div className="flex-1 grow-2 max-w-[1000px]">
+					<h1 className="font-extrabold text-3xl text-[#1A232A]">
+						TRADE
+					</h1>
+					<p className="text-[#F1F7FF]">
+						Trade with precision. Multiplier your gain.
+					</p>
 
-				<Graph></Graph>
-			</div>
+					<Graph className="min-w-lg"></Graph>
+				</div>
 
-			<div className="w-full flex flex-col mr-[80px] items-center lg:items-end r">
+				<div className="w-full flex flex-col  items-center lg:items-end shrink-2 flex-1">
 
-				<PeriodPicker className=" mb-[28px]"></PeriodPicker>	
-				<TradeView></TradeView>
+					<PeriodPicker className=" mb-[28px]"></PeriodPicker>
+					<TradeView></TradeView>
+				</div>
 
-				<form className="max-w-lg min-w-md block  border-1 border-[#17191B] rounded-xl p-[24px] h-fit mt-16">
+				<form className="max-w-lg min-w-md block  border-1 border-[#17191B]
+			 			rounded-xl p-[24px] h-fit mt-16 basis-full">
 					<div className="w-full">
 						<label className="uppercase text-xs text-[#556571]">health factor level</label>
 						<input type="number" className="rounded-full border-1 border-[#17191B] 
-					block w-full h-[43px] mt-[6px] px-5 text-white"/>
+							block w-full h-[43px] mt-[6px] px-5 text-white"/>
 					</div>
 
 					<div className="w-full mt-[32px]">
 						<label className="uppercase text-xs text-[#556571]">liquidation price</label>
 						<input type="number" className="rounded-full border-1 border-[#17191B] 
-					block w-full h-[43px] mt-[6px] px-5 text-white"/>
+							block w-full h-[43px] mt-[6px] px-5 text-white"/>
 					</div>
 
 					<div className="w-full mt-[32px]">
@@ -64,7 +67,7 @@ function RouteComponent() {
 							</span>
 						</div>
 						<input type="number" className="rounded-full border-1 border-[#17191B] 
-					block w-full h-[43px] mt-[6px] px-5 text-white" />
+							block w-full h-[43px] mt-[6px] px-5 text-white" />
 					</div>
 
 					<div className="w-full mt-[32px]">
@@ -73,13 +76,11 @@ function RouteComponent() {
 					</div>
 
 					<button className="text-center w-full rounded-full bg-[#121519] h-[44px]
-				 text-[#556571] mt-[32px] font-medium text-sm" type="submit">
+				 			text-[#556571] mt-[32px] font-medium text-sm" type="submit">
 						Trade
 					</button>
 				</form>
 			</div>
-
-
 
 
 		</div>
