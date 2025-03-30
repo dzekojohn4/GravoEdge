@@ -1,15 +1,15 @@
 """
 This module contains the API routes for the Deposit model.
 """
-from typing import Optional, List
 
-from fastapi import APIRouter, status, HTTPException, Query
-
-
-from app.models.deposit import Deposit
+from typing import List, Optional
 from uuid import UUID
+
+from fastapi import APIRouter, HTTPException, Query, status
+
+from app.api.common import GetAllMediator
 from app.crud.deposit import deposit_crud
-from app.schemas.deposit import DepositResponse, DepositCreate, DepositUpdate
+from app.schemas.deposit import DepositCreate, DepositResponse, DepositUpdate
 
 router = APIRouter()
 
@@ -55,22 +55,19 @@ async def update_deposit(
         deposit_id, deposit_update.model_dump(exclude_none=True)
     )
 
-@router.get("", response_model=List[DepositResponse], status_code=status.HTTP_200_OK)
+
+@router.get(
+    "/all", response_model=List[DepositResponse], status_code=status.HTTP_200_OK
+)
 async def get_all_deposits(
-    limit: Optional[int] = Query(25, description="Number of deposits to retrive"),
-    offset: Optional[int] = Query(0, description="Number of deposits to skip")
+    limit: Optional[int] = Query(25, description="Number of deposits to retrieve"),
+    offset: Optional[int] = Query(0, description="Number of deposits to skip"),
 ) -> List[DepositResponse]:
     """
-    Get all deposit records from the database with pagination.
-    :param limit: Max number of records to retrieve
-    :param offset: Number of records to skip
-    :return: List of DepositResponse schemas
+    Fetch all deposits from the database.
+    :param limit: set the limit of deposits to return
+    :param offset: offset of deposits to return
+    :return:
     """
-    try:
-        deposits = await deposit_crud.get_objects(model=Deposit, limit=limit, offset=offset)
-        return deposits
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to retrieve deposits",
-        ) from e
+    mediator = GetAllMediator(deposit_crud.get_objects, limit, offset)
+    return await mediator.execute()

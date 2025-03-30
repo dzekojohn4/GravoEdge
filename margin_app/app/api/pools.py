@@ -2,23 +2,18 @@
 This module contains the API routes for the pools.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from loguru import logger
 from typing import Optional
-from sqlalchemy.ext.asyncio import AsyncSession
+from uuid import UUID
 
+from fastapi import APIRouter, HTTPException, Query, status
+from loguru import logger
+
+from app.api.common import GetAllMediator
 from app.crud.pool import pool_crud, user_pool_crud
-from app.db.sessions import get_db
-from app.schemas.pools import (
-    PoolCreate,
-    PoolGetAllResponse,
-    PoolResponse,
-    PoolRiskStatus,
-    UserPoolCreate,
-    UserPoolResponse,
-    UserPoolUpdate,
-    UserPoolUpdateResponse,
-)
+from app.schemas.pools import (PoolGetAllResponse, PoolResponse,
+                               PoolRiskStatus, UserPoolCreate,
+                               UserPoolResponse, UserPoolUpdate,
+                               UserPoolUpdateResponse)
 
 router = APIRouter()
 
@@ -32,7 +27,6 @@ async def create_pool(token: str, risk_status: PoolRiskStatus) -> PoolResponse:
 
     :param token: pool token (path parameter)
     :param risk_status: pool risk status
-    :param db: database session
     :return: created pool
     """
     try:
@@ -52,11 +46,7 @@ async def create_pool(token: str, risk_status: PoolRiskStatus) -> PoolResponse:
     return created_pool
 
 
-@router.get(
-    "/get_all_pools",
-    response_model=PoolGetAllResponse,
-    status_code=status.HTTP_200_OK,
-)
+@router.get("/pools", response_model=PoolGetAllResponse, status_code=status.HTTP_200_OK)
 async def get_all_pools() -> PoolGetAllResponse:
     """
     Fetch all pools
@@ -69,7 +59,40 @@ async def get_all_pools() -> PoolGetAllResponse:
     try:
         return await pool_crud.get_all_pools()
     except Exception as e:
-        logger.error(f"Error fetching pools: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Something went wrong.",
+        ) from e
+
+
+@router.get(
+    "/{pool_id}",
+    response_model=PoolResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_pool(pool_id: UUID) -> PoolResponse:
+    """
+    Get a pool by its ID
+
+    :param pool_id: UUID of the pool to fetch
+    :return: PoolResponse - The pool if found
+    :raises: HTTPException with 404 if pool not found
+    """
+    try:
+        pool = await pool_crud.get_pool_by_id(pool_id)
+        if not pool:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Pool with id {pool_id} not found",
+            )
+        return pool
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
+    except Exception as e:
+        logger.error(f"Error fetching pool: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Something went wrong.",
@@ -136,14 +159,12 @@ async def update_user_pool(user_pool: UserPoolUpdate) -> UserPoolUpdateResponse:
 
     return updated_pool
 
+
 @router.get(
-    "/get_all_user_pools",
-    response_model=list[UserPoolResponse],
-    status_code=status.HTTP_200_OK,
+    "/user_pools", response_model=list[UserPoolResponse], status_code=status.HTTP_200_OK
 )
 async def get_all_user_pools(
-    limit: Optional[int] = Query(25, gt=0),
-    offset: Optional[int] = Query(0, ge=0)
+    limit: Optional[int] = Query(25, gt=0), offset: Optional[int] = Query(0, ge=0)
 ) -> list[UserPoolResponse]:
     """
     Fetch all user pools
@@ -155,11 +176,5 @@ async def get_all_user_pools(
     :return: List[UserPoolResponse] - List of all user pool entries fetched from the database.
         An empty list is returned if no user pools exist)
     """
-    try:
-        return await user_pool_crud.get_all_user_pools(limit, offset)
-    except Exception as e:
-        logger.error(f"Error fetching user pools: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Something went wrong.",
-        ) from e
+    mediator = GetAllMediator(user_pool_crud.get_all_user_pools, limit, offset)
+    return await mediator.execute()
