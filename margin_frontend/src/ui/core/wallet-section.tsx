@@ -15,7 +15,7 @@ const WalletSection = ({
   const { walletId } = useWalletStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1025);
-  const menuRef = useRef<HTMLDivElement | null>(null);
+  const menuRef = useRef(null);
 
   const toggleMenu = () => {
     setIsMenuOpen((prevState) => !prevState);
