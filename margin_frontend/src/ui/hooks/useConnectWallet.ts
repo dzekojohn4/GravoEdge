@@ -6,7 +6,7 @@ export const useConnectWallet = (setWalletId: (walletId: string) => void) => {
   return useMutation({
     mutationFn: async () => {
       const wallet = await connectWallet();
-      const walletAddress = wallet?.selectedAddress;
+      const walletAddress = wallet.selectedAddress;
 
       if (!walletAddress) {
         throw new Error("Failed to connect wallet");

@@ -1,9 +1,4 @@
-import {
-  connect,
-  disconnect,
-  getSelectedConnectorWallet,
-  StarknetWindowObject,
-} from "starknetkit";
+import { connect, disconnect, getSelectedConnectorWallet } from "starknetkit";
 import { InjectedConnector } from "starknetkit/injected";
 import {
   ETH_ADDRESS,
@@ -15,13 +10,6 @@ import ETH from "../assets/icons/ethereum.svg";
 import USDC from "../assets/icons/borrow_usdc.svg";
 import STRK from "../assets/icons/strk.svg";
 import KSTRK from "../assets/icons/kstrk.svg";
-
-// Define the Wallet interface extending StarknetWindowObject
-interface Wallet extends StarknetWindowObject {
-  isConnected: boolean;
-  enable: () => Promise<void>;
-  selectedAddress: string;
-}
 
 export const getConnectors = () =>
   !localStorage.getItem("starknetLastConnectedWallet")
@@ -39,22 +27,20 @@ export const getConnectors = () =>
         }),
       ];
 
-export const getWallet = async (): Promise<Wallet | null> => {
-  const connectedWallet = (await getSelectedConnectorWallet()) as Wallet;
+export const getWallet = async () => {
+  const connectedWallet = await getSelectedConnectorWallet();
 
-  if (connectedWallet && connectedWallet.isConnected) {
+  if (connectedWallet && connectedWallet?.isConnected) {
     console.log("found existing wallet:", connectedWallet);
     return connectedWallet;
   }
 
-  const result = await connect({
+  const { wallet } = await connect({
     connectors: getConnectors(),
     modalMode: "neverAsk",
   });
 
-  const wallet = result.wallet as Wallet;
-
-  if (wallet && wallet.isConnected) {
+  if (wallet && wallet?.isConnected) {
     await wallet.enable();
     return wallet;
   }
@@ -63,17 +49,15 @@ export const getWallet = async (): Promise<Wallet | null> => {
   return await connectWallet(); // Fallback to connectWallet if not already connected
 };
 
-export const connectWallet = async (): Promise<Wallet | null> => {
+export const connectWallet = async () => {
   try {
     console.log("Attempting to connect to wallet...");
 
-    const result = await connect({
+    const { wallet } = await connect({
       connectors: getConnectors(),
       modalMode: "alwaysAsk",
       modalTheme: "dark",
     });
-
-    const wallet = result.wallet as Wallet;
 
     if (!wallet) {
       console.error("No wallet object found");
@@ -82,16 +66,16 @@ export const connectWallet = async (): Promise<Wallet | null> => {
 
     await wallet.enable();
 
-    if (wallet.isConnected) {
+    if (wallet?.isConnected) {
       console.log(
         "Wallet successfully connected. Address:",
-        wallet.selectedAddress
+        wallet?.selectedAddress
       );
       return wallet;
     }
     throw new Error("Wallet connection failed");
   } catch (error) {
-    console.error("Error connecting wallet:", (error as Error).message);
+    console.error("Error connecting wallet:", error.message);
     throw error;
   }
 };
