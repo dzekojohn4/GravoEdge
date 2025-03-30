@@ -2,12 +2,15 @@
 This module contains CRUD operations for orders.
 """
 
+import asyncio
 import logging
 import uuid
 from decimal import Decimal
+from typing import Optional
 
 from app.crud.base import DBConnector
 from app.models.user_order import UserOrder
+from app.schemas.order import UserOrderGetAllResponse
 
 logger = logging.getLogger(__name__)
 
@@ -21,14 +24,24 @@ class UserOrderCRUD(DBConnector):
     - execute_order: Process and execute an existing order
     """
 
-    async def get_all(self, limit: int = 25, offset: int = 0) -> list[UserOrder]:
+    async def get_all(
+        self, limit: Optional[int] = None, offset:  Optional[int] = None
+    ) -> UserOrderGetAllResponse:
         """
         Retrieves all orders.
         :param limit: Optional[int] - max orders to be retrieved
         :param offset: Optional[int] - start retrieving at.
         :return: list[UUserOrderser]
         """
-        return await self.get_objects(UserOrder, limit, offset)
+        
+        orders, total = await asyncio.gather(
+            self.get_objects(UserOrder, limit, offset),
+            self.get_objects_amounts(UserOrder)
+        )
+        return UserOrderGetAllResponse(
+            orders=orders,
+            total=total
+        )
 
     async def add_new_order(
         self, user_id: uuid.UUID, price: Decimal, token: str, position: uuid.UUID
@@ -65,6 +78,17 @@ class UserOrderCRUD(DBConnector):
 
         # Order execution logic would go here
         return True
+
+    async def get_by_id(self, order_id: uuid.UUID) -> UserOrder | None:
+        """Get order by ID from database
+        
+        Args:
+            order_id (uuid.UUID): ID of the order to get
+
+        Returns:
+            UserOrder | None: The order object if found, None otherwise
+        """
+        return await self.get_object(UserOrder, order_id)
 
 
 order_crud = UserOrderCRUD()

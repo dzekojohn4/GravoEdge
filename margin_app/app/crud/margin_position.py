@@ -5,7 +5,8 @@ updating and closing margin positions.
 
 import uuid
 from decimal import Decimal
-from typing import List
+from typing import List, Optional
+
 from app.crud.base import DBConnector
 from app.models.margin_position import MarginPosition
 from app.models.margin_position import MarginPositionStatus
@@ -37,7 +38,7 @@ class MarginPositionCRUD(DBConnector):
         position = await self.write_to_db(position_entry)
         return position
 
-    async def close_margin_position(self, position_id : uuid.UUID) -> MarginPositionStatus:
+    async def close_margin_position(self, position_id: uuid.UUID) -> MarginPositionStatus:
         """
         Closes a margin position by updating the position status in the database.
         :param position_id: uuid
@@ -49,16 +50,34 @@ class MarginPositionCRUD(DBConnector):
             position.status = MarginPositionStatus.CLOSED
             await self.write_to_db(position)
             return position.status
-            
+
+    async def get_all_positions(
+            self,
+            limit: Optional[int] = None,
+            offset: Optional[int] = None,
+    ) -> List[MarginPositionResponse]:
+        """
+        Retrieves all margin positions from the database.
+
+        params:
+            - limit: optional limit count for get margin position.
+            - offset: optional offset object in database if limit used.
+
+        Returns:
+            List[MarginPositionResponse]: List of all margin positions
+        """
+        positions = await self.get_objects(model=MarginPosition, limit=limit, offset=offset)
+        return [MarginPositionResponse.from_orm(position) for position in positions]
+
     async def get_all_liquidated_positions(self) -> List[MarginPositionResponse]:
         """
         Retrieves all liquidated margin positions from the database.
-        
+
         Uses the get_objects method with a where_clause to filter for liquidated positions.
 
         Returns:
             List[MarginPositionResponse]: List of all liquidated margin positions
-            
+
         Raises:
             Exception: If there's an error retrieving the positions
         """
@@ -73,5 +92,6 @@ class MarginPositionCRUD(DBConnector):
         except Exception as e:
             # Log the error or handle it as needed
             raise Exception(f"Error retrieving liquidated positions: {str(e)}") from e
+
 
 margin_position_crud = MarginPositionCRUD()
