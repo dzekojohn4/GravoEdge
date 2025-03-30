@@ -1,4 +1,7 @@
-from typing import Any, Callable, List, Optional
+"""
+This module contains utilities for the FastAPI endpoints.
+"""
+from typing import Any, Callable, Optional
 
 from fastapi import APIRouter, HTTPException, status
 
@@ -7,6 +10,9 @@ router = APIRouter()
 
 # Define a generic mediator for “get all” endpoints
 class GetAllMediator:
+    """
+    Mediator for handling "get all" requests.
+    """
     def __init__(
         self, crud_func: Callable[..., Any], limit: Optional[int], offset: int
     ):
@@ -15,6 +21,9 @@ class GetAllMediator:
         self.offset = offset
 
     async def execute(self):
+        """
+        Execute the CRUD function with the provided limit and offset.
+        """
         try:
             return await self.crud_func(limit=self.limit, offset=self.offset)
         except Exception as e:

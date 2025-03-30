@@ -18,7 +18,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/get_all_orders",
+    "/all",
     status_code=status.HTTP_200_OK,
     summary="Get all orders",
     description="Gets all orders from database",

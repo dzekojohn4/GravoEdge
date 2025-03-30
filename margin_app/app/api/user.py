@@ -19,7 +19,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/",
+    "",
     response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
 )
@@ -55,7 +55,7 @@ async def create_user(user: UserCreate) -> UserResponse:
     return user
 
 
-@router.get("/users", response_model=UserGetAllResponse, status_code=status.HTTP_200_OK)
+@router.get("/all", response_model=UserGetAllResponse, status_code=status.HTTP_200_OK)
 async def get_all_users(
     limit: Optional[int] = Query(25, gt=0), offset: Optional[int] = Query(0, ge=0)
 ) -> UserGetAllResponse:

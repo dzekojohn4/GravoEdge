@@ -13,7 +13,7 @@ from app.api.common import GetAllMediator
 from app.crud.admin import admin_crud
 from app.models.admin import Admin
 from app.schemas.admin import AdminRequest, AdminResponse
-from app.services.auth import get_admin_user_from_state, get_password_hash
+from app.services.auth import get_password_hash
 
 router = APIRouter(prefix="")
 
@@ -60,7 +60,7 @@ async def add_admin(
 
 
 @router.get(
-    "/admins",
+    "/all",
     response_model=List[AdminResponse],
     status_code=status.HTTP_200_OK,
     summary="Get all admin",
