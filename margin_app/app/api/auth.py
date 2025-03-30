@@ -10,18 +10,21 @@ from loguru import logger
 from pydantic import EmailStr
 
 from app.core.config import settings
-from app.services.auth import google_auth
+from app.services.auth.base import (
+    google_auth,
+    create_access_token,
+    get_current_user
+)
 from app.crud.admin import admin_crud
 from app.schemas.admin import AdminResetPassword
 from app.services.auth import (
     get_password_hash,
     verify_password,
-    get_current_user,
-    create_access_token
 )
 from app.services.emails import email_service
 
 router = APIRouter()
+
 
 @router.get("/login", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
 async def login_google() -> RedirectResponse:
@@ -66,12 +69,10 @@ async def auth_google(code: str, request: Request):
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Failed to authenticate user.",
             )
-        
+
         token = create_access_token(
-            user_data.email, 
-            expires_delta=timedelta(
-                minutes=settings.access_token_expire_minutes
-            )
+            user_data.email,
+            expires_delta=timedelta(minutes=settings.access_token_expire_minutes),
         )
 
         return {"access_token": token, "token_type": "bearer"}
@@ -81,8 +82,8 @@ async def auth_google(code: str, request: Request):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Failed to authenticate user.",
         )
-        
-        
+
+
 @router.post(
     "/change_password",
     status_code=status.HTTP_200_OK,

@@ -2,23 +2,22 @@
 API endpoints for order management.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Query, status
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.crud.order import order_crud
 from app.models.user_order import UserOrder
-from app.schemas.order import UserOrderCreate, UserOrderGetAllResponse, UserOrderResponse
-
-
-from typing import Optional
+from app.schemas.order import (UserOrderCreate, UserOrderGetAllResponse,
+                               UserOrderResponse)
 
 router = APIRouter()
 
 
 @router.get(
-    "/get_all_orders",
+    "/all",
     status_code=status.HTTP_200_OK,
     summary="Get all orders",
     description="Gets all orders from database",
@@ -40,7 +39,7 @@ async def get_all_orders(
         HTTPException: If there's an error retrieving orders
     """
     try:
-        return await order_crud.get_all(limit, offset)       
+        return await order_crud.get_all(limit, offset)
     except SQLAlchemyError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -106,12 +105,11 @@ async def get_order(order_id: uuid.UUID) -> UserOrder:
         order = await order_crud.get_by_id(order_id)
         if not order:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Order not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Order not found"
             )
         return order
     except SQLAlchemyError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to get order: {str(e)}"
+            detail=f"Failed to get order: {str(e)}",
         )
