@@ -13,7 +13,6 @@ export interface DialogProps extends ReactModal.Props {
     height?: string | number
     onClose?: (e: MouseEvent<HTMLSpanElement>) => void
     width?: string | number
-    children?: React.ReactNode
 }
 
 const Dialog = (props: DialogProps) => {
