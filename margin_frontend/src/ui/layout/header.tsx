@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Button } from "../core/button";
 import WalletSection from "../core/wallet-section";
 import { logout } from "../../services/wallet";
 import { useWalletStore } from "../../stores/useWalletStore";
@@ -18,11 +17,13 @@ const navlink = [
 
 export function Header() {
   const { setWalletId, removeWalletId } = useWalletStore();
+
   const [showModal, setShowModal] = useState(false);
 
   const connectWalletMutation = useConnectWallet(setWalletId);
 
   const handleConnectWallet = () => {
+    console.log(showModal);
     connectWalletMutation.mutate();
   };
 
