@@ -1,7 +1,7 @@
 {
 	"files": [],
 	"references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
-	"include": ["src", "components/PostsDemo.tsx", "admin_template/demo/src"],
+  "include": ["src/**/*", "components/PostsDemo.tsx"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"allowUnreachableCode": false,
