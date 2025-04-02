@@ -6,12 +6,12 @@ from .base import BaseSchema
 from uuid import UUID
 from typing import Optional
 from decimal import Decimal
-
+from pydantic import ConfigDict
+from .base import GetAll
 from app.models.pool import PoolRiskStatus
 from datetime import datetime
 
 from typing import Optional
-
 
 
 class UserPoolBase(BaseSchema):
@@ -28,8 +28,6 @@ class UserPoolCreate(UserPoolBase):
     """
     User pool create model
     """
-
-    pass
 
 
 class UserPoolUpdate(BaseSchema):
@@ -56,6 +54,13 @@ class UserPoolUpdateResponse(UserPoolBase):
 
     id: UUID
     updated_at: datetime
+
+
+class UserPoolGetAllResponse(GetAll[UserPoolResponse]):
+    """
+    User pool get all response model
+    """
+
 
 class PoolBase(BaseSchema):
     """
@@ -86,12 +91,7 @@ class PoolResponse(PoolBase):
     id: UUID
 
 
-class PoolGetAllResponse(BaseSchema):
+class PoolGetAllResponse(GetAll[PoolResponse]):
     """
     User pool update model
     """
-
-    pools: list[PoolResponse]
-    total: int
-
-

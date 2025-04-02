@@ -6,8 +6,10 @@ from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 from uuid import UUID
+from pydantic import ConfigDict
 
 from pydantic import BaseModel
+from .base import GetAll
 
 
 class MarginPositionStatus(str, Enum):
@@ -71,3 +73,9 @@ class MarginPositionResponse(BaseModel):
         """
 
         orm_mode = True
+
+
+class MarginPositionGetAllResponse(GetAll[MarginPositionResponse]):
+    """
+    Pydantic model for getting all MarginPositions.
+    """
