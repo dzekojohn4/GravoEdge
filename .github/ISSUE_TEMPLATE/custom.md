@@ -17,7 +17,7 @@ assignees: ''
 
 ## What should I do if I have a problem
 1. Try to google it before asking. Googling is taking major part of dev work 
-2. If you couldn't find answer your question with Google, text your question to [dev](https://t.me/spotnet_dev/4) group with your question.
+2. If you couldn't find answer your question with Google, text your question to [dev](https://t.me/quantara_dev/4) group with your question.
 3. Do not send DM to maintainer, it would be better and faster to ask other contributors in chat 
 
 
