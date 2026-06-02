@@ -5,13 +5,13 @@ on:
     branches:
       - main
     paths:
-      - 'spotnet/web_app/**'
+      - 'gravoedge/web_app/**'
       - 'devops/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'spotnet/web_app/**'
+      - 'gravoedge/web_app/**'
       - 'devops/**'
 jobs:
   shared:
@@ -20,11 +20,12 @@ jobs:
       python-version: "3.x"
       env-vars: |
         DB_PORT=5432
-        DB_NAME=spotnet
+        DB_NAME=gravoedge
         DB_USER=postgres
         DB_PASSWORD=password
         DB_HOST=db
-        STARKNET_NODE_URL=http://51.195.57.196:6060/v0_7
+        STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org
+        STELLAR_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
         REDIS_HOST=redis
         REDIS_PORT=6379
         ENV_VERSION=DEV
@@ -37,9 +38,11 @@ jobs:
 
       - name: Create .env file
         run: |
-          cat << EOF > /home/runner/work/spotnet/spotnet/.env
+          cat << EOF > /home/runner/work/gravoedge/gravoedge/.env
           ENV_VERSION=DEV
-          STARKNET_NODE_URL=${{ env.STARKNET_NODE_URL }}
+          STELLAR_HORIZON_URL=${{ env.STELLAR_HORIZON_URL }}
+          STELLAR_SOROBAN_RPC_URL=${{ env.STELLAR_SOROBAN_RPC_URL }}
+          STELLAR_NETWORK_PASSPHRASE=Test SDF Network ; September 2015
           DB_USER=${{ env.DB_USER }}
           DB_PASSWORD=${{ env.DB_PASSWORD }}
           DB_NAME=${{ env.DB_NAME }}
@@ -51,7 +54,7 @@ jobs:
 
       - name: Build and Start Containers
         run: |
-          docker compose -f devops/docker-compose.spotnet.dev.yaml --env-file .env up -d --build
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml --env-file .env up -d --build
           echo "Waiting for containers to be ready..."
           sleep 30
 
@@ -70,31 +73,31 @@ jobs:
             # Check if the container is still running before logging
             if ! docker ps | grep -q backend; then
               echo "Backend container is not running!"
-              docker compose -f devops/docker-compose.spotnet.dev.yaml logs backend || true
+              docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend || true
               exit 1
             fi
 
             # Log the backend service status for debugging purposes.
-            docker compose -f devops/docker-compose.spotnet.dev.yaml logs backend || true
+            docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend || true
           done
 
       - name: Apply Migrations
         run: |
           docker exec backend_dev alembic -c web_app/alembic.ini upgrade head || {
             echo "Migration failed. Showing backend logs:"
-            docker compose -f devops/docker-compose.spotnet.dev.yaml logs backend || true
+            docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend || true
             exit 1
           }
 
       - name: Run Integration Tests with Coverage
         run: |
-          docker compose -f devops/docker-compose.spotnet.dev.yaml exec backend bash -c "cd /app && python -m pytest web_app/test_integration/ -v"
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec backend bash -c "cd /app && python -m pytest web_app/test_integration/ -v"
 
       - name: Clean Up
         if: always()
         run: |
-          docker compose -f devops/docker-compose.spotnet.dev.yaml logs > docker-logs.txt || true
-          docker compose -f devops/docker-compose.spotnet.dev.yaml down -v
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml logs > docker-logs.txt || true
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml down -v
 
       - name: Upload Docker Logs on Failure
         if: failure()

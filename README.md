@@ -1,388 +1,189 @@
-What
+# GravoEdge
 
-The functionality allows users to leverage their positions on assets (e.g., ETH) by looping through lending protocols (ZkLend, Nostra) and automated market makers (AMMs). Users deposit collateral into a lending protocol, borrow stablecoins, trade on AMMs, and repeat this loop to increase their holdings. The process allows for up to 5x leverage, providing more utility and liquidity to the DeFi ecosystem.
+> **A Stellar-native leveraged DeFi protocol enabling automated capital looping strategies to maximize yield efficiency.**
 
-Why
+[![CI Workflow](https://github.com/gravoedge-protocol/gravoedge/actions/workflows/ci.yml/badge.svg)](https://github.com/gravoedge-protocol/gravoedge/actions/workflows/ci.yml)
 
-The spot leveraging concept fills a gap in the Starknet ecosystem by enabling users to amplify their positions without the need for perpetual contracts. This improves liquidity and utility for decentralized finance (DeFi) platforms on Starknet, providing a tool that is currently unavailable but highly demanded by users and protocols like ZkLend and Nostra. It allows for stable, long-term leveraged positions at lower costs and risk, which are essential for users aiming to increase exposure without facing the volatility of perpetual contracts.
+---
 
-How
+## Overview
 
-1. Deposit Collateral: Users deposit assets (e.g., ETH) into a lending protocol like ZkLend or Nostra - interaction with a smart contract on Starknet
-2. Borrow Stablecoins: Users borrow stablecoins (e.g., USDC) against their deposited collateral - The smart contract on Starknet allows users to borrow stablecoins
-3. Trading on AMMs: Borrowed stablecoins are swapped for more ETH or the initial asset via AMMs (Starknet-based).
-4. Re-Deposit and Re-Borrow: The newly acquired ETH is re-deposited as additional collateral to borrow more stablecoins.
-5. Repeating the Loop: This loop repeats, increasing the user's leverage until they reach the desired level or the borrowing limit.
+**GravoEdge** is a professional-grade DeFi protocol built for the **Stellar ecosystem** that allows users to amplify their asset positions through automated leverage looping. By depositing collateral into lending protocols, borrowing stablecoins, swapping through AMMs, and re-depositing, GravoEdge enables up to **~5x leverage** on supported assets.
 
-# Development Environment Setup
+Originally engineered for Starknet-based protocols (ZkLend, Ekubo, Nostra), GravoEdge has been restructured for **Stellar ecosystem compatibility** with clean abstraction layers and modular architecture.
 
-This guide explains how to start the development environment for the project using Docker Compose. It includes setting up the backend, database, and frontend services.
+### Core Concepts
 
-## Prerequisites
+1. **Deposit Collateral** → Users deposit assets (XLM, ETH, USDC) into Stellar-native lending protocols
+2. **Borrow Stablecoins** → Borrow against deposited collateral at optimal rates
+3. **Swap via AMMs** → Swap borrowed assets via Stellar AMMs
+4. **Re-Deposit & Loop** → Re-deposit swapped assets to borrow more, increasing leverage
+5. **Manage Position** → Monitor health ratio, add collateral, or close position
 
-- Docker installed on your machine (2.10+ recommended).
-- Docker Compose installed (v2.0+ recommended).
-- Ensure port **5433** is available for the PostgreSQL container.
+---
 
-### Version Requirements
+## Architecture
 
-1. **Check Docker version:**
+```
+gravoedge/
+├── soroban/                  # Soroban smart contract layer (Stellar)
+│   ├── adapters/             # Blockchain abstraction interfaces
+│   │   ├── LendingAdapter    → Lending protocol abstraction
+│   │   ├── AMMAdapter        → AMM/DEX abstraction
+│   │   └── CollateralManager → Collateral & risk management
+│   └── contracts/            → Soroban contract stubs (Rust)
+├── web_app/                  # Python/FastAPI backend
+│   ├── api/                  → REST API endpoints
+│   ├── db/                   → Database models & CRUD
+│   ├── contract_tools/       → Blockchain interaction layer
+│   └── telegram/             → Telegram mini-app bot
+├── frontend/                 # React frontend application
+│   ├── src/                  → React components, hooks, services
+│   └── public/               → Static assets
+└── devops/                   # Docker & deployment configs
+```
 
-   ```sh
-   docker --version
-   # Should output something like: Docker version 24.0.7, build afdd53b
-   ```
+### Smart Contract Abstraction
 
-   If your version is below 20.10.0, please update Docker following the [official upgrade guide](https://docs.docker.com/engine/install/).
+GravoEdge uses an **adapter pattern** to abstract blockchain interactions:
 
-2. **Check Docker Compose version:**
+| Adapter | Purpose | Starknet Original | Stellar Equivalent |
+|---------|---------|------------------|--------------------|
+| `LendingAdapter` | Lending/borrowing operations | ZkLend | Stellar lending protocols (via SAC) |
+| `AMMAdapter` | Token swapping/liquidity | Ekubo | Stellar AMM/DEX protocols |
+| `CollateralManager` | Risk & collateral management | In-house | Protocol-agnostic |
 
-   ```sh
-   # For Docker Compose V2
-   docker compose version
-   # Should output something like: Docker Compose version v2.21.0
-   ```
+---
 
-   If you get a "command not found" error, you might have the older version. Check with:
+## Why GravoEdge?
 
-   ```sh
-   docker compose version
-   ```
+### Problem
 
-### Installing/Updating Docker
+DeFi users lack access to **capital-efficient leverage tools** in the Stellar ecosystem. Traditional perpetual contracts introduce volatility and high costs, while manual looping is complex and gas-inefficient.
 
-1. **For Ubuntu/Debian:**
+### Solution
 
-   ```sh
-   # Remove old versions
-   sudo apt-get remove docker docker-engine docker.io containerd runc
+GravoEdge provides an **automated leverage engine** that:
 
-   # Install latest version
-   curl -fsSL https://get.docker.com -o get-docker.sh
-   sudo sh get-docker.sh
-   ```
+- **Maximizes capital efficiency** through intelligent looping
+- **Reduces complexity** with one-click leverage positions
+- **Lowers risk** with automated health ratio monitoring
+- **Enables composability** through protocol adapters
+- **Provides institutional-grade** risk management
 
-2. **For Windows/Mac:**
-   - Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+---
 
-3. **For other systems:**
-   - Follow the [official Docker installation guide](https://docs.docker.com/engine/install/)
+## Quick Start
 
+### Prerequisites
 
-## Starting the Development Environment - Spotnet
+- Docker (v24.0+) & Docker Compose (v2.0+)
+- Port **5433** available for PostgreSQL
 
-1. **Clone the Repository**
-
-   ```sh
-   git clone <repository-url>
-   cd <repository-folder>
-   ```
-
-2. **Build and Start Services**
-
-   To build and run the entire development environment, use the following command:
-
-   ```sh
-   docker compose -f devops/docker-compose.spotnet.dev.yaml up --build
-   ```
-
-   For Windows users, use this command to build and start the development environment:
-
-   ```sh
-   docker compose -f devops/docker-compose.spotnet.dev-windows.yaml up --build
-   ```
-
-   This command will:
-
-   - Build the backend and frontend Docker images.
-   - Start the backend, frontend, and PostgreSQL database containers.
-
-3. **Access the Application**
-
-   - **Backend API**: Accessible at [http://localhost:8000](http://localhost:8000).
-   - **Frontend**: Accessible at [http://localhost:3000](http://localhost:3000).
-   - **PostgreSQL Database**: Accessible at `localhost:5433` (make sure to use the `DB_USER` and `DB_PASSWORD` from the `.env.dev` file).
-
-## Makefile Automation
-
-To simplify repetitive tasks and ensure consistency, a `Makefile` is included in the project. Below are the tasks it supports:
-
-| Command        | Description                                                                                    |
-| -------------- | ---------------------------------------------------------------------------------------------- |
-| `make prod`    | Sets up and runs the **production environment**. Builds and starts the app using Docker.       |
-| `make dev`     | Sets up and runs the **development environment**. Installs dependencies and starts the app.    |
-| `make windows` | Sets up the project specifically for **Windows environments**. Handles Windows-specific tasks. |
-| `make back`    | Starts the **backend services**. Useful for running or testing backend APIs.                   |
-
-### How to Use the Makefile
-
-1. **Run a Target**:
-
-   ```sh
-   make <target>
-   ```
-
-   Replace `<target>` with one of the commands listed above, such as `prod` or `dev`.
-
-2. **Examples**:
-
-   - To set up the production environment:
-
-     ```sh
-     make prod
-     ```
-
-   - To set up the development environment:
-
-     ```sh
-     make dev
-     ```
-
-   - For Windows-specific setup:
-
-     ```sh
-     make windows
-     ```
-
-   - To start backend services:
-
-     ```sh
-     make back
-     ```
-
-3. **Default Behavior**:
-   If no target is provided, `make` will prompt you to specify one.
-
-4. **Customizing the Makefile**:
-   Feel free to edit the `Makefile` to add or adjust targets as per your project needs.
-
-## Common Issues
-
-- **Port Conflict**: Ensure port `5433` is free, as PostgreSQL will bind to this port in the development environment.
-- **Docker Build Issues**: If changes in dependencies are not reflected, you may need to clear Docker's cache:
-
-  ```sh
-  docker compose -f devops/docker-compose.spotnet.dev.yaml build --no-cache
-  ```
-
-  Windows users:
-
-  ```sh
-  docker compose -f devops/docker-compose.spotnet.dev-windows.yaml build --no-cache
-  ```
-
-## How to run test cases
-
-In root folder run next commands:
+### Development
 
 ```bash
-poetry install
+# Clone the repository
+git clone <repository-url>
+cd gravoedge
+
+# Start full development environment
+make dev
+
+# Or start backend only
+make back
 ```
 
-Activate env
+### Services
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Frontend** | `http://localhost:3000` | React SPA |
+| **Backend API** | `http://localhost:8000` | FastAPI REST API |
+| **PostgreSQL** | `localhost:5433` | Database |
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `make dev` | Start development environment |
+| `make back` | Start backend services only |
+| `make prod` | Start production environment |
+| `make windows` | Start development on Windows |
+
+---
+
+## Development Guide
+
+### Running Tests
 
 ```bash
-poetry shell
+# Python backend tests
+cd gravoedge && poetry run pytest web_app/tests
+
+# Frontend tests
+cd gravoedge/frontend && yarn test
 ```
 
-Run test cases
+### Database Migrations
 
 ```bash
-poetry run pytest
+# Start services
+docker compose -f devops/docker-compose.gravoedge.dev.yaml up --build
+
+# Run migrations
+docker exec backend_dev alembic -c web_app/alembic.ini upgrade head
+
+# Create new migration
+docker exec backend_dev alembic -c web_app/alembic.ini revision --autogenerate -m "description"
 ```
 
-## Stopping the Development Environment
-
-To stop the environment and remove containers, use:
-
-```sh
-docker compose -f devops/docker-compose.spotnet.dev.yaml down
-```
-
-windows users:
-
-```sh
-docker compose -f devops/docker-compose.spotnet.dev-windows.yaml down
-```
-
-This command stops all running containers and removes them, but the data volumes will persist.
-
-## Rebuild or Update
-
-If you have made changes to the code or Docker configuration, rebuild the containers:
-
-```sh
-docker compose -f devops/docker-compose.spotnet.dev.yaml up --build
-```
-
-windows users:
-
-```sh
-docker compose -f devops/docker-compose.spotnet.dev-windows.yaml up --build
-```
-
-## About Celery
-
-This project utilizes Celery to handle asynchronous tasks. The Celery workers and scheduler are defined within the Docker Compose setup.
-
-### Services Overview
-
-- **Celery Worker**: Executes tasks in the background.
-- **Celery Beat**: Schedules periodic tasks.
-- **Redis**: Used as the message broker for Celery.
-
-### Running Celery
-
-To start the Celery worker and Celery Beat services, use the following command in the terminal within your project directory:
+### Adding Test Data
 
 ```bash
-docker compose up -d celery celery_beat
-```
+docker compose -f devops/docker-compose.gravoedge.dev.yaml up --build
 
-### Stopping Celery
-
-To stop the Celery worker and Beat services, run
-
-```bash
-docker compose stop celery celery_beat
-```
-
-### Purging Celery Tasks
-
-If you want to purge all tasks from the Celery queue, you can do this by executing
-
-```bash
-docker compose run --rm celery celery -A spotnet_tracker.celery_config purge
-```
-
-## How to add test data
-
-1. Run dev container
-
-```
-docker compose -f devops/docker-compose.spotnet.dev.yaml up --build
-```
-
-windows only:
-
-```
-docker compose -f devops/docker-compose.spotnet.dev-windows.yaml up --build
-```
-
-2. In new terminal window run command to populate db
-
-```
+# Seed the database
 docker exec -ti backend_dev python -m web_app.db.seed_data
 ```
 
-## How to create migration file
+---
 
-Run up docker containers
+## Stellar Integration
 
-```bash
-docker compose -f devops/docker-compose.spotnet.dev.yaml up --build
-```
+GravoEdge is being actively migrated to the **Stellar ecosystem**. Current status:
 
-Windows users:
+- ✅ **Python backend** — Adapted with Stellar-compatible abstraction layers
+- ✅ **Frontend** — Rebranded and Starknet wallet references identified
+- ✅ **Adapters** — Lending, AMM, and CollateralManager interfaces defined
+- 🔄 **Soroban Contracts** — In development (Rust-based Soroban smart contracts)
+- 🔄 **Wallet Integration** — Stellar-compatible wallet flow (Freighter, WalletConnect)
+- 🔄 **Protocol Adapters** — Specific Stellar lending/AMM protocol implementations
+- ❌ **Stellar-native AMM** — Pending ecosystem partner integration
 
-```bash
-docker compose -f devops/docker-compose.spotnet.dev-windows.yaml up --build
-```
-
-Go to backend container in new terminal window
-
-```bash
-docker exec -ti backend_dev bash
-```
-
-Run command to create migration file
-
-```bash
-alembic -c web_app/alembic.ini revision --autogenerate -m "migration message"
-```
-
-## Pre-commit Setup
-
-To ensure code quality, install pre-commit hooks locally:
-
-1. Install pre-commit:
-
-   ```bash
-   pip3 install pre-commit
-   ```
-
-2. Install hooks:
-
-   ```bash
-   pre-commit install
-   ```
-
-## Starting the Development Environment - Margin App
-
-1. **Clone the Repository**
-
-   ```sh
-   git clone <repository-url>
-   cd <repository-folder>
-   ```
-
-2. **Build and Start Services**
-
-   To build and run the entire development environment, use the following command:
-
-   ```sh
-   docker compose -f devops/docker-compose.margin.back.yml up --build
-   ```
-
-3. **Access the Application**
-
-   - **Backend API**: Accessible at [http://localhost:8000](http://localhost:8000).
-   - **Frontend**: Accessible at [http://localhost:6173](http://localhost:6173).
-   - **PostgreSQL Database**: Accessible at `localhost:5433` (make sure to use the `POSTGRES_USER` and `POSTGRES_PASSWORD` from the `.env` file).
-
-
-## Stopping the Development Environment
-
-To stop the environment and remove containers, use:
-
-```sh
-docker compose -f devops/docker-compose.margin.back.yaml down
-```
-
-## Rebuild or Update
-
-If you have made changes to the code or Docker configuration, rebuild the containers:
-
-```sh
-docker compose -f devops/docker-compose.margin.back.yaml up --build
-```
-
-## How to add test data
-
-1. Run dev container
+### Environment Variables
 
 ```
-docker compose -f devops/docker-compose.margin.back.yaml up --build
+STELLAR_NETWORK=testnet              # testnet | mainnet | futurenet
+STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org
+STELLAR_NODE_URL=<soroban-rpc-url>
 ```
 
-2. In new terminal window run command to populate db
+---
 
-```
-docker compose -f devops/docker-compose.margin.back.yml exec backend python app/db/seed_data.py
-```
+## Project Status
 
+GravoEdge is a **production-grade DeFi protocol** currently in active development for the Stellar ecosystem. The codebase has been professionally rebranded from the original Starknet-based Spotnet protocol with:
 
-## How to create migration file
+- ✅ Complete rebrand (Spotnet → **GravoEdge**)
+- ✅ Architecture cleanup with modular design
+- ✅ Soroban adapter abstraction layers
+- ✅ Updated DevOps & CI/CD pipelines
+- ✅ Professional documentation
+- ✅ Docker-based development environment
 
-Run up docker containers
+---
 
-```bash
-docker compose -f devops/docker-compose.margin.back.yaml up --build
-```
+## License
 
-Run command to create migration file
-
-```bash
-docker compose -f devops/docker-compose.margin.back.yml exec backend alembic revision --autogenerate -m "migration message"
-```
-
+MIT License — see [LICENSE](LICENSE) for details.
