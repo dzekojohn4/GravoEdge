@@ -1,11 +1,14 @@
-# Devnet setup and contract deployment
+# GravoEdge — Legacy Contract Deployment (Archived)
 
-### Required asdf plugins: 
+> ⚠️ This document describes deployment of the original **Starknet Cairo contracts**.
+> GravoEdge is migrating to **Soroban contracts** on Stellar. This document is preserved for historical reference.
+
+### Required asdf plugins (legacy): 
 * scarb
 * starknet-devnet
 * starknet-foundry
 
-### Start devnet
+### Start devnet (legacy)
 `starknet-devnet --fork-network "http://178.32.172.148:6060/v0_7"`
 
 ### Create and deploy sncast account
@@ -17,8 +20,8 @@ curl http://127.0.0.1:5050/mint -X POST -d '{"address": "<address after create>"
 
 `sncast account deploy --url http://127.0.0.1:5050 --name acc --fee-token strk`
 
-### Declare and deploy spotnet Core
-In spotnet directory(it should compile it and then declare):
+### Declare and deploy gravoedge Core
+In gravoedge directory(it should compile it and then declare):
 `sncast --account acc declare --url http://127.0.0.1:5050 --fee-token strk --contract-name Core`
 After, deploy with generated class hash:
 

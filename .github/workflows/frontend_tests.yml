@@ -3,18 +3,18 @@ name: Run Frontend Tests
 on:
   push:
     paths:
-      - 'spotnet/frontend/**'
+      - 'gravoedge/frontend/**'
       - 'devops/**'
   pull_request:
     paths:
-      - 'spotnet/frontend/**'
+      - 'gravoedge/frontend/**'
       - 'devops/**'
 
 jobs:
   test:
     runs-on: ubuntu-latest
     env:
-        working-directory: ./spotnet/frontend
+        working-directory: ./gravoedge/frontend
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3

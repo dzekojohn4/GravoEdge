@@ -1,1 +1,0 @@
-SNFORGE_BACKTRACE=1 snforge test
