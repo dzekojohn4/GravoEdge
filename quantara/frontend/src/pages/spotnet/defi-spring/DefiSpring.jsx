@@ -32,7 +32,7 @@ export const DefiSpringPage = () => {
         {
           type: 'text',
           value:
-            'Welcome to the DeFi Spring Program!\nWhere you can earn rewards through the zkLend protocol. As part of this initiative, participants will have the opportunity to receive STRK token rewards for engaging with the platform. Here’s everything you need to know to get started and make the most of your participation.',
+            'Welcome to the DeFi Spring Program!\nWhere you can earn rewards through the protocol. As part of this initiative, participants will have the opportunity to receive STRK token rewards for engaging with the platform. Here’s everything you need to know to get started and make the most of your participation.',
         },
       ],
     },
@@ -59,9 +59,9 @@ export const DefiSpringPage = () => {
           type: 'list',
           items: [
             'Reward Phases: Rewards are earned in phases, each lasting from Thursday to Wednesday. After each phase ends, it will take about 1 day for the rewards to be claimable.',
-            'Reward Claims: Rewards can be claimed via zkLend Rewards.',
+            'Reward Claims: Rewards can be claimed via the protocol rewards system.',
             'Accrued Rewards: The total rewards earned will be visible at the end of the program. You can claim your rewards all at once at that time.',
-            'Final Claim Deadline: Be sure to claim your rewards before the DeFi Spring program ends. Any unclaimed rewards will be returned to the Starknet Foundation.',
+            'Final Claim Deadline: Be sure to claim your rewards before the DeFi Spring program ends. Any unclaimed rewards will be returned to the program treasury.',
           ],
         },
       ],
@@ -74,7 +74,7 @@ export const DefiSpringPage = () => {
         {
           type: 'list',
           items: [
-            'Dynamic APRs: The APRs (Annual Percentage Rates) are updated daily based on market conditions, pool sizes, and allocations from the Starknet Foundation. These rates may change throughout the program.',
+            'Dynamic APRs: The APRs (Annual Percentage Rates) are updated daily based on market conditions and pool sizes. These rates may change throughout the program.',
             'Incentive Strategy: Different actions, such as depositing or borrowing, may receive varying rewards depending on market dynamics',
             'Recursive Borrow Adjustment: Rewards are based on your net deposit after accounting for borrowed funds. For example, if you deposit 100 ETH and borrow 50 ETH, your net deposit is considered 50 ETH. Recursive borrowers will see a higher APR than what they ultimately claim.',
             'Stablecoin Considerations: From Phase 3 onward, stablecoins (USDC, USDT, DAI) will be treated as the same asset for reward calculations. Your eligible net deposit for these will be calculated as the value of stablecoins deposited minus the value of stablecoins borrowed.',

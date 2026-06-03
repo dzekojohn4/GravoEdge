@@ -7,11 +7,11 @@ import { cn } from '@/utils/cn';
 import GasFee from '@/components/vault/gas-fee/GasFee';
 
 function Stake() {
-  const [selectedNetwork, setSelectedNetwork] = useState('Starknet');
+  const [selectedNetwork, setSelectedNetwork] = useState('Stellar');
   const [amount, setAmount] = useState('0');
   const [showDrop, setShowDrop] = useState(false);
 
-  const networks = [{ name: 'Starknet', image: STRK }];
+  const networks = [{ name: 'Stellar', image: STRK }];
   const handleChange = (network) => {
     setSelectedNetwork(network.name);
   };
@@ -27,7 +27,7 @@ function Stake() {
     <VaultLayout>
       <div className="flex h-full min-h-screen w-screen flex-col items-center justify-center p-[7%] lg:ml-32 2xl:h-screen">
         <div className="flex h-full w-full max-w-[650px] flex-col items-center justify-center">
-          <h1 className="mt-5 mb-10 text-center text-2xl text-white">zkLend Staking</h1>
+          <h1 className="mt-5 mb-10 text-center text-2xl text-white">Staking</h1>
           <div className="flex h-[103px] w-full items-stretch justify-between space-x-5">
             <MetricCard title="STRK Balance" value="0.046731" icon={STRK} />
             <MetricCard title="APY Balance" value="0.046731" icon={USDCc} />

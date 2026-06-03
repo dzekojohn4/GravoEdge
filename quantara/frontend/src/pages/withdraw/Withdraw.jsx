@@ -10,7 +10,7 @@ export default function Withdraw() {
     <VaultLayout>
       <div className="flex h-full w-screen flex-col items-center justify-center lg:ml-32 2xl:h-screen">
         <div>
-          <h1 className="mt-5 mb-10 text-center text-2xl text-white">zKLend Withdraw</h1>
+          <h1 className="mt-5 mb-10 text-center text-2xl text-white">Withdraw</h1>
           <div className="flex items-center space-x-5">
             <MetricCard title="Total Amount staked" value="324,909,894" />
             <MetricCard title="Daily Boost Multiplier" value="0.5%" />

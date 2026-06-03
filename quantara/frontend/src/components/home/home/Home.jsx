@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import SmallStar from '@/assets/particles/small_star.svg?react';
 import StarMaker from '@/components/layout/star-maker/StarMaker';
 import Decoration from '@/assets/particles/deco.svg?react';
-import Starknet from '@/assets/particles/starknet.svg?react';
 import { useWalletStore } from '@/stores/useWalletStore';
 import { notify } from '@/components/layout/notifier/Notifier';
 import LaunchButton from '../../gradientbutton';
@@ -79,7 +78,6 @@ function Home() {
           ))}
           <StarMaker starData={starData} />
 
-          <Starknet className="absolute top-0 right-[20px] z-[-1]" />
         </div>
         <div className="mx-auto flex flex-col items-center justify-center px-[1em] md:mt-[5em] lg:mt-0">
           <h2 className="font-text mx-auto text-center text-[50px] leading-[50px] font-medium text-[var(--primary)] lg:text-[70px] lg:leading-[75px]">
