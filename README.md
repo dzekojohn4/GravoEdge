@@ -147,20 +147,6 @@ docker compose -f devops/docker-compose.gravoedge.dev.yaml up --build
 docker exec -ti backend_dev python -m web_app.db.seed_data
 ```
 
----
-
-## Stellar Integration
-
-GravoEdge is being actively migrated to the **Stellar ecosystem**. Current status:
-
-- ✅ **Python backend** — Adapted with Stellar-compatible abstraction layers
-- ✅ **Frontend** — Rebranded and Starknet wallet references identified
-- ✅ **Adapters** — Lending, AMM, and CollateralManager interfaces defined
-- 🔄 **Soroban Contracts** — In development (Rust-based Soroban smart contracts)
-- 🔄 **Wallet Integration** — Stellar-compatible wallet flow (Freighter, WalletConnect)
-- 🔄 **Protocol Adapters** — Specific Stellar lending/AMM protocol implementations
-- ❌ **Stellar-native AMM** — Pending ecosystem partner integration
-
 ### Environment Variables
 
 ```
@@ -168,19 +154,6 @@ STELLAR_NETWORK=testnet              # testnet | mainnet | futurenet
 STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org
 STELLAR_NODE_URL=<soroban-rpc-url>
 ```
-
----
-
-## Project Status
-
-GravoEdge is a **production-grade DeFi protocol** currently in active development for the Stellar ecosystem. The codebase has been professionally rebranded from the original Starknet-based Spotnet protocol with:
-
-- ✅ Complete rebrand (Spotnet → **GravoEdge**)
-- ✅ Architecture cleanup with modular design
-- ✅ Soroban adapter abstraction layers
-- ✅ Updated DevOps & CI/CD pipelines
-- ✅ Professional documentation
-- ✅ Docker-based development environment
 
 ---
 
