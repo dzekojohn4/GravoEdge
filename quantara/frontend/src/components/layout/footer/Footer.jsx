@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import TwitterIcon from '@/assets/icons/new-twitter.svg?react';
 import TelegramIcon from '@/assets/icons/telegram.svg?react';
 import GithubIcon from '@/assets/icons/github.svg?react';
 import DashboardIcon from '@/assets/icons/dashboard-icon.svg?react';
@@ -17,11 +16,6 @@ function Footer() {
       name: 'Telegram',
       icon: TelegramIcon,
       href: 'https://t.me/djeck_vorobey1',
-    },
-    {
-      name: 'Twitter',
-      icon: TwitterIcon,
-      href: 'https://x.com/GravoEdge_123',
     },
   ];
 
