@@ -32,13 +32,23 @@ jobs:
 
   integration-tests:
     runs-on: ubuntu-latest
+    env:
+      STELLAR_HORIZON_URL: https://horizon-testnet.stellar.org
+      STELLAR_SOROBAN_RPC_URL: https://soroban-testnet.stellar.org
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: quantara
+      DB_HOST: db
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Create .env file
         run: |
-          cat << EOF > /home/runner/work/quantara/quantara/.env
+          cat << EOF > ${{ github.workspace }}/.env
           ENV_VERSION=DEV
           STELLAR_HORIZON_URL=${{ env.STELLAR_HORIZON_URL }}
           STELLAR_SOROBAN_RPC_URL=${{ env.STELLAR_SOROBAN_RPC_URL }}
