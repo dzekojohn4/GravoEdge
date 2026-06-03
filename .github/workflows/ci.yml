@@ -6,12 +6,14 @@ on:
       - main
     paths:
       - 'quantara/web_app/**'
+      - 'quantara/frontend/**'
       - 'devops/**'
   pull_request:
     branches:
       - main
     paths:
       - 'quantara/web_app/**'
+      - 'quantara/frontend/**'
       - 'devops/**'
 
 jobs:
