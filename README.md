@@ -10,7 +10,7 @@
 
 **GravoEdge** is a professional-grade DeFi protocol built for the **Stellar ecosystem** that allows users to amplify their asset positions through automated leverage looping. By depositing collateral into lending protocols, borrowing stablecoins, swapping through AMMs, and re-depositing, GravoEdge enables up to **~5x leverage** on supported assets.
 
-Originally engineered for Starknet-based protocols (ZkLend, Ekubo, Nostra), GravoEdge has been restructured for **Stellar ecosystem compatibility** with clean abstraction layers and modular architecture.
+Built for the **Stellar ecosystem**, GravoEdge uses clean abstraction layers and modular architecture to maximize capital efficiency.
 
 ### Core Concepts
 
@@ -47,11 +47,11 @@ gravoedge/
 
 GravoEdge uses an **adapter pattern** to abstract blockchain interactions:
 
-| Adapter | Purpose | Starknet Original | Stellar Equivalent |
-|---------|---------|------------------|--------------------|
-| `LendingAdapter` | Lending/borrowing operations | ZkLend | Stellar lending protocols (via SAC) |
-| `AMMAdapter` | Token swapping/liquidity | Ekubo | Stellar AMM/DEX protocols |
-| `CollateralManager` | Risk & collateral management | In-house | Protocol-agnostic |
+| Adapter | Purpose | Description |
+|---------|---------|-------------|
+| `LendingAdapter` | Lending/borrowing operations | Protocol-agnostic lending abstraction |
+| `AMMAdapter` | Token swapping/liquidity | Protocol-agnostic DEX abstraction |
+| `CollateralManager` | Risk & collateral management | Protocol-agnostic risk engine |
 
 ---
 

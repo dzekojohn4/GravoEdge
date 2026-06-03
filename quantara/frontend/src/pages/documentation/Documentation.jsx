@@ -14,10 +14,8 @@ const Documentation = () => {
       id: 'Overview',
       name: 'Overview',
       link: '#overview',
-      subItems: [{ id: 'cosmos-1', name: 'Cosmos Overview', link: '#cosmos-1' }],
     },
     { id: 'how-it-performs', name: 'How it performs', link: '#how-it-performs' },
-    { id: 'powered-by-starknet', name: 'Powered by Starknet', link: '#powered-by-starknet' },
     { id: 'getting-started', name: 'Getting Started: Setting up your wallet', link: '#getting-started' },
   ];
 
@@ -59,7 +57,7 @@ const Documentation = () => {
           items: [
             'Decentralized Finance (DeFi): Access a suite of DeFi services, including lending, borrowing, and yield farming.',
             'Security-First Design: Built on smart contracts to ensure safety, transparency, and user control over assets without intermediaries.',
-            'Cross-Chain Compatibility: GravoEdge supports multiple blockchains, including Starknet, for a seamless and efficient user experience, providing more liquidity and flexibility across the DeFi ecosystem.',
+            'Cross-Chain Compatibility: GravoEdge supports multiple blockchain ecosystems for a seamless and efficient user experience, providing more liquidity and flexibility across the DeFi ecosystem.',
           ],
         },
       ],
@@ -70,13 +68,13 @@ const Documentation = () => {
       content: [
         {
           type: 'text',
-          value: 'Spot Leverage Strategy with ZkLend',
+          value: 'Leverage Strategy',
         },
         {
           type: 'list',
           items: [
-            'You put some ETH collateral into deposit as ZkLend.',
-            'Then, we swap your ETH into USDC and use it as collateral for a loan in the ZkLend position.',
+            'You deposit collateral into the platform lending protocol.',
+            'The protocol borrows against your collateral, swaps through AMMs, and re-deposits to increase your position.',
             'This process can be repeated 2 to 5 times, depending on the leverage multiplier you choose, to increase your collateral and borrowing capacity.',
           ],
         },
@@ -99,56 +97,41 @@ const Documentation = () => {
         {
           type: 'list',
           items: [
-            'If you wish to close your position, simply click on `Reedem` in the Dashboard page. This will allow you to withdraw your collateral and repay the loan.',
+            'If you wish to close your position, simply click on `Redeem` in the Dashboard page. This will allow you to withdraw your collateral and repay the loan.',
             'Currently, GravoEdge only allows you to open a single position.',
-            'If your health ratio level will be zero, you will be liquidated by ZkLend.',
+            'If your health ratio level reaches zero, your position may be liquidated by the protocol.',
             'You also have the option to enable notifications on Telegram, so you will be alerted if your health ratio reaches a dangerous level.',
           ],
         },
       ],
     },
     {
-      id: 'zk-lend',
-      title: 'Zklend Overview',
-      content: [
-        {
-          type: 'text',
-          value: 'Introducing zkLend',
-        },
-        {
-          type: 'text',
-          value:
-            "Money markets have been a crucial component of financial systems since the Middle Ages, providing short-term funding and liquidity to banks, governments, and corporations. Today, money markets facilitate an estimated $3.2 trillion in daily transactions in the global financial system, making them critical for short-term funding needs. In the context of DeFi, money markets play an essential role in activities such as lending, borrowing, and liquidity provision. At zkLend, our goal is to create a simple, secure, and efficient platform for your liquidity needs. We've built a permissionless lending market where anyone can deposit and borrow digital assets directly from their wallets, at any time. When you deposit assets, you earn interest from borrowers using your funds. You can also use your deposited assets as collateral to borrow other digital assets.",
-        },
-
-        {
-          type: 'text',
-          value:
-            "Our Alpha version is now available on the mainnet. Rest assured, we've fully audited the platform with reputable firms like ABDK and Nethermind, and the contracts have been formally specified since April 2023.",
-        },
-
-        {
-          type: 'text',
-          value:
-            'With a focus on safety, ease of use, and cutting-edge blockchain technology, we’re confident that zkLend is on its way to becoming a leading platform in the DeFi space. Join us and experience the future of decentralized finance!',
-        },
-      ],
-    },
-
-    {
-      id: 'powered-by-starknet',
-      title: 'Powered by Starknet',
+      id: 'powered-by-stellar',
+      title: 'Powered by Stellar',
       content: [
         {
           type: 'text',
           value:
-            "At zkLend, we believe zk-rollups are the key to unlocking Ethereum's full potential. By using Starknet's Layer 2 (L2) solution, we’re able to bring the speed and efficiency of zk-rollups together with the security and decentralization that Ethereum is known for. Starknet is one of the first zk-rollup platforms designed for general use. It offers fast transactions, low fees, and cutting-edge blockchain features that far exceed the capabilities of traditional networks. Key innovations like account abstraction, trustless bridging, parallel processing, and advanced proof techniques make Starknet stand out.",
+            'GravoEdge is built on the **Stellar network**, a decentralized, open-source blockchain designed for fast, low-cost, and energy-efficient transactions. Stellar\'s consensus protocol enables near-instant settlement with minimal fees, making it ideal for DeFi applications.',
         },
-
         {
           type: 'text',
           value:
-            "With the strong track record of StarkWare and the team behind successful projects like ZCash and StarkEx, Starknet is the perfect platform to power zkLend and ensure we stay ahead of the curve. We're excited to be part of this groundbreaking technology!.",
+            'By leveraging Stellar\'s **Soroban smart contracts**, GravoEdge delivers automated leverage strategies with:',
+        },
+        {
+          type: 'list',
+          items: [
+            'Fast transaction finality',
+            'Low and predictable fees',
+            'Built-in compliance features',
+            'Protocol-agnostic adapter architecture',
+          ],
+        },
+        {
+          type: 'text',
+          value:
+            'The Stellar ecosystem provides the scalability and security needed for professional-grade DeFi, enabling GravoEdge to offer capital-efficient leverage tools without compromising on safety or user experience.',
         },
       ],
     },
@@ -193,7 +176,7 @@ const Documentation = () => {
         {
           type: 'list',
           items: [
-            "After funding your wallet, go to the GravoEdge platform and look for the “Connect Wallet” button, typically found in the top-right corner of the homepage. Select your wallet type (e.g., MetaMask, WalletConnect) and follow the prompts to authorize the connection. Your wallet will ask for permission to connect with GravoEdge; confirm this request to allow your wallet to interact with the platform. If you’re using a wallet like MetaMask that doesn’t support Starknet by default, you may need to manually add the Starknet network by selecting “Custom RPC” in your wallet settings and entering the necessary network details. Once connected, you'll have full access to GravoEdge’s features.",
+            "After funding your wallet, go to the GravoEdge platform and look for the “Connect Wallet” button, typically found in the top-right corner of the homepage. Select your wallet type (e.g., MetaMask, WalletConnect) and follow the prompts to authorize the connection. Your wallet will ask for permission to connect with GravoEdge; confirm this request to allow your wallet to interact with the platform. Once connected, you'll have full access to GravoEdge’s features.",
           ],
         },
       ],

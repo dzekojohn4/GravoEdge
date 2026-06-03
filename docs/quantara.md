@@ -1,16 +1,16 @@
-# GravoEdge — Legacy Smart Contract Documentation
+# GravoEdge — Legacy Smart Contract Documentation (Archived)
 
-> ⚠️ **ARCHIVED DOCUMENTATION**
-> This document describes the original **Starknet-based Cairo smart contracts** (the legacy codebase).
-> The GravoEdge protocol is migrating to **Soroban smart contracts** on the Stellar network.
-> See [`gravoedge/soroban/`](../gravoedge/soroban/) for the new architecture.
+> ⚠️ **FULLY DEPRECATED — HISTORICAL REFERENCE ONLY**
+> This document describes the original **Starknet-based Cairo smart contracts** from the legacy codebase.
+> GravoEdge has been fully migrated to **Soroban smart contracts** on the **Stellar network**.
+> See [`gravoedge/soroban/`](../gravoedge/soroban/) for the current architecture.
 
 ## Overview (Legacy)
-The original GravoEdge dApp (formerly Spotnet) was designed for increasing initial collateral deposits by utilizing lending 
+The original dApp was designed for increasing initial collateral deposits by utilizing lending 
 protocols and AMMs for borrowing tokens, swapping them and redepositing up to x4 of starting capital.
 
 ## Legacy Smart Contract (Cairo)
-The original smart contract consisted of a constructor and public methods.
+The legacy smart contract consisted of a constructor and public methods. Starknet-specific types and patterns are shown below for historical reference.
 
 ### Constructor
 Constructor of our contract receives three parameters(ekubo_core and zk_market are serialized to Dispatcher types for starknet::interfaces):
