@@ -15,7 +15,7 @@ NODE_URL = "https://starknet-mainnet.public.blastapi.io/rpc/v0_7"
 ZKLEND_CONTRACT_ADDRESS = (
     "0x04c0a5193d58f74fbace4b74dcf65481e734ed1714121bdc571da345540efa05"
 )
-SPOTNET_DEPLOYED_CONTRACT = (
+GRAVOEDGE_DEPLOYED_CONTRACT = (
     "0x05685d6b0b493c7c939d65c175305b893870cacad780842c79a611ad9122815f"
 )
 
@@ -106,4 +106,4 @@ async def check_liquidation_proof(liquidatee_address: str) -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(check_liquidation_proof(SPOTNET_DEPLOYED_CONTRACT))
+    asyncio.run(check_liquidation_proof(GRAVOEDGE_DEPLOYED_CONTRACT))

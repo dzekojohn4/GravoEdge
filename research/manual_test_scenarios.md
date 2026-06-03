@@ -120,7 +120,7 @@
 
 1.  **GitHub Link:**
 
-    - Redirects to the general [github.com](https://github.com) instead of the Spotnet repository.
+    - Redirects to the general [github.com](https://github.com) instead of the GravoEdge repository.
 
 2.  **Overview Link:**
 

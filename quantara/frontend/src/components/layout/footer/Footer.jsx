@@ -21,7 +21,7 @@ function Footer() {
     {
       name: 'Twitter',
       icon: TwitterIcon,
-      href: 'https://x.com/SpotNet_123',
+      href: 'https://x.com/GravoEdge_123',
     },
   ];
 

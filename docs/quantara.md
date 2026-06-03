@@ -1,12 +1,12 @@
 # GravoEdge — Legacy Smart Contract Documentation
 
 > ⚠️ **ARCHIVED DOCUMENTATION**
-> This document describes the original **Starknet-based Cairo smart contracts** (formerly Spotnet).
+> This document describes the original **Starknet-based Cairo smart contracts** (the legacy codebase).
 > The GravoEdge protocol is migrating to **Soroban smart contracts** on the Stellar network.
 > See [`gravoedge/soroban/`](../gravoedge/soroban/) for the new architecture.
 
 ## Overview (Legacy)
-The original Spotnet dApp was designed for increasing initial collateral deposits by utilizing lending 
+The original GravoEdge dApp (formerly Spotnet) was designed for increasing initial collateral deposits by utilizing lending 
 protocols and AMMs for borrowing tokens, swapping them and redepositing up to x4 of starting capital.
 
 ## Legacy Smart Contract (Cairo)

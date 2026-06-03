@@ -33,7 +33,7 @@ const Documentation = () => {
         {
           type: 'text',
           value:
-            'GravoEdge is a decentralized platform designed to help users easily amplify their investments in digital assets like ETH. \n This documentation provides a comprehensive guide on using SpotNet and making the most of its features.',
+            'GravoEdge is a decentralized platform designed to help users easily amplify their investments in digital assets like ETH. \n This documentation provides a comprehensive guide on using GravoEdge and making the most of its features.',
         },
       ],
     },
