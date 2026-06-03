@@ -34,34 +34,34 @@ This document describes the research and implementation process for retrieving a
 Below are the results obtained while testing various endpoints:
 
 ```bash
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
 {}
 airdrops=[]
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$ cat web_app/contract_tools/airdrop.py | grep END
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$ cat web_app/contract_tools/airdrop.py | grep END
     REWARD_API_ENDPOINT = "https://strk-dist-backend.nimbora.io/get_calldata?address="
         self.api = APIRequest(base_url=self.REWARD_API_ENDPOINT)
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
 {}
 airdrops=[]
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$ cat web_app/contract_tools/airdrop.py | grep END
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$ cat web_app/contract_tools/airdrop.py | grep END
     REWARD_API_ENDPOINT = "https://app.zklend.com/api/reward/all/"
         self.api = APIRequest(base_url=self.REWARD_API_ENDPOINT)
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
 []
 airdrops=[]
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$ cat web_app/contract_tools/airdrop.py | grep END
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$ cat web_app/contract_tools/airdrop.py | grep END
     REWARD_API_ENDPOINT = "https://mainnet-api.ekubo.org/airdrops/"
         self.api = APIRequest(base_url=self.REWARD_API_ENDPOINT)
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
 {}
 airdrops=[]
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$ cat web_app/contract_tools/airdrop.py | grep END
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$ cat web_app/contract_tools/airdrop.py | grep END
     REWARD_API_ENDPOINT = "https://api.vesu.xyz/users/"
         self.api = APIRequest(base_url=self.REWARD_API_ENDPOINT)
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$ PYTHONPATH=. python3 web_app/contract_tools/airdrop.py
 {'data': {'walletAddress': '0x0698b63df00be56ba39447c9b9ca576ffd0edba0526d98b3e8e4a902ffcf12f0', 'amount': '0', 'decimals': 18, 'distributorData': {'distributedAmount': '0', 'claimedAmount': '0'}}}
 None
-(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/spotnet$
+(env) jagadeesh@DESKTOP-DO11A83:~/ODhack/gravoedge$
 ```
 
 #### Alternative API Endpoints:
@@ -81,7 +81,7 @@ Below are the references used during research:
   [api.starknet.quest - rewards.rs (line 294)](https://github.com/lfglabs-dev/api.starknet.quest/blob/2089420165057622a8bab41b698bb1da037903a9/src/endpoints/defi/rewards.rs#L294)  
 
 - The airdrop script to fetch proofs for the specified contract address using ZkLend endpoints is implemented in:  
-  [spotnet - airdrop.py](https://github.com/djeck1432/spotnet/blob/main/web_app/contract_tools/airdrop.py)  
+  [GravoEdge - airdrop.py](https://github.com/djeck1432/gravoedge/blob/main/web_app/contract_tools/airdrop.py)  
 
 3. Alternative API Endpoints:
    - `https://strk-dist-backend.nimbora.io/get_calldata?address={}`
