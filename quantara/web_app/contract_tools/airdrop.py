@@ -13,7 +13,7 @@ class AirdropFetcher:
     A class to fetch and validate airdrop data for a specified contract.
     """
 
-    # Default endpoint – replace with the actual GravoEdge / protocol airdrop API
+    # Default endpoint – replace with the actual protocol airdrop API
     REWARD_API_ENDPOINT = "https://app.zklend.com/api/reward/all/"
 
     def __init__(self):

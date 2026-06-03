@@ -1,4 +1,4 @@
-"""Test module for AirdropFetcher class (formerly ZkLendAirdrop)"""
+"""Test module for AirdropFetcher class."""
 
 from unittest.mock import AsyncMock, Mock
 

@@ -40,7 +40,7 @@ class DashboardMixin:
                 current_price = token_data.get("currentPrice")
                 try:
                     if address and current_price is not None:
-                        # Map Starknet addresses to Stellar tokens via symbol
+                        # Map token addresses to symbols
                         symbol = token_data.get("symbol", "")
                         if symbol.upper() in ("ETH", "USDC", "XLM", "STRK"):
                             prices[symbol.upper()] = Decimal(str(current_price))

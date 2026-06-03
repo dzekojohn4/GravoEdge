@@ -41,7 +41,7 @@ const dashboardItems = [
   },
 ];
 
-export default function DashboardLayout({ children, title = 'zkLend Position' }) {
+export default function DashboardLayout({ children, title = 'Position' }) {
   const isMobile = useCheckMobile();
   console.log(formIcon)
   return (

@@ -31,7 +31,7 @@ const Leaderboard = () => {
       <div className="mx-auto w-[764px]">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-center text-2xl font-bold">zkLend Leaderboard</h1>
+          <h1 className="text-center text-2xl font-bold">Leaderboard</h1>
         </div>
 
         {/* Stats Cards */}

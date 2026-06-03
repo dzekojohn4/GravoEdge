@@ -1,33 +1,33 @@
 import React from 'react';
-import ZkLend from '@/assets/icons/zklend_eth_collateral.svg?react';
+import DepositIcon from '@/assets/icons/borrow_usdc.svg?react';
 import BorrowUSDC from '@/assets/icons/borrow_usdc.svg?react';
-import EkuboSwap from '@/assets/icons/ekubo_swap.svg?react';
+import SwapIcon from '@/assets/icons/borrow_usdc.svg?react';
 import Repeat from '@/assets/icons/repeats.svg?react';
 import StarMaker from '@/components/layout/star-maker/StarMaker';
 
 const CardData = [
   {
     number: '1',
-    title: 'ZkLend ETH collateral',
-    description: 'ETH/STRK from your wallet is deposited as collateral on ZkLend.',
-    icon: ZkLend,
+    title: 'Deposit Collateral',
+    description: 'Your assets are deposited as collateral into the lending protocol.',
+    icon: DepositIcon,
   },
   {
     number: '2',
-    title: 'Borrow USDC',
-    description: 'You borrow USDC against that collateral.',
+    title: 'Borrow & Swap',
+    description: 'The protocol borrows against your collateral and swaps via the AMM.',
     icon: BorrowUSDC,
   },
   {
     number: '3',
-    title: 'Ekubo Swap',
-    description: 'The USDC is swapped back to ETH on Ekubo.',
-    icon: EkuboSwap,
+    title: 'Re-Deposit',
+    description: 'Swapped assets are re-deposited to increase your position.',
+    icon: SwapIcon,
   },
   {
     number: '4',
-    title: 'Repeats',
-    description: 'The process repeats, compounding up to five times.',
+    title: 'Compounds',
+    description: 'The process repeats, compounding up to five times for maximum leverage.',
     icon: Repeat,
   },
 ];

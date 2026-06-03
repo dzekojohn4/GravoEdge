@@ -31,7 +31,7 @@ const TermsAndConditionsPage = () => {
         {
           type: 'text',
           value:
-            'Using zkLend involves certain risks. Please review and understand these risks before interacting with the platform.',
+            'Using the GravoEdge protocol involves certain risks. Please review and understand these risks before interacting with the platform.',
         },
         {
           type: 'orderedList',
@@ -39,8 +39,8 @@ const TermsAndConditionsPage = () => {
             'Smart Contract Risks. Transactions on [Product Name] are governed by smart contracts. Once confirmed, smart contract transactions cannot be reversed. While our contracts are thoroughly audited, there may still be unforeseen issues. Users should review contract code and understand that they are solely responsible for any losses due to contract bugs or exploits.',
             'Market Volatility. Digital assets are subject to high price volatility. Values can fluctuate significantly in a short period, potentially leading to substantial losses. Users should be cautious and only invest funds they can afford to lose.',
             'Liquidity Risks. Some DeFi pools may have low liquidity, affecting users’ ability to withdraw funds immediately. This may result in delays or loss in value due to slippage during transactions.',
-            'Third-Party Integrations. zkLend may integrate with third-party protocols, dApps, or platforms. These third-party services come with their own risks, and [Product Name] is not responsible for issues arising from third-party integrations, including security vulnerabilities or loss of funds.',
-            'Privacy and Security. Users are responsible for securing their private keys and wallet credentials. Loss or compromise of these credentials may result in a total loss of funds, as zkLend cannot recover lost private keys. It is advised to use a secure, trusted wallet and enable additional security measures when available.',
+            'Third-Party Integrations. The protocol may integrate with third-party protocols, dApps, or platforms. These third-party services come with their own risks, and GravoEdge is not responsible for issues arising from third-party integrations, including security vulnerabilities or loss of funds.',
+            'Privacy and Security. Users are responsible for securing their private keys and wallet credentials. Loss or compromise of these credentials may result in a total loss of funds, as the protocol cannot recover lost private keys. It is advised to use a secure, trusted wallet and enable additional security measures when available.',
           ],
         },
       ],

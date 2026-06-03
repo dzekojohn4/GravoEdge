@@ -2,10 +2,9 @@
 dashboard_tests.py
 This module contains unit tests for the dashboard functionality within the web_app.
 It verifies the successful retrieval of dashboard data, handling of missing positions 
-and contract addresses, and ensures proper integration with external services like 
-ZkLend. The tests also cover edge cases and error scenarios, including invalid wallet 
-IDs and service failures, to confirm that the dashboard endpoint behaves reliably 
-under various conditions.
+and contract addresses, and ensures proper integration with external services. The tests 
+also cover edge cases and error scenarios, including invalid wallet IDs and service 
+failures, to confirm that the dashboard endpoint behaves reliably under various conditions.
 """
 
 import uuid
@@ -248,13 +247,13 @@ def mock_dashboard_mixin():
     """
     Fixture that provides a mocked instance of the DashboardMixin used
     in the dashboard module. This mock allows for controlled testing of
-    external service interactions (e.g., wallet balances and ZkLend positions)
+    external service interactions (e.g., wallet balances and positions)
     without relying on real API calls, enabling the simulation of various
     responses and error conditions.
     """
     with patch("web_app.contract_tools.mixins.dashboard.DashboardMixin") as mock:
         mock.get_wallet_balances = AsyncMock()
-        mock.get_zklend_position = AsyncMock()
+        mock.get_positions = AsyncMock()
         yield mock
 
 
