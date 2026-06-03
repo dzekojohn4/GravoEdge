@@ -253,7 +253,7 @@ def mock_dashboard_mixin():
     """
     with patch("web_app.contract_tools.mixins.dashboard.DashboardMixin") as mock:
         mock.get_wallet_balances = AsyncMock()
-        mock.get_positions = AsyncMock()
+        mock.get_zklend_position = AsyncMock()
         yield mock
 
 
