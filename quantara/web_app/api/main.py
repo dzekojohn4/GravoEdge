@@ -7,7 +7,6 @@ It also includes routers for the dashboard, position, and user endpoints.
 """
 
 import os
-from uuid import uuid4
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
@@ -46,8 +45,27 @@ app = FastAPI(
     },
 )
 
-# Add session middleware with a secret key
-app.add_middleware(SessionMiddleware, secret_key=f"Secret:{str(uuid4())}")
+_SESSION_SECRET_MIN_LENGTH = 32
+_is_production = os.getenv("ENV_VERSION") == "PROD"
+
+_session_secret = os.getenv("SESSION_SECRET_KEY")
+
+if _session_secret:
+    if len(_session_secret) < _SESSION_SECRET_MIN_LENGTH:
+        raise ValueError(
+            f"SESSION_SECRET_KEY must be at least {_SESSION_SECRET_MIN_LENGTH} characters long."
+        )
+elif _is_production:
+    raise ValueError(
+        "SESSION_SECRET_KEY environment variable must be set in production. "
+        "Generate one with: python -c \"import os; print(os.urandom(32).hex())\""
+    )
+else:
+    # Development only: auto-generate a key (sessions won't persist across restarts)
+    _session_secret = os.urandom(32).hex()
+
+# Add session middleware with a persistent secret key
+app.add_middleware(SessionMiddleware, secret_key=_session_secret)
 # CORS middleware for React frontend
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_headers=["*"], allow_methods=["*"]
