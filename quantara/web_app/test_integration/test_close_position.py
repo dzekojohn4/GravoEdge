@@ -35,27 +35,18 @@ class TestPositionClose:
     """
 
     form_data_1: Dict[str, Any] = {
-        "wallet_id": "0x011F0c180b9EbB2B3F9601c41d65AcA110E48aec0292c778f41Ae286C78Cc374",
-        "token_symbol": "STRK",
+        "wallet_id": "GB7QYNF7SOWQ3GLR2ZGMH2Z5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y3",
+        "token_symbol": "XLM",
         "amount": "2",
         "multiplier": 1,
     }
 
     form_data_2: Dict[str, Any] = {
-        "wallet_id": "0xTestWalletETH",
-        "token_symbol": "ETH",
-        "amount": "5",
-        "multiplier": 1,
-    }
-
-    form_data_3: Dict[str, Any] = {
-        "wallet_id": "0xTestWalletUSDC",
+        "wallet_id": "GC7QYNF7SOWQ3GLR2ZGMH2Z5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y4",
         "token_symbol": "USDC",
         "amount": "1",
         "multiplier": 1,
     }
-
-    @pytest.mark.parametrize("form_data", [form_data_1, form_data_2, form_data_3])
     def test_close_position(self, form_data: Dict[str, Any]) -> None:
         """
         Args:
