@@ -73,6 +73,12 @@ app.add_middleware(
 )
 
 
+@app.get("/health", tags=["Health"], summary="Health check endpoint")
+async def health_check():
+    """Returns 200 OK when the service is running."""
+    return {"status": "healthy"}
+
+
 # No startup-time blockchain contract init needed – the frontend
 # invokes Soroban contracts directly via Freighter + stellar-sdk.
 
