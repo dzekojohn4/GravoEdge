@@ -1,5 +1,9 @@
 name: Integration Tests
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -15,25 +19,12 @@ on:
       - 'gravoedge/web_app/**'
       - 'gravoedge/frontend/**'
       - 'devops/**'
-jobs:
-  shared:
-    uses: ./.github/workflows/shared_workflow.yml
-    with:
-      python-version: "3.x"
-      env-vars: |
-        DB_PORT=5432
-        DB_NAME=gravoedge
-        DB_USER=postgres
-        DB_PASSWORD=password
-        DB_HOST=db
-        STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org
-        STELLAR_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
-        REDIS_HOST=redis
-        REDIS_PORT=6379
-        ENV_VERSION=DEV
 
+jobs:
   integration-tests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     env:
       STELLAR_HORIZON_URL: https://horizon-testnet.stellar.org
       STELLAR_SOROBAN_RPC_URL: https://soroban-testnet.stellar.org
@@ -42,15 +33,13 @@ jobs:
       DB_NAME: gravoedge
       DB_HOST: db
       DB_PORT: 5432
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Create .env file
         run: |
-          cat << EOF > ${{ github.workspace }}/.env
+          cat << EOF > .env
           ENV_VERSION=DEV
           STELLAR_HORIZON_URL=${{ env.STELLAR_HORIZON_URL }}
           STELLAR_SOROBAN_RPC_URL=${{ env.STELLAR_SOROBAN_RPC_URL }}
@@ -60,50 +49,46 @@ jobs:
           DB_NAME=${{ env.DB_NAME }}
           DB_HOST=${{ env.DB_HOST }}
           DB_PORT=${{ env.DB_PORT }}
-          REDIS_HOST=${{ env.REDIS_HOST }}
-          REDIS_PORT=${{ env.REDIS_PORT }}
           EOF
 
       - name: Build and Start Containers
         run: |
           docker compose -f devops/docker-compose.gravoedge.dev.yaml --env-file .env up -d --build
-          echo "Waiting for containers to be ready..."
-          sleep 30
-
-      - name: Install Test Dependencies in Container
-        run: |
-          docker exec backend_dev pip install pytest pytest-cov
-          docker exec backend_dev pip freeze  # Debug: show installed packages
 
       - name: Wait for Backend Service
         timeout-minutes: 5
         run: |
-          while ! curl -s http://localhost:8000/health > /dev/null; do
-            echo "Waiting for backend service..."
-            sleep 30
-
-            # Check if the container is still running before logging
-            if ! docker ps | grep -q backend; then
-              echo "Backend container is not running!"
+          echo "Waiting for backend to become healthy..."
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8000/docs > /dev/null 2>&1; then
+              echo "Backend is healthy after $((i * 2))s"
+              break
+            fi
+            if ! docker ps --format '{{.Names}}' | grep -q backend_dev; then
+              echo "ERROR: backend container stopped!"
               docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend || true
               exit 1
             fi
-
-            # Log the backend service status for debugging purposes.
-            docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend || true
+            sleep 2
           done
+          # Verify backend is responding
+          if ! curl -sf http://localhost:8000/docs > /dev/null 2>&1; then
+            echo "ERROR: Backend did not become healthy within 120s!"
+            docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend || true
+            exit 1
+          fi
 
       - name: Apply Migrations
         run: |
-          docker exec backend_dev alembic -c web_app/alembic.ini upgrade head || {
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run alembic -c web_app/alembic.ini upgrade head || {
             echo "Migration failed. Showing backend logs:"
             docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend || true
             exit 1
           }
 
-      - name: Run Integration Tests with Coverage
+      - name: Run Integration Tests
         run: |
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec backend bash -c "cd /app && python -m pytest web_app/test_integration/ -v"
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run pytest web_app/test_integration/ -v --tb=short
 
       - name: Clean Up
         if: always()
