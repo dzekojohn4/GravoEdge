@@ -2,10 +2,11 @@
 This module defines the serializers for the position data.
 """
 
-from pydantic import BaseModel, field_validator
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 from uuid import UUID
+
+from pydantic import BaseModel, field_validator
 
 
 class PositionFormData(BaseModel):
