@@ -3,6 +3,12 @@ import { axiosInstance } from '../utils/axios';
 import { notify } from '../components/layout/notifier/Notifier';
 import { sendWithdrawAllTransaction } from '../services/transaction';
 
+/**
+ * Hook for the Withdraw All operation: closes the position and withdraws
+ * all remaining collateral from the Soroban contract.
+ *
+ * @returns {{ withdrawAll: Function, isLoading: boolean }}
+ */
 const useWithdrawAll = () => {
   const mutation = useMutation({
     mutationFn: async (walletId) => {
