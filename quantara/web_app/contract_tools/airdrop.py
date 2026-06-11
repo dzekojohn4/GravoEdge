@@ -3,7 +3,6 @@ This module defines the contract tools for the airdrop data.
 """
 
 import logging
-from typing import List
 
 import aiohttp
 
