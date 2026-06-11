@@ -7,11 +7,11 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Set PATH for Poetry
 ENV PATH="/root/.local/bin:$PATH"
 
-# Add system-level dependencies (including gcc and npm)
+# Add system-level dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        libpq-dev gcc g++ make libffi-dev build-essential \
-       curl nodejs npm \
+       curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
@@ -31,12 +31,11 @@ RUN poetry config virtualenvs.create false \
 # Copy the rest of the application code
 ADD . /app
 
-# Stellar SDK is installed via pip / poetry (stellar-sdk in pyproject.toml).
-# Soroban contract interactions are handled client-side via Freighter.
-# No npm blockchain packages needed on the backend.
-
 # Set the entrypoint script as executable
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8000/docs || exit 1
 
 EXPOSE 8000
