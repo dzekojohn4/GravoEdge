@@ -32,7 +32,7 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=yes ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'DEPLOY'
+          ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=yes -o ConnectTimeout=30 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'DEPLOY'
             set -e
             cd ${{ secrets.PROJECT_PATH }} || { echo "Project path not found"; exit 1; }
             echo "Pulling latest changes..."
