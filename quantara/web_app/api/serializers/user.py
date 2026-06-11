@@ -79,14 +79,6 @@ class PositionHistoryItem(BaseModel):
 class UserHistoryResponse(BaseModel):
     """
     Represents the response containing the history of positions for a user.
-
-    ### Attributes:
-    - **positions** (List[PositionHistoryItem]): A list of positions that include details such as:
-        - `status`: The status of the position.
-        - `created_at`: When the position was created.
-        - `start_price`: The initial price of the asset.
-        - `amount`: The quantity of the asset involved.
-        - `multiplier`: The leverage multiplier applied to the position.
     """
 
     positions: list[PositionHistoryItem]
@@ -100,7 +92,7 @@ class SubscribeToNotificationRequest(BaseModel):
     telegram_id: str | None = Field(
         None, example="123456789", description="Telegram ID of the user"
     )
-    wallet_id: str = Field(..., example="0xabc123", description="Wallet ID of the user")
+    wallet_id: str = Field(..., example="GABCD...", description="Wallet ID of the user")
 
 
 class BugReportRequest(BaseModel):
@@ -109,7 +101,7 @@ class BugReportRequest(BaseModel):
     """
 
     wallet_id: str = Field(
-        ..., pattern=r"^0x[a-fA-F0-9]+$", description="User's wallet ID"
+        ..., min_length=1, description="User's Stellar wallet public key"
     )
     telegram_id: str | None = Field(
         None, pattern=r"^\d+$", description="User's Telegram ID"
