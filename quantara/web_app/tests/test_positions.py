@@ -17,7 +17,7 @@ from fastapi.testclient import TestClient
 from httpx import AsyncClient
 
 from web_app.api.main import app
-from web_app.db.models import Status, TransactionStatus
+from web_app.db.models import TransactionStatus
 from web_app.tests.conftest import dict_to_object
 
 app.dependency_overrides.clear()
