@@ -148,8 +148,10 @@ async def close_position(position_id: UUID, transaction_hash: str) -> str:
     :param transaction_hash: Transaction hash from the Soroban close_position call
     :return: Position status string
     """
-    if position_id is None or position_id == "undefined":
+    if position_id is None or str(position_id) == "undefined":
         raise HTTPException(status_code=404, detail="Position not Found")
+    if not transaction_hash:
+        raise HTTPException(status_code=400, detail="Transaction hash is required")
 
     position_status = position_db_connector.close_position(str(position_id))
     position_db_connector.save_transaction(
@@ -175,6 +177,8 @@ async def open_position(position_id: str, transaction_hash: str) -> str:
     """
     if not position_id:
         raise HTTPException(status_code=404, detail="Position not found")
+    if not transaction_hash:
+        raise HTTPException(status_code=400, detail="Transaction hash is required")
 
     current_prices = await DashboardMixin.get_current_prices()
     position_status = position_db_connector.open_position(position_id, current_prices)
@@ -279,6 +283,8 @@ async def add_extra_deposit(position_id: UUID, data: AddPositionDepositData):
     position = position_db_connector.get_position_by_id(position_id)
     if not position:
         raise HTTPException(status_code=404, detail="Position not found")
+    if position.status != Status.OPENED.value:
+        raise HTTPException(status_code=400, detail="Can only add deposits to open positions")
 
     position_db_connector.add_extra_deposit_to_position(
         position, data.token_symbol, data.amount
