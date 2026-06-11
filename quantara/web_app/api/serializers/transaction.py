@@ -4,7 +4,7 @@ in the Stellar-based GravoEdge protocol.
 """
 
 from decimal import Decimal
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class DepositData(BaseModel):

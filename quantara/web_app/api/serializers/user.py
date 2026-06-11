@@ -101,7 +101,7 @@ class BugReportRequest(BaseModel):
     """
 
     wallet_id: str = Field(
-        ..., min_length=1, description="User's Stellar wallet public key"
+        ..., min_length=56, pattern=r"^G[A-Za-z0-9]{55}$", description="User's Stellar wallet public key"
     )
     telegram_id: str | None = Field(
         None, pattern=r"^\d+$", description="User's Telegram ID"
