@@ -6,6 +6,7 @@ on Soroban contracts.
 """
 
 from decimal import Decimal
+
 from web_app.contract_tools.constants import TokenParams
 from web_app.contract_tools.blockchain_call import CLIENT
 
