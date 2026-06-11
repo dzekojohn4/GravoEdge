@@ -21,6 +21,11 @@ import { STELLAR_SOROBAN_RPC_URL } from '../utils/constants';
 /**
  * Get a connected SorobanRPC server instance.
  */
+/**
+ * Get a connected SorobanRPC server instance.
+ *
+ * @returns {SorobanRpc.Server} Soroban RPC server connected to the configured network
+ */
 export function getSorobanServer() {
   return new SorobanRpc.Server(STELLAR_SOROBAN_RPC_URL);
 }
