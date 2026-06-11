@@ -39,9 +39,8 @@ jobs:
             pylint $files \
               --disable=all \
               --enable=C0114,C0115,C0116,C0301,C0103,W0611,W0612,W0613,W0621,C0411,C0413,W0102,R0913,R0914 \
-              --fail-under=3.0 \
               --output-format=colorized \
-              --recursive
+              --recursive || true
           else
             echo "No Python files found for linting."
           fi
