@@ -6,6 +6,8 @@ Provides query methods for Soroban position contract state introspection.
 
 import logging
 
+import aiohttp
+
 from web_app.contract_tools.blockchain_call import CLIENT
 
 logger = logging.getLogger(__name__)
