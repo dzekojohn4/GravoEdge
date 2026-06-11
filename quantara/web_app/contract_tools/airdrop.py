@@ -5,6 +5,8 @@ This module defines the contract tools for the airdrop data.
 import logging
 from typing import List
 
+import aiohttp
+
 from web_app.api.serializers.airdrop import AirdropItem, AirdropResponseModel
 from web_app.contract_tools.api_request import APIRequest
 
@@ -72,3 +74,6 @@ class AirdropFetcher:
             except (KeyError, TypeError, ValueError) as e:
                 logger.warning("Skipping invalid airdrop item: %s", e)
         return AirdropResponseModel(airdrops=validated_items)
+
+
+__all__ = ["AirdropFetcher"]
