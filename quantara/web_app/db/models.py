@@ -99,7 +99,7 @@ class Position(Base):
     start_price = Column(DECIMAL, nullable=False)
     is_protection = Column(Boolean, default=False)
     liquidation_bonus = Column(Float, default=0.0)
-    is_liquidated = Column(Boolean, default=False)
+    is_liquidated = Column(Boolean, default=False, index=True)
     datetime_liquidation = Column(DateTime, nullable=True)
 
 
