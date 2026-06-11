@@ -23,6 +23,9 @@ const ActionModal = ({
     <div
       className="fixed top-0 left-0 z-[55555] flex h-full w-full items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={cancelAction}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
     >
       <div
         className="shadow-primary-color flex items-center justify-center overflow-hidden text-white"
