@@ -3,7 +3,7 @@ This module contains the user database configuration.
 """
 
 import logging
-from typing import List, Tuple, TypeVar
+from typing import TypeVar
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -20,7 +20,7 @@ class UserDBConnector(DBConnector):
     Provides database connection and operations management for the User model.
     """
 
-    def get_users_for_notifications(self) -> List[Tuple[str, str]]:
+    def get_users_for_notifications(self) -> list[tuple[str, str]]:
         """
         Retrieves the contract_address of users with an OPENED position status and
         the telegram_id of Telegram users with notifications enabled.
@@ -98,7 +98,7 @@ class UserDBConnector(DBConnector):
                 logger.error(f"Failed to retrieve unique users count: {str(e)}")
                 return 0
 
-    def fetch_user_history(self, user_id: int) -> List[dict]:
+    def fetch_user_history(self, user_id: int) -> list[dict]:
         """
         Fetches all positions for a user with the specified fields:
         - status
