@@ -89,8 +89,8 @@ class StellarClient:
         except aiohttp.ClientError as exc:
             logger.error("Network error fetching account %s: %s", holder_address, exc)
             return "0"
-        except Exception as exc:
-            logger.error("Failed to fetch account %s: %s", holder_address, exc)
+        except (ValueError, KeyError, TypeError) as exc:
+            logger.error("Data error fetching account %s: %s", holder_address, exc)
             return "0"
 
         code = asset_code.lower()
