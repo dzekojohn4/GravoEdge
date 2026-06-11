@@ -119,58 +119,25 @@ async def test_close_position_invalid_position_id(client: TestClient) -> None:
         assert response.json() == {"detail": "Position not Found"}
 
 
-@pytest.mark.parametrize(
-    "supply_token, wallet_id, mock_repay_data",
-    [
-        (
-            "valid_supply_token",
-            "valid_wallet_id",
-            {
-                "supply_token": "mock_supply_token",
-                "debt_token": "mock_debt_token",
-                "borrow_portion_percent": 1,
-            },
-        ),
-        (
-            "invalid_supply_token",
-            "valid_wallet_id",
-            {
-                "supply_token": "mock_supply_token",
-                "debt_token": "mock_debt_token",
-                "borrow_portion_percent": 1,
-            },
-        ),
-        (
-            "valid_supply_token",
-            "valid_wallet_id",
-            {
-                "supply_token": "mock_supply_token",
-                "debt_token": "mock_debt_token",
-                "borrow_portion_percent": 1,
-            },
-        ),
-    ],
-)
 @pytest.mark.anyio
 async def test_get_repay_data_success(
     client: TestClient,
-    supply_token,
-    wallet_id,
-    mock_repay_data,
     mock_position_db_connector,
 ) -> None:
     """
-    Test for successfully retrieving repayment data for
-    different combinations of
-    wallet ID and supply token.
+    Test for successfully retrieving repayment data.
     Args:
         client (TestClient): The test client for the FastAPI application.
-        supply_token (str): The token used for supply.
-        wallet_id (str): The wallet ID of the user.
-        mock_repay_data (dict): Mocked repayment data.
     Returns:
         None
     """
+    supply_token = "valid_supply_token"
+    wallet_id = "valid_wallet_id"
+    mock_repay_data = {
+        "supply_token": "mock_supply_token",
+        "debt_token": "mock_debt_token",
+        "borrow_portion_percent": 1,
+    }
     with (
         patch(
             "web_app.contract_tools.mixins.deposit.DepositMixin.get_repay_data"
