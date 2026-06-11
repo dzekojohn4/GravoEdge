@@ -20,22 +20,25 @@ from fastapi.responses import StreamingResponse
 
 
 def check_telegram_authorization(
-    token: str, auth_data: dict, expired: int = None
+    token: str, auth_data: dict, expiration_seconds: int = None
 ) -> bool:
     """
     Verify the Telegram authorization data.
 
-    Args:
-        token (str): The bot's token used for verification.
-        auth_data (dict): The authorization data received from Telegram,
-                          including the hash and auth_date.
+    Validates the HMAC-SHA-256 hash of the received data against the
+    bot token and optionally checks the auth_date timestamp for expiry.
 
-    Raises:
-        Exception: If the data is not from Telegram or if it is outdated.
+    Args:
+        token: The bot's token used for verification.
+        auth_data: The authorization data received from Telegram,
+                   including hash and auth_date.
+        expiration_seconds: Max allowed age in seconds; None to skip expiry check.
 
     Returns:
-        dict: The verified authorization data.
+        True if the authorization data is valid, False otherwise.
     """
+    if not token or not auth_data:
+        return False
     check_hash = auth_data.get("hash")
     if not check_hash:
         return False
@@ -53,7 +56,7 @@ def check_telegram_authorization(
     if hash_value != check_hash:
         return False
 
-    if expired and (int(time.time()) - auth_data["auth_date"]) > expired:
+    if expiration_seconds and (int(time.time()) - auth_data.get("auth_date", 0)) > expiration_seconds:
         return False
 
     return True

@@ -3,13 +3,16 @@ This module provides functionalities to send telegram notifications
 """
 
 import asyncio
+import logging
 from decimal import Decimal
 
 from aiogram.exceptions import TelegramRetryAfter
 from web_app.db.crud import TelegramUserDBConnector
-from web_app.telegram import bot, logger
+from web_app.telegram import bot
 
 from .texts import HEALTH_RATIO_WARNING_MESSAGE
+
+logger = logging.getLogger(__name__)
 
 telegram_db = TelegramUserDBConnector()
 
