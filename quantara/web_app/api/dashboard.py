@@ -69,7 +69,7 @@ async def get_dashboard(wallet_id: str) -> DashboardResponse:
         health_ratio, tvl = await HealthRatioMixin.get_health_ratio_and_tvl(
             contract_address
         )
-    except (IndexError, DivisionByZero):
+    except (IndexError, DivisionByZero, ZeroDivisionError):
         return default_dashboard_response
 
     position_multiplier = first_opened_position["multiplier"]

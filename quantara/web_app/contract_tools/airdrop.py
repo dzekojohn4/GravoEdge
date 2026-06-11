@@ -2,10 +2,13 @@
 This module defines the contract tools for the airdrop data.
 """
 
+import logging
 from typing import List
+
 from web_app.api.serializers.airdrop import AirdropItem, AirdropResponseModel
 from web_app.contract_tools.api_request import APIRequest
-from web_app.contract_tools.constants import TokenParams
+
+logger = logging.getLogger(__name__)
 
 
 class AirdropFetcher:
@@ -52,11 +55,16 @@ class AirdropFetcher:
         """
         validated_items = []
         for item in data:
-            validated_item = AirdropItem(
-                amount=item["amount"],
-                proof=item["proof"],
-                is_claimed=item["is_claimed"],
-                recipient=item["recipient"],
-            )
-            validated_items.append(validated_item)
+            if not isinstance(item, dict):
+                continue
+            try:
+                validated_item = AirdropItem(
+                    amount=item.get("amount", 0),
+                    proof=item.get("proof", []),
+                    is_claimed=item.get("is_claimed", False),
+                    recipient=item.get("recipient", ""),
+                )
+                validated_items.append(validated_item)
+            except (KeyError, TypeError, ValueError) as e:
+                logger.warning("Skipping invalid airdrop item: %s", e)
         return AirdropResponseModel(airdrops=validated_items)
