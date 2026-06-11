@@ -1,5 +1,8 @@
 """
 This module contains the deposit mixin class for the Stellar-based GravoEdge protocol.
+
+Provides transaction data preparation for deposit and repay operations
+on Soroban contracts.
 """
 
 from decimal import Decimal
@@ -32,7 +35,7 @@ class DepositMixin:
         """
         deposit_token_address = TokenParams.get_token_address(deposit_token)
         decimal = TokenParams.get_token_decimals(deposit_token_address)
-        amount = int(Decimal(amount) * 10**decimal)
+        amount = int(Decimal(amount) * 10 ** decimal)
 
         loop_liquidity_data = await CLIENT.get_loop_liquidity_data(
             deposit_token_address,
