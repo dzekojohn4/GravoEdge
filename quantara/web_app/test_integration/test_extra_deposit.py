@@ -4,9 +4,9 @@ Integration tests for extra deposits functionality.
 
 import asyncio
 import logging
-from datetime import datetime
 from decimal import Decimal
 from typing import Any, Dict
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -42,8 +42,10 @@ class TestExtraDeposit:
         ]
     }
 
-    def test_add_single_extra_deposit(self) -> None:
+    @patch.object(DashboardMixin, "get_current_prices", new_callable=AsyncMock)
+    def test_add_single_extra_deposit(self, mock_prices) -> None:
         """Test adding a single extra deposit to a position."""
+        mock_prices.return_value = {"ETH": Decimal("2000"), "USDC": Decimal("1")}
         wallet_id = self.test_data["wallet_id"]
         with with_temp_user(wallet_id):
             # Create initial position
@@ -84,8 +86,10 @@ class TestExtraDeposit:
                 "Extra deposit amount should match"
 
 
-    def test_add_multiple_extra_deposits(self) -> None:
+    @patch.object(DashboardMixin, "get_current_prices", new_callable=AsyncMock)
+    def test_add_multiple_extra_deposits(self, mock_prices) -> None:
         """Test adding multiple extra deposits to a position."""
+        mock_prices.return_value = {"ETH": Decimal("2000"), "USDC": Decimal("1"), "STRK": Decimal("2")}
         wallet_id = self.test_data["wallet_id"]
         with with_temp_user(wallet_id):
             # Create initial position
