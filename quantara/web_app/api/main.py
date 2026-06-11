@@ -1,10 +1,9 @@
 """
 Main FastAPI application module for the GRAVOEDGE API (Stellar/Soroban).
 
-This module sets up the FastAPI application and includes middleware
-for session management and CORS. It also registers routers for
-dashboard, position, user, vault, leaderboard, referal, and
-telegram endpoints. A /health endpoint is exposed for CI health checks.
+Sets up FastAPI with session and CORS middleware, registers routers for
+dashboard, position, user, vault, leaderboard, referal, and telegram
+endpoints, and exposes a /health endpoint for CI orchestration.
 """
 
 import os

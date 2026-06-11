@@ -51,10 +51,21 @@ jobs:
 
       - name: Start services and initialize database
         run: |
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml --env-file .env up -d --build
-          # Wait for services to be ready
-          sleep 10
-          # Run migrations
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml --env-file .env up -d --build 2>&1
+          echo "=== Container status ==="
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml ps
+          echo "=== Waiting for backend to be healthy ==="
+          for i in $(seq 1 30); do
+            if docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend curl -sf http://localhost:8000/health 2>/dev/null; then
+              echo "Backend healthy after $((i * 2))s"
+              break
+            fi
+            echo "Waiting... ($((i * 2))s)"
+            sleep 2
+          done
+          echo "=== Backend logs ==="
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend --tail=30 || true
+          echo "=== Running migrations ==="
           docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run alembic -c web_app/alembic.ini upgrade head
 
 
