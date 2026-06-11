@@ -42,7 +42,7 @@ class AirdropFetcher:
         underlying_contract_id = contract_id
         try:
             response = await self.api.fetch(underlying_contract_id)
-        except Exception as e:
+        except (aiohttp.ClientError, ValueError, KeyError, TypeError) as e:
             logger.error("Failed to fetch airdrop data for %s: %s", contract_id, e)
             return AirdropResponseModel(airdrops=[])
         return self._validate_response(response)
