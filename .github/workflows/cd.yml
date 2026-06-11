@@ -41,7 +41,7 @@ jobs:
             docker compose -f devops/docker-compose.gravoedge.yaml up -d --build --remove-orphans
             echo "Waiting for services to be healthy..."
             for i in $(seq 1 30); do
-              if curl -sf http://localhost:8000/docs > /dev/null 2>&1; then
+              if curl -sf http://localhost:8000/health > /dev/null 2>&1; then
                 echo "Backend is healthy after $((i * 2))s"
                 exit 0
               fi

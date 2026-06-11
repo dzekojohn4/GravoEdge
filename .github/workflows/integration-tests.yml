@@ -60,7 +60,7 @@ jobs:
         run: |
           echo "Waiting for backend to become healthy..."
           for i in $(seq 1 60); do
-            if curl -sf http://localhost:8000/docs > /dev/null 2>&1; then
+            if curl -sf http://localhost:8000/health > /dev/null 2>&1; then
               echo "Backend is healthy after $((i * 2))s"
               break
             fi
@@ -72,7 +72,7 @@ jobs:
             sleep 2
           done
           # Verify backend is responding
-          if ! curl -sf http://localhost:8000/docs > /dev/null 2>&1; then
+          if ! curl -sf http://localhost:8000/health > /dev/null 2>&1; then
             echo "ERROR: Backend did not become healthy within 120s!"
             docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend || true
             exit 1

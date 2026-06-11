@@ -61,6 +61,7 @@ services:
       context: ../gravoedge/frontend
       dockerfile: Dockerfile.dev
     container_name: frontend_dev
+    restart: unless-stopped
     volumes:
       - ../gravoedge/frontend:/app
     ports:
@@ -68,7 +69,8 @@ services:
     networks:
       - app_network
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres_data_dev:
