@@ -12,6 +12,7 @@ on:
       - 'gravoedge/web_app/**'
       - 'gravoedge/frontend/**'
       - 'devops/**'
+      - '.github/workflows/ci.yml'
   pull_request:
     branches:
       - main
@@ -19,6 +20,7 @@ on:
       - 'gravoedge/web_app/**'
       - 'gravoedge/frontend/**'
       - 'devops/**'
+      - '.github/workflows/ci.yml'
 
 jobs:
   test:
@@ -42,6 +44,15 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: gravoedge
+      DB_USER: postgres
+      DB_PASSWORD: password
+      STELLAR_HORIZON_URL: https://horizon-testnet.stellar.org
+      STELLAR_SOROBAN_RPC_URL: https://soroban-testnet.stellar.org
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,6 +61,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: 'pip'
 
       - name: Install Poetry
         run: |
@@ -64,23 +76,10 @@ jobs:
 
       - name: Run migrations
         working-directory: ./gravoedge
-        env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_NAME: gravoedge
-          DB_USER: postgres
-          DB_PASSWORD: password
         run: |
           poetry run alembic -c web_app/alembic.ini upgrade head
 
       - name: Run tests
         working-directory: ./gravoedge
-        env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_NAME: gravoedge
-          DB_USER: postgres
-          DB_PASSWORD: password
-          STELLAR_HORIZON_URL: https://horizon-testnet.stellar.org
         run: |
           poetry run pytest web_app/tests -v --tb=short
