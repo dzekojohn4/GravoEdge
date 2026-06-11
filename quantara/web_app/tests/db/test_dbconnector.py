@@ -104,9 +104,17 @@ def test_delete_object_invalid_id(mock_db_connector):
 def db_connector():
     """
     Fixture to initialize and provide a DBConnector instance with a test
-    user for the tests.
+    user for the tests. Uses localhost:5432 for CI/postgres service.
     """
-    connector = DBConnector()
+    import os
+    db_url = (
+        f"postgresql://{os.environ.get('DB_USER', 'postgres')}"
+        f":{os.environ.get('DB_PASSWORD', 'password')}"
+        f"@{os.environ.get('DB_HOST', 'localhost')}"
+        f":{os.environ.get('DB_PORT', '5432')}"
+        f"/{os.environ.get('DB_NAME', 'gravoedge')}"
+    )
+    connector = DBConnector(db_url=db_url)
     test_user = User(wallet_id="test_wallet_id")
     connector.write_to_db(test_user)
 
