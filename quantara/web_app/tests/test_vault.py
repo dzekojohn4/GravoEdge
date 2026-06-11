@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 
 from web_app.api.main import app
 from web_app.db.crud import UserDBConnector
@@ -20,7 +20,8 @@ client = TestClient(app)
 @pytest.fixture
 async def async_client():
     """Fixture that provides an async client for testing."""
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
 
 

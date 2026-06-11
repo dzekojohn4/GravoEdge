@@ -102,11 +102,15 @@ class TestAirdropFetcher:
         assert len(result.airdrops) == 0
 
     def test_validate_response_missing_fields(self, airdrop_fetcher):
-        """Test validation with missing required fields."""
+        """Test validation with missing required fields falls back to defaults."""
         invalid_data = [{"amount": "1000"}]
 
-        with pytest.raises(KeyError):
-            airdrop_fetcher._validate_response(invalid_data)
+        result = airdrop_fetcher._validate_response(invalid_data)
+        assert len(result.airdrops) == 1
+        assert result.airdrops[0].amount == "1000"
+        assert result.airdrops[0].proof == []
+        assert result.airdrops[0].is_claimed is False
+        assert result.airdrops[0].recipient == ""
 
     @pytest.mark.asyncio
     async def test_get_contract_airdrop_contract_formatting(self, airdrop_fetcher):
