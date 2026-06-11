@@ -19,6 +19,9 @@ from .constants import MULTIPLIER_POWER, TokenParams
 
 logger = logging.getLogger(__name__)
 
+# Base64-encoded "wasm_hash" key for Soroban getContractData RPC calls
+_SOROBAN_WASM_HASH_KEY = "dHJ1c3RlZAB3YXNoX2hhc2g="
+
 
 class StellarClient:
     """
@@ -202,7 +205,7 @@ class StellarClient:
                 "method": "getContractData",
                 "params": {
                     "contractId": contract_id,
-                    "key": "dHJ1c3RlZAB3YXNoX2hhc2g=",  # base64 "wasm_hash"
+                    "key": _SOROBAN_WASM_HASH_KEY,  # base64 "wasm_hash"
                 },
             }
             async with aiohttp.ClientSession() as session:
