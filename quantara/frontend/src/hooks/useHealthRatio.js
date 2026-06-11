@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { axiosInstance } from '../utils/axios';
 
+/** Token configuration for health factor calculation */
 const TOKEN_CONFIG = {
   XLM: {
     id: 'stellar',
@@ -29,6 +30,16 @@ const fetchTokenPrice = async (tokenId) => {
   return data[tokenId].usd;
 };
 
+
+/**
+ * Calculate the health factor for a proposed position based on token amounts,
+ * leverage multiplier, and real-time token prices from CoinGecko.
+ *
+ * @param {string} selectedToken - The token symbol (XLM, USDC, or ETH)
+ * @param {string} tokenAmount - The amount of tokens being deposited
+ * @param {string} selectedMultiplier - The leverage multiplier
+ * @returns {{ healthFactor: number, tokenPrice: number, isLoading: boolean, isError: boolean }}
+ */
 export const useHealthFactor = (selectedToken, tokenAmount, selectedMultiplier) => {
   const tokenId = selectedToken ? TOKEN_CONFIG[selectedToken]?.id : null;
 
