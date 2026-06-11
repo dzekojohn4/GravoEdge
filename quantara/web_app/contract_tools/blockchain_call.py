@@ -128,7 +128,7 @@ class StellarClient:
                     asset_issuer=getattr(token, "asset_issuer", None),
                 )
                 balances[token.name] = bal
-            except Exception as exc:
+            except (aiohttp.ClientError, ValueError, KeyError) as exc:
                 logger.info(
                     "Failed to get balance for %s: %s", token.name, exc
                 )
