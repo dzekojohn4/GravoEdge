@@ -2,8 +2,8 @@
 This module contains the alert mixin class.
 """
 
-import asyncio
 import logging
+
 from web_app.telegram.notifications import send_health_ratio_notification
 from web_app.contract_tools.mixins import HealthRatioMixin
 from web_app.db.crud import UserDBConnector

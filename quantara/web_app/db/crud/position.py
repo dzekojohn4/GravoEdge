@@ -9,7 +9,7 @@ from decimal import Decimal
 from typing import TypeVar
 from uuid import UUID
 
-from sqlalchemy import DECIMAL, Numeric, cast, func
+from sqlalchemy import Numeric, cast, func
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import SQLAlchemyError
 
