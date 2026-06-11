@@ -9,6 +9,7 @@ services:
     build: ../gravoedge
     command: bash /app/entrypoint.sh
     container_name: backend_dev
+    restart: unless-stopped
     volumes:
       - ../gravoedge/entrypoint.sh:/app/entrypoint.sh
       - ../gravoedge:/app
@@ -21,17 +22,25 @@ services:
     networks:
       - app_network
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - DB_HOST=db
       - DB_PORT=5432
       - DB_NAME=gravoedge
       - DB_USER=postgres
       - DB_PASSWORD=password
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/docs || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   db:
     image: postgres:16
     container_name: postgres_dev
+    restart: unless-stopped
     environment:
       POSTGRES_DB: gravoedge
       POSTGRES_USER: postgres
@@ -44,7 +53,7 @@ services:
     ports:
       - "${DB_PORT:-5432}:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
