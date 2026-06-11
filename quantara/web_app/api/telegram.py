@@ -98,10 +98,11 @@ async def telegram_webhook(update: Update):
         return b"", 200
 
 
-@router.post(  # FIXME REMOVE IT (delete and frontend, not used)
+@router.post(  # deprecated: not used by current frontend, kept for backwards compatibility
     "/api/telegram/save-user",
     tags=["Telegram Operations"],
     summary="Save or update Telegram user information",
+    deprecated=True,
 )
 async def save_telegram_user(user: TelegramUserCreate):
     """
