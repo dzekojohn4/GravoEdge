@@ -4,6 +4,14 @@ import { closePosition } from '../services/transaction';
 import { useWalletStore } from '../stores/useWalletStore';
 import { notify } from '../components/layout/notifier/Notifier';
 
+/**
+ * Hook for closing a user's leveraged position.
+ *
+ * Fetches repay data from the backend, invokes the Soroban close_position
+ * contract, and notifies the backend of the closure.
+ *
+ * @returns {useMutation} React Query mutation for position closure
+ */
 export const useClosePosition = () => {
   const { walletId } = useWalletStore();
 
@@ -34,6 +42,12 @@ export const useClosePosition = () => {
   });
 };
 
+
+/**
+ * Hook for checking whether a user has an open position.
+ *
+ * @returns {useQuery} React Query result with has_opened_position flag
+ */
 export const useCheckPosition = () => {
   const { walletId } = useWalletStore();
 
