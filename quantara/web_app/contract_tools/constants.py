@@ -90,9 +90,13 @@ class TokenParams:
         borrow_factor=Decimal("1"),
     )
 
+    _SUPPORTED_TOKENS: tuple[TokenConfig, ...] = ()
+
     @classmethod
     def tokens(cls) -> Iterator[TokenConfig]:
-        """Return an iterator over all token configurations."""
+        """Return an iterator over all supported token configurations."""
+        if cls._SUPPORTED_TOKENS:
+            return iter(cls._SUPPORTED_TOKENS)
         return iter([cls.XLM, cls.USDC, cls.ETH])
 
     @classmethod
