@@ -1,6 +1,9 @@
 """
 HealthRatioMixin is a mixin class to calculate the health ratio of a position
 using the Stellar-based CollateralManager and Soroban adapters.
+
+The health ratio indicates the safety margin of a leveraged position.
+A value below 1.0 signals the position is at risk of liquidation.
 """
 
 import asyncio
