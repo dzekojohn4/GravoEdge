@@ -39,7 +39,6 @@ def mock_vault_fixture():
     return Vault(id="vault123", user_id="user123", symbol="ETH", amount="100.00")
 
 
-# pylint: disable=too-few-public-methods
 class TestCreateVault:
     """
     Tests for creating a vault using DepositDBConnector.
@@ -82,7 +81,6 @@ class TestCreateVault:
             )
 
 
-# pylint: disable=too-few-public-methods
 class TestAddVaultBalance:
     """
     Tests for adding to a vault's balance using DepositDBConnector.
