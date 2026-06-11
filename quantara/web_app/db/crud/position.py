@@ -191,7 +191,7 @@ class PositionDBConnector(UserDBConnector):
 
     def create_position(
         self, wallet_id: str, token_symbol: str, amount: str, multiplier: int
-    ) -> Position:
+    ) -> Position | None:
         """
         Creates a new position in the database if it does not already exist for the wallet.
         If a position with status 'pending' exists, update its values.
