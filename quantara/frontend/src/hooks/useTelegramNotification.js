@@ -2,6 +2,14 @@ import { useMutation } from '@tanstack/react-query';
 import { subscribeToNotification, generateTelegramLink } from '../services/telegram';
 import { notify } from '../components/layout/notifier/Notifier';
 
+/**
+ * Hook for subscribing to Telegram health ratio notifications.
+ *
+ * If no telegramId is provided, generates a deep-link to connect Telegram.
+ * Otherwise subscribes the user directly.
+ *
+ * @returns {{ subscribe: Function, isLoading: boolean }}
+ */
 const useTelegramNotification = () => {
   const mutation = useMutation({
     mutationFn: async ({ telegramId, walletId }) => {
