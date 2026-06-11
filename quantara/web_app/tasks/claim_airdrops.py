@@ -33,9 +33,17 @@ class AirdropClaimer:
         and updates the database if the claim is successful.
         """
         unclaimed_airdrops = self.db_connector.get_all_unclaimed()
+        if not unclaimed_airdrops:
+            logger.info("No unclaimed airdrops found")
+            return
         for airdrop in unclaimed_airdrops:
             try:
                 user_contract_address = airdrop.user.contract_address
+                if not user_contract_address:
+                    logger.warning(
+                        "Skipping airdrop %s: no contract address", airdrop.id
+                    )
+                    continue
                 proofs = self.airdrop_fetcher.get_contract_airdrop(
                     user_contract_address
                 )
