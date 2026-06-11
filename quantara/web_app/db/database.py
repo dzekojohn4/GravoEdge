@@ -7,7 +7,6 @@ for use throughout the web application.
 """
 
 import os
-from contextlib import contextmanager
 from typing import Generator
 
 from dotenv import load_dotenv
