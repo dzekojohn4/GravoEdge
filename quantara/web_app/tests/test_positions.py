@@ -122,7 +122,6 @@ async def test_close_position_invalid_position_id(client: TestClient) -> None:
 @pytest.mark.anyio
 async def test_get_repay_data_success(
     client: TestClient,
-    mock_position_db_connector,
 ) -> None:
     """
     Test for successfully retrieving repayment data.
