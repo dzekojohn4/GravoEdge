@@ -149,7 +149,8 @@ export async function invokeSorobanContract(contractId, methodName, args = []) {
 /**
  * Convert a JavaScript value to the appropriate Soroban ScVal.
  *
- * Handles: strings, numbers, booleans, arrays, objects, bigint, null
+ * Handles: strings, numbers, booleans, arrays, objects, bigint, null.
+ * Delegates to stellar-sdk's nativeToScVal for all type conversions.
  *
  * @param {*} value - The JS value to convert
  * @returns {xdr.ScVal} The Soroban ScVal
