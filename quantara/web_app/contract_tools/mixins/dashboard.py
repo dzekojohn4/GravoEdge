@@ -61,7 +61,7 @@ class DashboardMixin:
                     logger.debug(f"Error parsing price for {address}: {str(e)}")
 
             return prices
-        except Exception as e:
+        except (aiohttp.ClientError, ValueError, KeyError, TypeError) as e:
             logger.error(f"Error fetching current prices: {e}")
             return prices
 
@@ -75,7 +75,7 @@ class DashboardMixin:
         """
         try:
             return await CLIENT.get_token_balances(holder_address)
-        except Exception as e:
+        except (ValueError, KeyError, TypeError) as e:
             logger.error(
                 "Failed to get wallet balances for %s: %s", holder_address, e
             )
