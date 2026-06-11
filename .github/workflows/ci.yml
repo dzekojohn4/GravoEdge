@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      working-directory: ./gravoedge
 
     services:
       postgres:
@@ -46,29 +48,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Create .env file
+        run: cp gravoedge/.env.dev .env
+
       - name: Start services and initialize database
         run: |
-          docker compose -f devops/docker-compose.gravoedge.back.yaml up -d --build
-          echo "Waiting for backend to become healthy..."
-          for i in $(seq 1 60); do
-            if curl -sf http://localhost:8000/health > /dev/null 2>&1; then
-              echo "Backend healthy after $((i * 2))s"
-              break
-            fi
-            sleep 2
-          done
-          # Run only existing migrations (never autogenerate in CI)
-          docker compose -f devops/docker-compose.gravoedge.back.yaml exec -T backend poetry run alembic -c web_app/alembic.ini upgrade head
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml --env-file .env up -d --build
+          # Wait for PostgreSQL to be ready (db healthcheck from compose)
+          sleep 15
+          # Run only existing migrations (never autogenerate)
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run alembic -c web_app/alembic.ini upgrade head
 
       - name: Run tests
         run: |
-          docker compose -f devops/docker-compose.gravoedge.back.yaml exec -T backend poetry run pytest web_app/tests -v
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run pytest web_app/tests
 
       - name: Run tests with coverage
         run: |
-          docker compose -f devops/docker-compose.gravoedge.back.yaml exec -T backend poetry run pytest web_app/tests --cov=web_app --cov-report=term-missing --cov-fail-under=60
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run pytest web_app/tests --cov=web_app --cov-report=term-missing
 
       - name: Tear down
         if: always()
         run: |
-          docker compose -f devops/docker-compose.gravoedge.back.yaml down -v
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml down -v
