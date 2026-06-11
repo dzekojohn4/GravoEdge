@@ -360,7 +360,7 @@ async def test_subscribe_to_notification(
     [
         (
             {
-                "wallet_id": "0x123",
+                "wallet_id": "GA7QYNF7SOWQ3GLR2ZGMH2Z5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2",
                 "telegram_id": "456",
                 "bug_description": "Test bug description",
             },
@@ -368,7 +368,7 @@ async def test_subscribe_to_notification(
             {"message": "Bug report submitted successfully"},
         ),
         (
-            {"wallet_id": "0x123", "bug_description": "Test without telegram"},
+            {"wallet_id": "GA7QYNF7SOWQ3GLR2ZGMH2Z5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2", "bug_description": "Test without telegram"},
             200,
             {"message": "Bug report submitted successfully"},
         ),
@@ -398,17 +398,17 @@ async def test_save_bug_report_success(
     "report_data, expected_status, error_message",
     [
         (
-            {"wallet_id": "invalid", "bug_description": "Test"},
+            {"wallet_id": "12345678901234567890123456789012345678901234567890123456", "bug_description": "Test"},
             422,
-            "String should match pattern '^0x[a-fA-F0-9]+$'",
+            "String should match pattern '^G[A-Za-z0-9]{55}$'",
         ),
         (
-            {"wallet_id": "0x123", "telegram_id": "abc", "bug_description": "Test"},
+            {"wallet_id": "GA7QYNF7SOWQ3GLR2ZGMH2Z5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2", "telegram_id": "abc", "bug_description": "Test"},
             422,
             "String should match pattern '^\\d+$'",
         ),
         (
-            {"wallet_id": "0x123", "bug_description": ""},
+            {"wallet_id": "GA7QYNF7SOWQ3GLR2ZGMH2Z5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2", "bug_description": ""},
             422,
             "String should have at least 1 character",
         ),
@@ -418,7 +418,7 @@ async def test_save_bug_report_success(
             "Field required",
         ),
         (
-            {"wallet_id": "0x123", "telegram_id": "456"},
+            {"wallet_id": "GA7QYNF7SOWQ3GLR2ZGMH2Z5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2X2H5Y2", "telegram_id": "456"},
             422,
             "Field required",
         ),
