@@ -9,6 +9,7 @@ services:
     build: ../gravoedge
     command: ["/app/entrypoint.sh"]
     container_name: backend_dev
+    restart: unless-stopped
     volumes:
       - ../gravoedge/entrypoint.sh:/app/entrypoint.sh
       - ../gravoedge:/app
@@ -30,6 +31,7 @@ services:
   db:
     image: postgres:16
     container_name: postgres_dev
+    restart: unless-stopped
     environment:
       POSTGRES_DB: gravoedge
       POSTGRES_USER: postgres

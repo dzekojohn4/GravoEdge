@@ -1,5 +1,8 @@
 """
 This module contains constants for the Stellar-based GravoEdge protocol.
+
+Defines token configurations, multipliers, and network asset identifiers
+used throughout the contract interaction layer.
 """
 
 from decimal import Decimal
