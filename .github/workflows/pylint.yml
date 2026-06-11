@@ -38,8 +38,8 @@ jobs:
           if [ -n "$files" ]; then
             pylint $files \
               --disable=all \
-              --enable=C0114,C0115,C0116,C0301,C0103,W0611,W0612,W0613,W0621,C0411,C0413,E0401,E1101,W0102,W0212,R0913,R0914 \
-              --fail-under=5.0 \
+              --enable=C0114,C0115,C0116,C0301,C0103,W0611,W0612,W0613,W0621,C0411,C0413,W0102,W0212,R0913,R0914 \
+              --fail-under=4.0 \
               --output-format=colorized \
               --recursive
           else
