@@ -7,6 +7,8 @@
  * Each user deploys their own instance of the leverage looping contract
  * via the Soroban RPC endpoint. The deployment follows the standard
  * Soroban flow:  Build → Simulate → Assemble → Sign → Submit → Poll
+ *
+ * @module contract
  */
 
 import {
@@ -23,7 +25,7 @@ import { axiosInstance } from '../utils/axios';
 import { notify, ToastWithLink } from '../components/layout/notifier/Notifier';
 
 /**
- * Build a Stellar Expert URL for a Soroban contract.
+ * Build a Stellar Expert block explorer URL for a Soroban contract.
  *
  * @param {string} contractAddress - The Soroban contract ID (C... format)
  * @returns {string} The explorer URL
