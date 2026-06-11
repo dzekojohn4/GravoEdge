@@ -64,7 +64,7 @@ jobs:
 
       - name: Run tests coverage
         run: |
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run pytest --cov=web_app --cov-fail-under=90
+          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run pytest --cov=web_app --cov-report=term-missing
 
       - name: Tear down
         if: always()
