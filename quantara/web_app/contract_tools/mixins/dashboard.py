@@ -1,5 +1,8 @@
 """
 This module contains the dashboard mixin class for the Stellar-based GravoEdge protocol.
+
+Handles price fetching from external APIs, wallet balance queries,
+and position value calculations for the dashboard view.
 """
 
 import logging
