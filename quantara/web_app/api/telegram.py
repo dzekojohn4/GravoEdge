@@ -93,7 +93,7 @@ async def telegram_webhook(update: Update):
     try:
         result = await dp.feed_webhook_update(bot, update, db=db_connector)
         return build_multipart_response(bot, result)
-    except Exception as e:
+    except (ValueError, KeyError, TypeError, AttributeError) as e:
         logger.error(f"Error processing Telegram update {update.update_id}: {e}")
         return b"", 200
 
