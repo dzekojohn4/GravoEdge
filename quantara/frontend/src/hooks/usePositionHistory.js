@@ -3,6 +3,13 @@ import { axiosInstance } from '../utils/axios';
 import { formatDate } from '../utils/formatDate';
 import { useWalletStore } from '../stores/useWalletStore';
 
+/**
+ * Fetch paginated position history from the backend.
+ *
+ * @param {string} walletId - The Stellar wallet public key
+ * @param {number} [start=0] - Pagination offset
+ * @returns {Promise<object>} Paginated position history data
+ */
 const fetchPositionHistoryTable = async (walletId, start = 0) => {
   if (!walletId) {
     throw new Error('Wallet ID is undefined');
@@ -11,6 +18,12 @@ const fetchPositionHistoryTable = async (walletId, start = 0) => {
   return response.data;
 };
 
+/**
+ * Format raw position history data for display in the UI table.
+ *
+ * @param {Array} data - Raw position data from the API
+ * @returns {Array} Formatted position data with human-readable fields
+ */
 const formatPositionHistoryTable = (data) => {
   return data.map((position) => ({
     ...position,
