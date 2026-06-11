@@ -128,16 +128,6 @@ async def test_close_position_invalid_position_id(client: TestClient) -> None:
             {
                 "supply_token": "mock_supply_token",
                 "debt_token": "mock_debt_token",
-                "pool_key": {
-                    "token0": "mock_token0",
-                    "token1": "mock_token1",
-                    "fee": "mock_fee",
-                    "tick_spacing": "mock_tick_spacing",
-                    "extension": "mock_extension",
-                },
-                "supply_price": "100",
-                "debt_price": "200",
-                "ekubo_limits": {"mock_key": "mock_value"},
                 "borrow_portion_percent": 1,
             },
         ),
@@ -147,16 +137,6 @@ async def test_close_position_invalid_position_id(client: TestClient) -> None:
             {
                 "supply_token": "mock_supply_token",
                 "debt_token": "mock_debt_token",
-                "pool_key": {
-                    "token0": "mock_token0",
-                    "token1": "mock_token1",
-                    "fee": "mock_fee",
-                    "tick_spacing": "mock_tick_spacing",
-                    "extension": "mock_extension",
-                },
-                "supply_price": "0",
-                "debt_price": "0",
-                "ekubo_limits": {"mock_key": "mock_value"},
                 "borrow_portion_percent": 1,
             },
         ),
@@ -166,16 +146,6 @@ async def test_close_position_invalid_position_id(client: TestClient) -> None:
             {
                 "supply_token": "mock_supply_token",
                 "debt_token": "mock_debt_token",
-                "pool_key": {
-                    "token0": "mock_token0",
-                    "token1": "mock_token1",
-                    "fee": "mock_fee",
-                    "tick_spacing": "mock_tick_spacing",
-                    "extension": "mock_extension",
-                },
-                "supply_price": "0",
-                "debt_price": "0",
-                "ekubo_limits": {"mock_key": "mock_value"},
                 "borrow_portion_percent": 1,
             },
         ),
@@ -286,21 +256,13 @@ async def test_get_repay_data_missing_wallet_id(
             {
                 "contract_address": "mock_contract_address",
                 "position_id": "123",
-                "pool_price": 100,
-                "pool_key": {
-                    "token0": "mock_token0",
-                    "token1": "mock_token1",
-                    "fee": "mock_fee",
-                    "tick_spacing": "mock_tick_spacing",
-                    "extension": "mock_extension",
-                },
+                "caller": "valid_wallet_id",
                 "deposit_data": {
                     "token": "mock_token",
                     "amount": "mock_amount",
                     "multiplier": "1",
                     "borrow_portion_percent": 0,
                 },
-                "ekubo_limits": {"mock_key": "mock_value"},
             },
         ),
         (
@@ -311,21 +273,13 @@ async def test_get_repay_data_missing_wallet_id(
             {
                 "contract_address": "mock_contract_address",
                 "position_id": "123",
-                "pool_price": 100,
-                "pool_key": {
-                    "token0": "mock_token0",
-                    "token1": "mock_token1",
-                    "fee": "mock_fee",
-                    "tick_spacing": "mock_tick_spacing",
-                    "extension": "mock_extension",
-                },
+                "caller": "valid_wallet_id_2",
                 "deposit_data": {
                     "token": "mock_token",
                     "amount": "mock_amount",
                     "multiplier": "1",
                     "borrow_portion_percent": 0,
                 },
-                "ekubo_limits": {"mock_key": "mock_value"},
             },
         ),
         (
@@ -336,24 +290,15 @@ async def test_get_repay_data_missing_wallet_id(
             {
                 "contract_address": "mock_contract_address",
                 "position_id": "123",
-                "pool_price": 100,
-                "pool_key": {
-                    "token0": "mock_token0",
-                    "token1": "mock_token1",
-                    "fee": "mock_fee",
-                    "tick_spacing": "mock_tick_spacing",
-                    "extension": "mock_extension",
-                },
+                "caller": "valid_wallet_id_3",
                 "deposit_data": {
                     "token": "mock_token",
                     "amount": "mock_amount",
                     "multiplier": "1",
                     "borrow_portion_percent": 0,
                 },
-                "ekubo_limits": {"mock_key": "mock_value"},
             },
         ),
-            # New test case for kSTRK
         (
             "valid_wallet_id_4",
             "kSTRK",
@@ -362,21 +307,13 @@ async def test_get_repay_data_missing_wallet_id(
             {
                 "contract_address": "mock_contract_address",
                 "position_id": "123",
-                "pool_price": 100,
-                "pool_key": {
-                    "token0": "mock_token0",
-                    "token1": "mock_token1",
-                    "fee": "mock_fee",
-                    "tick_spacing": "mock_tick_spacing",
-                    "extension": "mock_extension",
-                },
+                "caller": "valid_wallet_id_4",
                 "deposit_data": {
                     "token": "mock_token",
                     "amount": "mock_amount",
                     "multiplier": "1",
                     "borrow_portion_percent": 0,
                 },
-                "ekubo_limits": {"mock_key": "mock_value"},
             },
         ),
     ],
@@ -391,14 +328,6 @@ async def test_create_position_success(
     mock_position = Mock()
     mock_position.id = 123
     mock_deposit_data = {
-        "pool_price": 100,
-        "pool_key": {
-            "token0": "mock_token0",
-            "token1": "mock_token1",
-            "fee": "mock_fee",
-            "tick_spacing": "mock_tick_spacing",
-            "extension": "mock_extension",
-        },
         "deposit_data": {
             "token": "mock_token",
             "amount": "mock_amount",
@@ -407,7 +336,7 @@ async def test_create_position_success(
         },
         "contract_address": "mock_contract_address",
         "position_id": "123",
-        "ekubo_limits": {"mock_key": "mock_value"},
+        "caller": wallet_id,
     }
 
     with (

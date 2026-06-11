@@ -4,8 +4,9 @@ Integration test for position liquidation functionality.
 
 import asyncio
 import logging
-from datetime import datetime
+from decimal import Decimal
 from typing import Any, Dict
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -56,17 +57,25 @@ class TestPositionLiquidation:
     ]
 
     @pytest.mark.parametrize("position_data", test_positions)
-    def test_position_liquidation(self, position_data: Dict[str, Any]) -> None:
+    @patch.object(DashboardMixin, "get_current_prices", new_callable=AsyncMock)
+    def test_position_liquidation(self, mock_prices, position_data: Dict[str, Any]) -> None:
         """
         Test the complete lifecycle of a position liquidation.
 
         Args:
+            mock_prices: Mock for DashboardMixin.get_current_prices
             position_data (Dict[str, Any]): Position data for testing.
         """
         wallet_id = position_data["wallet_id"]
         token_symbol = position_data["token_symbol"]
         amount = position_data["amount"]
         multiplier = position_data["multiplier"]
+        mock_prices.return_value = {
+            token_symbol: Decimal("2000"),
+            "USDC": Decimal("1"),
+            "ETH": Decimal("2000"),
+            "STRK": Decimal("2"),
+        }
 
         with with_temp_user(wallet_id) as user:
             # Create and verify initial position
