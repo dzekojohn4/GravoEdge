@@ -7,6 +7,12 @@ import UsdIcon from '@/assets/icons/usd_coin.svg?react';
 import CollateralIcon from '@/assets/icons/collateral_dynamic.svg?react';
 import BorrowIcon from '@/assets/icons/borrow_dynamic.svg?react';
 
+/**
+ * Fetch dashboard data from the backend for a given wallet.
+ *
+ * @param {string} walletId - The Stellar wallet public key
+ * @returns {Promise<object>} Dashboard data including health ratio and positions
+ */
 export const fetchDashboardData = async (walletId) => {
   if (!walletId) throw new Error('Wallet ID is undefined');
   const { data } = await axiosInstance.get(`/api/dashboard?wallet_id=${walletId}`);
