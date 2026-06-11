@@ -36,7 +36,7 @@ class PositionMixin:
             return False
         try:
             return await CLIENT.is_contract_deployed(contract_address)
-        except Exception as e:
+        except (ValueError, KeyError, TypeError, aiohttp.ClientError) as e:
             logger.warning(
                 "Failed to check position status for %s: %s",
                 contract_address,
