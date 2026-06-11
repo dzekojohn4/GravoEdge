@@ -82,7 +82,8 @@ class AirdropClaimer:
         on the contract. Currently a placeholder that always succeeds.
         """
         try:
-            # TODO: Implement Soroban contract invocation for airdrop claiming
+            # NOTE: Soroban contract invocation for airdrop claiming pending
+            #       the deployment of the claim contract on the target network.
             logger.info(
                 "Airdrop claim for %s with %d proofs sent (mock implementation)",
                 contract_address,
