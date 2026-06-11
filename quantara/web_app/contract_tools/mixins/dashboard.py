@@ -27,7 +27,13 @@ class DashboardMixin:
     async def get_current_prices(cls) -> Dict[str, Decimal]:
         """
         Fetch current token prices from AVNU API.
+
+        Queries the AVNU token-short endpoint to retrieve latest market
+        prices for all supported tokens. Maps addresses to token symbols
+        for GravoEdge's internal representation.
+
         :return: Dictionary mapping token symbols to their current prices as Decimal.
+        :raises: None (returns empty dict on any failure)
         """
         prices = {}
         try:

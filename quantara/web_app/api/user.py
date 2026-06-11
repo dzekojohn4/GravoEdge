@@ -237,7 +237,7 @@ async def get_stats() -> GetStatsResponse:
         total_opened_amount = Decimal("0")
         for token, amount in token_amounts.items():
             # Skip if no price available for the token
-            if token not in current_prices or "USDC" not in current_prices:
+            if token not in current_prices:
                 logger.warning(f"No price data available for {token}")
                 continue
 
@@ -248,8 +248,10 @@ async def get_stats() -> GetStatsResponse:
 
             # Convert other tokens to USDC
             # Price is typically in USDC per token
-            usdc_price = current_prices[token]
-            usdc_equivalent = amount * Decimal(usdc_price)
+            usdc_price = current_prices.get(token)
+            if usdc_price is None:
+                continue
+            usdc_equivalent = amount * Decimal(str(usdc_price))
             total_opened_amount += usdc_equivalent
 
         unique_users = user_db.get_unique_users_count()
