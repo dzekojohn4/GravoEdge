@@ -60,7 +60,9 @@ class HealthRatioMixin:
         :param account_address: The account address.
         :return: Tuple of (token_symbol, debt_raw) – defaults to ("USDC", 0).
         """
-        # TODO: Query Soroban position contract for current debt
+        # NOTE: Full Soroban integration pending — once position contracts
+        #       are deployed, query the contract's ledger entry for current
+        #       debt token and amount instead of returning defaults.
         return "USDC", 0
 
     @classmethod
