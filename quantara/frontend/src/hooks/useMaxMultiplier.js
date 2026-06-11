@@ -1,8 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
 import { ONE_HOUR_IN_MILLISECONDS } from '../utils/constants';
 import { axiosInstance } from '../utils/axios';
 import { notify } from '../components/layout/notifier/Notifier';
 
+/**
+ * Fetch the maximum multiplier values for supported tokens.
+ *
+ * Data is cached for one hour between refetches.
+ *
+ * @returns {{ data: object, isLoading: boolean }}
+ */
 export const useMaxMultiplier = () => {
   const { data, isPending } = useQuery({
     queryKey: ['max-multiplier'],
