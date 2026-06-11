@@ -1,11 +1,19 @@
 name: Run Frontend Tests
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
+    branches:
+      - main
     paths:
       - 'gravoedge/frontend/**'
       - 'devops/**'
   pull_request:
+    branches:
+      - main
     paths:
       - 'gravoedge/frontend/**'
       - 'devops/**'
@@ -13,25 +21,30 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
+    permissions:
+      contents: read
+    defaults:
+      run:
         working-directory: ./gravoedge/frontend
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'yarn'
+        cache-dependency-path: gravoedge/frontend/yarn.lock
 
     - name: Create .env file
-      run: cp gravoedge/frontend/.env.dev gravoedge/frontend/.env
-      working-directory: ${{env.working-directory}}
+      run: cp .env.dev .env
 
     - name: Install dependencies
-      run: yarn install
-      working-directory: ${{env.working-directory}}
+      run: yarn install --frozen-lockfile
 
     - name: Run tests
-      run: yarn test
-      working-directory: ${{env.working-directory}}
+      run: yarn test:run
+
+    - name: Run lint
+      run: yarn lint
