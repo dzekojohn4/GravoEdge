@@ -4,7 +4,7 @@ This module defines the serializers for the dashboard data.
 
 from datetime import datetime
 from decimal import Decimal
-from typing import Dict, List
+from typing import Dict
 
 from pydantic import BaseModel, Field
 
@@ -52,7 +52,7 @@ class DashboardResponse(BaseModel):
         example="12",
         description="The position ID.",
     )
-    deposit_data: List[Dict[str, str]] = Field(
+    deposit_data: list[Dict[str, str]] = Field(
         ...,
         example=[
             {"token": "XLM", "amount": "100.0"},
