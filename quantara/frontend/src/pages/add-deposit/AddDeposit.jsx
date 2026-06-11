@@ -17,7 +17,7 @@ export const AddDeposit = () => {
   };
 
   const [amount, setAmount] = useState('0');
-  const [selectedToken, setSelectedToken] = useState('STRK');
+  const [selectedToken, setSelectedToken] = useState('XLM');
   const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
 
   const { mutate: addDeposit, isLoading } = useAddDeposit();
@@ -39,7 +39,7 @@ export const AddDeposit = () => {
       {
         onSuccess: () => {
           setAmount('0');
-          setSelectedToken('STRK');
+          setSelectedToken('XLM');
         },
       }
     );
