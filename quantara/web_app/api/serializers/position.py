@@ -82,7 +82,7 @@ class UserPositionsListResponse(BaseModel):
     Response model for list of user positions.
     """
 
-    positions: List = List[UserPositionResponse]
+    positions: List[UserPositionResponse] = []
 
 
 class AddPositionDepositData(BaseModel):
