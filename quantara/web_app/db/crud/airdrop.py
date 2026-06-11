@@ -6,7 +6,7 @@ import logging
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from typing import List, TypeVar
+from typing import TypeVar
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -38,7 +38,7 @@ class AirDropDBConnector(DBConnector):
         else:
             logger.error(f"AirDrop with ID {airdrop_id} not found")
 
-    def get_all_unclaimed(self) -> List[AirDrop]:
+    def get_all_unclaimed(self) -> list[AirDrop]:
         """
         Returns all unclaimed AirDrop instances (where is_claimed is False).
 
