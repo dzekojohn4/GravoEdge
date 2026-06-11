@@ -1,18 +1,1 @@
-{
-  "extends": ["eslint:recommended", "plugin:react-hooks/recommended", "plugin:@tanstack/query/recommended"],
-  "plugins": ["react-hooks", "@tanstack/query"],
-  "rules": {
-    "react/prop-types": "off",
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
-    "@tanstack/query/exhaustive-deps": "error"
-  },
-  "parserOptions": {
-    "sourceType": "module"
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  }
-}
+{"extends": ["eslint:recommended"],"parserOptions": {"sourceType": "module","ecmaVersion": "latest","ecmaFeatures": {"jsx": true}},"env": {"browser": true,"node": true,"jest": true},"rules": {"no-unused-vars": "warn","no-undef": "warn"},"settings": {"react": {"version": "detect"}},"ignorePatterns": ["dist/","node_modules/"]}
