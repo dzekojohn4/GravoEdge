@@ -1,5 +1,11 @@
 import { useEffect } from 'react';
 
+/**
+ * Lock or unlock body scroll by toggling a CSS class.
+ *
+ * @param {boolean} lock - When true, adds 'no-scroll' class to body and html
+ * @returns {void}
+ */
 function useLockBodyScroll(lock) {
   useEffect(() => {
     if (lock) {
