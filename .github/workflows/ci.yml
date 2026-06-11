@@ -23,8 +23,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-        working-directory: ./gravoedge
+    permissions:
+      contents: read
 
     services:
       postgres:
@@ -46,38 +46,41 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create .env file
-        run: cp gravoedge/.env.dev .env
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - name: Start services and initialize database
+      - name: Install Poetry
         run: |
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml --env-file .env up -d --build 2>&1
-          echo "=== Container status ==="
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml ps
-          echo "=== Waiting for backend to be healthy ==="
-          for i in $(seq 1 30); do
-            if docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend curl -sf http://localhost:8000/health 2>/dev/null; then
-              echo "Backend healthy after $((i * 2))s"
-              break
-            fi
-            echo "Waiting... ($((i * 2))s)"
-            sleep 2
-          done
-          echo "=== Backend logs ==="
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml logs backend --tail=30 || true
-          echo "=== Running migrations ==="
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run alembic -c web_app/alembic.ini upgrade head
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
+      - name: Install dependencies
+        working-directory: ./gravoedge
+        run: |
+          poetry config virtualenvs.create false
+          poetry install --no-interaction --no-root
+
+      - name: Run migrations
+        working-directory: ./gravoedge
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: gravoedge
+          DB_USER: postgres
+          DB_PASSWORD: password
+        run: |
+          poetry run alembic -c web_app/alembic.ini upgrade head
 
       - name: Run tests
+        working-directory: ./gravoedge
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: gravoedge
+          DB_USER: postgres
+          DB_PASSWORD: password
+          STELLAR_HORIZON_URL: https://horizon-testnet.stellar.org
         run: |
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run pytest web_app/tests
-
-      - name: Run tests coverage
-        run: |
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml exec -T backend poetry run pytest --cov=web_app --cov-report=term-missing
-
-      - name: Tear down
-        if: always()
-        run: |
-          docker compose -f devops/docker-compose.gravoedge.dev.yaml down
+          poetry run pytest web_app/tests -v --tb=short
