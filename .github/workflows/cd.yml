@@ -1,4 +1,9 @@
 name: CD Pipeline
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 on:
   workflow_run:
     workflows: ["CI Workflow"]
@@ -9,35 +14,45 @@ on:
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: production
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+        uses: shimataro/ssh-key-action@v3
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: unnecessary
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
           if_key_exists: replace
-
-      - name: Add known hosts
-        run: |
-          ssh-keyscan -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Prepare environment file
-        run: |
-          # Creating .env file using secrets
-          echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
-          echo "SERVER_HOST=${{ secrets.SERVER_HOST }}" >> .env
-          echo "SERVER_USER=${{ secrets.SERVER_USER }}" >> .env
-          echo "PROJECT_PATH=${{ secrets.PROJECT_PATH }}" >> .env
 
       - name: Deploy to server
         run: |
-          ssh -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
-            mkdir -p ${{ secrets.PROJECT_PATH }}
-            cd ${{ secrets.PROJECT_PATH }}
-            docker compose -f devops/docker-compose.gravoedge.yaml pull
-            docker compose -f devops/docker-compose.gravoedge.yaml up --detach --remove-orphans
-          EOF
+          ssh -p ${{ secrets.SERVER_PORT }} -o StrictHostKeyChecking=yes ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'DEPLOY'
+            set -e
+            cd ${{ secrets.PROJECT_PATH }} || { echo "Project path not found"; exit 1; }
+            echo "Pulling latest changes..."
+            git pull origin main
+            echo "Rebuilding and restarting containers..."
+            docker compose -f devops/docker-compose.gravoedge.yaml up -d --build --remove-orphans
+            echo "Waiting for services to be healthy..."
+            for i in $(seq 1 30); do
+              if curl -sf http://localhost:8000/docs > /dev/null 2>&1; then
+                echo "Backend is healthy after $((i * 2))s"
+                exit 0
+              fi
+              sleep 2
+            done
+            echo "ERROR: Backend failed health check after 60s!"
+            docker compose -f devops/docker-compose.gravoedge.yaml logs --tail=50
+            exit 1
+          DEPLOY
+
+      - name: Notify deployment failure
+        if: failure()
+        run: |
+          echo "Deployment failed! Check server logs."
