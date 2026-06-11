@@ -3,10 +3,9 @@ This module handles position-related API endpoints for the Stellar-based GravoEd
 """
 
 from decimal import Decimal, InvalidOperation
-from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query
 
 from web_app.api.serializers.position import (
     AddPositionDepositData,

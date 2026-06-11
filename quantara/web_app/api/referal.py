@@ -19,7 +19,7 @@ import string
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from web_app.db.database import Base, get_database
+from web_app.db.database import get_database
 from web_app.db.crud import UserDBConnector
 from pydantic import BaseModel
 
