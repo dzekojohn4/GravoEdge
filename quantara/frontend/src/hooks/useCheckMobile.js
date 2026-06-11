@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * Detect if the current device is mobile based on user agent and screen width.
+ *
+ * @returns {boolean} True if the device is mobile (<= 768px or mobile user agent)
+ */
 export const useCheckMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
 
