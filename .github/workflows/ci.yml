@@ -46,15 +46,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create .env file
-        run: cp gravoedge/.env.dev gravoedge/.env
-
       - name: Start services and initialize database
         run: |
           docker compose -f devops/docker-compose.gravoedge.back.yaml up -d --build
-          # Wait for PostgreSQL to be healthy
-          echo "Waiting for PostgreSQL to be ready..."
-          timeout 60 bash -c 'until docker compose -f devops/docker-compose.gravoedge.back.yaml exec -T backend pg_isready -U postgres -h db 2>/dev/null; do sleep 2; done'
+          echo "Waiting for backend to become healthy..."
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8000/health > /dev/null 2>&1; then
+              echo "Backend healthy after $((i * 2))s"
+              break
+            fi
+            sleep 2
+          done
           # Run only existing migrations (never autogenerate in CI)
           docker compose -f devops/docker-compose.gravoedge.back.yaml exec -T backend poetry run alembic -c web_app/alembic.ini upgrade head
 
