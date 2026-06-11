@@ -1,12 +1,15 @@
 """
-This module provides CRUD operations for the leaderboard, retrieving the top users by positions.
-
+This module provides CRUD operations for the leaderboard.
 """
-from .base import DBConnector
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import func
-from web_app.db.models import User, Position
+
 import logging
+
+from sqlalchemy import func
+from sqlalchemy.exc import SQLAlchemyError
+
+from web_app.db.models import Position, User
+
+from .base import DBConnector
 
 logger = logging.getLogger(__name__)
 
