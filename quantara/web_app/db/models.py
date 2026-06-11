@@ -218,7 +218,10 @@ class ExtraDeposit(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     token_symbol = Column(String, nullable=False)
     amount = Column(String, nullable=False)
-    added_at = Column(DateTime, default=datetime.utcnow)
+    added_at = Column(DateTime, default=func.now())
+    updated_at = Column(
+        DateTime, nullable=False, default=func.now(), onupdate=func.now()
+    )
     position_id = Column(UUID(as_uuid=True), ForeignKey("position.id"))
     __table_args__ = (
         UniqueConstraint("position_id", "token_symbol", name="_position_token_uc"),

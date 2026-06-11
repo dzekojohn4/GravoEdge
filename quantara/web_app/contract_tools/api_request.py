@@ -26,6 +26,7 @@ class APIRequest:
         :param params: Query parameters to include in the request.
         :param headers: Headers to include in the request.
         :return: The response from the API as JSON.
+        :raises aiohttp.ClientError: On network or HTTP errors.
         """
         # Merge default headers with any user-provided headers
         request_headers = self.DEFAULT_HEADER.copy()  # Start with default headers
@@ -37,11 +38,10 @@ class APIRequest:
             async with session.get(
                 url, params=params, headers=request_headers
             ) as response:
-                if response.ok:
-                    return await response.json()
-                return {}
+                response.raise_for_status()
+                return await response.json()
 
-    async def post(self, endpoint: str, data: dict = None, headers: dict = None):
+    async def post(self, endpoint: str, data: dict = None, headers: dict = None) -> dict:
         """
         Send a POST request asynchronously.
 
@@ -49,6 +49,7 @@ class APIRequest:
         :param data: The data to include in the POST request (as a JSON body).
         :param headers: Headers to include in the request.
         :return: The response from the API as JSON.
+        :raises aiohttp.ClientError: On network or HTTP errors.
         """
         async with aiohttp.ClientSession() as session:
             url = f"{self.base_url}{endpoint}"
@@ -58,7 +59,7 @@ class APIRequest:
 
     async def fetch_text(
         self, endpoint: str, params: dict = None, headers: dict = None
-    ):
+    ) -> str:
         """
         Send a GET request asynchronously and return text response.
 
@@ -66,6 +67,7 @@ class APIRequest:
         :param params: Query parameters to include in the request.
         :param headers: Headers to include in the request.
         :return: The response from the API as text.
+        :raises aiohttp.ClientError: On network or HTTP errors.
         """
         async with aiohttp.ClientSession() as session:
             url = f"{self.base_url}{endpoint}"

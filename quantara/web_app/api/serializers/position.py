@@ -22,13 +22,13 @@ class PositionFormData(BaseModel):
     def validate_multiplier(cls, value: str) -> float:
         """
         Validate the multiplier value
-        :param value: int
-        :return: int
+        :param value: str
+        :return: float
         """
         try:
             return float(value)
         except (ValueError, TypeError):
-            raise Exception("Multiplier should be an integer")
+            raise ValueError("Multiplier must be a valid number")
 
 
 class TokenMultiplierResponse(BaseModel):
