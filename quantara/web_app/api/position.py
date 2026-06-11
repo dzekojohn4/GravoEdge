@@ -22,7 +22,7 @@ from web_app.api.serializers.transaction import (
 from web_app.contract_tools.constants import TokenMultipliers, TokenParams
 from web_app.contract_tools.mixins import DashboardMixin, DepositMixin, PositionMixin
 from web_app.db.crud import PositionDBConnector, TransactionDBConnector
-from web_app.db.models import TransactionStatus
+from web_app.db.models import Status, TransactionStatus
 
 router = APIRouter()
 position_db_connector = PositionDBConnector()
