@@ -8,6 +8,7 @@ and position value calculations for the dashboard view.
 import logging
 from decimal import Decimal
 from typing import Dict
+from uuid import UUID
 
 import aiohttp
 
@@ -172,10 +173,10 @@ class DashboardMixin:
         )
 
     @classmethod
-    async def get_position_balance(cls, position_id: int) -> str:
+    async def get_position_balance(cls, position_id: UUID) -> str:
         """
         Calculate the position balance.
-        :param position_id: Position ID
+        :param position_id: Position UUID
         :return (str): Position balance
         """
         main_position = position_db_connector.get_position_by_id(position_id)
