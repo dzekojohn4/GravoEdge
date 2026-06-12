@@ -26,6 +26,7 @@ import WithdrawAll from '@/pages/gravoedge/dashboard/withdraw-all/WithdrawAll';
 import { DefiSpringPage } from '@/pages/gravoedge/defi-spring/DefiSpring';
 import { AddDeposit } from '@/pages/add-deposit/AddDeposit';
 import Leaderboard from '@/pages/leaderboard/Leaderboard';
+import NotFound from '@/pages/not-found/NotFound';
 
 function App() {
   const { setWalletId, removeWalletId } = useWalletStore();
@@ -116,6 +117,7 @@ function App() {
           <Route path="/stake" element={<Stake />} />
           <Route path="/defispring" element={<DefiSpringPage />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
