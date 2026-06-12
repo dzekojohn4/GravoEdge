@@ -13,9 +13,12 @@ const NotFound = () => {
 
   useEffect(() => {
     // Log the unknown route to make it easier to spot broken links
-    // in the browser console.
-    // eslint-disable-next-line no-console
-    console.warn(`NotFound: no route matches ${location.pathname}`);
+    // in the browser console. Only log in development to avoid noise
+    // in production browser consoles.
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.warn(`NotFound: no route matches ${location.pathname}`);
+    }
   }, [location.pathname]);
 
   return (
