@@ -9,8 +9,6 @@ Verifies that the startup-time environment variable validator:
 - assert_valid_config raises RuntimeError on failure
 """
 
-import os
-
 import pytest
 
 from web_app.config_validator import (
