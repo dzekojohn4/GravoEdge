@@ -260,8 +260,8 @@ async def get_stats() -> GetStatsResponse:
         )
 
     except Exception as e:
-        logger.error(f"Error in get_stats: {e}")
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        logger.exception("Error in get_stats")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post(
