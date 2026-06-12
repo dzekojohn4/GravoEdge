@@ -52,20 +52,27 @@ class TestConfigValidationResult:
 
 
 class TestValidateRequiredEnvVars:
-    def test_returns_valid_in_development_without_required_vars(self):
+    def test_returns_valid_in_development_without_required_vars(self, monkeypatch):
         # In development mode, no errors should be raised even
         # without any required vars set.
-        with patch.dict(
-            os.environ,
-            {"ENV_VERSION": "DEV"},
-            clear=True,
+        monkeypatch.setenv("ENV_VERSION", "DEV")
+        # Remove any pre-existing relevant vars so we test a clean dev env.
+        for var in (
+            "DB_USER", "DB_PASSWORD", "DB_HOST", "DB_NAME",
+            "SESSION_SECRET_KEY", "SENTRY_DSN",
         ):
-            result = validate_required_env_vars()
+            monkeypatch.delenv(var, raising=False)
+        result = validate_required_env_vars()
         assert result.is_valid is True
 
-    def test_returns_errors_in_production_without_required_vars(self):
-        with patch.dict(os.environ, {"ENV_VERSION": "PROD"}, clear=True):
-            result = validate_required_env_vars()
+    def test_returns_errors_in_production_without_required_vars(self, monkeypatch):
+        monkeypatch.setenv("ENV_VERSION", "PROD")
+        for var in (
+            "DB_USER", "DB_PASSWORD", "DB_HOST", "DB_NAME",
+            "SESSION_SECRET_KEY", "SENTRY_DSN",
+        ):
+            monkeypatch.delenv(var, raising=False)
+        result = validate_required_env_vars()
         assert result.is_valid is False
         variables = {err.variable for err in result.errors}
         assert "DB_USER" in variables
@@ -75,40 +82,51 @@ class TestValidateRequiredEnvVars:
         assert "SESSION_SECRET_KEY" in variables
         assert "SENTRY_DSN" in variables
 
-    def test_returns_valid_in_production_with_all_required_vars(self):
-        env = {
-            "ENV_VERSION": "PROD",
-            "DB_USER": "user",
-            "DB_PASSWORD": "pass",
-            "DB_HOST": "localhost",
-            "DB_NAME": "quantara",
-            "SESSION_SECRET_KEY": "x" * 32,
-            "SENTRY_DSN": "https://example@sentry.io/123",
-        }
-        with patch.dict(os.environ, env, clear=True):
-            result = validate_required_env_vars()
+    def test_returns_valid_in_production_with_all_required_vars(self, monkeypatch):
+        monkeypatch.setenv("ENV_VERSION", "PROD")
+        monkeypatch.setenv("DB_USER", "user")
+        monkeypatch.setenv("DB_PASSWORD", "pass")
+        monkeypatch.setenv("DB_HOST", "localhost")
+        monkeypatch.setenv("DB_NAME", "quantara")
+        monkeypatch.setenv("SESSION_SECRET_KEY", "x" * 32)
+        monkeypatch.setenv("SENTRY_DSN", "https://example@sentry.io/123")
+        result = validate_required_env_vars()
         assert result.is_valid is True
 
-    def test_is_production_override_takes_precedence(self):
+    def test_is_production_override_takes_precedence(self, monkeypatch):
         # Explicitly pass is_production=True to validate as production
         # even when ENV_VERSION is unset.
-        with patch.dict(os.environ, {}, clear=True):
-            result = validate_required_env_vars(is_production=True)
+        for var in (
+            "DB_USER", "DB_PASSWORD", "DB_HOST", "DB_NAME",
+            "SESSION_SECRET_KEY", "SENTRY_DSN", "ENV_VERSION",
+        ):
+            monkeypatch.delenv(var, raising=False)
+        result = validate_required_env_vars(is_production=True)
         assert result.is_valid is False
         variables = {err.variable for err in result.errors}
         assert "DB_USER" in variables
 
 
 class TestAssertValidConfig:
-    def test_does_not_raise_in_development(self):
-        with patch.dict(os.environ, {"ENV_VERSION": "DEV"}, clear=True):
-            # Should not raise
-            assert_valid_config()
+    def test_does_not_raise_in_development(self, monkeypatch):
+        monkeypatch.setenv("ENV_VERSION", "DEV")
+        for var in (
+            "DB_USER", "DB_PASSWORD", "DB_HOST", "DB_NAME",
+            "SESSION_SECRET_KEY", "SENTRY_DSN",
+        ):
+            monkeypatch.delenv(var, raising=False)
+        # Should not raise
+        assert_valid_config()
 
-    def test_raises_runtime_error_in_production_without_required_vars(self):
-        with patch.dict(os.environ, {"ENV_VERSION": "PROD"}, clear=True):
-            with pytest.raises(RuntimeError) as exc_info:
-                assert_valid_config()
+    def test_raises_runtime_error_in_production_without_required_vars(self, monkeypatch):
+        monkeypatch.setenv("ENV_VERSION", "PROD")
+        for var in (
+            "DB_USER", "DB_PASSWORD", "DB_HOST", "DB_NAME",
+            "SESSION_SECRET_KEY", "SENTRY_DSN",
+        ):
+            monkeypatch.delenv(var, raising=False)
+        with pytest.raises(RuntimeError) as exc_info:
+            assert_valid_config()
         # The error message should mention the missing variables
         assert "DB_USER" in str(exc_info.value)
         assert "SESSION_SECRET_KEY" in str(exc_info.value)
