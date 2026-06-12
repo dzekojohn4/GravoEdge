@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './NotFound.css';
 
 /**
@@ -9,6 +9,15 @@ import './NotFound.css';
  * so users have a clear path forward instead of seeing a blank page.
  */
 const NotFound = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Log the unknown route to make it easier to spot broken links
+    // in the browser console.
+    // eslint-disable-next-line no-console
+    console.warn(`NotFound: no route matches ${location.pathname}`);
+  }, [location.pathname]);
+
   return (
     <div className="not-found-container">
       <div className="not-found-content">
