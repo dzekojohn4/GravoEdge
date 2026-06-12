@@ -10,7 +10,6 @@ Verifies that the startup-time environment variable validator:
 """
 
 import os
-from unittest.mock import patch
 
 import pytest
 
