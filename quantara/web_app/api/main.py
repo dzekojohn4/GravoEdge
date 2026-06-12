@@ -21,8 +21,14 @@ from web_app.api.user import router as user_router
 from web_app.api.vault import router as vault_router
 from web_app.api.leaderboard import router as leaderboard_router
 from web_app.api.referal import router as referal_router
+from web_app.config_validator import assert_valid_config
 
 logger = logging.getLogger(__name__)
+
+# Validate required environment variables at startup.
+# In production this raises a clear RuntimeError; in development it
+# only logs warnings about missing optional variables.
+assert_valid_config()
 
 # Initialize Sentry SDK if in production
 if os.getenv("ENV_VERSION") == "PROD":
