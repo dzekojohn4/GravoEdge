@@ -384,12 +384,12 @@ class PositionDBConnector(UserDBConnector):
             logger.error(f"Failed to save transaction: {str(e)}")
             return None
 
-    def liquidate_position(self, position_id: int) -> bool:
+    def liquidate_position(self, position_id: UUID) -> bool:
         """
         Marks a position as liquidated by setting `is_liquidated` to True
         and updating `datetime_liquidation` to the current timestamp.
 
-        :param position_id: ID of the position to be liquidated.
+        :param position_id: UUID of the position to be liquidated.
         :return: True if the update was successful, False otherwise.
         """
         with self.Session() as db:
@@ -448,10 +448,10 @@ class PositionDBConnector(UserDBConnector):
                 logger.error(f"Error retrieving liquidated positions: {str(e)}")
                 return []
 
-    def get_position_by_id(self, position_id: int) -> Position | None:
+    def get_position_by_id(self, position_id: UUID) -> Position | None:
         """
         Retrieves a position by its ID.
-        :param position_id: Position ID
+        :param position_id: Position UUID
         :return: Position | None
         """
         return self.get_object(Position, position_id)
