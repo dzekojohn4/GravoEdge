@@ -1,0 +1,29 @@
+version: 2
+updates:
+  # Python / Poetry Dependencies
+  - package-ecosystem: "pip"
+    directory: "/gravoedge"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # React / Yarn Dependencies
+  - package-ecosystem: "npm"
+    directory: "/gravoedge/frontend" # Updated to reflect nested structure
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Docker Dependencies
+  - package-ecosystem: "docker"
+    directory: "/gravoedge"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+
+  # GitHub Actions Dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/" # GitHub Actions must remain at the absolute root
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
