@@ -8,11 +8,16 @@ endpoints, and exposes a /health endpoint for CI orchestration.
 
 import logging
 import os
+import asyncio
+from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response, Depends
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+import redis.asyncio as redis
 
 from web_app.api.dashboard import router as dashboard_router
 from web_app.api.position import router as position_router
@@ -22,26 +27,37 @@ from web_app.api.vault import router as vault_router
 from web_app.api.leaderboard import router as leaderboard_router
 from web_app.api.referal import router as referal_router
 from web_app.config_validator import assert_valid_config
+from web_app.db.database import init_db, get_database
 
 logger = logging.getLogger(__name__)
 
-# Validate required environment variables at startup.
-# In production this raises a clear RuntimeError; in development it
-# only logs warnings about missing optional variables.
-assert_valid_config()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager for FastAPI.
+    Handles application startup and shutdown events.
+    """
+    init_db()
 
-# Initialize Sentry SDK if in production
-if os.getenv("ENV_VERSION") == "PROD":
-    import sentry_sdk
+    # Validate required environment variables at startup.
+    assert_valid_config()
 
-    sentry_sdk.init(
-        dsn=os.getenv("SENTRY_DSN"),
-        traces_sample_rate=1.0,
-        _experiments={
-            "continuous_profiling_auto_start": True,
-        },
-    )
+    # Enforce minimum length for session secret at startup
+    secret = os.getenv("SESSION_SECRET_KEY")
+    if secret and len(secret) < 32:
+        raise ValueError("SESSION_SECRET_KEY must be at least 32 characters long.")
 
+    # Initialize Sentry SDK if in production
+    if os.getenv("ENV_VERSION") == "PROD":
+        import sentry_sdk
+        sentry_sdk.init(
+            dsn=os.getenv("SENTRY_DSN"),
+            traces_sample_rate=1.0,
+            _experiments={
+                "continuous_profiling_auto_start": True,
+            },
+        )
+    yield
 
 app = FastAPI(
     title="GRAVOEDGE API",
@@ -54,6 +70,7 @@ app = FastAPI(
         "name": "MIT License",
         "url": "https://opensource.org/licenses/MIT",
     },
+    lifespan=lifespan,
 )
 
 
@@ -79,24 +96,9 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"detail": "Internal server error"},
     )
 
-_SESSION_SECRET_MIN_LENGTH = 32
-_is_production = os.getenv("ENV_VERSION") == "PROD"
-
-_session_secret = os.getenv("SESSION_SECRET_KEY")
-
-if _session_secret:
-    if len(_session_secret) < _SESSION_SECRET_MIN_LENGTH:
-        raise ValueError(
-            f"SESSION_SECRET_KEY must be at least {_SESSION_SECRET_MIN_LENGTH} characters long."
-        )
-elif _is_production:
-    raise ValueError(
-        "SESSION_SECRET_KEY environment variable must be set in production. "
-        "Generate one with: python -c \"import os; print(os.urandom(32).hex())\""
-    )
-else:
-    # Development only: auto-generate a key (sessions won't persist across restarts)
-    _session_secret = os.urandom(32).hex()
+# Fetch at import time for middleware registration, but do not raise exceptions here.
+# Strict validation and missing value errors are handled by assert_valid_config() and lifespan().
+_session_secret = os.getenv("SESSION_SECRET_KEY", os.urandom(32).hex())
 
 # Add session middleware with a persistent secret key
 app.add_middleware(SessionMiddleware, secret_key=_session_secret)
@@ -107,9 +109,38 @@ app.add_middleware(
 
 
 @app.get("/health", tags=["Health"], summary="Health check endpoint")
-async def health_check():
-    """Returns 200 OK when the service is running."""
-    return {"status": "healthy"}
+async def health_check(response: Response, db: Session = Depends(get_database)):
+    """Returns 200 OK when the service is running and dependencies are healthy."""
+    health_status = {"status": "healthy", "database": "up", "redis": "up"}
+    is_healthy = True
+
+    # Check Database
+    try:
+        # Use asyncio.to_thread for synchronous SQLAlchemy call to prevent blocking the event loop
+        await asyncio.wait_for(
+            asyncio.to_thread(db.execute, text("SELECT 1")), timeout=2.0
+        )
+    except Exception as e:
+        logger.error(f"Database health check failed: {e}")
+        health_status["database"] = "down"
+        is_healthy = False
+
+    # Check Redis
+    redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+    try:
+        r = redis.from_url(redis_url)
+        await asyncio.wait_for(r.ping(), timeout=2.0)
+        await r.close()
+    except Exception as e:
+        logger.error(f"Redis health check failed: {e}")
+        health_status["redis"] = "down"
+        is_healthy = False
+
+    if not is_healthy:
+        health_status["status"] = "degraded"
+        response.status_code = 503
+
+    return health_status
 
 
 # No startup-time blockchain contract init needed – the frontend
