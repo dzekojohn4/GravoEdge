@@ -30,6 +30,24 @@ from web_app.config_validator import assert_valid_config
 from web_app.db.database import init_db, get_database
 
 logger = logging.getLogger(__name__)
+DEFAULT_CORS_ORIGINS = ["http://localhost:3000"]
+CORS_ALLOW_METHODS = ["GET", "POST"]
+CORS_ALLOW_HEADERS = ["Content-Type", "Authorization"]
+
+
+def get_cors_origins() -> list[str]:
+    """
+    Return the allowed CORS origins from the environment.
+
+    A comma-separated CORS_ORIGINS value is supported for production. When the
+    variable is unset or blank, development keeps working against localhost.
+    """
+    raw_origins = os.getenv("CORS_ORIGINS")
+    if not raw_origins:
+        return DEFAULT_CORS_ORIGINS
+
+    origins = [origin.strip() for origin in raw_origins.split(",")]
+    return [origin for origin in origins if origin] or DEFAULT_CORS_ORIGINS
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -104,7 +122,10 @@ _session_secret = os.getenv("SESSION_SECRET_KEY", os.urandom(32).hex())
 app.add_middleware(SessionMiddleware, secret_key=_session_secret)
 # CORS middleware for React frontend
 app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_headers=["*"], allow_methods=["*"]
+    CORSMiddleware,
+    allow_origins=get_cors_origins(),
+    allow_headers=CORS_ALLOW_HEADERS,
+    allow_methods=CORS_ALLOW_METHODS,
 )
 
 
