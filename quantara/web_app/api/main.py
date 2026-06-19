@@ -32,6 +32,7 @@ from web_app.api.leaderboard import router as leaderboard_router
 from web_app.api.referal import router as referal_router
 from web_app.api.wallet_auth import router as auth_router
 from web_app.config_validator import assert_valid_config
+from web_app.api.middleware import MaxBodySizeMiddleware
 from web_app.db.database import init_db
 from web_app.db.database import init_db, get_database
 
@@ -139,6 +140,7 @@ app.add_middleware(
 # Rate limiting middleware -- must be added after CORS/session so it wraps the
 # full middleware stack and can reject requests before they reach routers.
 app.add_middleware(SlowAPIMiddleware)
+app.add_middleware(MaxBodySizeMiddleware, max_body_size=1024*1024)
 
 
 @app.get("/health", tags=["Health"], summary="Health check endpoint")
