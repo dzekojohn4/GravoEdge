@@ -27,6 +27,7 @@ from web_app.api.vault import router as vault_router
 from web_app.api.leaderboard import router as leaderboard_router
 from web_app.api.referal import router as referal_router
 from web_app.config_validator import assert_valid_config
+from web_app.db.database import init_db
 from web_app.db.database import init_db, get_database
 
 logger = logging.getLogger(__name__)
